@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Moroccan Organica - E-Commerce Platform
 
-## Getting Started
+A premium, bilingual (English/Arabic) e-commerce platform for Moroccan organic products built with Next.js 14+.
 
-First, run the development server:
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 14+ (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS (with RTL support)
+- **Database**: MySQL with Prisma ORM
+- **Authentication**: NextAuth.js (Admin only)
+- **UI Components**: Custom components with premium design
+
+## 📁 Project Structure
+
+```
+src/
+├── app/
+│   ├── (auth)/login/          # Admin Login
+│   ├── (shop)/                # Storefront (Guest-accessible)
+│   ├── admin/                 # Admin Dashboard (Protected)
+│   ├── api/auth/[...nextauth]/ # NextAuth Handler
+│   ├── layout.tsx             # Root layout
+│   ├── providers.tsx          # Client-side providers
+│   └── globals.css            # Global styles
+├── components/
+│   ├── ui/                    # Shadcn UI components
+│   ├── shop/                  # Storefront components
+│   └── admin/                 # Admin components
+├── lib/
+│   ├── prisma.ts              # Singleton DB client
+│   └── utils.ts               # Utility functions
+├── types/
+│   └── next-auth.d.ts         # TypeScript declarations
+└── prisma/
+    └── schema.prisma          # Database schema
+```
+
+## 🛠️ Setup Instructions
+
+### 1. Install Dependencies
+
+```bash
+npm install
+```
+
+### 2. Database Setup
+
+Create a MySQL database and update the `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Update the `DATABASE_URL` in `.env`:
+
+```env
+DATABASE_URL="mysql://user:password@localhost:3306/moroccan_organica"
+```
+
+### 3. Generate NextAuth Secret
+
+```bash
+openssl rand -base64 32
+```
+
+Add the generated secret to `.env`:
+
+```env
+NEXTAUTH_SECRET="your-generated-secret"
+```
+
+### 4. Run Prisma Migrations
+
+```bash
+npx prisma generate
+npx prisma db push
+```
+
+### 5. Create Admin User (Optional)
+
+You can create an admin user by running:
+
+```bash
+npx prisma studio
+```
+
+Then manually create a user with:
+- Email: `admin@moroccanorganica.com`
+- Password: (hashed with bcrypt)
+- Role: `ADMIN`
+
+Or use the following script to hash a password:
+
+```bash
+node -e "const bcrypt = require('bcryptjs'); console.log(bcrypt.hashSync('your-password', 10));"
+```
+
+### 6. Run Development Server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🌐 Bilingual Support (RTL/LTR)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The platform supports both English (LTR) and Arabic (RTL) layouts using Tailwind's logical properties:
 
-## Learn More
+- Use `ms-*` instead of `ml-*` (margin-start instead of margin-left)
+- Use `me-*` instead of `mr-*` (margin-end instead of margin-right)
+- Use `ps-*` instead of `pl-*` (padding-start instead of padding-left)
+- Use `pe-*` instead of `pr-*` (padding-end instead of padding-right)
+- Use `start-*` instead of `left-*`
+- Use `end-*` instead of `right-*`
+- Use `border-s-*` instead of `border-l-*`
+- Use `border-e-*` instead of `border-r-*`
 
-To learn more about Next.js, take a look at the following resources:
+## 🔐 Authentication
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Customers**: Guest checkout (no login required)
+- **Admins**: Strict login required using email/password
+- **Admin Routes**: Protected with NextAuth session middleware
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Database Models
 
-## Deploy on Vercel
+### Auth Models
+- `User` - Admin users
+- `Account` - OAuth accounts
+- `Session` - User sessions
+- `VerificationToken` - Email verification
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### E-Commerce Models
+- `Category` - Product categories (bilingual)
+- `Product` - Products (bilingual)
+- `Order` - Customer orders (guest-friendly)
+- `OrderItem` - Order line items
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Design System
+
+- **Primary Color**: Emerald (`#059669`)
+- **Accent Color**: Teal (`#0d9488`)
+- **Font**: Inter (Google Fonts)
+- **Style**: Modern, premium, gradient-heavy
+
+## 📝 Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+- `npx prisma studio` - Open Prisma Studio (database GUI)
+- `npx prisma generate` - Generate Prisma Client
+- `npx prisma db push` - Push schema changes to database
+
+## 🚧 Next Steps
+
+1. **Install Shadcn UI components**:
+   ```bash
+   npx shadcn@latest init
+   ```
+
+2. **Add product images to `/public/products`**
+
+3. **Configure email service** for order notifications
+
+4. **Set up payment gateway** (Stripe, PayPal, etc.)
+
+5. **Add language switcher** component for EN/AR
+
+6. **Implement product search** and filtering
+
+7. **Add shopping cart** functionality
+
+## 📄 License
+
+Proprietary - Moroccan Organica © 2026
+# Moroccan Organica
