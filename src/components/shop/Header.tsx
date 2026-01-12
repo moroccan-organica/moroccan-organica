@@ -64,7 +64,9 @@ const Header = ({ dict, lang }: HeaderProps) => {
 
     return (
         <header
-            className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-[#1a1a1a]/90 backdrop-blur-md shadow-lg" : "bg-transparent"
+            className={`fixed top-0 left-0 right-0 z-50 border-b border-white/5 transition-all duration-300 ${isScrolled
+                ? "bg-[#1a1a1a]/95 backdrop-blur-md shadow-lg"
+                : "bg-[#111111]/95"
                 }`}
         >
             <div className="container mx-auto px-4">

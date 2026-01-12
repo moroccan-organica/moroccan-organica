@@ -46,7 +46,10 @@ export default async function RootLayout({
 
   return (
     <html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
-      <body className={`${inter.variable} ${playfair.variable} ${cairo.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${playfair.variable} ${cairo.variable} antialiased`}
+        suppressHydrationWarning
+      >
         <Providers lang={lang}>
           <Header dict={dict} lang={lang} />
           {children}
