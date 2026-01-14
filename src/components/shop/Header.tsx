@@ -38,10 +38,10 @@ const Header = ({ dict, lang }: HeaderProps) => {
     };
 
     const productDropdownItems = [
-        { name: t('products.arganOil'), href: `/${lang}/products` },
-        { name: t('products.saffron'), href: `/${lang}/products` },
-        { name: t('products.ghassoulClay'), href: `/${lang}/products` },
-        { name: t('products.rosemary'), href: `/${lang}/products` },
+        { name: t('products.essentialOils'), href: `/${lang}/products` },
+        { name: t('products.vegetableOils'), href: `/${lang}/products` },
+        { name: t('products.driedPlants'), href: `/${lang}/products` },
+        { name: t('products.wellness'), href: `/${lang}/products` },
     ];
 
     const benefitsDropdownItems = [

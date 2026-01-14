@@ -1,0 +1,134 @@
+{
+    "nav": {
+        "home": "الصفحة الرئيسية",
+        "about": "معلومات عنا",
+        "products": "منتجات",
+        "blog": "مقالات",
+        "privateLabel": "علامة خاصة",
+        "contact": "اتصال",
+        "shop": "المتجر",
+        "benefits": "الفوائد",
+        "certifications": "الشهادات",
+        "sustainability": "الاستدامة",
+        "quality": "الجودة"
+    },
+    "products": {
+        "essentialOils": "الزيوت عطرية",
+        "vegetableOils": "الزيوت النباتية",
+        "driedPlants": "نباتات مجففة",
+        "wellness": "منتجات العافية"
+    },
+    "footer": {
+        "newsletter": {
+            "title": "النشرة الأسبوعية",
+            "description": "اشترك في قائمة عملائنا الكرام لتحصل على عروضك.",
+            "placeholder": "أدخل بريدك",
+            "button": "الإشتراك"
+        },
+        "about": {
+            "title": "معلومات عنا",
+            "description": "مجموعة Organica من كبار المنتجين المغاربة ، ومصدري زيوت الأرغان الطبيعية للطهي وكذلك للاستخدامات التجميلية ، زيوت بذور التين الشوكي ، الزيوت الأساسية ، الصابون المغربي الأسود ، طين الغسول ، منتجات عضوية 100٪."
+        },
+        "contact": {
+            "title": "اتصل بنا",
+            "address": "Lot 377 N°3/6 sidi ghanem Zone industriel , 40110 marrakesh",
+            "factory": "مصنعنا يقع في أكادير",
+            "phone": "+212 648-273228",
+            "email": "inquiry@moroccanorganica.com"
+        },
+        "links": {
+            "blog": {
+                "title": "مقالات",
+                "items": [
+                    {
+                        "name": "جميع المقالات",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "فوائد النيلة المغربية",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "زيت الأركان للشعر",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "فوائد زيت التين الشوكي",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "سحر مستحضرات التجميل المغربية",
+                        "href": "/blog"
+                    }
+                ]
+            },
+            "policy": {
+                "title": "سياسة مجموعة Organica",
+                "items": [
+                    {
+                        "name": "سياسة الخصوصية",
+                        "href": "/privacy-policy"
+                    },
+                    {
+                        "name": "معلومات التوصيل",
+                        "href": "/delivery-information"
+                    },
+                    {
+                        "name": "شروط الاستخدام",
+                        "href": "/terms-conditions"
+                    },
+                    {
+                        "name": "كيفية الطلب / الدفع",
+                        "href": "/how-to-order-pay"
+                    },
+                    {
+                        "name": "مراقبة الجودة",
+                        "href": "#"
+                    },
+                    {
+                        "name": "عينة مجانية",
+                        "href": "#"
+                    },
+                    {
+                        "name": "FAQ",
+                        "href": "#"
+                    }
+                ]
+            },
+            "products": {
+                "title": "منتجاتنا",
+                "items": [
+                    {
+                        "name": "زيت الارجان المغربي الاصلي بالجملة",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "زيت التين الشوكي الاصلي بالجملة",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "الصابون البلدي المغربي بالجملة",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "ماء الورد المغربي طبيعي %100",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "الطين المغربي بني - اخضر - احمر",
+                        "href": "/products"
+                    }
+                ]
+            }
+        },
+        "partners": {
+            "transport": "شركاؤنا",
+            "payment": "طريقة الدفع"
+        },
+        "rights": "جميع الحقوق محفوظة | مجموعة أورغانيكا المحدودة"
+    },
+    "languages": {
+        "en": "الإنجليزية",
+        "ar": "العربية"
+    }
+}

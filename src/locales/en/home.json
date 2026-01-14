@@ -1,0 +1,194 @@
+{
+    "hero": {
+        "slides": [
+            {
+                "badge": "Wholesale & Bulk",
+                "heading": "Moroccan Beauty Products",
+                "highlight": "Wholesale",
+                "description": "Trusted Wholesale Suppliers of argan oil and different cosmetics products based on organic oils in Morocco."
+            },
+            {
+                "badge": "100% Organic",
+                "heading": "Argan Oil of",
+                "highlight": "Morocco",
+                "description": "Argan oil for Hair, The Liquid Gold for your Skin, Hair, and Nails."
+            },
+            {
+                "badge": "Global Export",
+                "heading": "Exporter of Argan Oil",
+                "highlight": "Worldwide",
+                "description": "Organica Group is a specialist in Pure Organic Argan Oil and 100% Organic Prickly Pear Seed Cactus Oil, distributed and packaged in bulk."
+            },
+            {
+                "badge": "Fast Shipping",
+                "heading": "We Ship Organic Products to the",
+                "highlight": "USA",
+                "description": "We are able to ship our argan oil by air cargo worldwide with a short transit time."
+            },
+            {
+                "badge": "Premium Quality",
+                "heading": "Pure Prickly Pear Seed Oil",
+                "highlight": "Suppliers",
+                "description": "High grade cosmetic Prickly pear cactus seeds oil production."
+            },
+            {
+                "badge": "Mineral Rich",
+                "heading": "Moroccan Rhassoul Clay",
+                "highlight": "100% Organic",
+                "description": "Moroccan Rhassoul clay is the best organic solution to keep your face and skin clean and soft."
+            },
+            {
+                "badge": "Traditional Spa",
+                "heading": "Moroccan Black Soap",
+                "highlight": "Wholesale",
+                "description": "Moroccan BLACK SOAP with vitamin E is the best organic solution to keep your face and skin clean and soft."
+            }
+        ],
+        "cta": {
+            "quote": "Get a Quote",
+            "view": "View Products"
+        },
+        "trust": {
+            "logistics": "Global Logistics",
+            "certified": "USDA Certified",
+            "moq": "MOQ 100 Units"
+        }
+    },
+    "about": {
+        "badge": "About Us",
+        "title": "Why do you buy From",
+        "highlight": "Organica Group?",
+        "description": "<p class=\"mb-4\">If you are looking for a <b>trusted partner to source organic beauty and cosmetic products</b>, Organica Group is your reliable choice. We offer a comprehensive range of organic cosmetics and body care products, designed to support health and beauty needs from head to toe. Our portfolio allows brands, professionals, and individuals to find tailored organic solutions that match their specific market expectations.</p><p class=\"mb-4\">When it comes to products such as argan oil, the market often presents two extremes: high-quality products at very high prices or low-quality products at low prices. At Organica Group, we believe that true value lies in combining quality with cost efficiency. This principle is the foundation of our sourcing and production strategy.</p><p>Thanks to our extensive experience in sourcing high-quality organic raw materials, we are able to deliver <b>certified organic beauty and cosmetic products</b> at competitive and sustainable prices. Our approach strengthens long-term partnerships by maintaining transparent, ethical, and reliable relationships.</p>",
+        "points": [
+            "100% Organic certified cosmetics",
+            "Fair trade practices",
+            "Authenticity guaranteed by personal relations with women cooperatives"
+        ],
+        "stats": {
+            "customers": {
+                "value": "+180",
+                "label": "Happy Customer."
+            },
+            "orders": {
+                "value": "+375",
+                "label": "Order Done."
+            },
+            "labels": {
+                "value": "+462",
+                "label": "Private Label."
+            }
+        }
+    },
+    "categories": {
+        "title": "TOP SELLING PRODUCTS",
+        "subtitle": "Directly from the source in Morocco",
+        "items": [
+            {
+                "title": "ARGAN OILS CERTIFIED ORGANIC",
+                "label": "Wholesale"
+            },
+            {
+                "title": "ORGANIC PRICKLY PEAR SEED OIL",
+                "label": "Wholesale"
+            },
+            {
+                "title": "MOROCCAN BLACK SOAP",
+                "label": "Wholesale"
+            },
+            {
+                "title": "PURE ROSE WATER",
+                "label": "Wholesale"
+            },
+            {
+                "title": "GHASSOUL CLAY POWDER",
+                "label": "Wholesale"
+            }
+        ]
+    },
+    "productsSection": {
+        "title": "Featured Organic Collections",
+        "subtitle": "Discover our most popular Moroccan beauty essentials",
+        "viewAll": "View All Products",
+        "items": [
+            {
+                "name": "Pure Argan Oil",
+                "category": "Organic Oil",
+                "description": "100% Pure certified organic argan oil from the heart of Morocco."
+            },
+            {
+                "name": "Prickly Pear Oil",
+                "category": "Organic Oil",
+                "description": "High grade cosmetic Prickly pear cactus seeds oil production."
+            },
+            {
+                "name": "Moroccan Black Soap",
+                "category": "Hammam",
+                "description": "Traditional black soap with olive oil and vitamin E."
+            }
+        ]
+    },
+    "trustSection": {
+        "badge": "Our Capabilities",
+        "title": "Manufacturing at",
+        "highlight": "Scale",
+        "warehouse": {
+            "title": "State-of-the-Art Warehouse",
+            "desc": "50,000 sq ft of climate-controlled storage"
+        },
+        "bulk": {
+            "title": "Bulk Processing Capacity",
+            "desc": "500+ tons processed annually"
+        },
+        "stats": [
+            {
+                "label": "Years Experience"
+            },
+            {
+                "label": "Countries Served"
+            },
+            {
+                "label": "Units Shipped"
+            },
+            {
+                "label": "Client Satisfaction"
+            }
+        ]
+    },
+    "rfq": {
+        "features": [
+            {
+                "title": "Lowest Shipping Charges"
+            },
+            {
+                "title": "Perfect Shipment Condition"
+            },
+            {
+                "title": "High-Quality Products"
+            },
+            {
+                "title": "Fast Delivery Service"
+            }
+        ],
+        "form": {
+            "title": "Get Quick Quote",
+            "name": "Your Name",
+            "email": "Email",
+            "phone": "Phone",
+            "type": "Type",
+            "quantity": "Quantity",
+            "destination": "Destination",
+            "message": "Your Message",
+            "submit": "Send"
+        }
+    },
+    "socialProof": {
+        "badge": "Social Proof",
+        "title": "What Our Customers",
+        "highlight": "Say",
+        "rating": {
+            "label": "Excellent",
+            "score": "4.9/5 Rating",
+            "source": "Based on verified Google Reviews"
+        }
+    }
+}

@@ -1,18 +1,9 @@
 import ProductCard from "./ProductCard";
-import arganOilImage from "@/assets/argan-oil.jpg";
-import saffronImage from "@/assets/saffron.jpg";
-import ghassoulImage from "@/assets/ghassoul-clay.jpg";
-import indigoImage from "@/assets/indigo.jpg";
-import warehouseImage from "@/assets/warehouse.jpg";
-import bulkImage from "@/assets/bulk-ingredients.jpg";
-
-const images = [saffronImage, indigoImage, ghassoulImage, arganOilImage, bulkImage, warehouseImage];
-
-const ProductsSection = ({ dict }: { dict: any }) => {
-  const content = dict.productsSection;
-  const products = content.items.map((item: any, i: number) => ({
+const ProductsSection = ({ data }: { data: any }) => {
+  const content = data;
+  const products = content.items.map((item: any) => ({
     ...item,
-    image: images[i],
+    description: item.desc,
     badgeVariant: item.badge.toLowerCase() === 'bulk' ? 'bulk' : (item.badge.toLowerCase() === 'premium' ? 'premium' : 'organic')
   }));
 

@@ -1,0 +1,134 @@
+{
+    "nav": {
+        "home": "Home",
+        "about": "About us",
+        "products": "Products",
+        "blog": "Blog",
+        "privateLabel": "Private label",
+        "contact": "Contact",
+        "shop": "Shop",
+        "benefits": "Benefits",
+        "certifications": "Certifications",
+        "sustainability": "Sustainability",
+        "quality": "Quality"
+    },
+    "products": {
+        "essentialOils": "Essential oils",
+        "vegetableOils": "Vegetable oils",
+        "driedPlants": "Dried plants",
+        "wellness": "Wellness products"
+    },
+    "footer": {
+        "newsletter": {
+            "title": "Weekly Newsletter",
+            "description": "Subscribe to our lovely customer's list to get our offers.",
+            "placeholder": "Enter Your Mail",
+            "button": "Subscribe"
+        },
+        "about": {
+            "title": "About Us",
+            "description": "Organica Group From leading Moroccan producers, and exporters of natural Argan Oils for culinary as well as cosmetic use, Bio Prickly Pear seed Oils, Essential Oils, Moroccan Black soaps, Ghassoul Clay, 100% organic products."
+        },
+        "contact": {
+            "title": "Contact us",
+            "address": "Lot 377 N°3/6 sidi ghanem Zone industriel , 40110 marrakesh",
+            "factory": "Our factory is located in Agadir",
+            "phone": "+212 648-273228",
+            "email": "inquiry@moroccanorganica.com"
+        },
+        "links": {
+            "blog": {
+                "title": "Blog",
+                "items": [
+                    {
+                        "name": "All articles",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "Moroccan Nila powder benefits",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "Argan oil for hair",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "Prickly pear seed oil benefits",
+                        "href": "/blog"
+                    },
+                    {
+                        "name": "The magic of Moroccan beauty products",
+                        "href": "/blog"
+                    }
+                ]
+            },
+            "policy": {
+                "title": "Organica group Policy",
+                "items": [
+                    {
+                        "name": "Privacy Policy",
+                        "href": "/privacy-policy"
+                    },
+                    {
+                        "name": "Delivery Information",
+                        "href": "/delivery-information"
+                    },
+                    {
+                        "name": "Terms & Conditions",
+                        "href": "/terms-conditions"
+                    },
+                    {
+                        "name": "How to Order/Pay",
+                        "href": "/how-to-order-pay"
+                    },
+                    {
+                        "name": "Quality Control",
+                        "href": "#"
+                    },
+                    {
+                        "name": "Free Sample",
+                        "href": "#"
+                    },
+                    {
+                        "name": "FAQ",
+                        "href": "#"
+                    }
+                ]
+            },
+            "products": {
+                "title": "Our Products",
+                "items": [
+                    {
+                        "name": "high-quality ARGAN OILS CERTIFIED ORGANIC",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "organic prickly pear seeds Oil wholesale",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "ORGANIC MOROCCAN BLACK SOAP Wholesale",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "PURE natural organic Damascena rose water",
+                        "href": "/products"
+                    },
+                    {
+                        "name": "MOROCCAN powder CLAY GHASSOUL",
+                        "href": "/products"
+                    }
+                ]
+            }
+        },
+        "partners": {
+            "transport": "Our partners",
+            "payment": "Payment method"
+        },
+        "rights": "All rights reserved | Organica Group LTD"
+    },
+    "languages": {
+        "en": "English",
+        "ar": "Arabic"
+    }
+}

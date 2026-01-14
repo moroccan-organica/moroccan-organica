@@ -29,9 +29,8 @@ const iconMap = {
 
 // Helper to get icon component or default
 const getIcon = (index: number) => {
-    if (index === 0) return Globe;
-    if (index === 1) return Leaf;
-    return Award;
+    const icons = [Globe, Leaf, Award, Truck, Shield];
+    return icons[index % icons.length];
 }
 
 interface HeroCarouselProps {
@@ -44,14 +43,6 @@ interface HeroCarouselProps {
 const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
     const isRtl = lang === 'ar';
     const plugin = useRef(Autoplay({ delay: 5000, stopOnInteraction: true }));
-
-    // Images are hardcoded or mapped here since JSON can't hold imports easily without setup.
-    // We'll use the same images as before.
-    const images = [
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&q=80&w=2400",
-        "https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&q=80&w=2400",
-        "https://images.unsplash.com/photo-1596040033229-a0b8e7c86fc8?auto=format&fit=crop&q=80&w=2400"
-    ];
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} className="w-full h-full relative min-h-screen">
@@ -69,7 +60,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                     {/* Background Image with Overlay */}
                                     <div className="absolute inset-0">
                                         <Image
-                                            src={images[index]}
+                                            src={slide.image}
                                             alt={slide.heading}
                                             fill
                                             className="object-cover"

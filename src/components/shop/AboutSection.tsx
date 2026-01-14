@@ -1,13 +1,12 @@
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
-import arganOilImage from "@/assets/argan-oil.jpg";
 
 interface AboutSectionProps {
-  dict: any;
+  data: any;
 }
 
-const AboutSection = ({ dict }: AboutSectionProps) => {
-  const content = dict.about;
+const AboutSection = ({ data }: AboutSectionProps) => {
+  const content = data;
 
   return (
     <section id="about" className="section-padding bg-background">
@@ -17,8 +16,10 @@ const AboutSection = ({ dict }: AboutSectionProps) => {
           <div className="relative animate-fade-in-left" style={{ animationDelay: "0.2s" }}>
             <div className="relative rounded-2xl overflow-hidden shadow-card">
               <Image
-                src={arganOilImage}
+                src={content.image}
                 alt={content.title}
+                width={800}
+                height={800}
                 className="w-full h-auto object-cover aspect-square"
               />
               {/* Floating Badge */}
@@ -46,9 +47,10 @@ const AboutSection = ({ dict }: AboutSectionProps) => {
             <h2 className="heading-section text-foreground mb-6">
               {content.title} <span className="text-primary">{content.highlight}</span>
             </h2>
-            <p className="text-body text-muted-foreground mb-8 leading-relaxed">
-              {content.description}
-            </p>
+            <div
+              className="text-body text-muted-foreground mb-8 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: content.description }}
+            />
 
             {/* Feature List */}
             <ul className="space-y-4 mb-8">

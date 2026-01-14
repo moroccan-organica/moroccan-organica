@@ -3,39 +3,26 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Parallax, Navigation } from "swiper/modules";
+import { Parallax, Navigation, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import "swiper/css";
 import "swiper/css/parallax";
 
-import arganOil from "@/assets/argan-oil.jpg";
-import saffron from "@/assets/saffron.jpg";
-import ghassoulClay from "@/assets/ghassoul-clay.jpg";
-import indigo from "@/assets/indigo.jpg";
-import warehouse from "@/assets/warehouse.jpg";
-import bulkIngredients from "@/assets/bulk-ingredients.jpg";
 import { StaticImageData } from "next/image";
 
-// Images mapping
-const images = [arganOil, saffron, ghassoulClay, indigo, warehouse, bulkIngredients];
-
 interface ProductCategoryCarouselProps {
-  dict: any;
+  data: any;
 }
 
-const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
+const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
   const [swiperInstance, setSwiperInstance] = useState<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isBeginning, setIsBeginning] = useState(true);
   const [isEnd, setIsEnd] = useState(false);
 
-  const content = dict.categories;
-  // Merge images with content items
-  const categories = content.items.map((item: any, i: number) => ({
-    ...item,
-    image: images[i] || images[0]
-  }));
+  const content = data;
+  const categories = content.items;
 
   const handleSlideChange = (swiper: SwiperType) => {
     setActiveIndex(swiper.activeIndex);
@@ -44,7 +31,7 @@ const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
   };
 
   return (
-    <section className="py-20 md:py-28 bg-cream-50 overflow-hidden">
+    <section className="py-20 md:py-28 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header with Navigation */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 md:mb-16">
@@ -54,10 +41,10 @@ const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <span className="text-sm uppercase tracking-[0.3em] text-[#2C3E2E]/60 mb-3 block">
+            <span className="text-sm uppercase tracking-[0.3em] text-primary/60 mb-3 block">
               {content.badge}
             </span>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-[#2C3E2E] tracking-tight">
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-primary tracking-tight">
               {content.title}
             </h2>
           </motion.div>
@@ -73,24 +60,24 @@ const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
             <button
               onClick={() => swiperInstance?.slidePrev()}
               disabled={isBeginning}
-              className={`w-12 h-12 rounded-full border border-[#2C3E2E]/20 flex items-center justify-center transition-all duration-300 ${isBeginning
+              className={`w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center transition-all duration-300 ${isBeginning
                 ? "opacity-30 cursor-not-allowed"
-                : "hover:bg-[#2C3E2E] hover:border-[#2C3E2E] hover:text-white cursor-pointer"
+                : "hover:bg-primary hover:border-primary hover:text-white cursor-pointer"
                 }`}
               aria-label="Previous slide"
             >
-              <ArrowLeft className="w-5 h-5 text-[#2C3E2E] transition-colors" />
+              <ArrowLeft className="w-5 h-5 text-primary transition-colors" />
             </button>
             <button
               onClick={() => swiperInstance?.slideNext()}
               disabled={isEnd}
-              className={`w-12 h-12 rounded-full border border-[#2C3E2E]/20 flex items-center justify-center transition-all duration-300 ${isEnd
+              className={`w-12 h-12 rounded-full border border-primary/20 flex items-center justify-center transition-all duration-300 ${isEnd
                 ? "opacity-30 cursor-not-allowed"
-                : "hover:bg-[#2C3E2E] hover:border-[#2C3E2E] hover:text-white cursor-pointer"
+                : "hover:bg-primary hover:border-primary hover:text-white cursor-pointer"
                 }`}
               aria-label="Next slide"
             >
-              <ArrowRight className="w-5 h-5 text-[#2C3E2E] transition-colors" />
+              <ArrowRight className="w-5 h-5 text-primary transition-colors" />
             </button>
           </motion.div>
         </div>
@@ -104,25 +91,38 @@ const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
           className="cursor-grab active:cursor-grabbing"
         >
           <Swiper
-            modules={[Parallax, Navigation]}
+            modules={[Parallax, Navigation, Autoplay]}
             onSwiper={setSwiperInstance}
             onSlideChange={handleSlideChange}
             parallax={true}
             speed={800}
-            spaceBetween={24}
+            autoplay={{
+              delay: 3000,
+              disableOnInteraction: false,
+              pauseOnMouseEnter: true,
+            }}
+            spaceBetween={20}
             slidesPerView={1.2}
             breakpoints={{
               640: {
                 slidesPerView: 2.2,
-                spaceBetween: 28,
+                spaceBetween: 20,
+              },
+              768: {
+                slidesPerView: 3.2,
+                spaceBetween: 24,
               },
               1024: {
-                slidesPerView: 3.5,
-                spaceBetween: 32,
+                slidesPerView: 4.5,
+                spaceBetween: 24,
               },
               1280: {
-                slidesPerView: 4,
-                spaceBetween: 36,
+                slidesPerView: 5.5,
+                spaceBetween: 28,
+              },
+              1536: {
+                slidesPerView: 6,
+                spaceBetween: 28,
               },
             }}
             className="!overflow-visible"
@@ -148,8 +148,8 @@ const ProductCategoryCarousel = ({ dict }: ProductCategoryCarouselProps) => {
               key={index}
               onClick={() => swiperInstance?.slideTo(index)}
               className={`h-1 rounded-full transition-all duration-500 ${index === activeIndex
-                ? "w-8 bg-[#2C3E2E]"
-                : "w-2 bg-[#2C3E2E]/20 hover:bg-[#2C3E2E]/40"
+                ? "w-8 bg-primary"
+                : "w-2 bg-primary/20 hover:bg-primary/40"
                 }`}
               aria-label={`Go to slide ${index + 1}`}
             />
@@ -182,66 +182,39 @@ const CategoryCard = ({ category, index }: CategoryCardProps) => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Card Container - 3:4 Aspect Ratio */}
-      <div className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-[#2C3E2E]/5">
-        {/* Image with Parallax Effect */}
+      {/* Card Container - 4:5 Aspect Ratio for slightly smaller look */}
+      <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-card shadow-md transition-all duration-300 group-hover:shadow-2xl border border-primary/10">
+        {/* Image - Standard Cover */}
         <div
-          data-swiper-parallax="-20%"
           className="absolute inset-0 w-full h-full"
         >
           <motion.img
             src={typeof category.image === 'string' ? category.image : category.image.src}
             alt={category.title}
-            className="w-full h-full object-cover"
-            animate={{
-              scale: isHovered ? 1.08 : 1,
-            }}
-            transition={{ duration: 0.6, ease: [0.33, 1, 0.68, 1] }}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
         </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
-
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end p-6">
-          {/* Subtitle */}
-          <motion.span
-            className="text-white/70 text-xs uppercase tracking-[0.2em] mb-2"
-            animate={{
-              opacity: isHovered ? 1 : 0.7,
-              y: isHovered ? 0 : 4,
-            }}
-            transition={{ duration: 0.4 }}
-          >
-            {category.subtitle}
-          </motion.span>
-
-          {/* Title */}
-          <h3 className="font-serif text-2xl md:text-3xl text-white font-light tracking-wide">
-            {category.title}
-          </h3>
-
-          {/* Explore Link - Appears on Hover */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{
-              opacity: isHovered ? 1 : 0,
-              y: isHovered ? 0 : 10,
-            }}
-            transition={{ duration: 0.3, delay: isHovered ? 0.1 : 0 }}
-            className="mt-4"
-          >
-            <a
-              href="#products"
-              className="inline-flex items-center gap-2 text-white text-sm uppercase tracking-wider group/link"
-            >
-              <span className="relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-px after:bg-white after:origin-left after:scale-x-0 group-hover/link:after:scale-x-100 after:transition-transform after:duration-300">
-                Explore
+        {/* Content Box - Glassmorphic Bottom Panel */}
+        <div className="absolute bottom-0 left-0 w-full bg-card/95 backdrop-blur-sm border-t border-primary/5 p-4 transform translate-y-1 group-hover:translate-y-0 transition-transform duration-300 ease-out">
+          <div className="flex items-end justify-between gap-2">
+            <div>
+              {/* Subtitle */}
+              <span className="block text-primary/60 text-[10px] uppercase tracking-[0.2em] mb-1 line-clamp-1">
+                {category.subtitle}
               </span>
-              <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
-            </a>
-          </motion.div>
+
+              {/* Title */}
+              <h3 className="font-serif text-lg md:text-xl text-primary leading-tight line-clamp-1">
+                {category.title}
+              </h3>
+            </div>
+
+            {/* Hover Arrow */}
+            <div className="w-8 h-8 rounded-full bg-primary/5 flex items-center justify-center opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
+              <ArrowRight className="w-4 h-4 text-primary" />
+            </div>
+          </div>
         </div>
 
         {/* Decorative Corner Accent */}
@@ -258,4 +231,4 @@ const CategoryCard = ({ category, index }: CategoryCardProps) => {
   );
 };
 
-export default ProductCategoryCarousel;
+export default TrustedSupplierSection;

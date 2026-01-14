@@ -1,9 +1,6 @@
 import Image from "next/image";
-import warehouseImage from "@/assets/warehouse.jpg";
-import bulkIngredientsImage from "@/assets/bulk-ingredients.jpg";
-
-const TrustSection = ({ dict }: { dict: any }) => {
-  const content = dict.trustSection;
+const TrustSection = ({ data }: { data: any }) => {
+  const content = data;
 
   return (
     <section id="trust" className="section-padding bg-background">
@@ -21,8 +18,10 @@ const TrustSection = ({ dict }: { dict: any }) => {
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-16">
           <div className="relative rounded-2xl overflow-hidden shadow-card animate-fade-in-left">
             <Image
-              src={warehouseImage}
+              src={content.warehouse.image}
               alt={content.warehouse.title}
+              width={800}
+              height={600}
               className="w-full h-64 md:h-80 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
@@ -38,8 +37,10 @@ const TrustSection = ({ dict }: { dict: any }) => {
 
           <div className="relative rounded-2xl overflow-hidden shadow-card animate-fade-in-right">
             <Image
-              src={bulkIngredientsImage}
+              src={content.bulk.image}
               alt={content.bulk.title}
+              width={800}
+              height={600}
               className="w-full h-64 md:h-80 object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />

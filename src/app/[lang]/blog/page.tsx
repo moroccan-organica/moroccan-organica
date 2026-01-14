@@ -1,16 +1,17 @@
+import { getDictionary } from "@/lib/dictionaries";
 
 export default async function BlogPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const isRTL = lang === "ar";
+    const dict = await getDictionary(lang, 'blog');
 
     return (
         <main className="container-main py-20 min-h-[60vh]">
             <div className="max-w-4xl mx-auto text-center">
                 <h1 className="heading-display mb-6">
-                    {isRTL ? "المدونة" : "Blog"}
+                    {dict.title}
                 </h1>
                 <p className="text-body text-muted-foreground">
-                    {isRTL ? "قريباً..." : "Coming Soon..."}
+                    {dict.content}
                 </p>
             </div>
         </main>
