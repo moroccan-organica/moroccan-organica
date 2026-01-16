@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getProductBySlug, shopProducts } from "@/data/shop-products";
+import AddToCartButton from "@/components/shop/AddToCartButton";
 
 const copy = {
     en: {
@@ -85,13 +86,12 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             </nav>
 
             <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-                <div className="rounded-3xl border border-emerald-50 bg-white shadow-md">
+                <div className="relative h-[460px] rounded-3xl border border-emerald-50 bg-white shadow-md overflow-hidden">
                     <Image
                         src={product.image}
                         alt={localizedName}
-                        width={900}
-                        height={640}
-                        className="h-[460px] w-full rounded-3xl object-cover"
+                        fill
+                        className="object-cover"
                         priority
                     />
                 </div>
@@ -147,12 +147,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                        <Link
-                            href={`/${lang}/contact`}
-                            className="flex-1 min-w-[220px] rounded-full border border-transparent bg-emerald-700 px-6 py-3 text-center text-sm font-semibold text-white transition hover:bg-emerald-600"
-                        >
-                            {t.requestQuote}
-                        </Link>
+                        <AddToCartButton product={product} label={isRTL ? "أضف إلى السلة" : "Add to Cart"} />
                         <a
                             href="https://wa.me/212600000000"
                             target="_blank"

@@ -9,54 +9,15 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
-import { useState } from "react";
-import { useTranslation } from "react-i18next";
-import Image, { StaticImageData } from "next/image";
-import arganImage from "@/assets/argan-oil.jpg";
-
-interface CartItem {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string | StaticImageData;
-}
+import Image from "next/image";
+import { useCart } from "./CartContext";
 
 interface CartDrawerProps {
     isRTL?: boolean;
 }
 
 const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
-    const { t } = useTranslation();
-    const [cartItems, setCartItems] = useState<CartItem[]>([
-        {
-            id: 1,
-            name: "Organic Argan Oil",
-            price: 45.00,
-            quantity: 1,
-            image: arganImage,
-        },
-    ]);
-
-    const updateQuantity = (id: number, change: number) => {
-        setCartItems((items) =>
-            items.map((item) =>
-                item.id === id
-                    ? { ...item, quantity: Math.max(1, item.quantity + change) }
-                    : item
-            )
-        );
-    };
-
-    const removeItem = (id: number) => {
-        setCartItems((items) => items.filter((item) => item.id !== id));
-    };
-
-    const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-    const totalPrice = cartItems.reduce(
-        (sum, item) => sum + item.price * item.quantity,
-        0
-    );
+    const { items, updateQuantity, removeItem, totalItems, totalPrice } = useCart();
 
     return (
         <Sheet>
@@ -75,7 +36,7 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
             </SheetTrigger>
             <SheetContent
                 side={isRTL ? "left" : "right"}
-                className="w-full sm:max-w-md bg-background border-border z-[100]"
+                className="w-full sm:max-w-md bg-background border-border z-100"
             >
                 <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
@@ -85,34 +46,36 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
                 </SheetHeader>
 
                 <div className="mt-6 flex flex-col h-[calc(100vh-180px)]">
-                    {cartItems.length === 0 ? (
+                    {items.length === 0 ? (
                         <div className="flex-1 flex items-center justify-center text-muted-foreground">
                             {isRTL ? "سلة التسوق فارغة" : "Your cart is empty"}
                         </div>
                     ) : (
                         <>
                             <div className="flex-1 overflow-y-auto space-y-4">
-                                {cartItems.map((item) => (
+                                {items.map((item) => (
                                     <div
-                                        key={item.id}
+                                        key={item.product.id}
                                         className="flex gap-4 p-4 bg-muted/50 rounded-lg"
                                     >
-                                        <div className="w-20 h-20 rounded-md overflow-hidden bg-muted flex-shrink-0 relative">
+                                        <div className="w-20 h-20 rounded-md overflow-hidden bg-muted shrink-0 relative">
                                             <Image
-                                                src={item.image}
-                                                alt={item.name}
+                                                src={item.product.image}
+                                                alt={isRTL ? item.product.nameAr : item.product.name}
                                                 fill
                                                 className="object-cover"
                                             />
                                         </div>
                                         <div className="flex-1 flex flex-col">
-                                            <h4 className="font-medium text-foreground">{item.name}</h4>
+                                            <h4 className="font-medium text-foreground">
+                                                {isRTL ? item.product.nameAr : item.product.name}
+                                            </h4>
                                             <p className="text-primary font-semibold">
-                                                ${item.price.toFixed(2)}
+                                                ${item.product.price.toFixed(2)}
                                             </p>
                                             <div className="flex items-center gap-2 mt-auto">
                                                 <button
-                                                    onClick={() => updateQuantity(item.id, -1)}
+                                                    onClick={() => updateQuantity(item.product.id, -1)}
                                                     className="p-1 rounded bg-background border border-border hover:bg-muted"
                                                 >
                                                     <Minus className="w-4 h-4" />
@@ -121,13 +84,13 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
                                                     {item.quantity}
                                                 </span>
                                                 <button
-                                                    onClick={() => updateQuantity(item.id, 1)}
+                                                    onClick={() => updateQuantity(item.product.id, 1)}
                                                     className="p-1 rounded bg-background border border-border hover:bg-muted"
                                                 >
                                                     <Plus className="w-4 h-4" />
                                                 </button>
                                                 <button
-                                                    onClick={() => removeItem(item.id)}
+                                                    onClick={() => removeItem(item.product.id)}
                                                     className="p-1 rounded text-destructive hover:bg-destructive/10 ms-auto"
                                                 >
                                                     <Trash2 className="w-4 h-4" />

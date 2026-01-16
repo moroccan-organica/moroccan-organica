@@ -4,6 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import '../lib/i18n';
 import i18n from '../lib/i18n';
 import { useEffect } from 'react';
+import { CartProvider } from '@/components/shop/CartContext';
 
 export function Providers({ children, lang }: { children: React.ReactNode, lang?: string }) {
     useEffect(() => {
@@ -12,5 +13,9 @@ export function Providers({ children, lang }: { children: React.ReactNode, lang?
         }
     }, [lang]);
 
-    return <SessionProvider>{children}</SessionProvider>
+    return (
+        <SessionProvider>
+            <CartProvider>{children}</CartProvider>
+        </SessionProvider>
+    );
 }
