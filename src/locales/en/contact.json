@@ -1,0 +1,16 @@
+{
+  "title": "GET IN TOUCH",
+  "description": "Wholesale suppliers of organic cosmetic products | Organica Group",
+  "info": {
+    "address": "Office: Lot 377 N ° 3/6 Sidi Ghanem Zone industriel، 40110 marrakesh.",
+    "phone": "+212 648-273228",
+    "email": "inquiry@moroccanorganica.com"
+  },
+  "form": {
+    "name": "Name",
+    "email": "Email",
+    "subject": "Subject",
+    "message": "Your Message Here...",
+    "submit": "Send"
+  }
+}

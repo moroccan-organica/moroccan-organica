@@ -1,11 +1,11 @@
 import HeroCarousel from "./HeroCarousel";
 
-const Hero = ({ dict, lang }: { dict: any, lang: string }) => {
+const Hero = ({ data, lang }: { data: any, lang: string }) => {
     return (
         <HeroCarousel
-            slides={dict.hero.slides}
-            trust={dict.hero.trust}
-            cta={dict.hero.cta}
+            slides={data.slides}
+            trust={data.trust}
+            cta={data.cta}
             lang={lang}
         />
     );

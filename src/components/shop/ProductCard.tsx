@@ -18,12 +18,14 @@ const ProductCard = ({ image, title, description, badge, badgeVariant = "organic
 
   return (
     <div className="group flex flex-col h-full bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-      {/* Image - 70% height */}
-      <div className="relative overflow-hidden h-72 min-h-[200px]">
+      {/* Image - 4:3 Aspect Ratio */}
+      <div className="relative overflow-hidden aspect-[4/3] w-full">
         <Image
           src={image}
           alt={title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-4 left-4">
           <span className={`px-3 py-1 text-xs font-semibold rounded-full ${badgeStyles[badgeVariant]}`}>
