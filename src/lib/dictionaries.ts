@@ -1,5 +1,3 @@
-import 'server-only'
-
 type DictionaryLoader = () => Promise<any>;
 
 interface DictionaryGroup {
@@ -39,7 +37,7 @@ const dictionaries: Record<string, DictionaryGroup> = {
 export type Locale = keyof typeof dictionaries;
 export type Page = keyof DictionaryGroup;
 
-export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<any> => {
+export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<DictionaryContent> => {
     const loc = (dictionaries[locale] ? locale : 'en');
     const loadDictionary = dictionaries[loc][page] || dictionaries['en'][page];
     return loadDictionary();

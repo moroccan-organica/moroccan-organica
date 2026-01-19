@@ -1,4 +1,17 @@
 {
-  "title": "المدونة",
-  "content": "قريباً..."
+  "title": "مدونتنا",
+  "subtitle": "اكتشف أسرار الجمال والعافية العضوية المغربية",
+  "searchPlaceholder": "بحث في المقالات...",
+  "filtersLabel": "التصفية",
+  "categoryLabel": "الفئة",
+  "readMore": "اقرأ المزيد",
+  "by": "بقلم",
+  "minRead": "دقائق قراءة",
+  "noResults": "لم يتم العثور على مقالات تطابق بحثك.",
+  "categories": "الأقسام",
+  "allCategories": "كل الأقسام",
+  "backToBlog": "العودة للمدونة",
+  "publishedOn": "نشر في",
+  "share": "مشاركة",
+  "contentUnavailable": "المحتوى غير متوفر حالياً."
 }

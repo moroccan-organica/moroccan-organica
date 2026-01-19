@@ -1,11 +1,41 @@
-import ProductCard from "./ProductCard";
-const ProductsSection = ({ data }: { data: any }) => {
+import ProductCard from "@/components/shop/ProductCard";
+
+type ProductBadge = "organic" | "bulk" | "premium";
+
+interface ProductItem {
+  title: string;
+  desc: string;
+  badge: string;
+  image: string;
+  badgeVariant?: ProductBadge;
+  description: string;
+  [key: string]: unknown;
+}
+
+interface ProductsContent {
+  badge: string;
+  title: string;
+  highlight: string;
+  description: string;
+  cta: string;
+  items: ProductItem[];
+}
+
+const ProductsSection = ({ data }: { data: ProductsContent }) => {
   const content = data;
-  const products = content.items.map((item: any) => ({
-    ...item,
-    description: item.desc,
-    badgeVariant: item.badge.toLowerCase() === 'bulk' ? 'bulk' : (item.badge.toLowerCase() === 'premium' ? 'premium' : 'organic')
-  }));
+  const products: ProductItem[] = content.items.map((item) => {
+    const badgeVariant: ProductBadge = item.badge.toLowerCase() === "bulk"
+      ? "bulk"
+      : item.badge.toLowerCase() === "premium"
+        ? "premium"
+        : "organic";
+
+    return {
+      ...item,
+      description: item.desc ?? '',
+      badgeVariant,
+    };
+  });
 
   return (
     <section id="products" className="section-padding bg-muted">
@@ -25,7 +55,7 @@ const ProductsSection = ({ data }: { data: any }) => {
 
         {/* Product Grid - 3 columns */}
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-          {products.map((product: any, index: number) => (
+          {products.map((product, index) => (
             <div
               key={product.title}
               className="animate-fade-in"

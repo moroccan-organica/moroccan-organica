@@ -1,19 +1,18 @@
-import Hero from "@/components/shop/Hero";
-import AboutSection from "@/components/shop/AboutSection";
-import TrustedSupplierSection from "@/components/shop/TrustedSupplierSection";
-import ProductsSection from "@/components/shop/ProductsSection";
-import PrivateLabelSection from "@/components/shop/PrivateLabelSection";
-import PressFeatureSection from "@/components/shop/PressFeatureSection";
-import SocialProofSection from "@/components/shop/SocialProofSection";
-import TrustSection from "@/components/shop/TrustSection";
-import InstagramSection from "@/components/shop/InstagramSection";
-import RFQSection from "@/components/shop/RFQSection";
+import Hero from "@/components/sections/Hero";
+import TrustedSupplierSection from "@/components/sections/TrustedSupplierSection";
+import ProductsSection from "@/components/sections/ProductsSection";
+import PrivateLabelSection from "@/components/sections/PrivateLabelSection";
+import PressFeatureSection from "@/components/sections/PressFeatureSection";
+import SocialProofSection from "@/components/sections/SocialProofSection";
+import TrustSection from "@/components/sections/TrustSection";
+import InstagramSection from "@/components/sections/InstagramSection";
+import RFQSection from "@/components/sections/RFQSection";
 import { homePageData } from "@/data/home";
 import { seoData } from "@/data/seo";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 
-export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: seoData.title,
     description: seoData.description,

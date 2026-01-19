@@ -1,7 +1,12 @@
 {
   "title": "Shop Moroccan Organica",
   "subtitle": "Discover small-batch, ethically sourced Moroccan oils, butters, and beauty essentials crafted in certified laboratories.",
-  "filtersLabel": "Browse by collection",
+  "searchPlaceholder": "Search products...",
+  "filtersLabel": "Filters",
+  "categoryLabel": "Category",
+  "allCategories": "All Products",
+  "clearFilters": "Clear Filters",
+  "noResults": "No products found",
   "featuredLabel": "Bestseller",
   "viewDetails": "View Details",
   "comingSoon": "Nationwide delivery coming soon",

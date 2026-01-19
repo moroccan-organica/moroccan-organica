@@ -1,8 +1,16 @@
+export type ProductDescription = {
+    label: string;
+    labelAr: string;
+    description: string;
+    descriptionAr: string;
+};
+
 export type ShopProduct = {
     id: string;
     slug: string;
     category: string;
     image: string;
+    gallery?: string[];
     badge?: string;
     volume: string;
     name: string;
@@ -11,15 +19,60 @@ export type ShopProduct = {
     descriptionAr: string;
     notes: string[];
     price: number;
+    stockQuantity?: number;
+    productDescriptions?: ProductDescription[];
 };
+
+export interface ShopCategory {
+    id: string;
+    name: string;
+    slug: string;
+    color: string;
+    icon: string;
+}
+
+export const shopCategories: ShopCategory[] = [
+    {
+        id: 'cat-oils',
+        name: 'Oils',
+        slug: 'oils',
+        color: '#D4A373',
+        icon: 'droplet',
+    },
+    {
+        id: 'cat-hydrosols',
+        name: 'Hydrosols',
+        slug: 'hydrosols',
+        color: '#A3B18A',
+        icon: 'flower',
+    },
+    {
+        id: 'cat-spa',
+        name: 'Spa Rituals',
+        slug: 'spa-rituals',
+        color: '#BC6C25',
+        icon: 'sparkles',
+    },
+    {
+        id: 'cat-powders',
+        name: 'Powders',
+        slug: 'powders',
+        color: '#606C38',
+        icon: 'leaf',
+    },
+];
 
 export const shopProducts: ShopProduct[] = [
     {
         id: "argan-5l",
         slug: "moroccan-argan-oil-5l",
         category: "Oils",
-        image:
-            "https://images.unsplash.com/photo-1505576578451-6246cb56199c?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_1.webp",
+        gallery: [
+            "/images/slider/slide_1.webp",
+            "/images/slider/slide_2.webp",
+            "/images/slider/slide_5.webp",
+        ],
         badge: "bestseller",
         volume: "5 L - 1.32 GAL",
         name: "Moroccan Argan Oil",
@@ -35,8 +88,12 @@ export const shopProducts: ShopProduct[] = [
         id: "prickly-pear-5l",
         slug: "prickly-pear-seed-oil-5l",
         category: "Oils",
-        image:
-            "https://images.unsplash.com/photo-1505575967455-40e256f73376?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_5.webp",
+        gallery: [
+            "/images/slider/slide_5.webp",
+            "/images/slider/slide_1.webp",
+            "/images/slider/slide_4.webp",
+        ],
         volume: "5 L - 1.32 GAL",
         name: "Prickly Pear Seed Oil",
         nameAr: "زيت بذور التين الشوكي",
@@ -51,8 +108,12 @@ export const shopProducts: ShopProduct[] = [
         id: "argan-10l",
         slug: "moroccan-argan-oil-10l",
         category: "Oils",
-        image:
-            "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_2.webp",
+        gallery: [
+            "/images/slider/slide_2.webp",
+            "/images/slider/slide_1.webp",
+            "/images/slider/slide_3.webp",
+        ],
         volume: "10 L - 2.64 GAL",
         name: "Moroccan Argan Oil",
         nameAr: "زيت الأركان المغربي",
@@ -67,8 +128,12 @@ export const shopProducts: ShopProduct[] = [
         id: "argan-25l",
         slug: "moroccan-argan-oil-25l",
         category: "Oils",
-        image:
-            "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_6.webp",
+        gallery: [
+            "/images/slider/slide_6.webp",
+            "/images/slider/slide_2.webp",
+            "/images/slider/slide_5.webp",
+        ],
         volume: "25 L - 6.60 GAL",
         name: "Moroccan Argan Oil",
         nameAr: "زيت الأركان المغربي",
@@ -83,8 +148,12 @@ export const shopProducts: ShopProduct[] = [
         id: "black-soap-1l",
         slug: "eucalyptus-black-soap",
         category: "Spa Rituals",
-        image:
-            "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_4.webp",
+        gallery: [
+            "/images/slider/slide_4.webp",
+            "/images/slider/slide_6.webp",
+            "/images/slider/slide_3.webp",
+        ],
         volume: "1 L",
         name: "Eucalyptus Black Soap",
         nameAr: "صابونة سوداء بالأوكالبتوس",
@@ -99,8 +168,12 @@ export const shopProducts: ShopProduct[] = [
         id: "rose-water",
         slug: "atlas-rose-water",
         category: "Hydrosols",
-        image:
-            "https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_3.webp",
+        gallery: [
+            "/images/slider/slide_3.webp",
+            "/images/slider/slide_1.webp",
+            "/images/slider/slide_5.webp",
+        ],
         volume: "500 ml",
         name: "Atlas Rose Water",
         nameAr: "ماء الورد الأطلسي",
@@ -115,8 +188,12 @@ export const shopProducts: ShopProduct[] = [
         id: "ghassoul",
         slug: "atlas-ghassoul-clay",
         category: "Powders",
-        image:
-            "https://images.unsplash.com/photo-1505577058444-a3dab90d4253?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_6.webp",
+        gallery: [
+            "/images/slider/slide_6.webp",
+            "/images/slider/slide_4.webp",
+            "/images/slider/slide_2.webp",
+        ],
         volume: "5 kg",
         name: "Atlas Ghassoul Clay",
         nameAr: "طين الغاسول الأطلسي",
@@ -131,8 +208,12 @@ export const shopProducts: ShopProduct[] = [
         id: "orange-blossom",
         slug: "orange-blossom-water",
         category: "Hydrosols",
-        image:
-            "https://images.unsplash.com/photo-1461354464878-ad92f492a5a0?auto=format&fit=crop&w=900&q=80",
+        image: "/images/slider/slide_4.webp",
+        gallery: [
+            "/images/slider/slide_4.webp",
+            "/images/slider/slide_3.webp",
+            "/images/slider/slide_1.webp",
+        ],
         volume: "1 L",
         name: "Orange Blossom Water",
         nameAr: "ماء زهر البرتقال",

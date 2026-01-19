@@ -1,147 +1,141 @@
-import Link from "next/link";
-import { shopProducts } from "@/data/shop-products";
+'use client';
+
+import React, { useMemo, useState } from 'react';
 import { getDictionary } from "@/lib/dictionaries";
+import { ShopHero } from "@/components/shop/ShopHero";
+import { ShopCard } from "@/components/shop/ShopCard";
+import { shopProducts, shopCategories, ShopCategory } from "@/data/shop-products";
+import { FilterSidebar } from "@/components/blog/FilterSidebar";
+import { BlogPagination } from "@/components/blog/BlogPagination";
+import { BlogEmptyState } from "@/components/blog/BlogEmptyState";
 
-export default async function ShopPage({ params }: { params: Promise<{ lang: string }> }) {
-    const { lang } = await params;
-    const dict = await getDictionary(lang, 'shop');
+export default function ShopPage({ params }: { params: Promise<{ lang: string }> }) {
+    const { lang } = React.use(params);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [currentPage, setCurrentPage] = useState(1);
+    const productsPerPage = 9;
+    
+    const [dict, setDict] = useState<Record<string, unknown> | null>(null);
 
-    const isRTL = lang === "ar";
-    const locale = isRTL ? "ar-MA" : "en-US";
-    const currentPage = 1;
-    const totalPages = 12;
+    React.useEffect(() => {
+        getDictionary(lang, 'shop').then(setDict);
+    }, [lang]);
 
-    const priceFormatter = new Intl.NumberFormat(locale, {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 2,
-    });
+    const filteredProducts = useMemo(() => {
+        return shopProducts.filter(product => {
+            const localizedName = lang === 'ar' ? product.nameAr : product.name;
+            const localizedDesc = lang === 'ar' ? product.descriptionAr : product.description;
+            const matchesSearch = localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                                localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesCategory = !selectedCategory || 
+                shopCategories.find((c: ShopCategory) => c.id === selectedCategory)?.name === product.category;
+            return matchesSearch && matchesCategory;
+        });
+    }, [searchTerm, selectedCategory, lang]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
+
+    React.useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages]);
+
+    const paginatedProducts = filteredProducts.slice(
+        (currentPage - 1) * productsPerPage,
+        currentPage * productsPerPage
+    );
+
+    if (!dict) return null;
+
+    const categoriesForFilter = shopCategories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.slug,
+        color: cat.color,
+    }));
 
     return (
-        <main
-            dir={isRTL ? "rtl" : "ltr"}
-            className="container-main py-16 md:py-24 space-y-16"
-        >
-            <section className="px-6 py-12 text-center md:px-12">
-                <div className="mx-auto max-w-4xl">
-                    <p className="text-sm uppercase tracking-[0.4em] text-emerald-600">
-                        Organic · Fair Trade · Made in Morocco
-                    </p>
-                    <h1 className="heading-display mt-4 text-balance text-4xl font-semibold text-emerald-950 md:text-5xl">
-                        {dict.title}
-                    </h1>
-                    <p className="text-body mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                        {dict.subtitle}
-                    </p>
-                </div>
-            </section>
+        <main className="min-h-screen bg-slate-50/50">
+            <ShopHero 
+                title={dict.title as string}
+                subtitle={dict.subtitle as string}
+                searchPlaceholder={dict.searchPlaceholder as string || "Search products..."}
+                searchValue={searchTerm}
+                onSearchChange={(val) => {
+                    setSearchTerm(val);
+                    setCurrentPage(1);
+                }}
+            />
 
-            <section className="space-y-8">
-                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                    <div>
-                        <p className="text-sm uppercase tracking-[0.3em] text-emerald-600">
-                            {dict.filtersLabel}
-                        </p>
-                        <h2 className="heading-display mt-2 text-3xl text-emerald-950">
-                            {dict.collectionsTitle}
-                        </h2>
+            <div className="container mx-auto px-4 py-12">
+                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+                    {/* Sidebar */}
+                    <div className="w-full lg:w-1/4 xl:w-1/5 lg:pr-4 xl:pr-6">
+                        <FilterSidebar 
+                            categories={categoriesForFilter}
+                            selectedCategory={selectedCategory}
+                            onCategoryChange={(cat) => {
+                                setSelectedCategory(cat);
+                                setCurrentPage(1);
+                            }}
+                            onClearFilters={() => {
+                                setSelectedCategory(null);
+                                setSearchTerm('');
+                                setCurrentPage(1);
+                            }}
+                            translations={{
+                                title: dict.filtersLabel as string || "Filters",
+                                category: dict.categoryLabel as string || "Category",
+                                allCategories: dict.allCategories as string || "All Products",
+                                clearFilters: dict.clearFilters as string || "Clear Filters",
+                            }}
+                        />
                     </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                        {dict.filters.map((filter: string, index: number) => (
-                            <span
-                                key={`${filter}-${index}`}
-                                className={`rounded-full px-4 py-2 text-sm font-medium ${index === 0
-                                        ? "bg-emerald-600 text-white"
-                                        : "border border-emerald-100 bg-white text-emerald-700"
-                                    }`}
-                            >
-                                {filter}
-                            </span>
-                        ))}
-                    </div>
-                </div>
 
-                <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {shopProducts.map((product) => {
-                        const localizedName = isRTL ? product.nameAr : product.name;
-                        const localizedDescription = isRTL
-                            ? product.descriptionAr
-                            : product.description;
-                        return (
-                            <article
-                                key={product.id}
-                                className="group flex h-full flex-col rounded-3xl border border-emerald-100 bg-white/90 shadow-md transition hover:-translate-y-1 hover:shadow-xl"
-                            >
-                                <div className="relative overflow-hidden rounded-t-3xl">
-                                    <img
-                                        src={product.image}
-                                        alt={localizedName}
-                                        className="h-56 w-full object-cover transition duration-500 group-hover:scale-105"
-                                        loading="lazy"
-                                    />
-                                    {product.badge && (
-                                        <span className="absolute start-4 top-4 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-700 shadow">
-                                            {dict.featuredLabel}
-                                        </span>
-                                    )}
+                    {/* Content */}
+                    <div className="w-full lg:w-3/4 xl:w-4/5">
+                        {paginatedProducts.length > 0 ? (
+                            <>
+                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                                    {paginatedProducts.map((product) => (
+                                        <ShopCard 
+                                            key={product.id} 
+                                            product={product} 
+                                            lang={lang}
+                                            translations={{
+                                                viewDetails: dict.viewDetails as string,
+                                                priceLabel: dict.priceLabel as string,
+                                            }}
+                                        />
+                                    ))}
                                 </div>
-                                <div className="flex flex-1 flex-col gap-4 p-6">
-                                    <div>
-                                        <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">
-                                            {product.category}
-                                        </p>
-                                        <h3 className="mt-2 text-lg font-semibold text-emerald-950">
-                                            {localizedName}
-                                        </h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            {localizedDescription}
-                                        </p>
+                                {filteredProducts.length > productsPerPage && (
+                                    <div className="flex justify-center pt-10">
+                                        <BlogPagination 
+                                            currentPage={currentPage}
+                                            totalPages={totalPages}
+                                            onPageChange={setCurrentPage}
+                                        />
                                     </div>
-                                    <div className="mt-auto flex items-center justify-between">
-                                        <div>
-                                            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                                                {dict.priceLabel}
-                                            </p>
-                                            <p className="text-2xl font-semibold text-emerald-700">
-                                                {priceFormatter.format(product.price)}
-                                            </p>
-                                        </div>
-                                        <Link
-                                            href={`/${lang}/shop/${product.slug}`}
-                                            className="rounded-full border border-emerald-200 bg-white px-5 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:bg-emerald-600 hover:text-white"
-                                        >
-                                            {dict.viewDetails}
-                                        </Link>
-                                    </div>
-                                </div>
-                            </article>
-                        );
-                    })}
-                </div>
-            </section>
-
-            <section className="rounded-full border border-emerald-100 bg-white px-6 py-4 shadow-sm">
-                <div className={`flex flex-col gap-4 text-sm text-muted-foreground md:flex-row md:items-center md:justify-between ${isRTL ? "text-right" : "text-left"}`}>
-                    <div className="flex items-center gap-2 text-emerald-800">
-                        <span className="size-2 rounded-full bg-emerald-500" />
-                        <span>
-                            {dict.pageIndicator.replace('{{current}}', currentPage.toString()).replace('{{total}}', totalPages.toString())}
-                        </span>
-                    </div>
-                    <div className={`flex items-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}>
-                        <button
-                            className="rounded-full border border-emerald-100 px-5 py-2 font-semibold text-emerald-500 transition hover:border-emerald-300 hover:text-emerald-700 disabled:opacity-40"
-                            disabled
-                        >
-                            {dict.pagination.prev}
-                        </button>
-                        <button className="rounded-full border border-transparent bg-emerald-600 px-5 py-2 font-semibold text-white shadow hover:bg-emerald-500">
-                            {dict.pagination.next}
-                        </button>
+                                )}
+                            </>
+                        ) : (
+                            <BlogEmptyState 
+                                title={dict.noResults as string || "No products found"}
+                                description={dict.subtitle as string}
+                                showClearButton={!!selectedCategory || !!searchTerm}
+                                clearButtonText={dict.clearFilters as string || "Clear Filters"}
+                                onClear={() => {
+                                    setSelectedCategory(null);
+                                    setSearchTerm('');
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
     );
 }
-

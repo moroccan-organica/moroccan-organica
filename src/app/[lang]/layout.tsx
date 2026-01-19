@@ -3,9 +3,7 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display, Cairo } from "next/font/google";
 import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
-import Header from "@/components/shop/Header";
-import Footer from "@/components/shop/Footer";
-import WhatsAppButton from "@/components/shop/WhatsAppButton";
+import { LayoutContent } from "@/components/common/LayoutContent";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -51,10 +49,9 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <Providers lang={lang}>
-          <Header dict={dict} lang={lang} />
-          {children}
-          <Footer dict={dict} />
-          <WhatsAppButton />
+          <LayoutContent dict={dict} lang={lang}>
+            {children}
+          </LayoutContent>
         </Providers>
       </body>
     </html>

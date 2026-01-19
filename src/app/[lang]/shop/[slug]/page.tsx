@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { getProductBySlug, shopProducts } from "@/data/shop-products";
 import AddToCartButton from "@/components/shop/AddToCartButton";
+import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 
 const copy = {
     en: {
@@ -73,6 +74,8 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     const localizedName = isRTL ? product.nameAr : product.name;
     const localizedDescription = isRTL ? product.descriptionAr : product.description;
 
+    const galleryImages = product.gallery?.length ? product.gallery : [product.image];
+
     return (
         <main dir={isRTL ? "rtl" : "ltr"} className="container-main py-16 md:py-24 space-y-16">
             <nav className="text-sm text-muted-foreground">
@@ -86,15 +89,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             </nav>
 
             <section className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-                <div className="relative h-[460px] rounded-3xl border border-emerald-50 bg-white shadow-md overflow-hidden">
-                    <Image
-                        src={product.image}
-                        alt={localizedName}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                </div>
+                <ProductImageGallery images={galleryImages} alt={localizedName} />
 
                 <div className="flex flex-col gap-6">
                     <div>
@@ -191,6 +186,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                         width={640}
                                         height={400}
                                         className="h-52 w-full object-cover"
+                                        loading="lazy"
                                     />
                                 </div>
                                 <div className="flex flex-1 flex-col gap-3 p-5">

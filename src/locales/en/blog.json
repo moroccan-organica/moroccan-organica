@@ -1,4 +1,17 @@
 {
-  "title": "Blog",
-  "content": "Coming Soon..."
+  "title": "Our Blog",
+  "subtitle": "Discover the secrets of Moroccan organic beauty and wellness",
+  "searchPlaceholder": "Search articles...",
+  "filtersLabel": "Filters",
+  "categoryLabel": "Category",
+  "readMore": "Read More",
+  "by": "By",
+  "minRead": "min read",
+  "noResults": "No articles found matching your search.",
+  "categories": "Categories",
+  "allCategories": "All Categories",
+  "backToBlog": "Back to Blog",
+  "publishedOn": "Published on",
+  "share": "Share",
+  "contentUnavailable": "Content is currently unavailable."
 }

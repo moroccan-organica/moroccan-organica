@@ -4,10 +4,12 @@ import { Menu, X, Leaf, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
-import CartDrawer from "./CartDrawer";
+import CartDrawer from "@/components/shop/CartDrawer";
+
+type Dict = Record<string, unknown>;
 
 interface HeaderProps {
-    dict: any;
+    dict: Dict;
     lang: string;
 }
 
@@ -27,14 +29,14 @@ const Header = ({ dict, lang }: HeaderProps) => {
     }, []);
 
     const isRTL = lang === 'ar';
-    const t = (key: string) => {
+    const t = (key: string): string => {
         // Simple property accessor for nested keys like 'nav.home'
         const keys = key.split('.');
-        let value = dict;
+        let value: unknown = dict;
         for (const k of keys) {
-            value = value?.[k];
+            value = (value as Dict | undefined)?.[k];
         }
-        return value || key;
+        return typeof value === 'string' ? value : key;
     };
 
     const productDropdownItems = [
