@@ -1,0 +1,82 @@
+
+export const aboutPageData = {
+    hero: {
+        title: "Welcome to MoroccanOrganica",
+        subtitle: "Your trusted source for premium Moroccan organic beauty products.",
+        description: "Our company provides different Moroccan organic products and services, including private label solutions for our worldwide customers. We deal with international countries all over the world — in Europe, Asia, America, Australia, and Africa.",
+        bgImage: "/images/about/hero-logistics.jpg"
+    },
+    whoWeAre: {
+        label: "Who We Are",
+        title: "Organica Group SARL",
+        description: "Organica Group is a producer and exporter of organic cosmetics products, operating outside and inside of Morocco, for wholesale of 100% pure organic cosmetics products. We use traditional ingredients and natural products for beauty, skincare, and haircare.",
+        image: "/images/about/argan-oil.jpg"
+    },
+    values: {
+        label: "Our Values",
+        title: "Fair Trade Principles",
+        description: "The business practices of Organica Group are based on three fundamental principles:",
+        principles: [
+            {
+                title: "Quality",
+                description: "100% organic cosmetics."
+            },
+            {
+                title: "Ethics",
+                description: "Fair Trade Practices."
+            },
+            {
+                title: "Authenticity",
+                description: "Guaranteed by a personal relationship with the women of the cooperatives."
+            }
+        ]
+    },
+    journey: {
+        label: "Our Journey",
+        title: "A Legacy of Growth",
+        timeline: [
+            { year: "2015", title: "Feasibility Study", description: "Market research and business planning" },
+            { year: "2016", title: "We Start Our Business", description: "Official company establishment" },
+            { year: "2017", title: "The Stage of Existence", description: "Building our foundation" },
+            { year: "2018", title: "Expanding Our Network", description: "Growing regional partnerships" },
+            { year: "2019", title: "Project Growth", description: "Scaling production capacity" },
+            { year: "2020", title: "Network Expansion", description: "New international markets" },
+            { year: "2021", title: "We Serve Worldwide", description: "Global logistics and distribution" }
+        ]
+    },
+    origins: {
+        label: "Our Origins",
+        title: "Produced by Cooperatives",
+        description: "Our products are manufactured by cooperatives in the south-west of Morocco, with techniques and knowledge passed down through generations. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world."
+    },
+    promise: {
+        label: "Our Promise",
+        title: "Why Choose MoroccanOrganica?",
+        reasons: [
+            {
+                title: "Authentic Moroccan Beauty",
+                description: "We bring you the very best in traditional Moroccan skincare, made with natural ingredients that have been used for centuries."
+            },
+            {
+                title: "Wholesale Supply",
+                description: "We provide wholesale prices for beauty stores, spas, and businesses looking to supply their customers with high-quality, organic beauty products."
+            },
+            {
+                title: "Sustainable and Ethical",
+                description: "We work directly with local communities in Morocco to ensure ethical sourcing and sustainable production practices."
+            }
+        ]
+    },
+    offer: {
+        label: "What We Offer",
+        title: "Our Products",
+        description: "At MoroccanOrganica, we pride ourselves on offering an extensive selection of beauty products that promote natural radiance and skincare. From Argan oil to Moroccan Black soap, each product is rich in antioxidants and nutrients that help nourish and rejuvenate the skin and hair. All our products are free from chemicals, making them safe and effective for all skin types."
+    },
+    partnership: {
+        label: "Partner With Us",
+        title: "Wholesale Opportunities",
+        description: "Whether you're a small business or a large retailer, we offer competitive wholesale prices and flexible shipping options to suit your needs. Join us in spreading the beauty of organic Moroccan products to the world.",
+        cta: "Get in Touch",
+        bgImage: "/images/about/warehouse.jpg"
+    }
+};
