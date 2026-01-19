@@ -32,15 +32,14 @@ enum OrderStatus {
 }
 
 // --- 1. AUTHENTICATION (Admins Only) ---
+model User {
   id            String     @id @default(cuid())
   name          String?
   email         String?    @unique
   emailVerified DateTime?
   image         String?
   password      String?    // For admin credentials
-  role          String     @default("ADMIN") // ADMIN or SUPER_ADMIN
-  accounts      Account[]
-  sessions      Session[]
+  role          Role       @default(ADMIN)
   blogPosts     BlogPost[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
