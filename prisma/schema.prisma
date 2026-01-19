@@ -1,49 +1,37 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// Database: Moroccan Organica (V8.0)
+// Architecture: Admin Auth + Guest CRM + Polyglot (EN/AR/FR)
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
-
-// ================== AUTH MODELS ==================
-
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
+// --- ENUMS ---
+enum Role {
+  ADMIN
+  STAFF
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
+enum LanguageCode {
+  en // English
+  ar // Arabic
+  fr // French
 }
 
-model User {
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+// --- 1. AUTHENTICATION (Admins Only) ---
   id            String     @id @default(cuid())
   name          String?
   email         String?    @unique
@@ -58,89 +46,279 @@ model User {
   updatedAt     DateTime   @updatedAt
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+// --- 2. CUSTOMER CRM (Guest Mode) ---
+model Customer {
+  id            String    @id @default(cuid())
+  
+  // Guest Identity (No Password)
+  email         String    @unique
+  phone         String?   // Important for delivery
+  firstName     String
+  lastName      String
+  
+  // B2B / Wholesale Fields
+  isWholesale   Boolean   @default(false)
+  companyName   String?
+  taxId         String?   // ICE
+  
+  // Metadata
+  totalSpent    Decimal   @default(0) @db.Decimal(10, 2)
+  lastOrderDate DateTime?
+  marketingOptIn Boolean  @default(false)
+  adminNotes    String?   @db.Text
+  
+  // Relations
+  addresses     Address[]
+  orders        Order[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  @@unique([identifier, token])
+  @@index([email])
+  @@index([phone])
 }
 
-// ================== E-COMMERCE MODELS ==================
+model Address {
+  id          String   @id @default(cuid())
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  
+  label       String?  // "Home", "Office"
+  addressLine1 String
+  city        String
+  postalCode  String
+  country     String   @default("Morocco")
+  phone       String?
 
+  orders      Order[]
+
+  @@index([customerId])
+}
+
+// --- 3. PRODUCT CATALOG (Multilingual) ---
 model Category {
-  id          String    @id @default(cuid())
-  name        String
-  nameAr      String? // Arabic name
-  slug        String    @unique
-  description String?
-  descriptionAr String?
-  image       String?
-  products    Product[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id           String   @id @default(cuid())
+  image        String?
+  
+  products     Product[]
+  translations CategoryTranslation[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
+model CategoryTranslation {
+  id          String       @id @default(cuid())
+  categoryId  String
+  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  language    LanguageCode
+  
+  name        String
+  slug        String
+  
+  // SEO
+  metaTitle   String?
+  metaDesc    String?      @db.Text
+  keywords    String?
+  ogImage     String?
+  canonical   String?
+  
+  @@unique([categoryId, language])
+  @@unique([language, slug])
+  @@index([categoryId])
   @@index([slug])
 }
 
 model Product {
-  id            String   @id @default(cuid())
-  name          String
-  nameAr        String? // Arabic name
-  slug          String   @unique
-  description   String
-  descriptionAr String?
-  price         Float    // Changed from Decimal to Float for SQLite
-  compareAtPrice Float?  // Changed from Decimal to Float for SQLite
-  images        String   // JSON array of image URLs
-  featured      Boolean  @default(false)
-  inStock       Boolean  @default(true)
-  categoryId    String
-  category      Category @relation(fields: [categoryId], references: [id])
-  orderItems    OrderItem[]
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id           String   @id @default(cuid())
+  categoryId   String
+  category     Category @relation(fields: [categoryId], references: [id])
+  
+  // Neutral Data (Shared)
+  basePrice    Decimal  @db.Decimal(10, 2)
+  sku          String   @unique
+  stock        Int      @default(0)
+  isAvailable  Boolean  @default(true)
+  isFeatured   Boolean  @default(false)
+  isTopSale    Boolean  @default(false)
+  
+  variants     ProductVariant[]
+  images       ProductImage[]
+  translations ProductTranslation[]
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@index([slug])
   @@index([categoryId])
-  @@index([featured])
+  @@index([sku])
+  @@index([isFeatured])
+  @@index([isTopSale])
 }
 
-model Order {
-  id            String      @id @default(cuid())
-  orderNumber   String      @unique
-  // Guest checkout - no user relation required
-  customerName  String
-  customerEmail String
-  customerPhone String
-  shippingAddress String
-  notes         String?
-  subtotal      Float       // Changed from Decimal to Float for SQLite
-  tax           Float       @default(0) // Changed from Decimal to Float for SQLite
-  shipping      Float       @default(0) // Changed from Decimal to Float for SQLite
-  total         Float       // Changed from Decimal to Float for SQLite
-  status        String      @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-  items         OrderItem[]
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
+model ProductTranslation {
+  id          String       @id @default(cuid())
+  productId   String
+  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+  language    LanguageCode
+  
+  name        String
+  description String?      @db.LongText
+  slug        String
+  
+  // SEO
+  metaTitle   String?
+  metaDesc    String?      @db.Text
+  keywords    String?
+  ogImage     String?
+  canonical   String?
+  
+  @@unique([productId, language])
+  @@unique([language, slug])
+  @@index([productId])
+  @@index([slug])
+}
 
-  @@index([orderNumber])
+model ProductVariant {
+  id        String      @id @default(cuid())
+  productId String
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  sku       String      @unique
+  sizeName  String      // e.g. "50ml", "1 Liter"
+  price     Decimal     @db.Decimal(10, 2)
+  stock     Int         @default(0)
+  
+  orderItems OrderItem[]
+
+  @@index([productId])
+  @@index([sku])
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  isPrimary Boolean  @default(false)
+
+  @@index([productId])
+}
+
+// --- 4. BLOG & STATIC PAGES ---
+model Post {
+  id           String   @id @default(cuid())
+  published    Boolean  @default(false)
+  authorName   String?
+  translations PostTranslation[]
+  publishedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([published])
+  @@index([publishedAt])
+}
+
+model PostTranslation {
+  id          String       @id @default(cuid())
+  postId      String
+  post        Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
+  language    LanguageCode
+  
+  title       String
+  content     String?      @db.LongText
+  slug        String
+  
+  // SEO
+  metaTitle   String?
+  metaDesc    String?      @db.Text
+  keywords    String?
+  ogImage     String?
+  canonical   String?
+  
+  @@unique([postId, language])
+  @@unique([language, slug])
+  @@index([postId])
+  @@index([slug])
+}
+
+model StaticPage {
+  id           String   @id @default(cuid())
+  systemName   String   @unique // e.g. "ABOUT_US"
+  translations StaticPageTranslation[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([systemName])
+}
+
+model StaticPageTranslation {
+  id           String       @id @default(cuid())
+  staticPageId String
+  staticPage   StaticPage   @relation(fields: [staticPageId], references: [id], onDelete: Cascade)
+  language     LanguageCode
+  
+  title        String
+  content      String?      @db.LongText
+  slug         String
+  
+  // SEO
+  metaTitle    String?
+  metaDesc     String?      @db.Text
+  keywords     String?
+  ogImage      String?
+  canonical    String?
+  
+  @@unique([staticPageId, language])
+  @@unique([language, slug])
+  @@index([staticPageId])
+  @@index([slug])
+}
+
+// --- 5. ORDERS & TRANSACTIONS ---
+model Order {
+  id                String      @id @default(cuid())
+  reference         String      @unique // MO-2025-001
+  
+  customerId        String
+  customer          Customer    @relation(fields: [customerId], references: [id])
+  
+  shippingAddressId String
+  shippingAddress   Address     @relation(fields: [shippingAddressId], references: [id])
+  
+  status            OrderStatus @default(PENDING)
+  totalAmount       Decimal     @db.Decimal(10, 2)
+  
+  paymentProvider   String      // STRIPE, PAYPAL
+  paymentId         String?
+  
+  items             OrderItem[]
+  
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@index([reference])
+  @@index([customerId])
   @@index([status])
-  @@index([customerEmail])
+  @@index([createdAt])
 }
 
 model OrderItem {
-  id        String   @id @default(cuid())
-  orderId   String
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  productId String
-  product   Product  @relation(fields: [productId], references: [id])
-  quantity  Int
-  price     Float    // Changed from Decimal to Float for SQLite
-  createdAt DateTime @default(now())
+  id                  String         @id @default(cuid())
+  orderId             String
+  order               Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  variantId           String
+  variant             ProductVariant @relation(fields: [variantId], references: [id])
+  
+  // Snapshots (Data at time of purchase)
+  productNameSnapshot String 
+  variantNameSnapshot String
+  priceSnapshot       Decimal        @db.Decimal(10, 2)
+  
+  quantity            Int
 
   @@index([orderId])
-  @@index([productId])
+  @@index([variantId])
 }
 
 // ================== BLOG MODELS ==================

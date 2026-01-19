@@ -1,8 +1,23 @@
 import Image from "next/image";
 import { CheckCircle } from "lucide-react";
 
+interface AboutSectionData {
+  image: string;
+  title: string;
+  badge: string;
+  highlight: string;
+  description: string;
+  features: string[];
+  stats: {
+    tons: { value: string; label: string };
+    countries: { value: string; label: string };
+    partners: { value: string; label: string };
+    badge: { value: string; sub: string; desc: string };
+  };
+}
+
 interface AboutSectionProps {
-  data: any;
+  data: AboutSectionData;
 }
 
 const AboutSection = ({ data }: AboutSectionProps) => {
