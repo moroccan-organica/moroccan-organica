@@ -3,11 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Tags, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Tags,
   Settings,
   LogOut,
   ChevronLeft,
@@ -156,7 +156,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
       {/* Footer */}
       <div className="border-t border-slate-700 p-4">
         <button
-          onClick={() => signOut({ callbackUrl: '/login' })}
+          onClick={() => signOut({ callbackUrl: `/${lang}/login` })}
           className={cn(
             'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-red-500/10 hover:text-red-400 transition-all',
             collapsed && 'justify-center px-3'
