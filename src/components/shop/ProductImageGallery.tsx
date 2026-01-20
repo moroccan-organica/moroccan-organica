@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { SafeImage } from '@/components/ui/safe-image';
 import React, { useState } from 'react';
 
 interface ProductImageGalleryProps {
@@ -15,7 +15,7 @@ export function ProductImageGallery({ images, alt }: ProductImageGalleryProps) {
   return (
     <div className="space-y-4">
       <div className="relative h-[460px] rounded-3xl border border-emerald-50 bg-white shadow-md overflow-hidden">
-        <Image
+        <SafeImage
           src={activeImage}
           alt={alt}
           fill
@@ -38,7 +38,7 @@ export function ProductImageGallery({ images, alt }: ProductImageGalleryProps) {
               }`}
               aria-label={`View image ${index + 1}`}
             >
-              <Image
+              <SafeImage
                 src={img}
                 alt={`${alt} thumbnail ${index + 1}`}
                 fill

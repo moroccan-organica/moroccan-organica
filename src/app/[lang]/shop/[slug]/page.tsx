@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getProductBySlug, shopProducts } from "@/data/shop-products";
+import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data/shop-products";
+import { getProductBySlug, getRelatedProducts } from "@/actions/product.actions";
 import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
+import { ShopProductDB } from "@/types/product";
 
 const copy = {
     en: {
@@ -51,7 +53,73 @@ type Params = Promise<{ lang: string; slug: string }>;
 
 export default async function ProductDetailPage({ params }: { params: Params }) {
     const { lang, slug } = await params;
-    const product = getProductBySlug(slug);
+    
+    // Try to fetch from database first, fallback to static data
+    let product: ShopProductDB | null = await getProductBySlug(slug, lang as 'en' | 'ar' | 'fr');
+    let relatedProducts: ShopProductDB[] = [];
+    
+    // Fallback to static data if DB returns nothing
+    if (!product) {
+        const staticProduct = getProductBySlugStatic(slug);
+        if (staticProduct) {
+            product = {
+                id: staticProduct.id,
+                slug: staticProduct.slug,
+                category: staticProduct.category,
+                categorySlug: staticProduct.category.toLowerCase().replace(/\s+/g, '-'),
+                image: staticProduct.image,
+                gallery: staticProduct.gallery || [],
+                badge: staticProduct.badge,
+                volume: staticProduct.volume,
+                name: staticProduct.name,
+                nameAr: staticProduct.nameAr,
+                nameFr: staticProduct.name,
+                description: staticProduct.description,
+                descriptionAr: staticProduct.descriptionAr,
+                descriptionFr: staticProduct.description,
+                notes: staticProduct.notes,
+                price: staticProduct.price,
+                stock: staticProduct.stockQuantity || 100,
+                isAvailable: true,
+                isFeatured: staticProduct.badge === 'bestseller',
+                isTopSale: false,
+                sku: staticProduct.id,
+                variants: [],
+            };
+            
+            // Get related from static
+            relatedProducts = shopProducts
+                .filter((item) => item.id !== staticProduct.id && item.category === staticProduct.category)
+                .slice(0, 3)
+                .map(p => ({
+                    id: p.id,
+                    slug: p.slug,
+                    category: p.category,
+                    categorySlug: p.category.toLowerCase().replace(/\s+/g, '-'),
+                    image: p.image,
+                    gallery: p.gallery || [],
+                    badge: p.badge,
+                    volume: p.volume,
+                    name: p.name,
+                    nameAr: p.nameAr,
+                    nameFr: p.name,
+                    description: p.description,
+                    descriptionAr: p.descriptionAr,
+                    descriptionFr: p.description,
+                    notes: p.notes,
+                    price: p.price,
+                    stock: p.stockQuantity || 100,
+                    isAvailable: true,
+                    isFeatured: p.badge === 'bestseller',
+                    isTopSale: false,
+                    sku: p.id,
+                    variants: [],
+                }));
+        }
+    } else {
+        // Get related from DB
+        relatedProducts = await getRelatedProducts(product.id, product.categorySlug || '', 3);
+    }
 
     if (!product) {
         notFound();
@@ -66,10 +134,6 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         currency: "USD",
         minimumFractionDigits: 2,
     });
-
-    const relatedProducts = shopProducts
-        .filter((item) => item.id !== product.id && item.category === product.category)
-        .slice(0, 3);
 
     const localizedName = isRTL ? product.nameAr : product.name;
     const localizedDescription = isRTL ? product.descriptionAr : product.description;

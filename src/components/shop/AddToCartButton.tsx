@@ -3,9 +3,10 @@
 import { MouseEvent } from "react";
 import { useCart } from "./CartContext";
 import type { ShopProduct } from "@/data/shop-products";
+import type { ShopProductDB } from "@/types/product";
 
 interface AddToCartButtonProps {
-  product: ShopProduct;
+  product: ShopProduct | ShopProductDB;
   label: string;
 }
 

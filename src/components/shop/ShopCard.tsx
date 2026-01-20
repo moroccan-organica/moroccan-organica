@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { SafeImage } from '@/components/ui/safe-image';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ShopProduct, ShopCategory, shopCategories } from '@/data/shop-products';
@@ -33,7 +33,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
   return (
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
       <Link href={`/${lang}/shop/${product.slug}`} className="relative h-64 overflow-hidden">
-        <Image
+        <SafeImage
           src={product.image}
           alt={localizedName}
           fill

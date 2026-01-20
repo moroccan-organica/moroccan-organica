@@ -1,141 +1,77 @@
-'use client';
-
-import React, { useMemo, useState } from 'react';
 import { getDictionary } from "@/lib/dictionaries";
-import { ShopHero } from "@/components/shop/ShopHero";
-import { ShopCard } from "@/components/shop/ShopCard";
-import { shopProducts, shopCategories, ShopCategory } from "@/data/shop-products";
-import { FilterSidebar } from "@/components/blog/FilterSidebar";
-import { BlogPagination } from "@/components/blog/BlogPagination";
-import { BlogEmptyState } from "@/components/blog/BlogEmptyState";
+import { getProducts } from "@/actions/product.actions";
+import { getCategories } from "@/actions/category.actions";
+import { ShopPageClient } from "./ShopPageClient";
+import { shopProducts, shopCategories } from "@/data/shop-products";
+import { ShopProductDB, CategoryDB } from "@/types/product";
 
-export default function ShopPage({ params }: { params: Promise<{ lang: string }> }) {
-    const { lang } = React.use(params);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const productsPerPage = 9;
+type Params = Promise<{ lang: string }>;
+
+export default async function ShopPage({ params }: { params: Params }) {
+    const { lang } = await params;
+    const dict = await getDictionary(lang, 'shop');
     
-    const [dict, setDict] = useState<Record<string, unknown> | null>(null);
-
-    React.useEffect(() => {
-        getDictionary(lang, 'shop').then(setDict);
-    }, [lang]);
-
-    const filteredProducts = useMemo(() => {
-        return shopProducts.filter(product => {
-            const localizedName = lang === 'ar' ? product.nameAr : product.name;
-            const localizedDesc = lang === 'ar' ? product.descriptionAr : product.description;
-            const matchesSearch = localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesCategory = !selectedCategory || 
-                shopCategories.find((c: ShopCategory) => c.id === selectedCategory)?.name === product.category;
-            return matchesSearch && matchesCategory;
-        });
-    }, [searchTerm, selectedCategory, lang]);
-
-    const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
-
-    React.useEffect(() => {
-        if (currentPage > totalPages) {
-            setCurrentPage(totalPages);
-        }
-    }, [currentPage, totalPages]);
-
-    const paginatedProducts = filteredProducts.slice(
-        (currentPage - 1) * productsPerPage,
-        currentPage * productsPerPage
-    );
-
-    if (!dict) return null;
-
-    const categoriesForFilter = shopCategories.map(cat => ({
-        id: cat.id,
-        name: cat.name,
-        slug: cat.slug,
-        color: cat.color,
-    }));
+    // Try to fetch from database first, fallback to static data
+    let products: ShopProductDB[] = [];
+    let categories: CategoryDB[] = [];
+    
+    try {
+        const [productsResult, categoriesResult] = await Promise.all([
+            getProducts({ isAvailable: true }),
+            getCategories(),
+        ]);
+        
+        products = productsResult.products;
+        categories = categoriesResult;
+    } catch (error) {
+        console.error('Error fetching from database, using static data:', error);
+    }
+    
+    // If no products from DB, use static data as fallback
+    if (products.length === 0) {
+        products = shopProducts.map(p => ({
+            id: p.id,
+            slug: p.slug,
+            category: p.category,
+            categorySlug: p.category.toLowerCase().replace(/\s+/g, '-'),
+            image: p.image,
+            gallery: p.gallery || [],
+            badge: p.badge,
+            volume: p.volume,
+            name: p.name,
+            nameAr: p.nameAr,
+            nameFr: p.name,
+            description: p.description,
+            descriptionAr: p.descriptionAr,
+            descriptionFr: p.description,
+            notes: p.notes,
+            price: p.price,
+            stock: p.stockQuantity || 100,
+            isAvailable: true,
+            isFeatured: p.badge === 'bestseller',
+            isTopSale: false,
+            sku: p.id,
+            variants: [],
+        }));
+        
+        categories = shopCategories.map(c => ({
+            id: c.id,
+            image: null,
+            name: c.name,
+            nameAr: c.name,
+            nameFr: c.name,
+            slug: c.slug,
+            slugAr: c.slug,
+            slugFr: c.slug,
+        }));
+    }
 
     return (
-        <main className="min-h-screen bg-slate-50/50">
-            <ShopHero 
-                title={dict.title as string}
-                subtitle={dict.subtitle as string}
-                searchPlaceholder={dict.searchPlaceholder as string || "Search products..."}
-                searchValue={searchTerm}
-                onSearchChange={(val) => {
-                    setSearchTerm(val);
-                    setCurrentPage(1);
-                }}
-            />
-
-            <div className="container mx-auto px-4 py-12">
-                <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
-                    {/* Sidebar */}
-                    <div className="w-full lg:w-1/4 xl:w-1/5 lg:pr-4 xl:pr-6">
-                        <FilterSidebar 
-                            categories={categoriesForFilter}
-                            selectedCategory={selectedCategory}
-                            onCategoryChange={(cat) => {
-                                setSelectedCategory(cat);
-                                setCurrentPage(1);
-                            }}
-                            onClearFilters={() => {
-                                setSelectedCategory(null);
-                                setSearchTerm('');
-                                setCurrentPage(1);
-                            }}
-                            translations={{
-                                title: dict.filtersLabel as string || "Filters",
-                                category: dict.categoryLabel as string || "Category",
-                                allCategories: dict.allCategories as string || "All Products",
-                                clearFilters: dict.clearFilters as string || "Clear Filters",
-                            }}
-                        />
-                    </div>
-
-                    {/* Content */}
-                    <div className="w-full lg:w-3/4 xl:w-4/5">
-                        {paginatedProducts.length > 0 ? (
-                            <>
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                                    {paginatedProducts.map((product) => (
-                                        <ShopCard 
-                                            key={product.id} 
-                                            product={product} 
-                                            lang={lang}
-                                            translations={{
-                                                viewDetails: dict.viewDetails as string,
-                                                priceLabel: dict.priceLabel as string,
-                                            }}
-                                        />
-                                    ))}
-                                </div>
-                                {filteredProducts.length > productsPerPage && (
-                                    <div className="flex justify-center pt-10">
-                                        <BlogPagination 
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            onPageChange={setCurrentPage}
-                                        />
-                                    </div>
-                                )}
-                            </>
-                        ) : (
-                            <BlogEmptyState 
-                                title={dict.noResults as string || "No products found"}
-                                description={dict.subtitle as string}
-                                showClearButton={!!selectedCategory || !!searchTerm}
-                                clearButtonText={dict.clearFilters as string || "Clear Filters"}
-                                onClear={() => {
-                                    setSelectedCategory(null);
-                                    setSearchTerm('');
-                                }}
-                            />
-                        )}
-                    </div>
-                </div>
-            </div>
-        </main>
+        <ShopPageClient 
+            lang={lang}
+            initialProducts={products}
+            categories={categories}
+            dict={dict as Record<string, unknown>}
+        />
     );
 }

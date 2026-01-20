@@ -7,7 +7,7 @@ import { ShopProductDB, CategoryDB } from "@/types/product";
 type Params = Promise<{ lang: string }>;
 
 export default async function ProductsPage({ params }: { params: Params }) {
-    await params;
+    const { lang } = await params;
     
     // Fetch from database with fallback to static data
     let products: ShopProductDB[] = [];
