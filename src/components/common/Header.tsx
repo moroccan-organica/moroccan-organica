@@ -56,10 +56,10 @@ const Header = ({ dict, lang }: HeaderProps) => {
         { name: t('nav.home'), href: `/${lang}/`, isRoute: true },
         { name: t('nav.products'), href: `/${lang}/products`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems },
         { name: t('nav.about'), href: `/${lang}/about`, isRoute: true },
-        { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true },
+        { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true }, // Added lang prefix to route
         { name: t('nav.benefits'), href: "#trust", hasDropdown: true, dropdownItems: benefitsDropdownItems },
-        { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true },
+        { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true },
         { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true },
     ];
 

@@ -48,6 +48,9 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const mainImageInputRef = useRef<HTMLInputElement | null>(null);
+  const [galleryImageCount, setGalleryImageCount] = useState(product?.gallery?.length || 2);
+  const [galleryImages, setGalleryImages] = useState<string[]>(product?.gallery || []);
+  const galleryInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   React.useEffect(() => {
     if (isOpen) {
@@ -55,6 +58,10 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       setFormData(data);
       setNewNote('');
       setError(null);
+      const galleryLength = product?.gallery?.length || 2;
+      setGalleryImageCount(galleryLength);
+      setGalleryImages(product?.gallery || Array(galleryLength).fill(''));
+      galleryInputRefs.current = Array(galleryLength).fill(null).map(() => null);
     }
   }, [isOpen, product, categories]);
 
@@ -94,9 +101,12 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 slug: formData.slug + '-fr',
               },
             ],
-            images: formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
-              ? [{ url: formData.image, isPrimary: true }] 
-              : [],
+            images: [
+              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
+                ? [{ url: formData.image, isPrimary: true }] 
+                : []),
+              ...(galleryImages.filter(img => img && !img.startsWith('data:') && !img.startsWith('blob:')).map(url => ({ url, isPrimary: false })))
+            ],
             variants: formData.volume ? [
               {
                 sku: formData.sku + '-default',
@@ -143,9 +153,12 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-fr',
               },
             ],
-            images: formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
-              ? [{ url: formData.image, isPrimary: true }] 
-              : [],
+            images: [
+              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
+                ? [{ url: formData.image, isPrimary: true }] 
+                : []),
+              ...(galleryImages.filter(img => img && !img.startsWith('data:') && !img.startsWith('blob:')).map(url => ({ url, isPrimary: false })))
+            ],
             variants: formData.volume ? [
               {
                 sku: (formData.sku || `SKU-${Date.now()}`) + '-default',
@@ -234,6 +247,74 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const handleClearMainImage = () => {
     setFormData(prev => ({ ...prev, image: '' }));
     if (mainImageInputRef.current) mainImageInputRef.current.value = '';
+  };
+
+  const handleGalleryImageCountChange = (count: number) => {
+    const newCount = Math.max(0, Math.min(10, count)); // Limit between 0 and 10
+    setGalleryImageCount(newCount);
+    
+    // Adjust gallery images array
+    if (newCount > galleryImages.length) {
+      setGalleryImages([...galleryImages, ...Array(newCount - galleryImages.length).fill('')]);
+      galleryInputRefs.current = [...galleryInputRefs.current, ...Array(newCount - galleryInputRefs.current.length).fill(null)];
+    } else if (newCount < galleryImages.length) {
+      setGalleryImages(galleryImages.slice(0, newCount));
+      galleryInputRefs.current = galleryInputRefs.current.slice(0, newCount);
+    }
+  };
+
+  const handleGalleryImageFile = async (fileList: FileList | null, index: number) => {
+    if (!fileList || fileList.length === 0) return;
+    const file = fileList[0];
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file');
+      return;
+    }
+    
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5MB');
+      return;
+    }
+
+    try {
+      // Upload image to server
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      const response = await fetch('/api/products/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setError(error.error || 'Failed to upload image');
+        return;
+      }
+
+      const data = await response.json();
+      const newGalleryImages = [...galleryImages];
+      newGalleryImages[index] = data.url;
+      setGalleryImages(newGalleryImages);
+      setFormData(prev => ({ ...prev, gallery: newGalleryImages }));
+      setError(null);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setError('Failed to upload image. Please try again.');
+    }
+  };
+
+  const handleClearGalleryImage = (index: number) => {
+    const newGalleryImages = [...galleryImages];
+    newGalleryImages[index] = '';
+    setGalleryImages(newGalleryImages);
+    setFormData(prev => ({ ...prev, gallery: newGalleryImages }));
+    if (galleryInputRefs.current[index]) {
+      galleryInputRefs.current[index]!.value = '';
+    }
   };
 
   if (!isOpen) return null;
@@ -490,6 +571,79 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                     </button>
                   </div>
                 )}
+              </div>
+            </fieldset>
+
+            {/* Product Images */}
+            <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
+              <legend className="text-lg font-bold text-[#606C38] px-2">Product Images</legend>
+              
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  Number of Images
+                </label>
+                <div className="flex items-center gap-3">
+                  <Input
+                    type="number"
+                    min="0"
+                    max="10"
+                    value={galleryImageCount}
+                    onChange={(e) => handleGalleryImageCountChange(parseInt(e.target.value) || 0)}
+                    className="w-24"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Array.from({ length: galleryImageCount }).map((_, index) => (
+                  <div key={index} className="space-y-2">
+                    <label className="block text-sm font-bold text-slate-700">
+                      Image {index + 1}
+                    </label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      ref={(el) => {
+                        galleryInputRefs.current[index] = el;
+                      }}
+                      onChange={(e) => handleGalleryImageFile(e.target.files, index)}
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="flex-1 justify-start"
+                        onClick={() => galleryInputRefs.current[index]?.click()}
+                      >
+                        {galleryImages[index] ? 'File selected' : 'Choisir un fichier'}
+                      </Button>
+                      {galleryImages[index] && (
+                        <button
+                          type="button"
+                          onClick={() => handleClearGalleryImage(index)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      )}
+                    </div>
+                    {!galleryImages[index] && (
+                      <p className="text-xs text-slate-500">Aucun fichier choisi</p>
+                    )}
+                    {galleryImages[index] && (
+                      <div className="mt-2 relative inline-block">
+                        <SafeImage
+                          src={galleryImages[index]}
+                          alt={`Gallery ${index + 1}`}
+                          width={80}
+                          height={80}
+                          className="h-20 w-20 object-cover rounded-lg border border-slate-200"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
             </fieldset>
 

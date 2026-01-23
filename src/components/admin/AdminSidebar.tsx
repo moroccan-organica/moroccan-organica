@@ -11,7 +11,7 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
-  Menu,
+  ChevronRight,
   Plus,
   FileText
 } from 'lucide-react';
@@ -68,7 +68,10 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
       )}
     >
       {/* Header */}
-      <div className="flex h-16 items-center justify-between border-b border-slate-700 px-4">
+      <div className={cn(
+        "flex h-16 items-center border-b border-slate-700 px-4",
+        collapsed ? "justify-center" : "justify-between"
+      )}>
         {!collapsed && (
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 rounded-lg bg-linear-to-br from-[#606C38] to-[#BC6C25] flex items-center justify-center">
@@ -80,24 +83,22 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
             </div>
           </div>
         )}
-        {collapsed && (
-          <div className="mx-auto h-9 w-9 rounded-lg bg-linear-to-br from-[#606C38] to-[#BC6C25] flex items-center justify-center">
-            <span className="text-white font-bold text-lg">M</span>
-          </div>
-        )}
-        <button
-          onClick={onToggle}
-          className={cn(
-            'p-2 rounded-lg hover:bg-slate-800 transition-colors',
-            collapsed && 'absolute -right-3 top-5 bg-slate-900 border border-slate-700'
-          )}
-        >
-          {collapsed ? (
-            <Menu className="h-4 w-4" />
-          ) : (
+        {!collapsed && (
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+          >
             <ChevronLeft className="h-4 w-4" />
-          )}
-        </button>
+          </button>
+        )}
+        {collapsed && (
+          <button
+            onClick={onToggle}
+            className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}

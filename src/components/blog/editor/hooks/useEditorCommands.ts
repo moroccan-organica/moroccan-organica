@@ -25,6 +25,12 @@ export interface UseEditorCommandsProps {
 export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseEditorCommandsProps) {
   const handleCommand = useCallback((command: string, value?: string) => {
     if (!editor) return;
+    
+    // Ensure editor is focused
+    if (!editor.isFocused) {
+      editor.chain().focus().run();
+    }
+    
     const chain = editor.chain().focus();
 
     switch (command) {
@@ -86,6 +92,7 @@ export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseE
           const { from, to } = editor.state.selection;
 
           if (from !== to) {
+            // Text is selected - convert to heading
             const selectedText = editor.state.doc.textBetween(from, to, ' ');
             editor
               .chain()
@@ -98,7 +105,15 @@ export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseE
               })
               .run();
           } else {
-            chain.toggleHeading({ level }).run();
+            // No selection - toggle heading at cursor position
+            // First check if we're already in a heading of this level
+            if (editor.isActive('heading', { level })) {
+              // If already this heading level, convert to paragraph
+              chain.setParagraph().run();
+            } else {
+              // Convert current block to heading
+              chain.toggleHeading({ level }).run();
+            }
           }
           return;
         }

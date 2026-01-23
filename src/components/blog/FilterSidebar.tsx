@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Filter, X, ChevronDown, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Filter, X, ChevronDown, Check, Search, DollarSign } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { BlogCategory } from '@/types/blog';
+import { PriceRangeSlider } from './PriceRangeSlider';
 
 export interface FilterSidebarProps {
   categories: BlogCategory[];
@@ -13,11 +15,23 @@ export interface FilterSidebarProps {
   onClearFilters: () => void;
   isMobile?: boolean;
   onClose?: () => void;
+  // New props for search and price
+  searchValue?: string;
+  onSearchChange?: (value: string) => void;
+  minPrice?: number;
+  maxPrice?: number;
+  onPriceChange?: (min: number, max: number) => void;
   translations: {
     title: string;
     category: string;
     allCategories: string;
     clearFilters: string;
+    search?: string;
+    price?: string;
+    minPrice?: string;
+    maxPrice?: string;
+    from?: string;
+    to?: string;
   };
 }
 
@@ -28,9 +42,38 @@ export function FilterSidebar({
   onClearFilters,
   isMobile = false,
   onClose,
+  searchValue = '',
+  onSearchChange,
+  minPrice,
+  maxPrice,
+  onPriceChange,
   translations,
 }: FilterSidebarProps) {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(true);
+  const [isPriceOpen, setIsPriceOpen] = useState(true);
+  const [localMinPrice, setLocalMinPrice] = useState(minPrice ?? 0);
+  const [localMaxPrice, setLocalMaxPrice] = useState(maxPrice ?? 1000);
+  const [localSearch, setLocalSearch] = useState(searchValue);
+
+  useEffect(() => {
+    setLocalSearch(searchValue);
+  }, [searchValue]);
+
+  useEffect(() => {
+    if (minPrice !== undefined) setLocalMinPrice(minPrice);
+    if (maxPrice !== undefined) setLocalMaxPrice(maxPrice);
+  }, [minPrice, maxPrice]);
+
+  const handleSearchChange = (value: string) => {
+    setLocalSearch(value);
+    onSearchChange?.(value);
+  };
+
+  const handlePriceChange = () => {
+    onPriceChange?.(localMinPrice, localMaxPrice);
+  };
+
+  const hasActiveFilters = selectedCategory || localSearch || (localMinPrice > 0) || (localMaxPrice < 1000);
 
   return (
     <aside
@@ -52,22 +95,38 @@ export function FilterSidebar({
         )}
       </div>
 
+      {/* Search */}
+      {onSearchChange && (
+        <div className="p-4 border-b border-slate-100">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              type="text"
+              placeholder={translations.search || "Search products..."}
+              value={localSearch}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              className="pl-10 h-10 rounded-lg border-slate-200 focus:ring-[#606C38] focus:border-[#606C38]"
+            />
+          </div>
+        </div>
+      )}
+
       {/* Categories */}
-      <div className="p-4">
+      <div className="p-4 border-b border-slate-100">
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsCategoryOpen(!isCategoryOpen)}
           className="flex w-full items-center justify-between text-sm font-bold text-slate-900 mb-3"
         >
           {translations.category}
           <ChevronDown
             className={cn(
               'h-4 w-4 text-slate-400 transition-transform duration-300',
-              isOpen && 'rotate-180'
+              isCategoryOpen && 'rotate-180'
             )}
           />
         </button>
 
-        {isOpen && (
+        {isCategoryOpen && (
           <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3">
             <button
               onClick={() => onCategoryChange(null)}
@@ -115,13 +174,73 @@ export function FilterSidebar({
         )}
       </div>
 
+      {/* Price Filter */}
+      {onPriceChange && (
+        <div className="p-4 border-b border-slate-100">
+          <button
+            onClick={() => setIsPriceOpen(!isPriceOpen)}
+            className="flex w-full items-center justify-between text-sm font-bold text-slate-900 mb-3"
+          >
+            <div className="flex items-center gap-2">
+              <DollarSign className="h-4 w-4 text-[#606C38]" />
+              {translations.price || "Price"}
+            </div>
+            <ChevronDown
+              className={cn(
+                'h-4 w-4 text-slate-400 transition-transform duration-300',
+                isPriceOpen && 'rotate-180'
+              )}
+            />
+          </button>
+
+          {isPriceOpen && (
+            <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+              {/* Price Range Display */}
+              <div className="text-sm font-semibold text-slate-900 mb-4">
+                {translations.from || "From"} ${localMinPrice} {translations.to || "to"} ${localMaxPrice}+
+              </div>
+
+              {/* Range Slider */}
+              <PriceRangeSlider
+                min={0}
+                max={maxPrice || 1000}
+                minValue={localMinPrice}
+                maxValue={localMaxPrice}
+                onMinChange={(value) => setLocalMinPrice(value)}
+                onMaxChange={(value) => setLocalMaxPrice(value)}
+              />
+
+              {/* Go Button */}
+              <div className="flex justify-end pt-2">
+                <Button
+                  onClick={handlePriceChange}
+                  className="px-6 py-2 h-9 bg-slate-100 hover:bg-[#606C38] hover:text-white text-slate-700 rounded-lg text-sm font-medium transition-colors"
+                >
+                  {translations.go || "Go"}
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Clear Filters */}
-      {selectedCategory && (
+      {hasActiveFilters && (
         <div className="px-4 pb-5">
           <Button
             variant="ghost"
             size="sm"
-            onClick={onClearFilters}
+            onClick={() => {
+              onClearFilters();
+              if (onSearchChange) {
+                handleSearchChange('');
+              }
+              if (onPriceChange) {
+                setLocalMinPrice(0);
+                setLocalMaxPrice(1000);
+                onPriceChange(0, 1000);
+              }
+            }}
             className="w-full text-slate-500 hover:text-red-500 hover:bg-red-50 rounded-lg text-xs"
           >
             <X className="mr-2 h-3 w-3" />

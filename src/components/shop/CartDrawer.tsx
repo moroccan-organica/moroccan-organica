@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "./CartContext";
+import { useEffect, useState, useRef } from "react";
 
 interface CartDrawerProps {
     isRTL?: boolean;
@@ -18,16 +19,37 @@ interface CartDrawerProps {
 
 const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
     const { items, updateQuantity, removeItem, totalItems, totalPrice } = useCart();
+    const [isAnimating, setIsAnimating] = useState(false);
+    const prevTotalItemsRef = useRef(totalItems);
+
+    useEffect(() => {
+        // Détecter quand un produit est ajouté (totalItems augmente)
+        if (totalItems > prevTotalItemsRef.current) {
+            setIsAnimating(true);
+            // Réinitialiser l'animation après 600ms
+            const timer = setTimeout(() => {
+                setIsAnimating(false);
+            }, 600);
+            return () => clearTimeout(timer);
+        }
+        prevTotalItemsRef.current = totalItems;
+    }, [totalItems]);
 
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <button className="relative cursor-pointer group">
-                    <ShoppingCart className="w-6 h-6 text-white group-hover:text-[#118f14] transition-colors" />
+                <button className={`relative cursor-pointer group ${isAnimating ? 'animate-bounce' : ''}`}>
+                    <ShoppingCart 
+                        className={`w-6 h-6 text-white group-hover:text-[#118f14] transition-all duration-300 ${
+                            isAnimating ? 'scale-125 rotate-12' : ''
+                        }`} 
+                    />
                     {totalItems > 0 && (
                         <div
                             className={`absolute -top-2 ${isRTL ? "-left-2" : "-right-2"
-                                } w-5 h-5 bg-[#118f14] rounded-full flex items-center justify-center`}
+                                } w-5 h-5 bg-[#118f14] rounded-full flex items-center justify-center transition-all duration-300 ${
+                                isAnimating ? 'scale-150 animate-pulse' : ''
+                            }`}
                         >
                             <span className="text-white text-xs font-bold">{totalItems}</span>
                         </div>

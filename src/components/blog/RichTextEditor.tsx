@@ -24,6 +24,7 @@ import {
   type BlockType,
   type EditorMode,
 } from './editor';
+import { MediaLibraryDialog } from './MediaLibraryDialog';
 import './editor/styles/RichTextEditor.css';
 
 export interface RichTextEditorProps {
@@ -87,6 +88,11 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
   const {
     mediaDialogOpen,
     openMediaDialog,
+    closeMediaDialog,
+    mediaItems,
+    mediaLoading,
+    handleUploadFile,
+    handleMediaSelect,
   } = useBlogMediaManager({
     postId,
     onMediaSelect: (media) => {
@@ -244,6 +250,15 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
         open={linkDialogOpen}
         onOpenChange={setLinkDialogOpen}
         onInsert={handleLinkInsert}
+      />
+
+      <MediaLibraryDialog
+        open={mediaDialogOpen}
+        onClose={closeMediaDialog}
+        onSelect={handleMediaSelect}
+        mediaItems={mediaItems}
+        onUpload={handleUploadFile}
+        initialTab="library"
       />
     </div>
   );

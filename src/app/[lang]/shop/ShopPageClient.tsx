@@ -26,17 +26,34 @@ export function ShopPageClient({
     const [currentPage, setCurrentPage] = useState(1);
     const productsPerPage = 9;
 
+    // Calculate max price from products
+    const calculatedMaxPrice = useMemo(() => {
+        if (initialProducts.length === 0) return 1000;
+        return Math.ceil(Math.max(...initialProducts.map(p => p.price || 0)));
+    }, [initialProducts]);
+
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(1000);
+
+    // Update max price when products change
+    React.useEffect(() => {
+        setMaxPrice(calculatedMaxPrice);
+    }, [calculatedMaxPrice]);
+
     const filteredProducts = useMemo(() => {
         return initialProducts.filter(product => {
             const localizedName = lang === 'ar' ? product.nameAr : product.name;
             const localizedDesc = lang === 'ar' ? product.descriptionAr : product.description;
-            const matchesSearch = localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
+            const matchesSearch = !searchTerm || 
+                localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
             const matchesCategory = !selectedCategory || product.id === selectedCategory || 
                 categories.find(c => c.id === selectedCategory)?.name === product.category;
-            return matchesSearch && matchesCategory;
+            const productPrice = product.price || 0;
+            const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
+            return matchesSearch && matchesCategory && matchesPrice;
         });
-    }, [initialProducts, searchTerm, selectedCategory, lang, categories]);
+    }, [initialProducts, searchTerm, selectedCategory, minPrice, maxPrice, lang, categories]);
 
     const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
 
@@ -81,12 +98,6 @@ export function ShopPageClient({
             <ShopHero 
                 title={dict.title as string}
                 subtitle={dict.subtitle as string}
-                searchPlaceholder={dict.searchPlaceholder as string || "Search products..."}
-                searchValue={searchTerm}
-                onSearchChange={(val) => {
-                    setSearchTerm(val);
-                    setCurrentPage(1);
-                }}
             />
 
             <div className="container mx-auto px-4 py-12">
@@ -103,6 +114,20 @@ export function ShopPageClient({
                             onClearFilters={() => {
                                 setSelectedCategory(null);
                                 setSearchTerm('');
+                                setMinPrice(0);
+                                setMaxPrice(calculatedMaxPrice);
+                                setCurrentPage(1);
+                            }}
+                            searchValue={searchTerm}
+                            onSearchChange={(val) => {
+                                setSearchTerm(val);
+                                setCurrentPage(1);
+                            }}
+                            minPrice={minPrice}
+                            maxPrice={maxPrice}
+                            onPriceChange={(min, max) => {
+                                setMinPrice(min);
+                                setMaxPrice(max);
                                 setCurrentPage(1);
                             }}
                             translations={{
@@ -110,6 +135,12 @@ export function ShopPageClient({
                                 category: dict.categoryLabel as string || "Category",
                                 allCategories: dict.allCategories as string || "All Products",
                                 clearFilters: dict.clearFilters as string || "Clear Filters",
+                                search: dict.searchPlaceholder as string || "Search products...",
+                                price: dict.priceLabel as string || "Price",
+                                minPrice: dict.minPrice as string || "Min Price",
+                                maxPrice: dict.maxPrice as string || "Max Price",
+                                from: dict.from as string || "From",
+                                to: dict.to as string || "to",
                             }}
                         />
                     </div>

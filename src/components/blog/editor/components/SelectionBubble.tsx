@@ -37,7 +37,27 @@ function ToolbarButton({ onClick, icon: Icon, title, active }: ToolbarButtonProp
 }
 
 export function SelectionBubble({ position, onCommand, onLink, editor }: SelectionBubbleProps) {
-  if (!position) return null;
+  if (!position || !editor) return null;
+
+  const handleButtonClick = (command: string, value?: string) => {
+    // Ensure editor has focus before executing command
+    if (editor && !editor.isFocused) {
+      editor.chain().focus().run();
+    }
+    // Small delay to ensure focus is set
+    setTimeout(() => {
+      onCommand(command, value);
+    }, 0);
+  };
+
+  const handleLinkClick = () => {
+    if (editor && !editor.isFocused) {
+      editor.chain().focus().run();
+    }
+    setTimeout(() => {
+      onLink();
+    }, 0);
+  };
 
   return (
     <div
@@ -47,48 +67,67 @@ export function SelectionBubble({ position, onCommand, onLink, editor }: Selecti
         e.preventDefault();
         e.stopPropagation();
       }}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <ToolbarButton
-        onClick={() => onCommand('bold')}
+        onClick={() => handleButtonClick('bold')}
         icon={Bold}
         title="Bold"
         active={!!editor?.isActive('bold')}
       />
       <ToolbarButton
-        onClick={() => onCommand('italic')}
+        onClick={() => handleButtonClick('italic')}
         icon={Italic}
         title="Italic"
         active={!!editor?.isActive('italic')}
       />
       <div className="h-5 w-px bg-slate-200 mx-1" />
-      {['P', 'H1', 'H2', 'H3'].map((tag) => (
-        <button
-          key={tag}
-          type="button"
-          onMouseDown={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-          }}
-          onClick={() => onCommand('formatBlock', tag)}
-          className={cn(
-            "h-7 px-2 rounded text-xs font-semibold transition-colors",
-            editor?.isActive('heading', { level: parseInt(tag.slice(1)) }) || (tag === 'P' && editor?.isActive('paragraph'))
-              ? "bg-slate-200 text-slate-900"
-              : "text-slate-700 hover:bg-slate-100"
-          )}
-          title={tag === 'P' ? 'Paragraph' : `Heading ${tag.slice(1)}`}
-        >
-          {tag}
-        </button>
-      ))}
+      {['P', 'H1', 'H2', 'H3'].map((tag) => {
+        const isActive = tag === 'P' 
+          ? editor?.isActive('paragraph')
+          : editor?.isActive('heading', { level: parseInt(tag.slice(1)) as 1 | 2 | 3 });
+        
+        return (
+          <button
+            key={tag}
+            type="button"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handleButtonClick('formatBlock', tag);
+            }}
+            className={cn(
+              "h-7 px-2 rounded text-xs font-semibold transition-colors",
+              isActive
+                ? "bg-slate-200 text-slate-900"
+                : "text-slate-700 hover:bg-slate-100"
+            )}
+            title={tag === 'P' ? 'Paragraph' : `Heading ${tag.slice(1)}`}
+          >
+            {tag}
+          </button>
+        );
+      })}
       <div className="h-5 w-px bg-slate-200 mx-1" />
       <ToolbarButton
-        onClick={() => onCommand('formatBlock', 'blockquote')}
+        onClick={() => handleButtonClick('formatBlock', 'blockquote')}
         icon={Quote}
         title="Blockquote"
         active={!!editor?.isActive('blockquote')}
       />
-      <ToolbarButton onClick={onLink} icon={LinkIcon} title="Link" active={!!editor?.isActive('link')} />
+      <ToolbarButton 
+        onClick={handleLinkClick} 
+        icon={LinkIcon} 
+        title="Link" 
+        active={!!editor?.isActive('link')} 
+      />
     </div>
   );
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data/shop-products";
-import { getProductBySlug, getRelatedProducts } from "@/actions/product.actions";
+import { getProductBySlug, getRelatedProducts, getProducts } from "@/actions/product.actions";
 import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
@@ -117,8 +117,25 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 }));
         }
     } else {
-        // Get related from DB
-        relatedProducts = await getRelatedProducts(product.id, product.categorySlug || '', 3);
+        // Get related from DB - try by category first
+        if (product.categorySlug) {
+            // Find category by slug to get ID
+            const { getCategories } = await import('@/actions/category.actions');
+            const categories = await getCategories();
+            const category = categories.find(c => c.slug === product.categorySlug || c.slugAr === product.categorySlug);
+            
+            if (category) {
+                relatedProducts = await getRelatedProducts(product.id, category.id, 3);
+            }
+        }
+        
+        // If no related products found, get any 3 available products (excluding current)
+        if (relatedProducts.length === 0) {
+            const allProductsResult = await getProducts({ isAvailable: true, limit: 10 });
+            relatedProducts = allProductsResult.products
+                .filter(p => p.id !== product.id)
+                .slice(0, 3);
+        }
     }
 
     if (!product) {
@@ -229,14 +246,14 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 </p>
             </section>
 
-            {relatedProducts.length > 0 && (
-                <section className="space-y-6">
-                    <div className="flex items-center justify-between">
-                        <h2 className="heading-display text-2xl text-emerald-950">{t.relatedTitle}</h2>
-                        <Link href={`/${lang}/shop`} className="text-sm font-semibold text-emerald-700">
-                            {t.backToShop}
-                        </Link>
-                    </div>
+            <section className="space-y-6">
+                <div className="flex items-center justify-between">
+                    <h2 className="heading-display text-2xl text-emerald-950">{t.relatedTitle}</h2>
+                    <Link href={`/${lang}/shop`} className="text-sm font-semibold text-emerald-700 hover:underline">
+                        {t.backToShop}
+                    </Link>
+                </div>
+                {relatedProducts.length > 0 ? (
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {relatedProducts.map((item) => (
                             <article
@@ -278,8 +295,12 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                             </article>
                         ))}
                     </div>
-                </section>
-            )}
+                ) : (
+                    <div className="text-center py-12 text-muted-foreground">
+                        <p>No related products available at the moment.</p>
+                    </div>
+                )}
+            </section>
         </main>
     );
 }
