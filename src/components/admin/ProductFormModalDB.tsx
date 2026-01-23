@@ -94,7 +94,9 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 slug: formData.slug + '-fr',
               },
             ],
-            images: formData.image ? [{ url: formData.image, isPrimary: true }] : [],
+            images: formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
+              ? [{ url: formData.image, isPrimary: true }] 
+              : [],
             variants: formData.volume ? [
               {
                 sku: formData.sku + '-default',
@@ -141,7 +143,9 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-fr',
               },
             ],
-            images: formData.image ? [{ url: formData.image, isPrimary: true }] : [],
+            images: formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
+              ? [{ url: formData.image, isPrimary: true }] 
+              : [],
             variants: formData.volume ? [
               {
                 sku: (formData.sku || `SKU-${Date.now()}`) + '-default',
@@ -186,20 +190,45 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
     return name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
   };
 
-  const fileToDataUrl = (file: File) => {
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
-  };
-
   const handleMainImageFile = async (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) return;
     const file = fileList[0];
-    const dataUrl = await fileToDataUrl(file);
-    setFormData(prev => ({ ...prev, image: dataUrl }));
+    
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setError('Please select a valid image file');
+      return;
+    }
+    
+    // Validate file size (5MB max)
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Image size must be less than 5MB');
+      return;
+    }
+
+    try {
+      // Upload image to server
+      const uploadFormData = new FormData();
+      uploadFormData.append('file', file);
+      
+      const response = await fetch('/api/products/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        setError(error.error || 'Failed to upload image');
+        return;
+      }
+
+      const data = await response.json();
+      setFormData(prev => ({ ...prev, image: data.url }));
+      setError(null);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setError('Failed to upload image. Please try again.');
+    }
   };
 
   const handleClearMainImage = () => {

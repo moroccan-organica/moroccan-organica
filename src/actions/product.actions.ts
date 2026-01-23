@@ -1,6 +1,7 @@
 'use server';
 
 import { prisma } from '@/lib/prisma';
+import { Prisma, $Enums } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { 
   ShopProductDB, 
@@ -9,36 +10,61 @@ import {
   LanguageCode 
 } from '@/types/product';
 
-// Helper to transform DB product to shop format
-function transformToShopProduct(product: any): ShopProductDB {
-  const enTranslation = product.translations.find((t: any) => t.language === 'en') || product.translations[0];
-  const arTranslation = product.translations.find((t: any) => t.language === 'ar');
-  const frTranslation = product.translations.find((t: any) => t.language === 'fr');
-  
-  const enCategoryTranslation = product.category?.translations?.find((t: any) => t.language === 'en') || product.category?.translations?.[0];
-  
-  const primaryImage = product.images.find((img: any) => img.isPrimary);
-  const mainImage = primaryImage?.url || product.images[0]?.url || '/images/placeholder.svg';
-  const gallery = product.images.map((img: any) => img.url);
+type DbProductWithRelations = Prisma.ProductGetPayload<{
+  include: {
+    category: { include: { translations: true } };
+    translations: true;
+    images: true;
+    variants: true;
+  };
+}>;
 
-  // Get first variant for volume/size display
+// Helper to transform DB product to shop format
+function transformToShopProduct(product: DbProductWithRelations, preferredLang: LanguageCode = 'en'): ShopProductDB {
+  const translation =
+    product.translations.find((t) => t.language === preferredLang) ||
+    product.translations.find((t) => t.language === 'en') ||
+    product.translations[0];
+
+  const arTranslation = product.translations.find((t) => t.language === 'ar');
+  const frTranslation = product.translations.find((t) => t.language === 'fr');
+
+  const categoryTranslation =
+    product.category?.translations?.find((t) => t.language === preferredLang) ||
+    product.category?.translations?.find((t) => t.language === 'en') ||
+    product.category?.translations?.[0];
+
+  const primaryImage = product.images.find((img) => img.isPrimary);
+  // Filter out base64 and blob URLs - they're temporary and won't work after page reload
+  const validImages = product.images.filter(img => 
+    img.url && 
+    !img.url.startsWith('data:') && 
+    !img.url.startsWith('blob:')
+  );
+  const mainImage = validImages.length > 0 
+    ? (primaryImage && !primaryImage.url.startsWith('data:') && !primaryImage.url.startsWith('blob:') 
+        ? primaryImage.url 
+        : validImages[0]?.url)
+    : '/images/placeholder.svg';
+  const gallery = validImages.map((img) => img.url);
+
   const firstVariant = product.variants[0];
 
   return {
     id: product.id,
-    slug: enTranslation?.slug || product.sku,
-    category: enCategoryTranslation?.name || 'Uncategorized',
-    categorySlug: enCategoryTranslation?.slug || 'uncategorized',
+    slug: translation?.slug || product.sku,
+    category: categoryTranslation?.name || 'Uncategorized',
+    categorySlug: categoryTranslation?.slug || 'uncategorized',
     image: mainImage,
     gallery,
     badge: product.isFeatured ? 'featured' : product.isTopSale ? 'bestseller' : undefined,
     volume: firstVariant?.sizeName || '',
-    name: enTranslation?.name || '',
-    nameAr: arTranslation?.name || enTranslation?.name || '',
-    nameFr: frTranslation?.name || enTranslation?.name || '',
-    description: enTranslation?.description || '',
-    descriptionAr: arTranslation?.description || enTranslation?.description || '',
-    descriptionFr: frTranslation?.description || enTranslation?.description || '',
+    name: translation?.name || '',
+    nameAr: arTranslation?.name || translation?.name || '',
+    nameFr: frTranslation?.name || translation?.name || '',
+    description: translation?.description || '',
+    descriptionAr: arTranslation?.description || translation?.description || '',
+    descriptionFr: frTranslation?.description || translation?.description || '',
     notes: [],
     price: Number(product.basePrice),
     stock: product.stock,
@@ -46,7 +72,7 @@ function transformToShopProduct(product: any): ShopProductDB {
     isFeatured: product.isFeatured,
     isTopSale: product.isTopSale,
     sku: product.sku,
-    variants: product.variants.map((v: any) => ({
+    variants: product.variants.map((v) => ({
       id: v.id,
       sku: v.sku,
       sizeName: v.sizeName,
@@ -68,7 +94,7 @@ export async function getProducts(options?: {
   try {
     const { categoryId, search, isAvailable, isFeatured, page = 1, limit = 50 } = options || {};
     
-    const where: any = {};
+    const where: Prisma.ProductWhereInput = {};
     
     if (categoryId) {
       where.categoryId = categoryId;
@@ -111,7 +137,7 @@ export async function getProducts(options?: {
     ]);
 
     return {
-      products: products.map(transformToShopProduct),
+      products: products.map((product) => transformToShopProduct(product)),
       total,
     };
   } catch (error) {
@@ -145,7 +171,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
 
     if (!product) return null;
 
-    return transformToShopProduct(product);
+    return transformToShopProduct(product, lang);
   } catch (error) {
     console.error('Error fetching product by slug:', error);
     return null;
@@ -181,6 +207,40 @@ export async function getProductById(id: string): Promise<ShopProductDB | null> 
 // CREATE PRODUCT
 export async function createProduct(input: CreateProductInput): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
   try {
+    // Validate required fields
+    if (!input.categoryId || input.categoryId.trim() === '') {
+      return { success: false, error: 'Category is required' };
+    }
+
+    if (!input.sku || input.sku.trim() === '') {
+      return { success: false, error: 'SKU is required' };
+    }
+
+    if (!input.translations || input.translations.length === 0) {
+      return { success: false, error: 'At least one translation is required' };
+    }
+
+    // Verify category exists
+    const categoryExists = await prisma.category.findUnique({
+      where: { id: input.categoryId },
+    });
+
+    if (!categoryExists) {
+      return { success: false, error: 'Selected category does not exist' };
+    }
+
+    // Check if SKU already exists
+    const existingSku = await prisma.product.findUnique({
+      where: { sku: input.sku },
+    });
+
+    if (existingSku) {
+      return { success: false, error: `SKU "${input.sku}" already exists` };
+    }
+
+    // Filter out data URLs from images (too large for DB)
+    const validImages = input.images?.filter(img => !img.url.startsWith('data:')) || [];
+
     const product = await prisma.product.create({
       data: {
         categoryId: input.categoryId,
@@ -192,7 +252,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
         isTopSale: input.isTopSale ?? false,
         translations: {
           create: input.translations.map((t) => ({
-            language: t.language as any,
+            language: t.language as $Enums.LanguageCode,
             name: t.name,
             description: t.description || null,
             slug: t.slug,
@@ -203,8 +263,8 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
             canonical: t.canonical || null,
           })),
         },
-        images: input.images ? {
-          create: input.images.map((img, index) => ({
+        images: validImages.length > 0 ? {
+          create: validImages.map((img, index) => ({
             url: img.url,
             isPrimary: img.isPrimary ?? index === 0,
           })),
@@ -234,9 +294,10 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     revalidatePath('/[lang]/admin/products');
 
     return { success: true, product: transformToShopProduct(product) };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to create product';
     console.error('Error creating product:', error);
-    return { success: false, error: error.message || 'Failed to create product' };
+    return { success: false, error: message };
   }
 }
 
@@ -247,9 +308,11 @@ export async function updateProduct(
 ): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
   try {
     // Update main product data
-    const updateData: any = {};
+    const updateData: Prisma.ProductUpdateInput = {};
     
-    if (input.categoryId) updateData.categoryId = input.categoryId;
+    if (input.categoryId) {
+      updateData.category = { connect: { id: input.categoryId } };
+    }
     if (input.basePrice !== undefined) updateData.basePrice = input.basePrice;
     if (input.sku) updateData.sku = input.sku;
     if (input.stock !== undefined) updateData.stock = input.stock;
@@ -270,12 +333,12 @@ export async function updateProduct(
           where: {
             productId_language: {
               productId: id,
-              language: t.language as any,
+              language: t.language as $Enums.LanguageCode,
             },
           },
           create: {
             productId: id,
-            language: t.language as any,
+            language: t.language as $Enums.LanguageCode,
             name: t.name,
             description: t.description || null,
             slug: t.slug,
@@ -301,16 +364,26 @@ export async function updateProduct(
 
     // Update images if provided
     if (input.images) {
+      // Filter out data URLs and blob URLs (they're temporary)
+      const validImages = input.images.filter(img => 
+        img.url && 
+        !img.url.startsWith('data:') && 
+        !img.url.startsWith('blob:')
+      );
+      
       // Delete existing images
       await prisma.productImage.deleteMany({ where: { productId: id } });
-      // Create new images
-      await prisma.productImage.createMany({
-        data: input.images.map((img, index) => ({
-          productId: id,
-          url: img.url,
-          isPrimary: img.isPrimary ?? index === 0,
-        })),
-      });
+      
+      // Create new images only if we have valid URLs
+      if (validImages.length > 0) {
+        await prisma.productImage.createMany({
+          data: validImages.map((img, index) => ({
+            productId: id,
+            url: img.url,
+            isPrimary: img.isPrimary ?? index === 0,
+          })),
+        });
+      }
     }
 
     // Update variants if provided
@@ -348,9 +421,10 @@ export async function updateProduct(
     revalidatePath('/[lang]/admin/products');
 
     return { success: true, product: updatedProduct ? transformToShopProduct(updatedProduct) : undefined };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to update product';
     console.error('Error updating product:', error);
-    return { success: false, error: error.message || 'Failed to update product' };
+    return { success: false, error: message };
   }
 }
 
@@ -365,9 +439,10 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
     revalidatePath('/[lang]/admin/products');
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Failed to delete product';
     console.error('Error deleting product:', error);
-    return { success: false, error: error.message || 'Failed to delete product' };
+    return { success: false, error: message };
   }
 }
 
@@ -397,7 +472,7 @@ export async function getRelatedProducts(
       take: limit,
     });
 
-    return products.map(transformToShopProduct);
+    return products.map((product) => transformToShopProduct(product));
   } catch (error) {
     console.error('Error fetching related products:', error);
     return [];
@@ -425,7 +500,7 @@ export async function getFeaturedProducts(limit: number = 8): Promise<ShopProduc
       take: limit,
     });
 
-    return products.map(transformToShopProduct);
+    return products.map((product) => transformToShopProduct(product));
   } catch (error) {
     console.error('Error fetching featured products:', error);
     return [];

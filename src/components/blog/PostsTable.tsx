@@ -218,12 +218,15 @@ export function PostsTable({
     { value: 'review', label: translations.statusLabels.review },
   ];
 
+  const isRecord = (value: unknown): value is Record<string, unknown> =>
+    typeof value === 'object' && value !== null;
+
   const t = (key: string) => {
     const keys = key.split('.');
-    let result: string | Record<string, unknown> | undefined = translations;
+    let result: unknown = translations;
     for (const k of keys) {
-      if (result && typeof result === 'object' && k in result) {
-        result = (result as Record<string, any>)[k];
+      if (isRecord(result) && k in result) {
+        result = result[k];
       } else {
         return key;
       }

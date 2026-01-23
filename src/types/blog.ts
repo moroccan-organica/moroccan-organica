@@ -7,6 +7,7 @@ export interface BlogCategory {
   description?: string;
   color?: string;
   icon?: string;
+  postCount?: number;
 }
 
 export interface Author {
@@ -19,9 +20,12 @@ export interface Author {
 export interface BlogPost {
   id: string;
   title: string;
+  title_ar?: string;
   slug: string;
   excerpt: string;
+  excerpt_ar?: string;
   content: JSONContent;
+  content_ar?: JSONContent;
   featured_image_url: string;
   author_id: string;
   category_id: string;

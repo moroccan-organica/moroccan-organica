@@ -4,10 +4,7 @@ import { ProductsPageClient } from "./ProductsPageClient";
 import { shopProducts, shopCategories } from "@/data/shop-products";
 import { ShopProductDB, CategoryDB } from "@/types/product";
 
-type Params = Promise<{ lang: string }>;
-
-export default async function ProductsPage({ params }: { params: Params }) {
-    const { lang } = await params;
+export default async function ProductsPage() {
     
     // Fetch from database with fallback to static data
     let products: ShopProductDB[] = [];

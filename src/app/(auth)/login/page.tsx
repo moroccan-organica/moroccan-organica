@@ -28,7 +28,7 @@ export default function LoginPage() {
             } else {
                 router.push('/admin')
             }
-        } catch (error) {
+        } catch {
             setError('An error occurred. Please try again.')
         } finally {
             setIsLoading(false)
@@ -36,7 +36,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50 px-4">
+        <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-emerald-50 to-teal-50 px-4">
             <div className="w-full max-w-md">
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     <div className="text-center mb-8">
@@ -92,7 +92,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-linear-to-r from-emerald-600 to-teal-600 text-white py-3 rounded-lg font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                             {isLoading ? 'Signing in...' : 'Sign In'}
                         </button>

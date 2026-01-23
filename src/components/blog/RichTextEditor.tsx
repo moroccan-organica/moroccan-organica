@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { EditorContent, useEditor } from '@tiptap/react';
+import { JSONContent } from '@tiptap/core';
+import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TiptapLink from '@tiptap/extension-link';
 import TiptapPlaceholder from '@tiptap/extension-placeholder';
@@ -26,14 +27,15 @@ import {
 import './editor/styles/RichTextEditor.css';
 
 export interface RichTextEditorProps {
-  initialContent?: unknown;
+  initialContent?: JSONContent | string;
   onChange: (html: string, json: unknown) => void;
   placeholder?: string;
   postId?: string;
   onMediaDialogChange?: (isOpen: boolean) => void;
+  dir?: 'ltr' | 'rtl';
 }
 
-export function RichTextEditor({ initialContent = '', onChange, placeholder, postId, onMediaDialogChange }: RichTextEditorProps) {
+export function RichTextEditor({ initialContent = '', onChange, placeholder, postId, onMediaDialogChange, dir = 'ltr' }: RichTextEditorProps) {
   const [mode, setMode] = useState<EditorMode>('visual');
   const [blockType, setBlockType] = useState<BlockType>('p');
   const [wordCount, setWordCount] = useState(0);
@@ -59,7 +61,7 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
         placeholder: placeholder || 'Start writing your article...',
       }),
     ],
-    content: (initialContent as any) || '',
+    content: initialContent || '',
     onCreate: ({ editor }) => {
       const html = editor.getHTML();
       setCodeHtml(html);
@@ -71,22 +73,20 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
       updateWordCount(editor.getText());
       scheduleAutoSave();
     },
-    onSelectionUpdate: ({ editor }) => {
+    onSelectionUpdate: () => {
       handleSelectionUpdate();
     },
   });
 
-  const updateWordCount = (text: string) => {
+  const updateWordCount = useCallback((text: string) => {
     const clean = text.replace(/\s+/g, ' ').trim();
     const count = clean ? clean.split(' ').filter(Boolean).length : 0;
     setWordCount(count);
-  };
+  }, []);
 
   const {
     mediaDialogOpen,
     openMediaDialog,
-    closeMediaDialog,
-    handleMediaSelect,
   } = useBlogMediaManager({
     postId,
     onMediaSelect: (media) => {
@@ -132,9 +132,14 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
 
   useEffect(() => {
     if (!editor) return;
-    updateWordCount(editor.getText());
-    setCodeHtml(editor.getHTML());
-  }, [editor]);
+    const text = editor.getText();
+    const html = editor.getHTML();
+    const id = window.setTimeout(() => {
+      updateWordCount(text);
+      setCodeHtml(html);
+    }, 0);
+    return () => clearTimeout(id);
+  }, [editor, updateWordCount]);
 
   const {
     lastSaved,
@@ -195,7 +200,7 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
         editor={editor}
       />
 
-      <div className="flex-1 relative bg-white" ref={editorContainerRef}>
+      <div className="flex-1 relative bg-white" ref={editorContainerRef} dir={dir}>
         {mode === 'visual' ? (
           <EditorCanvas
             editor={editor}

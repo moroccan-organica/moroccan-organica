@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { Package, ShoppingCart, DollarSign, TrendingUp } from 'lucide-react';
 import { shopProducts } from '@/data/shop-products';
@@ -76,9 +77,11 @@ export default function AdminDashboard() {
                         <div className="space-y-4">
                             {shopProducts.slice(0, 4).map((product) => (
                                 <div key={product.id} className="flex items-center gap-4">
-                                    <img
+                                    <Image
                                         src={product.image}
                                         alt={product.name}
+                                        width={48}
+                                        height={48}
                                         className="h-12 w-12 rounded-lg object-cover"
                                     />
                                     <div className="flex-1 min-w-0">

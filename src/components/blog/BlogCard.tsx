@@ -16,23 +16,36 @@ interface BlogCardProps {
   };
 }
 
+const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop';
+
 export function BlogCard({ post, lang, translations }: BlogCardProps) {
   const categoryColor = post.category?.color || '#606C38';
+  
+  // Filter out blob URLs (they're temporary and won't work after page reload)
+  let featuredImage = post.featured_image_url || DEFAULT_IMAGE;
+  if (featuredImage.startsWith('blob:')) {
+    featuredImage = DEFAULT_IMAGE;
+  }
+  
+  // Select content based on language
+  const isArabic = lang === 'ar';
+  const title = isArabic && post.title_ar ? post.title_ar : post.title;
+  const excerpt = isArabic && post.excerpt_ar ? post.excerpt_ar : post.excerpt;
 
   return (
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
       <Link href={`/${lang}/blog/${post.slug}`} className="relative h-64 overflow-hidden">
         <Image
-          src={post.featured_image_url}
-          alt={post.title}
+          src={featuredImage}
+          alt={title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
         {post.category && (
-          <div className="absolute top-4 left-4">
+          <div className={`absolute top-4 ${isArabic ? 'right-4' : 'left-4'}`}>
             <Badge 
               className="bg-white/90 text-slate-900 hover:bg-white border-none"
-              style={{ borderLeft: `4px solid ${categoryColor}` }}
+              style={{ borderLeft: isArabic ? 'none' : `4px solid ${categoryColor}`, borderRight: isArabic ? `4px solid ${categoryColor}` : 'none' }}
             >
               {post.category.name}
             </Badge>
@@ -40,7 +53,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
         )}
       </Link>
 
-      <div className="flex flex-col flex-1 p-6">
+      <div className={`flex flex-col flex-1 p-6 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
         <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
           <span>{format(new Date(post.published_at), 'dd MMM yyyy')}</span>
           <span>•</span>
@@ -52,12 +65,12 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
 
         <Link href={`/${lang}/blog/${post.slug}`}>
           <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-[#BC6C25] transition-colors line-clamp-2">
-            {post.title}
+            {title}
           </h3>
         </Link>
 
         <p className="text-slate-600 text-sm line-clamp-3 mb-6">
-          {post.excerpt}
+          {excerpt}
         </p>
 
         <div className="mt-auto flex items-center justify-between pt-4 border-t border-slate-50">

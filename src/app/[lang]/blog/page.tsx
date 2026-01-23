@@ -1,49 +1,77 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getDictionary } from "@/lib/dictionaries";
 import { BlogHero } from "@/components/blog/BlogHero";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { mockBlogPosts, mockCategories } from "@/data/mock-blog";
-
+import { BlogCardSkeleton } from "@/components/blog/BlogCardSkeleton";
 import { FilterSidebar } from "@/components/blog/FilterSidebar";
 import { BlogPagination } from "@/components/blog/BlogPagination";
 import { BlogEmptyState } from "@/components/blog/BlogEmptyState";
+import { getPublishedPosts, getBlogCategories } from "@/lib/blog/actions";
+import type { BlogPostFull, BlogCategory } from "@/types/blog";
+
+const POSTS_PER_PAGE = 9;
 
 export default function BlogPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = React.use(params);
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    const postsPerPage = 9;
     
     const [dict, setDict] = useState<Record<string, unknown> | null>(null);
+    const [posts, setPosts] = useState<BlogPostFull[]>([]);
+    const [categories, setCategories] = useState<BlogCategory[]>([]);
+    const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(true);
 
-    React.useEffect(() => {
+    useEffect(() => {
         getDictionary(lang, 'blog').then(setDict);
     }, [lang]);
 
-    const filteredPosts = useMemo(() => {
-        return mockBlogPosts.filter(post => {
-            const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                                post.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesCategory = !selectedCategory || post.category_id === selectedCategory;
-            return matchesSearch && matchesCategory;
-        });
-    }, [searchTerm, selectedCategory]);
+    useEffect(() => {
+        getBlogCategories().then(setCategories);
+    }, []);
 
-    const totalPages = Math.max(1, Math.ceil(filteredPosts.length / postsPerPage));
-
-    // Ensure current page stays within range when filters/search change
-    React.useEffect(() => {
-        if (currentPage > totalPages) {
-            setCurrentPage(totalPages);
+    const fetchPosts = useCallback(async () => {
+        setIsLoading(true);
+        try {
+            const result = await getPublishedPosts({
+                page: currentPage,
+                pageSize: POSTS_PER_PAGE,
+                categoryId: selectedCategory || undefined,
+                search: searchTerm || undefined,
+            });
+            setPosts(result.posts);
+            setTotalPages(result.pagination.totalPages || 1);
+        } catch (error) {
+            console.error('Error fetching posts:', error);
+            setPosts([]);
+            setTotalPages(1);
+        } finally {
+            setIsLoading(false);
         }
-    }, [currentPage, totalPages]);
-    const paginatedPosts = filteredPosts.slice(
-        (currentPage - 1) * postsPerPage,
-        currentPage * postsPerPage
-    );
+    }, [currentPage, selectedCategory, searchTerm]);
+
+    useEffect(() => {
+        fetchPosts();
+    }, [fetchPosts]);
+
+    const handleSearchChange = useCallback((val: string) => {
+        setSearchTerm(val);
+        setCurrentPage(1);
+    }, []);
+
+    const handleCategoryChange = useCallback((cat: string | null) => {
+        setSelectedCategory(cat);
+        setCurrentPage(1);
+    }, []);
+
+    const handleClearFilters = useCallback(() => {
+        setSelectedCategory(null);
+        setSearchTerm('');
+        setCurrentPage(1);
+    }, []);
 
     if (!dict) return null;
 
@@ -54,10 +82,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                 subtitle={dict.subtitle as string}
                 searchPlaceholder={dict.searchPlaceholder as string}
                 searchValue={searchTerm}
-                onSearchChange={(val) => {
-                    setSearchTerm(val);
-                    setCurrentPage(1);
-                }}
+                onSearchChange={handleSearchChange}
             />
 
             <div className="container mx-auto px-4 py-12">
@@ -65,17 +90,10 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                     {/* Sidebar */}
                     <div className="w-full lg:w-1/4 xl:w-1/5 lg:pr-4 xl:pr-6">
                         <FilterSidebar 
-                            categories={mockCategories}
+                            categories={categories}
                             selectedCategory={selectedCategory}
-                            onCategoryChange={(cat) => {
-                                setSelectedCategory(cat);
-                                setCurrentPage(1);
-                            }}
-                            onClearFilters={() => {
-                                setSelectedCategory(null);
-                                setSearchTerm('');
-                                setCurrentPage(1);
-                            }}
+                            onCategoryChange={handleCategoryChange}
+                            onClearFilters={handleClearFilters}
                             translations={{
                                 title: (dict.filtersLabel as string) || (dict.categories as string),
                                 category: (dict.categoryLabel as string) || (dict.category as string),
@@ -87,10 +105,16 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
 
                     {/* Content */}
                     <div className="w-full lg:w-3/4 xl:w-4/5">
-                        {paginatedPosts.length > 0 ? (
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                                {Array.from({ length: 6 }).map((_, i) => (
+                                    <BlogCardSkeleton key={i} />
+                                ))}
+                            </div>
+                        ) : posts.length > 0 ? (
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                                    {paginatedPosts.map((post) => (
+                                    {posts.map((post) => (
                                         <BlogCard 
                                             key={post.id} 
                                             post={post} 
@@ -103,7 +127,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                                         />
                                     ))}
                                 </div>
-                                {filteredPosts.length > postsPerPage && (
+                                {totalPages > 1 && (
                                     <div className="flex justify-center pt-10">
                                         <BlogPagination 
                                             currentPage={currentPage}
@@ -119,10 +143,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                                 description={dict.subtitle as string}
                                 showClearButton={!!selectedCategory || !!searchTerm}
                                 clearButtonText={dict.clearFilters as string}
-                                onClear={() => {
-                                    setSelectedCategory(null);
-                                    setSearchTerm('');
-                                }}
+                                onClear={handleClearFilters}
                             />
                         )}
                     </div>

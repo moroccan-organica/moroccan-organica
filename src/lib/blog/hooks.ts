@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { BlogPost, BlogPostFull, BlogCategory } from "@/types/blog";
+import type { BlogPostFull, BlogCategory } from "@/types/blog";
 
 // Query keys
 export const blogQueryKeys = {
@@ -30,12 +30,16 @@ interface PostFilters {
   search?: string;
   page?: number;
   pageSize?: number;
+  [key: string]: unknown;
 }
 
 interface PostInput {
   title: string;
+  titleAr?: string;
   content?: unknown;
+  contentAr?: unknown;
   excerpt?: string;
+  excerptAr?: string;
   categoryId?: string;
   tags?: string[];
   featuredImageUrl?: string;

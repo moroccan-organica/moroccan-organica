@@ -14,6 +14,16 @@ function generateSlug(title: string): string {
     .replace(/^-|-$/g, '');
 }
 
+function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T {
+  if (!jsonString) return fallback;
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch (error) {
+    console.warn('Failed to parse JSON:', error);
+    return fallback;
+  }
+}
+
 // GET /api/blog/posts/[id] - Get a single post
 export async function GET(
   request: NextRequest,
@@ -37,13 +47,16 @@ export async function GET(
     const formattedPost = {
       id: post.id,
       title: post.title,
+      title_ar: post.titleAr || '',
       slug: post.slug,
       excerpt: post.excerpt || '',
-      content: post.content ? JSON.parse(post.content) : { type: 'doc', content: [] },
+      excerpt_ar: post.excerptAr || '',
+      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
+      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
       featured_image_url: post.featuredImageUrl || '',
       author_id: post.authorId,
       category_id: post.categoryId || '',
-      tags: post.tags ? JSON.parse(post.tags) : [],
+      tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
       published_at: post.publishedAt?.toISOString() || '',
       created_at: post.createdAt.toISOString(),
@@ -85,7 +98,7 @@ export async function PUT(
 
     const { id } = await params;
     const body = await request.json();
-    const { title, content, excerpt, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
 
     const existingPost = await prisma.blogPost.findUnique({ where: { id } });
     if (!existingPost) {
@@ -107,8 +120,11 @@ export async function PUT(
         updateData.slug = uniqueSlug;
       }
     }
+    if (titleAr !== undefined) updateData.titleAr = titleAr || null;
     if (content !== undefined) updateData.content = JSON.stringify(content);
+    if (contentAr !== undefined) updateData.contentAr = contentAr ? JSON.stringify(contentAr) : null;
     if (excerpt !== undefined) updateData.excerpt = excerpt;
+    if (excerptAr !== undefined) updateData.excerptAr = excerptAr || null;
     if (categoryId !== undefined) updateData.categoryId = categoryId || null;
     if (tags !== undefined) updateData.tags = JSON.stringify(tags);
     if (featuredImageUrl !== undefined) updateData.featuredImageUrl = featuredImageUrl || null;
@@ -128,8 +144,54 @@ export async function PUT(
       include: {
         author: { select: { id: true, name: true, image: true } },
         category: true,
+        media: true,
       },
     });
+
+    // Update BlogMedia if featured image URL changed
+    if (featuredImageUrl !== undefined && featuredImageUrl && 
+        !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
+      // Check if media already exists for this post
+      const existingMedia = await prisma.blogMedia.findFirst({
+        where: {
+          postId: id,
+          mediaType: 'image',
+        },
+      });
+
+      if (existingMedia) {
+        // Update existing media URL
+        await prisma.blogMedia.update({
+          where: { id: existingMedia.id },
+          data: { url: featuredImageUrl },
+        });
+      } else {
+        // Check if media exists but not linked
+        const unlinkedMedia = await prisma.blogMedia.findFirst({
+          where: {
+            url: featuredImageUrl,
+            postId: null,
+          },
+        });
+
+        if (unlinkedMedia) {
+          // Link existing media to post
+          await prisma.blogMedia.update({
+            where: { id: unlinkedMedia.id },
+            data: { postId: id },
+          });
+        } else {
+          // Create new media entry
+          await prisma.blogMedia.create({
+            data: {
+              postId: id,
+              mediaType: 'image',
+              url: featuredImageUrl,
+            },
+          });
+        }
+      }
+    }
 
     return NextResponse.json({
       id: post.id,

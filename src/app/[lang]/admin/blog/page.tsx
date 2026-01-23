@@ -271,8 +271,11 @@ export default function BlogAdminPage() {
   const handleSavePost = useCallback(async (data: Partial<BlogPost>) => {
     const postInput = {
       title: data.title || '',
+      titleAr: data.title_ar,
       content: data.content,
+      contentAr: data.content_ar,
       excerpt: data.excerpt,
+      excerptAr: data.excerpt_ar,
       categoryId: data.category_id,
       tags: data.tags,
       featuredImageUrl: data.featured_image_url,

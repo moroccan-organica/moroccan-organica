@@ -22,10 +22,16 @@ interface PostFormProps {
 export function PostForm({ post, categories, onSave, onCancel, isLoading }: PostFormProps) {
   const isEditing = !!post;
 
-  // Form State
+  // Form State - English
   const [title, setTitle] = useState(post?.title || '');
   const [contentJson, setContentJson] = useState<JSONContent>(post?.content || { type: 'doc', content: [] });
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
+  
+  // Form State - Arabic
+  const [titleAr, setTitleAr] = useState(post?.title_ar || '');
+  const [contentArJson, setContentArJson] = useState<JSONContent>(post?.content_ar || { type: 'doc', content: [] });
+  const [excerptAr, setExcerptAr] = useState(post?.excerpt_ar || '');
+  const [editorInitialContentAr, setEditorInitialContentAr] = useState<JSONContent | string>(post?.content_ar ?? '');
   const [categoryId, setCategoryId] = useState(post?.category_id || '');
   const [tags, setTags] = useState<string[]>(post?.tags || []);
   const [tagInput, setTagInput] = useState('');
@@ -40,6 +46,8 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
 
   const featuredImageInputRef = useRef<HTMLInputElement>(null);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const editInitTimeoutRef = useRef<number | null>(null);
+  const draftRestoreTimeoutRef = useRef<number | null>(null);
 
   const slugPreview = useMemo(() => {
     return title.trim() ? generateSlug(title) : '';
@@ -57,46 +65,80 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
 
   // Update editor content when post data arrives (for edit mode)
   useEffect(() => {
+    if (editInitTimeoutRef.current) {
+      clearTimeout(editInitTimeoutRef.current);
+      editInitTimeoutRef.current = null;
+    }
+
     if (isEditing && post?.content) {
       const content = post.content;
-      setEditorInitialContent((prev) => {
-        if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
-        return prev;
-      });
-      setContentJson((prev) => {
-        if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
-        return prev;
-      });
+      editInitTimeoutRef.current = window.setTimeout(() => {
+        setEditorInitialContent((prev) => {
+          if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
+          return prev;
+        });
+        setContentJson((prev) => {
+          if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
+          return prev;
+        });
+      }, 0);
     }
+
+    return () => {
+      if (editInitTimeoutRef.current) {
+        clearTimeout(editInitTimeoutRef.current);
+        editInitTimeoutRef.current = null;
+      }
+    };
   }, [isEditing, post?.content]);
 
   // Restore draft from localStorage on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    try {
-      const raw = localStorage.getItem(DRAFT_KEY);
-      if (!raw) return;
-      const parsed = JSON.parse(raw);
-      
-      // Delay state updates to avoid synchronous setState in effect warning if needed, 
-      // though typically this is fine for initialization from localStorage.
-      if (parsed.title) setTitle(parsed.title);
-      if (parsed.content) {
-        setContentJson(parsed.content);
-        setEditorInitialContent(parsed.content);
-      }
-      if (parsed.excerpt) setExcerpt(parsed.excerpt);
-      if (parsed.category_id) setCategoryId(parsed.category_id);
-      if (parsed.tags) setTags(parsed.tags);
-      if (parsed.featured_image_url) {
-        setFeaturedImageUrl(parsed.featured_image_url);
-        setFeaturedImagePreview(parsed.featured_image_url);
-      }
-      if (parsed.meta_title) setMetaTitle(parsed.meta_title);
-      if (parsed.meta_description) setMetaDescription(parsed.meta_description);
-    } catch {
-      // ignore
+
+    if (draftRestoreTimeoutRef.current) {
+      clearTimeout(draftRestoreTimeoutRef.current);
+      draftRestoreTimeoutRef.current = null;
     }
+
+    draftRestoreTimeoutRef.current = window.setTimeout(() => {
+      try {
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        
+        if (parsed.title) setTitle(parsed.title);
+        if (parsed.content) {
+          setContentJson(parsed.content);
+          setEditorInitialContent(parsed.content);
+        }
+        if (parsed.excerpt) setExcerpt(parsed.excerpt);
+        // Arabic fields
+        if (parsed.title_ar) setTitleAr(parsed.title_ar);
+        if (parsed.content_ar) {
+          setContentArJson(parsed.content_ar);
+          setEditorInitialContentAr(parsed.content_ar);
+        }
+        if (parsed.excerpt_ar) setExcerptAr(parsed.excerpt_ar);
+        if (parsed.category_id) setCategoryId(parsed.category_id);
+        if (parsed.tags) setTags(parsed.tags);
+        if (parsed.featured_image_url) {
+          setFeaturedImageUrl(parsed.featured_image_url);
+          setFeaturedImagePreview(parsed.featured_image_url);
+        }
+        if (parsed.meta_title) setMetaTitle(parsed.meta_title);
+        if (parsed.meta_description) setMetaDescription(parsed.meta_description);
+      } catch {
+        // ignore
+      }
+    }, 0);
+
+    return () => {
+      if (draftRestoreTimeoutRef.current) {
+        clearTimeout(draftRestoreTimeoutRef.current);
+        draftRestoreTimeoutRef.current = null;
+      }
+    };
   }, [DRAFT_KEY]);
 
   // Auto-save draft to localStorage (debounced)
@@ -112,6 +154,9 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
           title,
           content: contentJson,
           excerpt,
+          title_ar: titleAr,
+          content_ar: contentArJson,
+          excerpt_ar: excerptAr,
           category_id: categoryId,
           tags,
           featured_image_url: featuredImageUrl,
@@ -129,7 +174,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [title, contentJson, excerpt, categoryId, tags, featuredImageUrl, metaTitle, metaDescription, DRAFT_KEY]);
+  }, [title, contentJson, excerpt, titleAr, contentArJson, excerptAr, categoryId, tags, featuredImageUrl, metaTitle, metaDescription, DRAFT_KEY]);
 
   // Featured Image Handlers
   const handleFeaturedImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,14 +226,63 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
 
   // Submit Handler
   const handleSubmit = useCallback(async (saveStatus: 'draft' | 'published' | 'review') => {
-    // In mock version, we don't upload files to backend
-    const finalFeaturedImageUrl = featuredImageUrl || featuredImagePreview || '';
+    let finalFeaturedImageUrl = featuredImageUrl || '';
+    
+    // Upload new image if a file was selected
+    if (featuredImageFile) {
+      try {
+        const formData = new FormData();
+        formData.append('file', featuredImageFile);
+        // Link to post if editing
+        if (post?.id) {
+          formData.append('postId', post.id);
+        }
+        
+        const response = await fetch('/api/blog/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        
+        if (!response.ok) {
+          const error = await response.json();
+          console.error('Upload failed:', error);
+          // Fallback: keep existing URL or use preview (but warn user)
+          if (!finalFeaturedImageUrl) {
+            alert('Failed to upload image. Please try again.');
+            return;
+          }
+        } else {
+          const data = await response.json();
+          finalFeaturedImageUrl = data.url;
+          
+          // Clean up blob URL if it was a preview
+          if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
+            URL.revokeObjectURL(featuredImagePreview);
+          }
+        }
+      } catch (error) {
+        console.error('Error uploading image:', error);
+        if (!finalFeaturedImageUrl) {
+          alert('Failed to upload image. Please try again.');
+          return;
+        }
+      }
+    } else if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
+      // If we have a blob preview but no file, it means user selected but didn't save properly
+      // In this case, we should not save the blob URL
+      if (!finalFeaturedImageUrl) {
+        finalFeaturedImageUrl = '';
+      }
+    }
     
     const postData: Partial<BlogPost> = {
       title,
+      title_ar: titleAr || undefined,
       slug: slugPreview,
       content: contentJson,
+      content_ar: contentArJson,
       excerpt,
+      excerpt_ar: excerptAr || undefined,
       category_id: categoryId || undefined,
       tags,
       featured_image_url: finalFeaturedImageUrl,
@@ -196,6 +290,15 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
     };
 
     await onSave(postData);
+    
+    // Clean up after successful save
+    if (featuredImageFile) {
+      setFeaturedImageFile(null);
+    }
+    if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
+      URL.revokeObjectURL(featuredImagePreview);
+      setFeaturedImagePreview(null);
+    }
     
     if (typeof window !== 'undefined') {
       try {
@@ -208,13 +311,17 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
     DRAFT_KEY,
     categoryId,
     contentJson,
+    contentArJson,
     excerpt,
+    excerptAr,
+    featuredImageFile,
     featuredImagePreview,
     featuredImageUrl,
     onSave,
     slugPreview,
     tags,
     title,
+    titleAr,
   ]);
 
   return (
@@ -279,6 +386,64 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
                 onChange={(e) => setExcerpt(e.target.value)}
                 placeholder="A brief summary of your article..."
                 className="flex min-h-[120px] w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#606C38] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none shadow-sm"
+              />
+            </div>
+
+            {/* Arabic Section Divider */}
+            <div className="relative py-6">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-slate-200" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-slate-50/30 px-4 text-sm font-bold text-slate-500 uppercase tracking-widest">
+                  المحتوى بالعربية (Arabic Content)
+                </span>
+              </div>
+            </div>
+
+            {/* Arabic Title */}
+            <div className="space-y-3">
+              <Label htmlFor="titleAr" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                العنوان (Title Arabic)
+              </Label>
+              <Input
+                id="titleAr"
+                value={titleAr}
+                onChange={(e) => setTitleAr(e.target.value)}
+                placeholder="أدخل عنوان المقال..."
+                dir="rtl"
+                className="text-2xl font-bold h-16 rounded-2xl border-slate-100 shadow-sm focus:ring-[#606C38] text-right"
+              />
+            </div>
+
+            {/* Arabic Content Editor */}
+            <div className="space-y-3">
+              <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                المحتوى (Content Arabic)
+              </Label>
+              <RichTextEditor
+                initialContent={editorInitialContentAr}
+                onChange={(_, json) => {
+                  if (json) setContentArJson(json);
+                }}
+                placeholder="اكتب محتوى المقال بالعربية..."
+                postId={post?.id}
+                dir="rtl"
+              />
+            </div>
+
+            {/* Arabic Excerpt */}
+            <div className="space-y-3">
+              <Label htmlFor="excerptAr" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                الملخص (Summary Arabic)
+              </Label>
+              <textarea
+                id="excerptAr"
+                value={excerptAr}
+                onChange={(e) => setExcerptAr(e.target.value)}
+                placeholder="ملخص قصير للمقال..."
+                dir="rtl"
+                className="flex min-h-[120px] w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#606C38] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none shadow-sm text-right"
               />
             </div>
           </div>

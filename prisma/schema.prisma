@@ -345,14 +345,14 @@ model BlogPost {
   slug             String        @unique
   excerpt          String?
   excerptAr        String?
-  content          String        // JSON content from TipTap
-  contentAr        String?
+  content          String        @db.LongText // JSON content from TipTap
+  contentAr        String?       @db.LongText
   featuredImageUrl String?
   authorId         String
   author           User          @relation(fields: [authorId], references: [id])
   categoryId       String?
   category         BlogCategory? @relation(fields: [categoryId], references: [id])
-  tags             String?       // JSON array of tags
+  tags             String?       @db.Text // JSON array of tags
   status           String        @default("draft") // draft, published, review, archived
   publishedAt      DateTime?
   viewCount        Int           @default(0)
@@ -374,7 +374,7 @@ model BlogMedia {
   postId        String?
   post          BlogPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
   mediaType     String    @default("image") // image, video
-  url           String
+  url           String    @db.LongText
   storagePath   String?
   altText       String?
   caption       String?

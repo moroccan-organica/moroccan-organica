@@ -1,4 +1,4 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, LanguageCode } from '@prisma/client';
 import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -40,7 +40,7 @@ async function main() {
     console.log('✅ Customer created:', customer.email);
 
     // Create customer address
-    const address = await prisma.address.create({
+    await prisma.address.create({
         data: {
             customerId: customer.id,
             label: 'Home',
@@ -56,7 +56,16 @@ async function main() {
     // ==========================================
     // 3. Create Categories with Translations
     // ==========================================
-    const categories = [
+    const categories: {
+        image: string;
+        translations: {
+            language: LanguageCode;
+            name: string;
+            slug: string;
+            metaTitle?: string;
+            metaDesc?: string;
+        }[];
+    }[] = [
         {
             image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
             translations: [
@@ -110,7 +119,7 @@ async function main() {
             ],
         },
         {
-            image: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80',
+            image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
             translations: [
                 {
                     language: 'en',
@@ -144,7 +153,7 @@ async function main() {
                 image: categoryData.image,
                 translations: {
                     create: categoryData.translations.map((t) => ({
-                        language: t.language as any,
+                        language: t.language as LanguageCode,
                         name: t.name,
                         slug: t.slug,
                         metaTitle: t.metaTitle,
@@ -165,7 +174,7 @@ async function main() {
     // ==========================================
 
     // Product 1: Organic Virgin Argan Oil
-    const arganOil = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[0].id,
             sku: 'ARG-VIRGIN-001',
@@ -239,7 +248,7 @@ async function main() {
     console.log('✅ Product created: Organic Virgin Argan Oil');
 
     // Product 2: Prickly Pear Seed Oil
-    const pricklyPearOil = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[0].id,
             sku: 'PRICKLY-001',
@@ -307,7 +316,7 @@ async function main() {
     console.log('✅ Product created: Prickly Pear Seed Oil');
 
     // Product 3: Moroccan Black Soap
-    const blackSoap = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'BLACKSOAP-001',
@@ -374,7 +383,7 @@ async function main() {
     console.log('✅ Product created: Moroccan Black Soap');
 
     // Product 4: Damascena Rose Water
-    const roseWater = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'ROSEWATER-001',
@@ -439,7 +448,7 @@ async function main() {
     console.log('✅ Product created: Damascena Rose Water');
 
     // Product 5: Ghassoul Lava Clay
-    const ghassoulClay = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'GHASSOUL-001',
@@ -505,7 +514,7 @@ async function main() {
     console.log('✅ Product created: Ghassoul Lava Clay');
 
     // Product 6: Culinary Argan Oil
-    const culinaryArgan = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[2].id,
             sku: 'ARG-CULINARY-001',
@@ -571,7 +580,7 @@ async function main() {
     console.log('✅ Product created: Culinary Argan Oil');
 
     // Product 7: Rosemary Essential Oil
-    const rosemaryOil = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'ESS-ROSEMARY-001',
@@ -631,7 +640,7 @@ async function main() {
     console.log('✅ Product created: Rosemary Essential Oil');
 
     // Product 8: Cedarwood Essential Oil
-    const cedarwoodOil = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'ESS-CEDAR-001',
@@ -691,7 +700,7 @@ async function main() {
     console.log('✅ Product created: Cedarwood Essential Oil');
 
     // Product 9: Moroccan Blue Tansy
-    const blueTansy = await prisma.product.create({
+    await prisma.product.create({
         data: {
             categoryId: createdCategories[1].id,
             sku: 'ESS-BLUETANSY-001',
@@ -754,7 +763,7 @@ async function main() {
     // ==========================================
     // 5. Create Blog Posts
     // ==========================================
-    const blog1 = await prisma.post.create({
+    await prisma.post.create({
         data: {
             published: true,
             authorName: 'Admin User',
@@ -806,7 +815,7 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
     });
     console.log('✅ Blog post created: Benefits of Argan Oil');
 
-    const blog2 = await prisma.post.create({
+    await prisma.post.create({
         data: {
             published: true,
             authorName: 'Admin User',
@@ -842,7 +851,7 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
     // ==========================================
     // 6. Create Static Pages (Based on Old Site)
     // ==========================================
-    const aboutPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'ABOUT_US',
             translations: {
@@ -960,7 +969,7 @@ Les pratiques commerciales d'Organica Group sont basées sur 3 principes fondame
     });
     console.log('✅ Static page created: About Us');
 
-    const contactPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'CONTACT',
             translations: {
@@ -1103,7 +1112,7 @@ Restez connectés avec nous sur les réseaux sociaux
     });
     console.log('✅ Static page created: Contact');
 
-    const privacyPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'PRIVACY_POLICY',
             translations: {
@@ -1329,7 +1338,7 @@ Téléphone: +212 648-273228`,
     });
     console.log('✅ Static page created: Privacy Policy');
 
-    const deliveryPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'DELIVERY_INFO',
             translations: {
@@ -1387,7 +1396,7 @@ Toutes les commandes sont sujettes à la disponibilité des produits. Expéditio
     });
     console.log('✅ Static page created: Delivery Information');
 
-    const termsPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'TERMS_CONDITIONS',
             translations: {
@@ -1434,7 +1443,7 @@ Ces conditions sont régies par les lois du Maroc.`,
     });
     console.log('✅ Static page created: Terms & Conditions');
 
-    const homePage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'HOME',
             translations: {
@@ -1501,7 +1510,7 @@ Nous pouvons expédier nos produits bio en Europe et dans le monde entier par fr
     });
     console.log('✅ Static page created: Home Page');
 
-    const privateLabelPage = await prisma.staticPage.create({
+    await prisma.staticPage.create({
         data: {
             systemName: 'PRIVATE_LABEL',
             translations: {

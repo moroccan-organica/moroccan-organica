@@ -14,6 +14,16 @@ function generateSlug(title: string): string {
     .replace(/^-|-$/g, '');
 }
 
+function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T {
+  if (!jsonString) return fallback;
+  try {
+    return JSON.parse(jsonString) as T;
+  } catch (error) {
+    console.warn('Failed to parse JSON:', error);
+    return fallback;
+  }
+}
+
 // GET /api/blog/posts - List all posts
 export async function GET(request: NextRequest) {
   try {
@@ -60,13 +70,16 @@ export async function GET(request: NextRequest) {
     const formattedPosts = posts.map((post) => ({
       id: post.id,
       title: post.title,
+      title_ar: post.titleAr || '',
       slug: post.slug,
       excerpt: post.excerpt || '',
-      content: post.content ? JSON.parse(post.content) : { type: 'doc', content: [] },
+      excerpt_ar: post.excerptAr || '',
+      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
+      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
       featured_image_url: post.featuredImageUrl || '',
       author_id: post.authorId,
       category_id: post.categoryId || '',
-      tags: post.tags ? JSON.parse(post.tags) : [],
+      tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
       published_at: post.publishedAt?.toISOString() || '',
       created_at: post.createdAt.toISOString(),
@@ -110,7 +123,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { title, content, excerpt, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
 
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 });
@@ -129,9 +142,12 @@ export async function POST(request: NextRequest) {
     const post = await prisma.blogPost.create({
       data: {
         title,
+        titleAr: titleAr || null,
         slug: uniqueSlug,
         content: JSON.stringify(content || { type: 'doc', content: [] }),
+        contentAr: contentAr ? JSON.stringify(contentAr) : null,
         excerpt: excerpt || '',
+        excerptAr: excerptAr || null,
         categoryId: categoryId || null,
         tags: JSON.stringify(tags || []),
         featuredImageUrl: featuredImageUrl || null,
@@ -145,8 +161,37 @@ export async function POST(request: NextRequest) {
       include: {
         author: { select: { id: true, name: true, image: true } },
         category: true,
+        media: true,
       },
     });
+
+    // If featured image URL is provided, link it to the post in BlogMedia
+    if (featuredImageUrl && !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
+      // Check if media already exists (from upload API)
+      const existingMedia = await prisma.blogMedia.findFirst({
+        where: {
+          url: featuredImageUrl,
+          postId: null, // Not linked yet
+        },
+      });
+
+      if (existingMedia) {
+        // Link existing media to post
+        await prisma.blogMedia.update({
+          where: { id: existingMedia.id },
+          data: { postId: post.id },
+        });
+      } else {
+        // Create new media entry
+        await prisma.blogMedia.create({
+          data: {
+            postId: post.id,
+            mediaType: 'image',
+            url: featuredImageUrl,
+          },
+        });
+      }
+    }
 
     return NextResponse.json({ id: post.id, slug: post.slug }, { status: 201 });
   } catch (error) {

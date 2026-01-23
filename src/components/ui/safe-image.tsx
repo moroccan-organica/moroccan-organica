@@ -26,9 +26,18 @@ export function SafeImage({
   // Derive the current source - if this src had an error, use fallback
   const currentSrc = useMemo(() => {
     const srcString = typeof src === 'string' ? src : String(src);
+    
+    // If this src had an error, use fallback
     if (errorKey === srcString) {
       return fallbackSrc;
     }
+    
+    // For blob URLs, they're temporary and won't work after page reload
+    // Use fallback immediately to avoid broken images
+    if (srcString.startsWith('blob:')) {
+      return fallbackSrc;
+    }
+    
     return src;
   }, [src, errorKey, fallbackSrc]);
 
