@@ -9,9 +9,10 @@ interface LayoutContentProps {
   children: React.ReactNode;
   dict: Record<string, unknown>;
   lang: string;
+  topProducts?: { title: string; slug: string }[];
 }
 
-export function LayoutContent({ children, dict, lang }: LayoutContentProps) {
+export function LayoutContent({ children, dict, lang, topProducts = [] }: LayoutContentProps) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.includes('/admin') || pathname?.includes('/login');
 
@@ -21,7 +22,7 @@ export function LayoutContent({ children, dict, lang }: LayoutContentProps) {
 
   return (
     <>
-      <Header dict={dict} lang={lang} />
+      <Header dict={dict} lang={lang} topProducts={topProducts} />
       {children}
       <Footer dict={dict} />
       <WhatsAppButton />

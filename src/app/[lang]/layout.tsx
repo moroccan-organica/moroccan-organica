@@ -4,6 +4,7 @@ import { Inter, Playfair_Display, Cairo } from "next/font/google";
 import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
 import { LayoutContent } from "@/components/common/LayoutContent";
+import { getTopSaleProducts } from "@/lib/queries";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,6 +42,7 @@ export default async function RootLayout({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang, 'common');
+  const topProducts = await getTopSaleProducts(lang);
 
   return (
     <html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>
@@ -49,7 +51,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <Providers lang={lang}>
-          <LayoutContent dict={dict} lang={lang}>
+          <LayoutContent dict={dict} lang={lang} topProducts={topProducts}>
             {children}
           </LayoutContent>
         </Providers>

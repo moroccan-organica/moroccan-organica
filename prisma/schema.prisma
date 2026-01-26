@@ -256,8 +256,8 @@ model StaticPageTranslation {
   staticPage   StaticPage   @relation(fields: [staticPageId], references: [id], onDelete: Cascade)
   language     LanguageCode
   
-  title        String
-  content      String?      @db.LongText
+  h1           String?      @db.Text
+  description  String?      @db.Text
   slug         String
   
   // SEO
@@ -383,4 +383,30 @@ model BlogMedia {
   createdAt     DateTime  @default(now())
 
   @@index([postId])
+}
+
+// --- 6. GLOBAL SEO SETTINGS ---
+model GlobalSeoSetting {
+  id            String                 @id @default(cuid())
+  ogImage       String?
+  twitterHandle String?
+  facebookPage  String?
+  translations  GlobalSeoTranslation[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
+}
+
+model GlobalSeoTranslation {
+  id                 String           @id @default(cuid())
+  globalSeoSettingId String
+  globalSeoSetting   GlobalSeoSetting @relation(fields: [globalSeoSettingId], references: [id], onDelete: Cascade)
+  language           LanguageCode
+  
+  siteName           String?
+  titleSuffix        String?
+  defaultMetaDesc    String?          @db.Text
+  defaultKeywords    String?
+  
+  @@unique([globalSeoSettingId, language])
+  @@index([globalSeoSettingId])
 }

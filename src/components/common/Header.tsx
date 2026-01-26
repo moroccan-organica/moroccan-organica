@@ -11,9 +11,10 @@ type Dict = Record<string, unknown>;
 interface HeaderProps {
     dict: Dict;
     lang: string;
+    topProducts?: { title: string; slug: string }[];
 }
 
-const Header = ({ dict, lang }: HeaderProps) => {
+const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -39,12 +40,14 @@ const Header = ({ dict, lang }: HeaderProps) => {
         return typeof value === 'string' ? value : key;
     };
 
-    const productDropdownItems = [
-        { name: t('products.essentialOils'), href: `/${lang}/products` },
-        { name: t('products.vegetableOils'), href: `/${lang}/products` },
-        { name: t('products.driedPlants'), href: `/${lang}/products` },
-        { name: t('products.wellness'), href: `/${lang}/products` },
-    ];
+    const productDropdownItems = topProducts.length > 0
+        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/shop/${p.slug}` }))
+        : [
+            { name: t('products.essentialOils'), href: `/${lang}/products` },
+            { name: t('products.vegetableOils'), href: `/${lang}/products` },
+            { name: t('products.driedPlants'), href: `/${lang}/products` },
+            { name: t('products.wellness'), href: `/${lang}/products` },
+        ];
 
     const benefitsDropdownItems = [
         { name: t('nav.certifications'), href: "#trust" },

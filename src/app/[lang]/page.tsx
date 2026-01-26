@@ -8,45 +8,77 @@ import TrustSection from "@/components/sections/TrustSection";
 import InstagramSection from "@/components/sections/InstagramSection";
 import RFQSection from "@/components/sections/RFQSection";
 import { homePageData } from "@/data/home";
-import { seoData } from "@/data/seo";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
+import { getStaticPageBySystemName, getGlobalSeoSettings, getFeaturedProducts, getTopSaleProducts } from "@/lib/queries";
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const page = await getStaticPageBySystemName('HOME', lang);
+  const globalSeo = await getGlobalSeoSettings(lang);
+
+  const title = page?.translation?.metaTitle || page?.translation?.h1 || globalSeo?.translation?.siteName || "Moroccan Organica";
+  const description = page?.translation?.metaDesc || globalSeo?.translation?.defaultMetaDesc || "";
+  const keywords = page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "";
+
   return {
-    title: seoData.title,
-    description: seoData.description,
-    keywords: seoData.keywords,
-    openGraph: seoData.openGraph,
+    title: title,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title: title,
+      description: description,
+      images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
+      type: 'website',
+    },
+    alternates: {
+      canonical: page?.translation?.canonical || undefined,
+    }
   }
 }
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
   const dict = await getDictionary(lang, 'home');
+  const page = await getStaticPageBySystemName('HOME', lang);
+  const featuredProducts = await getFeaturedProducts(lang);
+  const topSaleProducts = await getTopSaleProducts(lang);
 
   // Merge localized content into data structures
   const heroData = {
     ...homePageData.hero,
     ...dict.hero,
-    slides: homePageData.hero.slides.map((slide, i) => ({
-      ...slide,
-      ...dict.hero.slides[i]
-    }))
+    slides: homePageData.hero.slides.map((slide, i) => {
+      if (i === 0 && page?.translation) {
+        return {
+          ...slide,
+          ...dict.hero.slides[i],
+          heading: page.translation.h1 || slide.heading,
+          description: page.translation.description || slide.description
+        };
+      }
+      return {
+        ...slide,
+        ...dict.hero.slides[i]
+      };
+    })
   };
+
   const aboutData = { ...homePageData.about, ...dict.about };
+
   const categoriesData = {
     ...homePageData.categories,
     ...dict.categories,
-    items: homePageData.categories.items.map((item, i) => ({
+    items: featuredProducts.length > 0 ? featuredProducts : homePageData.categories.items.map((item, i) => ({
       ...item,
       ...dict.categories.items[i]
     }))
   };
+
   const productsData = {
     ...homePageData.productsSection,
     ...dict.productsSection,
-    items: homePageData.productsSection.items.map((item, i) => ({
+    items: topSaleProducts.length > 0 ? topSaleProducts : homePageData.productsSection.items.map((item, i) => ({
       ...item,
       ...dict.productsSection.items[i]
     }))
@@ -74,6 +106,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   return (
     <main className="min-h-screen">
       <Hero data={heroData} lang={lang} />
+
       <PrivateLabelSection />
       <TrustedSupplierSection data={categoriesData} />
       <ProductsSection data={productsData} />
