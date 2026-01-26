@@ -133,17 +133,20 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                 {/* Dropdown Menu */}
                                 {link.hasDropdown && openDropdown === link.name && (
                                     <div
-                                        className={`absolute top-full mt-2 py-2 bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-xl min-w-[180px] z-50 animate-in fade-in slide-in-from-top-2 duration-200 ${isRTL ? 'right-0' : 'left-0'}`}
+                                        className={`absolute top-full pt-2 z-50 animate-in fade-in slide-in-from-top-1 duration-200 ${isRTL ? 'right-0' : 'left-0'}`}
                                     >
-                                        {link.dropdownItems?.map((item) => (
-                                            <Link
-                                                key={item.name}
-                                                href={item.href}
-                                                className={`block px-4 py-2 text-sm text-gray-300 hover:text-white hover:bg-[#118f14]/20 transition-colors duration-150 ${isRTL ? 'text-right' : 'text-left'}`}
-                                            >
-                                                {item.name}
-                                            </Link>
-                                        ))}
+                                        <div className="bg-[#1a1a1a] border border-gray-700 rounded-lg shadow-xl min-w-[200px] py-1 overflow-hidden">
+                                            {link.dropdownItems?.map((item) => (
+                                                <Link
+                                                    key={item.name}
+                                                    href={item.href}
+                                                    onClick={() => setOpenDropdown(null)}
+                                                    className={`block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-[#118f14]/20 transition-colors duration-150 ${isRTL ? 'text-right' : 'text-left'}`}
+                                                >
+                                                    {item.name}
+                                                </Link>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
                             </div>
