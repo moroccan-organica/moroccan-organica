@@ -284,9 +284,11 @@ model staticpage {
 model staticpagetranslation {
   id           String                         @id
   staticPageId String
-  language     staticpagetranslation_language
-  title        String
-  content      String?                        @db.LongText
+  staticPage   StaticPage   @relation(fields: [staticPageId], references: [id], onDelete: Cascade)
+  language     LanguageCode
+  
+  h1           String?      @db.Text
+  description  String?      @db.Text
   slug         String
   metaTitle    String?
   metaDesc     String?                        @db.Text
@@ -301,53 +303,91 @@ model staticpagetranslation {
   @@index([staticPageId], map: "StaticPageTranslation_staticPageId_idx")
 }
 
-model user {
-  id            String     @id
-  name          String?
-  email         String?    @unique(map: "User_email_key")
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  role          user_role  @default(ADMIN)
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime
-  blogpost      blogpost[]
+model BlogCategory {
+  id          String     @id @default(cuid())
+  name        String
+  nameAr      String?
+  slug        String     @unique
+  description String?
+  color       String?
+  icon        String?
+  sortOrder   Int        @default(0)
+  posts       BlogPost[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([slug])
 }
 
-enum categorytranslation_language {
-  en
-  ar
-  fr
+model BlogPost {
+  id               String        @id @default(cuid())
+  title            String
+  titleAr          String?
+  slug             String        @unique
+  excerpt          String?
+  excerptAr        String?
+  content          String        @db.LongText // JSON content from TipTap
+  contentAr        String?       @db.LongText
+  featuredImageUrl String?
+  authorId         String
+  author           User          @relation(fields: [authorId], references: [id])
+  categoryId       String?
+  category         BlogCategory? @relation(fields: [categoryId], references: [id])
+  tags             String?       @db.Text // JSON array of tags
+  status           String        @default("draft") // draft, published, review, archived
+  publishedAt      DateTime?
+  viewCount        Int           @default(0)
+  readTimeMinutes  Int           @default(5)
+  metaTitle        String?
+  metaDescription  String?
+  media            BlogMedia[]
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([slug])
+  @@index([status])
+  @@index([authorId])
+  @@index([categoryId])
 }
 
-enum posttranslation_language {
-  en
-  ar
-  fr
+model BlogMedia {
+  id            String    @id @default(cuid())
+  postId        String?
+  post          BlogPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
+  mediaType     String    @default("image") // image, video
+  url           String    @db.LongText
+  storagePath   String?
+  altText       String?
+  caption       String?
+  fileSizeBytes Int?
+  mimeType      String?
+  createdAt     DateTime  @default(now())
+
+  @@index([postId])
 }
 
-enum producttranslation_language {
-  en
-  ar
-  fr
+// --- 6. GLOBAL SEO SETTINGS ---
+model GlobalSeoSetting {
+  id            String                 @id @default(cuid())
+  ogImage       String?
+  twitterHandle String?
+  facebookPage  String?
+  translations  GlobalSeoTranslation[]
+  createdAt     DateTime               @default(now())
+  updatedAt     DateTime               @updatedAt
 }
 
-enum staticpagetranslation_language {
-  en
-  ar
-  fr
-}
-
-enum order_status {
-  PENDING
-  PROCESSING
-  SHIPPED
-  DELIVERED
-  CANCELLED
-  REFUNDED
-}
-
-enum user_role {
-  ADMIN
-  STAFF
+model GlobalSeoTranslation {
+  id                 String           @id @default(cuid())
+  globalSeoSettingId String
+  globalSeoSetting   GlobalSeoSetting @relation(fields: [globalSeoSettingId], references: [id], onDelete: Cascade)
+  language           LanguageCode
+  
+  siteName           String?
+  titleSuffix        String?
+  defaultMetaDesc    String?          @db.Text
+  defaultKeywords    String?
+  
+  @@unique([globalSeoSettingId, language])
+  @@index([globalSeoSettingId])
 }

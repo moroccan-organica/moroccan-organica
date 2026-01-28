@@ -13,7 +13,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Plus,
-  FileText
+  FileText,
+  Search,
+  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
@@ -38,6 +40,8 @@ const navItems: NavItem[] = [
   },
   { label: 'Orders', path: '/admin/orders', icon: ShoppingCart },
   { label: 'Blog', path: '/admin/blog', icon: FileText },
+  { label: 'SEO Settings', path: '/admin/seo', icon: Search },
+  { label: 'Static Pages', path: '/admin/static-pages', icon: BookOpen },
   { label: 'Settings', path: '/admin/settings', icon: Settings },
 ];
 
