@@ -9,6 +9,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "www.paypalobjects.com",
+      },
+      {
+        protocol: "https",
         hostname: "**",
       },
       {
@@ -19,7 +23,7 @@ const nextConfig: NextConfig = {
     // Allow data URLs
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.paypal.com https://www.paypalobjects.com; frame-src 'self' https://www.paypal.com; connect-src 'self' https://www.paypal.com; sandbox;",
   },
   experimental: {
     serverActions: {

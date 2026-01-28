@@ -12,15 +12,27 @@ import { ShoppingCart, Trash2, Plus, Minus } from "lucide-react";
 import Image from "next/image";
 import { useCart } from "./CartContext";
 import { useEffect, useState, useRef } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 interface CartDrawerProps {
     isRTL?: boolean;
+    lang?: string;
 }
 
-const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
-    const { items, updateQuantity, removeItem, totalItems, totalPrice } = useCart();
+const CartDrawer = ({ isRTL = false, lang = "en" }: CartDrawerProps) => {
+    const { items, updateQuantity, removeItem, totalItems, totalPrice, isCartOpen, setIsCartOpen } = useCart();
     const [isAnimating, setIsAnimating] = useState(false);
     const prevTotalItemsRef = useRef(totalItems);
+    const pathname = usePathname();
+
+    // Extract lang from pathname if not provided
+    const currentLang = lang || (pathname?.split('/')[1] || 'en');
+
+    useEffect(() => {
+        // Close drawer when pathname changes (navigation)
+        setIsCartOpen(false);
+    }, [pathname, setIsCartOpen]);
 
     useEffect(() => {
         // Détecter quand un produit est ajouté (totalItems augmente)
@@ -36,20 +48,18 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
     }, [totalItems]);
 
     return (
-        <Sheet>
+        <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger asChild>
                 <button className={`relative cursor-pointer group ${isAnimating ? 'animate-bounce' : ''}`}>
-                    <ShoppingCart 
-                        className={`w-6 h-6 text-white group-hover:text-[#118f14] transition-all duration-300 ${
-                            isAnimating ? 'scale-125 rotate-12' : ''
-                        }`} 
+                    <ShoppingCart
+                        className={`w-6 h-6 text-white group-hover:text-[#118f14] transition-all duration-300 ${isAnimating ? 'scale-125 rotate-12' : ''
+                            }`}
                     />
                     {totalItems > 0 && (
                         <div
                             className={`absolute -top-2 ${isRTL ? "-left-2" : "-right-2"
-                                } w-5 h-5 bg-[#118f14] rounded-full flex items-center justify-center transition-all duration-300 ${
-                                isAnimating ? 'scale-150 animate-pulse' : ''
-                            }`}
+                                } w-5 h-5 bg-[#118f14] rounded-full flex items-center justify-center transition-all duration-300 ${isAnimating ? 'scale-150 animate-pulse' : ''
+                                }`}
                         >
                             <span className="text-white text-xs font-bold">{totalItems}</span>
                         </div>
@@ -58,7 +68,7 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
             </SheetTrigger>
             <SheetContent
                 side={isRTL ? "left" : "right"}
-                className="w-full sm:max-w-md bg-background border-border z-100"
+                className="w-full sm:max-w-md bg-background border-border z-[100]"
             >
                 <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">
@@ -128,12 +138,24 @@ const CartDrawer = ({ isRTL = false }: CartDrawerProps) => {
                                     <span>{isRTL ? "المجموع" : "Total"}</span>
                                     <span className="text-primary">${totalPrice.toFixed(2)}</span>
                                 </div>
-                                <Button className="w-full btn-accent">
-                                    {isRTL ? "إتمام الطلب" : "Checkout"}
-                                </Button>
-                                <Button variant="outline" className="w-full">
-                                    {isRTL ? "متابعة التسوق" : "Continue Shopping"}
-                                </Button>
+                                <Link
+                                    href={`/${currentLang}/checkout`}
+                                    className="block"
+                                    onClick={() => setIsCartOpen(false)}
+                                >
+                                    <Button className="w-full btn-accent">
+                                        {isRTL ? "إتمام الطلب" : "Checkout"}
+                                    </Button>
+                                </Link>
+                                <Link
+                                    href={`/${currentLang}/shop`}
+                                    className="block"
+                                    onClick={() => setIsCartOpen(false)}
+                                >
+                                    <Button variant="outline" className="w-full">
+                                        {isRTL ? "متابعة التسوق" : "Continue Shopping"}
+                                    </Button>
+                                </Link>
                             </div>
                         </>
                     )}

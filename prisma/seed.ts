@@ -3,6 +3,101 @@ import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
+// Helper function to upsert products
+async function upsertProduct(productData: {
+    sku: string;
+    categoryId: string;
+    basePrice: number;
+    stock: number;
+    isAvailable: boolean;
+    isFeatured: boolean;
+    isTopSale: boolean;
+    translations: Array<{
+        language: LanguageCode;
+        name: string;
+        slug: string;
+        description?: string;
+        metaTitle?: string;
+        metaDesc?: string;
+        keywords?: string;
+        ogImage?: string;
+    }>;
+    variants: Array<{
+        sku: string;
+        sizeName: string;
+        price: number;
+        stock: number;
+    }>;
+    images: Array<{
+        url: string;
+        isPrimary: boolean;
+    }>;
+}) {
+    const existingProduct = await prisma.product.findUnique({
+        where: { sku: productData.sku },
+        include: { translations: true, variants: true, images: true },
+    });
+
+    if (existingProduct) {
+        // Update existing product
+        return await prisma.product.update({
+            where: { id: existingProduct.id },
+            data: {
+                categoryId: productData.categoryId,
+            basePrice: productData.basePrice,
+            stock: productData.stock,
+            isAvailable: productData.isAvailable,
+                isFeatured: productData.isFeatured,
+                isTopSale: productData.isTopSale,
+                translations: {
+                    deleteMany: {},
+                    create: productData.translations,
+                },
+                variants: {
+                    deleteMany: {},
+                    create: productData.variants,
+                },
+                images: {
+                    deleteMany: {},
+                    create: productData.images,
+                },
+            },
+            include: {
+                translations: true,
+                variants: true,
+                images: true,
+            },
+        });
+    } else {
+        // Create new product
+        return await prisma.product.create({
+            data: {
+                sku: productData.sku,
+                categoryId: productData.categoryId,
+            basePrice: productData.basePrice,
+            stock: productData.stock,
+            isAvailable: productData.isAvailable,
+                isFeatured: productData.isFeatured,
+                isTopSale: productData.isTopSale,
+                translations: {
+                    create: productData.translations,
+                },
+                variants: {
+                    create: productData.variants,
+                },
+                images: {
+                    create: productData.images,
+                },
+            },
+            include: {
+                translations: true,
+                variants: true,
+                images: true,
+            },
+        });
+    }
+}
+
 async function main() {
     console.log('🌱 Starting database seeding...');
 
@@ -148,25 +243,67 @@ async function main() {
 
     const createdCategories = [];
     for (const categoryData of categories) {
-        const category = await prisma.category.create({
-            data: {
-                image: categoryData.image,
+        // Find existing category by English slug
+        const enTranslation = categoryData.translations.find(t => t.language === 'en');
+        if (!enTranslation) continue;
+
+        const existingCategory = await prisma.category.findFirst({
+            where: {
                 translations: {
-                    create: categoryData.translations.map((t) => ({
-                        language: t.language as LanguageCode,
-                        name: t.name,
-                        slug: t.slug,
-                        metaTitle: t.metaTitle,
-                        metaDesc: t.metaDesc,
-                    })),
+                    some: {
+                        language: 'en',
+                        slug: enTranslation.slug,
+                    },
                 },
             },
-            include: {
-                translations: true,
-            },
+            include: { translations: true },
         });
+
+        let category;
+        if (existingCategory) {
+            // Update existing category
+            category = await prisma.category.update({
+                where: { id: existingCategory.id },
+                data: {
+                    image: categoryData.image,
+                    translations: {
+                        deleteMany: {},
+                        create: categoryData.translations.map((t) => ({
+                            language: t.language as LanguageCode,
+                            name: t.name,
+                            slug: t.slug,
+                    metaTitle: t.metaTitle,
+                    metaDesc: t.metaDesc,
+                        })),
+                    },
+                },
+                include: {
+                    translations: true,
+                },
+            });
+            console.log('✅ Category updated:', category.translations[0].name);
+        } else {
+            // Create new category
+            category = await prisma.category.create({
+                data: {
+                    image: categoryData.image,
+                    translations: {
+                        create: categoryData.translations.map((t) => ({
+                            language: t.language as LanguageCode,
+                            name: t.name,
+                            slug: t.slug,
+                    metaTitle: t.metaTitle,
+                    metaDesc: t.metaDesc,
+                        })),
+                    },
+                },
+                include: {
+                    translations: true,
+                },
+            });
+            console.log('✅ Category created:', category.translations[0].name);
+        }
         createdCategories.push(category);
-        console.log('✅ Category created:', category.translations[0].name);
     }
 
     // ==========================================
@@ -174,589 +311,525 @@ async function main() {
     // ==========================================
 
     // Product 1: Organic Virgin Argan Oil
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[0].id,
-            sku: 'ARG-VIRGIN-001',
-            basePrice: 35.00,
-            stock: 200,
-            isAvailable: true,
-            isFeatured: true,
-            isTopSale: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Virgin Argan Oil',
+    await upsertProduct({
+        categoryId: createdCategories[0].id,
+        sku: 'ARG-VIRGIN-001',
+        basePrice: 35.00,
+        stock: 200,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: true,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Virgin Argan Oil',
                         slug: 'moroccan-wholesale-suppliers-of-argan-oil',
-                        description: 'Buy Organic argan oil 100% pure in bulk, certified direct from Morocco. Cold-pressed from Atlas Mountain kernels. Fights against aging skin, restores vital functions, and protects against dehydration. Rich in Vitamin E and essential fatty acids. Certified CCPB/USDA NOP/ECOCERT.',
-                        metaTitle: 'Organic Virgin Argan Oil - 100% Pure Certified | Wholesale',
-                        metaDesc: 'Premium organic argan oil wholesale from Morocco. CCPB/USDA certified. Cold-pressed, rich in Vitamin E. Bulk quantities available.',
+                description: 'Buy Organic argan oil 100% pure in bulk, certified direct from Morocco. Cold-pressed from Atlas Mountain kernels. Fights against aging skin, restores vital functions, and protects against dehydration. Rich in Vitamin E and essential fatty acids. Certified CCPB/USDA NOP/ECOCERT.',
+                metaTitle: 'Organic Virgin Argan Oil - 100% Pure Certified | Wholesale',
+                metaDesc: 'Premium organic argan oil wholesale from Morocco. CCPB/USDA certified. Cold-pressed, rich in Vitamin E. Bulk quantities available.',
                         keywords: 'argan oil, organic argan oil, virgin argan oil, wholesale argan oil, certified argan oil',
                         ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت الأركان العضوي البكر',
+            },
+            {
+                language: 'ar',
+                name: 'زيت الأركان العضوي البكر',
                         slug: 'زيت-الأركان-العضوي-البكر',
-                        description: 'زيت الأركان العضوي 100% نقي معتمد من المغرب. معصور على البارد من نوى جبال الأطلس. يحارب شيخوخة البشرة ويحمي من الجفاف. غني بفيتامين E.',
-                        metaTitle: 'زيت الأركان العضوي البكر - 100% نقي معتمد',
-                        metaDesc: 'زيت الأركان المغربي بالجملة. معتمد CCPB/USDA. معصور على البارد.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile d\'Argan Vierge Bio',
+                description: 'زيت الأركان العضوي 100% نقي معتمد من المغرب. معصور على البارد من نوى جبال الأطلس. يحارب شيخوخة البشرة ويحمي من الجفاف. غني بفيتامين E.',
+                metaTitle: 'زيت الأركان العضوي البكر - 100% نقي معتمد',
+                metaDesc: 'زيت الأركان المغربي بالجملة. معتمد CCPB/USDA. معصور على البارد.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile d\'Argan Vierge Bio',
                         slug: 'huile-argan-vierge-bio',
-                        description: 'Huile d\'argan bio 100% pure certifiée du Maroc. Pressée à froid. Lutte contre le vieillissement cutané. Riche en vitamine E. Certifiée CCPB/USDA/ECOCERT.',
-                        metaTitle: 'Huile d\'Argan Vierge Bio - 100% Pure Certifiée',
-                        metaDesc: 'Huile d\'argan marocaine en gros. Certifiée CCPB/USDA. Pressée à froid.',
+                description: 'Huile d\'argan bio 100% pure certifiée du Maroc. Pressée à froid. Lutte contre le vieillissement cutané. Riche en vitamine E. Certifiée CCPB/USDA/ECOCERT.',
+                metaTitle: 'Huile d\'Argan Vierge Bio - 100% Pure Certifiée',
+                metaDesc: 'Huile d\'argan marocaine en gros. Certifiée CCPB/USDA. Pressée à froid.',
                     },
                 ],
+        variants: [
+            {
+                sku: 'ARG-VIRGIN-1L',
+                sizeName: '1 Liter',
+                price: 35.00,
+            stock: 100,
             },
-            variants: {
-                create: [
-                    {
-                        sku: 'ARG-VIRGIN-1L',
-                        sizeName: '1 Liter',
-                        price: 35.00,
-                        stock: 100,
-                    },
-                    {
-                        sku: 'ARG-VIRGIN-5L',
-                        sizeName: '5 Liters',
-                        price: 160.00,
-                        stock: 50,
-                    },
-                    {
-                        sku: 'ARG-VIRGIN-10L',
-                        sizeName: '10 Liters',
-                        price: 300.00,
-                        stock: 30,
-                    },
-                ],
+            {
+                sku: 'ARG-VIRGIN-5L',
+                sizeName: '5 Liters',
+                price: 160.00,
+            stock: 50,
             },
-            images: {
-                create: [
-                    {
-                        url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+            {
+                sku: 'ARG-VIRGIN-10L',
+                sizeName: '10 Liters',
+                price: 300.00,
+            stock: 30,
             },
-        },
+        ],
+        images: [
+            {
+                url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Organic Virgin Argan Oil');
 
     // Product 2: Prickly Pear Seed Oil
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[0].id,
-            sku: 'PRICKLY-001',
-            basePrice: 85.00,
-            stock: 50,
-            isAvailable: true,
-            isFeatured: true,
-            isTopSale: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Prickly Pear Seed Oil',
-                        slug: 'organic-prickly-pear-seed-oil-wholesale',
-                        description: 'Prickly pear seed oil in bulk - 100% Pure & Certified Organic. Takes almost a ton of prickly pears to get 1 liter. Powerful anti-wrinkle and firming. Rich in Vitamin E, tocopherols. Perfect for anti-aging formulations. Certified Ecocert/USDA NOP.',
-                        metaTitle: 'Prickly Pear Seed Oil - Organic Wholesale | Anti-Aging',
-                        metaDesc: 'Premium prickly pear seed oil from Morocco. 100% organic certified. Anti-wrinkle properties. Wholesale bulk quantities.',
-                        keywords: 'prickly pear oil, cactus seed oil, anti-aging oil, organic beauty oil',
-                        ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت بذور التين الشوكي العضوي',
-                        slug: 'زيت-بذور-التين-الشوكي',
-                        description: 'زيت بذور التين الشوكي 100% عضوي معتمد. قوي ضد التجاعيد ومشد للبشرة. غني بفيتامين E.',
-                        metaTitle: 'زيت بذور التين الشوكي العضوي - مضاد للشيخوخة',
-                        metaDesc: 'زيت التين الشوكي المغربي. عضوي معتمد. خصائص مضادة للتجاعيد.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile de Graines de Figue de Barbarie Bio',
-                        slug: 'huile-graines-figue-barbarie-bio',
-                        description: 'Huile de graines de figue de barbarie 100% pure et bio certifiée. Anti-rides puissant et raffermissant. Riche en vitamine E.',
-                        metaTitle: 'Huile de Figue de Barbarie Bio - Anti-Âge',
-                        metaDesc: 'Huile de figue de barbarie marocaine. Bio certifiée. Propriétés anti-rides.',
-                    },
-                ],
+    await upsertProduct({
+        categoryId: createdCategories[0].id,
+        sku: 'PRICKLY-001',
+        basePrice: 85.00,
+        stock: 50,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: true,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Prickly Pear Seed Oil',
+                slug: 'organic-prickly-pear-seed-oil-wholesale',
+                description: 'Prickly pear seed oil in bulk - 100% Pure & Certified Organic. Takes almost a ton of prickly pears to get 1 liter. Powerful anti-wrinkle and firming. Rich in Vitamin E, tocopherols. Perfect for anti-aging formulations. Certified Ecocert/USDA NOP.',
+                metaTitle: 'Prickly Pear Seed Oil - Organic Wholesale | Anti-Aging',
+                metaDesc: 'Premium prickly pear seed oil from Morocco. 100% organic certified. Anti-wrinkle properties. Wholesale bulk quantities.',
+                keywords: 'prickly pear oil, cactus seed oil, anti-aging oil, organic beauty oil',
+                ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
             },
-            variants: {
-                create: [
-                    {
-                        sku: 'PRICKLY-1L',
-                        sizeName: '1 Liter',
-                        price: 850.00,
-                        stock: 20,
-                    },
-                    {
-                        sku: 'PRICKLY-500ML',
-                        sizeName: '500ml',
-                        price: 450.00,
-                        stock: 30,
-                    },
-                ],
+            {
+                language: 'ar',
+                name: 'زيت بذور التين الشوكي العضوي',
+                slug: 'زيت-بذور-التين-الشوكي',
+                description: 'زيت بذور التين الشوكي 100% عضوي معتمد. قوي ضد التجاعيد ومشد للبشرة. غني بفيتامين E.',
+                metaTitle: 'زيت بذور التين الشوكي العضوي - مضاد للشيخوخة',
+                metaDesc: 'زيت التين الشوكي المغربي. عضوي معتمد. خصائص مضادة للتجاعيد.',
             },
-            images: {
-                create: [
-                    {
-                        url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+            {
+                language: 'fr',
+                name: 'Huile de Graines de Figue de Barbarie Bio',
+                slug: 'huile-graines-figue-barbarie-bio',
+                description: 'Huile de graines de figue de barbarie 100% pure et bio certifiée. Anti-rides puissant et raffermissant. Riche en vitamine E.',
+                metaTitle: 'Huile de Figue de Barbarie Bio - Anti-Âge',
+                metaDesc: 'Huile de figue de barbarie marocaine. Bio certifiée. Propriétés anti-rides.',
             },
-        },
+        ],
+        variants: [
+            {
+                sku: 'PRICKLY-1L',
+                sizeName: '1 Liter',
+                price: 850.00,
+            stock: 20,
+            },
+            {
+                sku: 'PRICKLY-500ML',
+                sizeName: '500ml',
+                price: 450.00,
+            stock: 30,
+            },
+        ],
+        images: [
+            {
+                url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Prickly Pear Seed Oil');
 
     // Product 3: Moroccan Black Soap
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'BLACKSOAP-001',
-            basePrice: 12.00,
-            stock: 150,
-            isAvailable: true,
-            isFeatured: true,
-            isTopSale: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Moroccan Black Soap',
-                        slug: 'moroccan-black-soap-suppliers-wholesale-africa-benefits',
-                        description: 'Extra Moroccan Black Soap 100% Organic. Traditional hammam beauty secret. Deep cleanses, exfoliates, and purifies skin. Made with olive oil and eucalyptus. Wholesale bulk available.',
-                        metaTitle: 'Moroccan Black Soap Wholesale - 100% Organic',
-                        metaDesc: 'Authentic Moroccan black soap. 100% organic. Traditional hammam product. Bulk wholesale from Morocco.',
-                        keywords: 'moroccan black soap, beldi soap, hammam soap, organic black soap',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'الصابون البلدي المغربي العضوي',
-                        slug: 'الصابون-البلدي-المغربي',
-                        description: 'الصابون البلدي المغربي 100% عضوي. سر الجمال التقليدي للحمام. ينظف ويقشر البشرة.',
-                        metaTitle: 'الصابون البلدي المغربي - 100% عضوي',
-                        metaDesc: 'صابون مغربي أصيل. عضوي 100%. منتج حمام تقليدي.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Savon Noir Marocain Bio',
-                        slug: 'savon-noir-marocain-bio',
-                        description: 'Savon noir marocain extra 100% bio. Secret de beauté traditionnel du hammam. Nettoie et exfolie en profondeur.',
-                        metaTitle: 'Savon Noir Marocain Bio - En Gros',
-                        metaDesc: 'Savon noir marocain authentique. 100% bio. Produit hammam traditionnel.',
-                    },
-                ],
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'BLACKSOAP-001',
+        basePrice: 12.00,
+        stock: 150,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: true,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Moroccan Black Soap',
+                slug: 'moroccan-black-soap-suppliers-wholesale-africa-benefits',
+                description: 'Extra Moroccan Black Soap 100% Organic. Traditional hammam beauty secret. Deep cleanses, exfoliates, and purifies skin. Made with olive oil and eucalyptus. Wholesale bulk available.',
+                metaTitle: 'Moroccan Black Soap Wholesale - 100% Organic',
+                metaDesc: 'Authentic Moroccan black soap. 100% organic. Traditional hammam product. Bulk wholesale from Morocco.',
+                keywords: 'moroccan black soap, beldi soap, hammam soap, organic black soap',
             },
-            variants: {
-                create: [
-                    {
-                        sku: 'BLACKSOAP-1KG',
-                        sizeName: '1 Kg',
-                        price: 12.00,
-                        stock: 100,
-                    },
-                    {
-                        sku: 'BLACKSOAP-5KG',
-                        sizeName: '5 Kg',
-                        price: 55.00,
-                        stock: 50,
-                    },
-                ],
+            {
+                language: 'ar',
+                name: 'الصابون البلدي المغربي العضوي',
+                slug: 'الصابون-البلدي-المغربي',
+                description: 'الصابون البلدي المغربي 100% عضوي. سر الجمال التقليدي للحمام. ينظف ويقشر البشرة.',
+                metaTitle: 'الصابون البلدي المغربي - 100% عضوي',
+                metaDesc: 'صابون مغربي أصيل. عضوي 100%. منتج حمام تقليدي.',
             },
-            images: {
-                create: [
-                    {
-                        url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+            {
+                language: 'fr',
+                name: 'Savon Noir Marocain Bio',
+                slug: 'savon-noir-marocain-bio',
+                description: 'Savon noir marocain extra 100% bio. Secret de beauté traditionnel du hammam. Nettoie et exfolie en profondeur.',
+                metaTitle: 'Savon Noir Marocain Bio - En Gros',
+                metaDesc: 'Savon noir marocain authentique. 100% bio. Produit hammam traditionnel.',
             },
-        },
+        ],
+        variants: [
+            {
+                sku: 'BLACKSOAP-1KG',
+                sizeName: '1 Kg',
+                price: 12.00,
+            stock: 100,
+            },
+            {
+                sku: 'BLACKSOAP-5KG',
+                sizeName: '5 Kg',
+                price: 55.00,
+            stock: 50,
+            },
+        ],
+        images: [
+            {
+                url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Moroccan Black Soap');
 
     // Product 4: Damascena Rose Water
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'ROSEWATER-001',
-            basePrice: 18.00,
-            stock: 120,
-            isAvailable: true,
-            isFeatured: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Pure Damascena Rose Water',
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'ROSEWATER-001',
+        basePrice: 18.00,
+        stock: 120,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Pure Damascena Rose Water',
                         slug: 'wholesale-pure-rosewater-from-morocco-organic-natural',
-                        description: 'Pure natural organic Damascena rose water. Traditional Moroccan beauty product. Tones, refreshes, and hydrates skin. 100% natural with no additives. Wholesale available.',
-                        metaTitle: 'Damascena Rose Water - Pure Organic Wholesale',
-                        metaDesc: 'Pure Moroccan rose water. 100% natural and organic. Traditional beauty product. Bulk wholesale.',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'ماء الورد الدمشقي النقي',
+                description: 'Pure natural organic Damascena rose water. Traditional Moroccan beauty product. Tones, refreshes, and hydrates skin. 100% natural with no additives. Wholesale available.',
+                metaTitle: 'Damascena Rose Water - Pure Organic Wholesale',
+                metaDesc: 'Pure Moroccan rose water. 100% natural and organic. Traditional beauty product. Bulk wholesale.',
+            },
+            {
+                language: 'ar',
+                name: 'ماء الورد الدمشقي النقي',
                         slug: 'ماء-الورد-الدمشقي',
-                        description: 'ماء الورد الدمشقي الطبيعي العضوي. منتج جمال مغربي تقليدي. ينعش ويرطب البشرة.',
-                        metaTitle: 'ماء الورد الدمشقي - عضوي نقي',
-                        metaDesc: 'ماء ورد مغربي نقي. طبيعي وعضوي 100%. منتج جمال تقليدي.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Eau de Rose Damascena Pure',
+                description: 'ماء الورد الدمشقي الطبيعي العضوي. منتج جمال مغربي تقليدي. ينعش ويرطب البشرة.',
+                metaTitle: 'ماء الورد الدمشقي - عضوي نقي',
+                metaDesc: 'ماء ورد مغربي نقي. طبيعي وعضوي 100%. منتج جمال تقليدي.',
+            },
+            {
+                language: 'fr',
+                name: 'Eau de Rose Damascena Pure',
                         slug: 'eau-rose-damascena-pure',
-                        description: 'Eau de rose damascena pure naturelle bio. Produit de beauté marocain traditionnel. Tonifie et hydrate la peau.',
-                        metaTitle: 'Eau de Rose Damascena - Bio Pure',
-                        metaDesc: 'Eau de rose marocaine pure. 100% naturelle et bio. Produit beauté traditionnel.',
+                description: 'Eau de rose damascena pure naturelle bio. Produit de beauté marocain traditionnel. Tonifie et hydrate la peau.',
+                metaTitle: 'Eau de Rose Damascena - Bio Pure',
+                metaDesc: 'Eau de rose marocaine pure. 100% naturelle et bio. Produit beauté traditionnel.',
                     },
                 ],
+        variants: [
+            {
+                sku: 'ROSEWATER-1L',
+                sizeName: '1 Liter',
+                price: 18.00,
+            stock: 80,
             },
-            variants: {
-                create: [
-                    {
-                        sku: 'ROSEWATER-1L',
-                        sizeName: '1 Liter',
-                        price: 18.00,
-                        stock: 80,
-                    },
-                    {
-                        sku: 'ROSEWATER-10L',
-                        sizeName: '10 Liters',
-                        price: 160.00,
-                        stock: 40,
-                    },
-                ],
+            {
+                sku: 'ROSEWATER-10L',
+                sizeName: '10 Liters',
+                price: 160.00,
+            stock: 40,
             },
-            images: {
-                create: [
-                    {
-                        url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+        ],
+        images: [
+            {
+                url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
+                isPrimary: true,
             },
-        },
+        ],
     });
     console.log('✅ Product created: Damascena Rose Water');
 
     // Product 5: Ghassoul Lava Clay
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'GHASSOUL-001',
-            basePrice: 8.00,
-            stock: 200,
-            isAvailable: true,
-            isFeatured: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Moroccan Ghassoul Lava Clay Powder',
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'GHASSOUL-001',
+        basePrice: 8.00,
+        stock: 200,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Moroccan Ghassoul Lava Clay Powder',
                         slug: 'moroccan-rhassoul-clay-powder-bulk-wholesale-suppliers',
-                        description: 'Moroccan Rhassoul (Ghassoul) clay powder 100% organic. Natural mineral-rich clay from Atlas Mountains. Deep cleanses, detoxifies, and purifies. Available in brown, green, and red varieties. Bulk wholesale.',
-                        metaTitle: 'Ghassoul Lava Clay Powder - Wholesale Organic',
-                        metaDesc: 'Authentic Moroccan ghassoul clay. 100% organic mineral clay. Bulk wholesale from Morocco.',
+                description: 'Moroccan Rhassoul (Ghassoul) clay powder 100% organic. Natural mineral-rich clay from Atlas Mountains. Deep cleanses, detoxifies, and purifies. Available in brown, green, and red varieties. Bulk wholesale.',
+                metaTitle: 'Ghassoul Lava Clay Powder - Wholesale Organic',
+                metaDesc: 'Authentic Moroccan ghassoul clay. 100% organic mineral clay. Bulk wholesale from Morocco.',
                         keywords: 'ghassoul clay, rhassoul clay, moroccan clay, lava clay',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'طين الغسول المغربي البركاني',
+            },
+            {
+                language: 'ar',
+                name: 'طين الغسول المغربي البركاني',
                         slug: 'طين-الغسول-المغربي',
-                        description: 'مسحوق طين الغسول المغربي 100% عضوي. طين طبيعي غني بالمعادن من جبال الأطلس.',
-                        metaTitle: 'طين الغسول المغربي - عضوي بالجملة',
-                        metaDesc: 'طين غسول مغربي أصيل. طين معدني عضوي 100%.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Poudre d\'Argile Ghassoul Marocaine',
+                description: 'مسحوق طين الغسول المغربي 100% عضوي. طين طبيعي غني بالمعادن من جبال الأطلس.',
+                metaTitle: 'طين الغسول المغربي - عضوي بالجملة',
+                metaDesc: 'طين غسول مغربي أصيل. طين معدني عضوي 100%.',
+            },
+            {
+                language: 'fr',
+                name: 'Poudre d\'Argile Ghassoul Marocaine',
                         slug: 'argile-ghassoul-marocaine',
-                        description: 'Poudre d\'argile Rhassoul (Ghassoul) marocaine 100% bio. Argile minérale naturelle des montagnes de l\'Atlas.',
-                        metaTitle: 'Argile Ghassoul Marocaine - Bio En Gros',
-                        metaDesc: 'Argile ghassoul marocaine authentique. Argile minérale bio 100%.',
+                description: 'Poudre d\'argile Rhassoul (Ghassoul) marocaine 100% bio. Argile minérale naturelle des montagnes de l\'Atlas.',
+                metaTitle: 'Argile Ghassoul Marocaine - Bio En Gros',
+                metaDesc: 'Argile ghassoul marocaine authentique. Argile minérale bio 100%.',
                     },
                 ],
+        variants: [
+            {
+                sku: 'GHASSOUL-1KG',
+                sizeName: '1 Kg',
+                price: 8.00,
+            stock: 150,
             },
-            variants: {
-                create: [
-                    {
-                        sku: 'GHASSOUL-1KG',
-                        sizeName: '1 Kg',
-                        price: 8.00,
-                        stock: 150,
-                    },
-                    {
-                        sku: 'GHASSOUL-25KG',
-                        sizeName: '25 Kg',
-                        price: 180.00,
-                        stock: 50,
-                    },
-                ],
+            {
+                sku: 'GHASSOUL-25KG',
+                sizeName: '25 Kg',
+                price: 180.00,
+            stock: 50,
             },
-            images: {
-                create: [
-                    {
-                        url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+        ],
+        images: [
+            {
+                url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80',
+                isPrimary: true,
             },
-        },
+        ],
     });
     console.log('✅ Product created: Ghassoul Lava Clay');
 
     // Product 6: Culinary Argan Oil
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[2].id,
-            sku: 'ARG-CULINARY-001',
-            basePrice: 40.00,
-            stock: 100,
-            isAvailable: true,
-            isFeatured: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Culinary Argan Oil',
+    await upsertProduct({
+        categoryId: createdCategories[2].id,
+        sku: 'ARG-CULINARY-001',
+        basePrice: 40.00,
+        stock: 100,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Culinary Argan Oil',
                         slug: 'culinary-argan-oil-of-morocco',
-                        description: 'Argan oil for culinary use - the miracle oil from Morocco. Made from roasted argan seeds. Rich in Vitamin E and antioxidants. Perfect for Moroccan recipes, tajines, couscous. CCPB Organic certified. Wholesale bulk available.',
-                        metaTitle: 'Culinary Argan Oil of Morocco - Organic Certified',
-                        metaDesc: 'Organic culinary argan oil from Morocco. CCPB certified. Perfect for cooking. Wholesale bulk available.',
+                description: 'Argan oil for culinary use - the miracle oil from Morocco. Made from roasted argan seeds. Rich in Vitamin E and antioxidants. Perfect for Moroccan recipes, tajines, couscous. CCPB Organic certified. Wholesale bulk available.',
+                metaTitle: 'Culinary Argan Oil of Morocco - Organic Certified',
+                metaDesc: 'Organic culinary argan oil from Morocco. CCPB certified. Perfect for cooking. Wholesale bulk available.',
                         keywords: 'culinary argan oil, cooking argan oil, edible argan oil, moroccan cooking oil',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت الأركان الطهوي العضوي',
+            },
+            {
+                language: 'ar',
+                name: 'زيت الأركان الطهوي العضوي',
                         slug: 'زيت-الأركان-الطهوي',
-                        description: 'زيت الأركان للطبخ - الزيت المعجزة من المغرب. مصنوع من بذور الأركان المحمصة. غني بفيتامين E.',
-                        metaTitle: 'زيت الأركان الطهوي المغربي - عضوي معتمد',
-                        metaDesc: 'زيت أركان طهوي عضوي من المغرب. معتمد CCPB. مثالي للطبخ.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile d\'Argan Culinaire Bio',
+                description: 'زيت الأركان للطبخ - الزيت المعجزة من المغرب. مصنوع من بذور الأركان المحمصة. غني بفيتامين E.',
+                metaTitle: 'زيت الأركان الطهوي المغربي - عضوي معتمد',
+                metaDesc: 'زيت أركان طهوي عضوي من المغرب. معتمد CCPB. مثالي للطبخ.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile d\'Argan Culinaire Bio',
                         slug: 'huile-argan-culinaire-bio',
-                        description: 'Huile d\'argan culinaire - l\'huile miracle du Maroc. Fabriquée à partir de graines d\'argan torréfiées. Riche en vitamine E.',
-                        metaTitle: 'Huile d\'Argan Culinaire du Maroc - Bio Certifiée',
-                        metaDesc: 'Huile d\'argan culinaire bio du Maroc. Certifiée CCPB. Parfaite pour la cuisine.',
+                description: 'Huile d\'argan culinaire - l\'huile miracle du Maroc. Fabriquée à partir de graines d\'argan torréfiées. Riche en vitamine E.',
+                metaTitle: 'Huile d\'Argan Culinaire du Maroc - Bio Certifiée',
+                metaDesc: 'Huile d\'argan culinaire bio du Maroc. Certifiée CCPB. Parfaite pour la cuisine.',
                     },
                 ],
-            },
-            variants: {
-                create: [
-                    {
+        variants: [
+            {
                         sku: 'ARG-CULINARY-1L',
                         sizeName: '1 Liter',
                         price: 40.00,
-                        stock: 60,
+                    stock: 60,
                     },
                     {
                         sku: 'ARG-CULINARY-5L',
                         sizeName: '5 Liters',
                         price: 185.00,
-                        stock: 40,
+                    stock: 40,
                     },
                 ],
-            },
-            images: {
-                create: [
-                    {
+        images: [
+            {
                         url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&q=80',
                         isPrimary: true,
                     },
                 ],
-            },
-        },
     });
     console.log('✅ Product created: Culinary Argan Oil');
 
     // Product 7: Rosemary Essential Oil
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'ESS-ROSEMARY-001',
-            basePrice: 25.00,
-            stock: 80,
-            isAvailable: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Rosemary Essential Oil',
-                        slug: 'rosemary-essential-oil',
-                        description: '100% pure and natural Rosemary essential oil from Morocco. Free of pesticides and synthetic fertilizers. Perfect for aromatherapy and hair care. Stimulates circulation and improves focus.',
-                        metaTitle: 'Rosemary Essential Oil Wholesale - Pure & Natural',
-                        metaDesc: 'Premium Moroccan Rosemary essential oil. 100% pure and organic certified. Wholesale suppliers.',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت إكليل الجبل الأساسي العضوي',
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'ESS-ROSEMARY-001',
+        basePrice: 25.00,
+        stock: 80,
+        isAvailable: true,
+        isFeatured: false,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Rosemary Essential Oil',
+                slug: 'rosemary-essential-oil',
+                description: '100% pure and natural Rosemary essential oil from Morocco. Free of pesticides and synthetic fertilizers. Perfect for aromatherapy and hair care. Stimulates circulation and improves focus.',
+                metaTitle: 'Rosemary Essential Oil Wholesale - Pure & Natural',
+                metaDesc: 'Premium Moroccan Rosemary essential oil. 100% pure and organic certified. Wholesale suppliers.',
+            },
+            {
+                language: 'ar',
+                name: 'زيت إكليل الجبل الأساسي العضوي',
                         slug: 'زيت-إكليل-الجبل',
-                        description: 'زيت إكليل الجبل الأساسي نقي وطبيعي 100% من المغرب. مثالي للعلاج العطري والعناية بالشعر.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile Essentielle de Romarin Bio',
+                description: 'زيت إكليل الجبل الأساسي نقي وطبيعي 100% من المغرب. مثالي للعلاج العطري والعناية بالشعر.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile Essentielle de Romarin Bio',
                         slug: 'huile-essentielle-romarin',
-                        description: 'Huile essentielle de romarin 100% pure et naturelle du Maroc. Idéal pour l\'aromathérapie et les soins capillaires.',
+                description: 'Huile essentielle de romarin 100% pure et naturelle du Maroc. Idéal pour l\'aromathérapie et les soins capillaires.',
                     },
                 ],
-            },
-            variants: {
-                create: [
-                    {
+        variants: [
+            {
                         sku: 'ROSEMARY-100ML',
                         sizeName: '100ml',
                         price: 25.00,
-                        stock: 50,
+                    stock: 50,
                     },
                     {
                         sku: 'ROSEMARY-1L',
                         sizeName: '1 Liter',
                         price: 180.00,
-                        stock: 30,
+                    stock: 30,
                     },
                 ],
-            },
-            images: {
-                create: [
-                    {
+        images: [
+            {
                         url: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=800&q=80',
                         isPrimary: true,
                     },
                 ],
-            },
-        },
     });
     console.log('✅ Product created: Rosemary Essential Oil');
 
     // Product 8: Cedarwood Essential Oil
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'ESS-CEDAR-001',
-            basePrice: 22.00,
-            stock: 100,
-            isAvailable: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Atlas Cedarwood Essential Oil',
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'ESS-CEDAR-001',
+        basePrice: 22.00,
+        stock: 100,
+        isAvailable: true,
+        isFeatured: false,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Atlas Cedarwood Essential Oil',
                         slug: 'cedarwood-essential-oil',
-                        description: 'Authentic Atlas Cedarwood oil from the Moroccan mountains. Warm, woody aroma. Excellent for grounding, skin health, and natural pest repellent.',
-                        metaTitle: 'Atlas Cedarwood Essential Oil - Moroccan Wholesale',
-                        metaDesc: 'Pure Atlas Cedarwood oil from Morocco. Traditional extraction, organic certified.',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت خشب الأرز الأطلسي الأساسي',
+                description: 'Authentic Atlas Cedarwood oil from the Moroccan mountains. Warm, woody aroma. Excellent for grounding, skin health, and natural pest repellent.',
+                metaTitle: 'Atlas Cedarwood Essential Oil - Moroccan Wholesale',
+                metaDesc: 'Pure Atlas Cedarwood oil from Morocco. Traditional extraction, organic certified.',
+            },
+            {
+                language: 'ar',
+                name: 'زيت خشب الأرز الأطلسي الأساسي',
                         slug: 'زيت-خشب-الأرز',
-                        description: 'زيت خشب الأرز الأطلسي الأصيل من جبال المغرب. رائحة خشبية دافئة.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile Essentielle de Cèdre de l\'Atlas Bio',
+                description: 'زيت خشب الأرز الأطلسي الأصيل من جبال المغرب. رائحة خشبية دافئة.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile Essentielle de Cèdre de l\'Atlas Bio',
                         slug: 'huile-essentielle-cedre',
-                        description: 'Huile de cèdre de l\'Atlas authentique des montagnes marocaines. Arôme boisé et chaud.',
+                description: 'Huile de cèdre de l\'Atlas authentique des montagnes marocaines. Arôme boisé et chaud.',
                     },
                 ],
-            },
-            variants: {
-                create: [
-                    {
+        variants: [
+            {
                         sku: 'CEDAR-100ML',
                         sizeName: '100ml',
                         price: 22.00,
-                        stock: 60,
+                    stock: 60,
                     },
                     {
                         sku: 'CEDAR-1L',
                         sizeName: '1 Liter',
                         price: 150.00,
-                        stock: 40,
+                    stock: 40,
                     },
                 ],
-            },
-            images: {
-                create: [
-                    {
+        images: [
+            {
                         url: 'https://images.unsplash.com/photo-1611080511005-4202302484a0?w=800&q=80',
                         isPrimary: true,
                     },
                 ],
-            },
-        },
     });
     console.log('✅ Product created: Cedarwood Essential Oil');
 
     // Product 9: Moroccan Blue Tansy
-    await prisma.product.create({
-        data: {
-            categoryId: createdCategories[1].id,
-            sku: 'ESS-BLUETANSY-001',
-            basePrice: 95.00,
-            stock: 30,
-            isAvailable: true,
-            isFeatured: true,
-            translations: {
-                create: [
-                    {
-                        language: 'en',
-                        name: 'Organic Moroccan Blue Tansy Oil',
+    await upsertProduct({
+        categoryId: createdCategories[1].id,
+        sku: 'ESS-BLUETANSY-001',
+        basePrice: 95.00,
+        stock: 30,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Moroccan Blue Tansy Oil',
                         slug: 'moroccan-blue-tansy-essential-oil',
-                        description: 'Rare and precious Moroccan Blue Tansy oil. Famous for its vibrant blue color and powerful anti-inflammatory properties. Calms troubled skin and provides emotional balance.',
-                        metaTitle: 'Blue Tansy Essential Oil - Rare Moroccan Wholesale',
-                        metaDesc: 'Rare Blue Tansy oil from Morocco. Anti-inflammatory, premium quality.',
-                    },
-                    {
-                        language: 'ar',
-                        name: 'زيت التانسي الأزرق المغربي',
+                description: 'Rare and precious Moroccan Blue Tansy oil. Famous for its vibrant blue color and powerful anti-inflammatory properties. Calms troubled skin and provides emotional balance.',
+                metaTitle: 'Blue Tansy Essential Oil - Rare Moroccan Wholesale',
+                metaDesc: 'Rare Blue Tansy oil from Morocco. Anti-inflammatory, premium quality.',
+            },
+            {
+                language: 'ar',
+                name: 'زيت التانسي الأزرق المغربي',
                         slug: 'زيت-التانسي-الأزرق',
-                        description: 'زيت التانسي الأزرق المغربي النادر والثمين. مشهور بلونه الأزرق النابض بالحياة.',
-                    },
-                    {
-                        language: 'fr',
-                        name: 'Huile de Tanaisie Bleue du Maroc Bio',
+                description: 'زيت التانسي الأزرق المغربي النادر والثمين. مشهور بلونه الأزرق النابض بالحياة.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile de Tanaisie Bleue du Maroc Bio',
                         slug: 'huile-tanaisie-bleue',
-                        description: 'Huile de Tanaisie Bleue rare et précieuse. Célèbre pour sa couleur bleue vibrante.',
+                description: 'Huile de Tanaisie Bleue rare et précieuse. Célèbre pour sa couleur bleue vibrante.',
                     },
                 ],
-            },
-            variants: {
-                create: [
-                    {
+        variants: [
+            {
                         sku: 'BLUETANSY-15ML',
                         sizeName: '15ml',
                         price: 95.00,
-                        stock: 20,
+                    stock: 20,
                     },
                     {
                         sku: 'BLUETANSY-50ML',
                         sizeName: '50ml',
                         price: 280.00,
-                        stock: 10,
+                    stock: 10,
                     },
                 ],
-            },
-            images: {
-                create: [
-                    {
+        images: [
+            {
                         url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
                         isPrimary: true,
                     },
                 ],
-            },
-        },
     });
     console.log('✅ Product created: Moroccan Blue Tansy Oil');
 
@@ -789,8 +862,8 @@ async function main() {
 - Anti-inflammatory properties
 
 Discover our premium selection of 100% pure argan oil, cold-pressed and organic.`,
-                        metaTitle: 'The Amazing Benefits of Moroccan Argan Oil | Moroccan Organica',
-                        metaDesc: 'Discover the incredible beauty and health benefits of authentic Moroccan argan oil. Learn why it\'s called liquid gold.',
+                metaTitle: 'The Amazing Benefits of Moroccan Argan Oil | Moroccan Organica',
+                metaDesc: 'Discover the incredible beauty and health benefits of authentic Moroccan argan oil. Learn why it\'s called liquid gold.',
                         ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
                     },
                     {
@@ -798,16 +871,16 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                         title: 'فوائد زيت الأركان المغربي',
                         slug: 'فوائد-زيت-الأركان-المغربي',
                         content: 'يستخدم زيت الأركان المغربي منذ قرون من قبل النساء البربريات لفوائده الجمالية والصحية المذهلة. يُعرف بـ "الذهب السائل"، ويتم استخراج هذا الزيت الثمين من نوى شجرة الأركان التي تنمو حصرياً في المغرب.',
-                        metaTitle: 'فوائد زيت الأركان المغربي المذهلة',
-                        metaDesc: 'اكتشف الفوائد الجمالية والصحية المذهلة لزيت الأركان المغربي الأصيل.',
+                metaTitle: 'فوائد زيت الأركان المغربي المذهلة',
+                metaDesc: 'اكتشف الفوائد الجمالية والصحية المذهلة لزيت الأركان المغربي الأصيل.',
                     },
                     {
                         language: 'fr',
                         title: 'Les Bienfaits de l\'Huile d\'Argan Marocaine',
                         slug: 'bienfaits-huile-argan-marocaine',
                         content: 'L\'huile d\'argan marocaine est utilisée depuis des siècles par les femmes berbères pour ses incroyables bienfaits beauté et santé. Connue comme "l\'or liquide", cette huile précieuse est extraite des amandons de l\'arganier, qui pousse exclusivement au Maroc.',
-                        metaTitle: 'Les Bienfaits Incroyables de l\'Huile d\'Argan Marocaine',
-                        metaDesc: 'Découvrez les incroyables bienfaits beauté et santé de l\'huile d\'argan marocaine authentique.',
+                metaTitle: 'Les Bienfaits Incroyables de l\'Huile d\'Argan Marocaine',
+                metaDesc: 'Découvrez les incroyables bienfaits beauté et santé de l\'huile d\'argan marocaine authentique.',
                     },
                 ],
             },
@@ -827,8 +900,8 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                         title: 'Traditional Moroccan Spices: A Culinary Journey',
                         slug: 'traditional-moroccan-spices',
                         content: `Moroccan cuisine is renowned worldwide for its rich flavors and aromatic spices. The secret lies in the unique blend of spices that have been used for generations. From the famous Ras el Hanout to saffron, Moroccan spices tell a story of tradition and culture.`,
-                        metaTitle: 'Traditional Moroccan Spices Guide | Moroccan Organica',
-                        metaDesc: 'Explore the world of traditional Moroccan spices. Learn about authentic blends and their culinary uses.',
+                metaTitle: 'Traditional Moroccan Spices Guide | Moroccan Organica',
+                metaDesc: 'Explore the world of traditional Moroccan spices. Learn about authentic blends and their culinary uses.',
                     },
                     {
                         language: 'ar',
@@ -891,8 +964,8 @@ To share the natural wealth of Morocco while supporting local communities and su
 - ✅ Certified Quality (CCPB, USDA NOP, ECOCERT)
 
 Every product we offer is carefully selected, authenticated, and sourced from trusted partners across Morocco, particularly from the Atlas Mountains region and traditional cooperatives.`,
-                        metaTitle: 'About Organica Group SARL - Wholesale Organic Cosmetics from Morocco',
-                        metaDesc: 'Learn about Organica Group SARL, producer and exporter of 100% organic Moroccan cosmetic products. Fair trade, certified quality, direct from cooperatives.',
+                metaTitle: 'About Organica Group SARL - Wholesale Organic Cosmetics from Morocco',
+                metaDesc: 'Learn about Organica Group SARL, producer and exporter of 100% organic Moroccan cosmetic products. Fair trade, certified quality, direct from cooperatives.',
                         keywords: 'organica group, moroccan cosmetics wholesale, organic beauty products, fair trade morocco, argan oil producer',
                         ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
                         canonical: 'https://moroccanorganica.com/about-us',
@@ -926,8 +999,8 @@ Every product we offer is carefully selected, authenticated, and sourced from tr
 - 👥 دعم الحرفيين المحليين والتعاونيات النسائية
 - 🌍 الاستدامة البيئية
 - ✅ جودة معتمدة (CCPB، USDA NOP، ECOCERT)`,
-                        metaTitle: 'عن مجموعة أورجانيكا - مستحضرات تجميل عضوية بالجملة من المغرب',
-                        metaDesc: 'تعرف على مجموعة أورجانيكا، منتج ومصدر منتجات التجميل المغربية العضوية 100%. تجارة عادلة، جودة معتمدة.',
+                metaTitle: 'عن مجموعة أورجانيكا - مستحضرات تجميل عضوية بالجملة من المغرب',
+                metaDesc: 'تعرف على مجموعة أورجانيكا، منتج ومصدر منتجات التجميل المغربية العضوية 100%. تجارة عادلة، جودة معتمدة.',
                         keywords: 'مجموعة أورجانيكا، مستحضرات تجميل مغربية، منتجات عضوية، تجارة عادلة',
                     },
                     {
@@ -959,8 +1032,8 @@ Les pratiques commerciales d'Organica Group sont basées sur 3 principes fondame
 - 👥 Soutien aux Artisans Locaux et Coopératives Féminines
 - 🌍 Durabilité Environnementale
 - ✅ Qualité Certifiée (CCPB, USDA NOP, ECOCERT)`,
-                        metaTitle: 'À Propos d\'Organica Group SARL - Cosmétiques Bio en Gros du Maroc',
-                        metaDesc: 'Découvrez Organica Group SARL, producteur et exportateur de produits cosmétiques marocains 100% bio. Commerce équitable, qualité certifiée.',
+                metaTitle: 'À Propos d\'Organica Group SARL - Cosmétiques Bio en Gros du Maroc',
+                metaDesc: 'Découvrez Organica Group SARL, producteur et exportateur de produits cosmétiques marocains 100% bio. Commerce équitable, qualité certifiée.',
                         keywords: 'organica group, cosmétiques marocains, produits bio, commerce équitable maroc',
                     },
                 ],
@@ -1022,8 +1095,8 @@ We respond to all inquiries within 24-48 hours during business days.
 - International Shipping
 - Product Certifications (CCPB, USDA, ECOCERT)
 - Quality Assurance Documentation`,
-                        metaTitle: 'Contact Moroccan Organica - Wholesale Organic Products Supplier',
-                        metaDesc: 'Contact Organica Group for wholesale organic cosmetic products from Morocco. Phone: +212 648-273228. Email: inquiry@moroccanorganica.com',
+                metaTitle: 'Contact Moroccan Organica - Wholesale Organic Products Supplier',
+                metaDesc: 'Contact Organica Group for wholesale organic cosmetic products from Morocco. Phone: +212 648-273228. Email: inquiry@moroccanorganica.com',
                         keywords: 'contact moroccan organica, wholesale inquiry, organic products supplier, marrakesh morocco',
                         ogImage: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1200&q=80',
                         canonical: 'https://moroccanorganica.com/contact',
@@ -1063,8 +1136,8 @@ We respond to all inquiries within 24-48 hours during business days.
 - تركيبات مخصصة
 - الشحن الدولي
 - شهادات المنتجات (CCPB، USDA، ECOCERT)`,
-                        metaTitle: 'اتصل بـمغربية أورجانيكا - مورد منتجات عضوية بالجملة',
-                        metaDesc: 'اتصل بمجموعة أورجانيكا لمنتجات التجميل العضوية بالجملة من المغرب. هاتف: +212 648-273228',
+                metaTitle: 'اتصل بـمغربية أورجانيكا - مورد منتجات عضوية بالجملة',
+                metaDesc: 'اتصل بمجموعة أورجانيكا لمنتجات التجميل العضوية بالجملة من المغرب. هاتف: +212 648-273228',
                         keywords: 'اتصل مغربية أورجانيكا، استفسار جملة، مورد منتجات عضوية، مراكش',
                     },
                     {
@@ -1102,8 +1175,8 @@ Restez connectés avec nous sur les réseaux sociaux
 - Formulations Personnalisées
 - Expédition Internationale
 - Certifications de Produits (CCPB, USDA, ECOCERT)`,
-                        metaTitle: 'Contactez Moroccan Organica - Fournisseur de Produits Bio en Gros',
-                        metaDesc: 'Contactez Organica Group pour des produits cosmétiques bio en gros du Maroc. Tél: +212 648-273228',
+                metaTitle: 'Contactez Moroccan Organica - Fournisseur de Produits Bio en Gros',
+                metaDesc: 'Contactez Organica Group pour des produits cosmétiques bio en gros du Maroc. Tél: +212 648-273228',
                         keywords: 'contact moroccan organica, demande grossiste, fournisseur bio, marrakech',
                     },
                 ],
@@ -1213,8 +1286,8 @@ We may update this privacy policy periodically. We will notify you of significan
 ## Compliance
 
 This privacy policy complies with GDPR (General Data Protection Regulation) and applicable Moroccan data protection laws.`,
-                        metaTitle: 'Privacy Policy - Moroccan Organica',
-                        metaDesc: 'Read our privacy policy to learn how Moroccan Organica collects, uses, and protects your personal information. GDPR compliant.',
+                metaTitle: 'Privacy Policy - Moroccan Organica',
+                metaDesc: 'Read our privacy policy to learn how Moroccan Organica collects, uses, and protects your personal information. GDPR compliant.',
                         keywords: 'privacy policy, data protection, gdpr, moroccan organica privacy',
                         canonical: 'https://moroccanorganica.com/privacy-policy',
                     },
@@ -1272,8 +1345,8 @@ This privacy policy complies with GDPR (General Data Protection Regulation) and 
 
 البريد الإلكتروني: inquiry@moroccanorganica.com
 الهاتف: +212 648-273228`,
-                        metaTitle: 'سياسة الخصوصية - مغربية أورجانيكا',
-                        metaDesc: 'اقرأ سياسة الخصوصية الخاصة بنا لمعرفة كيف نجمع ونستخدم ونحمي معلوماتك الشخصية.',
+                metaTitle: 'سياسة الخصوصية - مغربية أورجانيكا',
+                metaDesc: 'اقرأ سياسة الخصوصية الخاصة بنا لمعرفة كيف نجمع ونستخدم ونحمي معلوماتك الشخصية.',
                     },
                     {
                         language: 'fr',
@@ -1329,8 +1402,8 @@ Vous avez le droit de:
 
 Email: inquiry@moroccanorganica.com
 Téléphone: +212 648-273228`,
-                        metaTitle: 'Politique de Confidentialité - Moroccan Organica',
-                        metaDesc: 'Lisez notre politique de confidentialité pour savoir comment nous collectons, utilisons et protégeons vos informations personnelles.',
+                metaTitle: 'Politique de Confidentialité - Moroccan Organica',
+                metaDesc: 'Lisez notre politique de confidentialité pour savoir comment nous collectons, utilisons et protégeons vos informations personnelles.',
                     },
                 ],
             },
@@ -1366,8 +1439,8 @@ If there is any damage to the packaging on delivery, contact us immediately on W
 
 ## Questions
 If you have any questions about the order, the delivery or shipment, please contact us at [inquiry@moroccanorganica.com](mailto:inquiry@moroccanorganica.com)`,
-                        metaTitle: 'Delivery Information - Moroccan Organica',
-                        metaDesc: 'Worldwide delivery information for Moroccan Organica wholesale products. Shipping times and costs.',
+                metaTitle: 'Delivery Information - Moroccan Organica',
+                metaDesc: 'Worldwide delivery information for Moroccan Organica wholesale products. Shipping times and costs.',
                     },
                     {
                         language: 'ar',
@@ -1420,8 +1493,8 @@ Organica Group SARL grants you a limited license to access and make personal use
 
 ## Applicable Law
 By visiting moroccanorganica.com, you agree that the laws of Morocco will govern these Conditions of Use.`,
-                        metaTitle: 'Terms & Conditions - Moroccan Organica',
-                        metaDesc: 'Terms and conditions for using the Moroccan Organica website and purchasing wholesale products.',
+                metaTitle: 'Terms & Conditions - Moroccan Organica',
+                metaDesc: 'Terms and conditions for using the Moroccan Organica website and purchasing wholesale products.',
                     },
                     {
                         language: 'ar',
@@ -1468,8 +1541,8 @@ We can ship our organic products to Europe and worldwide by air cargo with a sho
 - **Essential Oils**: 100% pure and therapeutic grade.
 
 Explore our collection of authentic Moroccan treasures, sourced directly from cooperatives to ensure the highest quality and fair trade practices.`,
-                        metaTitle: 'Moroccan Organica | Wholesale Argan Oil & Organic Cosmetics Suppliers',
-                        metaDesc: 'Leading wholesale suppliers of organic argan oil, prickly pear oil, and Moroccan beauty products. Certified quality, worldwide shipping, private label available.',
+                metaTitle: 'Moroccan Organica | Wholesale Argan Oil & Organic Cosmetics Suppliers',
+                metaDesc: 'Leading wholesale suppliers of organic argan oil, prickly pear oil, and Moroccan beauty products. Certified quality, worldwide shipping, private label available.',
                         keywords: 'wholesale argan oil, prickly pear oil supplier, moroccan cosmetics wholesale, organic oils morocco',
                     },
                     {
@@ -1485,8 +1558,8 @@ Explore our collection of authentic Moroccan treasures, sourced directly from co
 
 ## التوزيع العالمي
 يمكننا شحن منتجاتنا العضوية إلى أوروبا وجميع أنحاء العالم عن طريق الشحن الجوي في وقت قصير.`,
-                        metaTitle: 'مغربية أورجانيكا | مورد زيت الأركان ومستحضرات التجميل العضوية بالجملة',
-                        metaDesc: 'الموردون الرئيسيون لزيت الأركان العضوي وزيت التين الشوكي ومنتجات التجميل المغربية بالجملة. جودة معتمدة وشحن عالمي.',
+                metaTitle: 'مغربية أورجانيكا | مورد زيت الأركان ومستحضرات التجميل العضوية بالجملة',
+                metaDesc: 'الموردون الرئيسيون لزيت الأركان العضوي وزيت التين الشوكي ومنتجات التجميل المغربية بالجملة. جودة معتمدة وشحن عالمي.',
                     },
                     {
                         language: 'fr',
@@ -1501,8 +1574,8 @@ Organica Group est spécialiste de l'huile d'argan et de figue de barbarie bio p
 
 ## Distribution Mondiale
 Nous pouvons expédier nos produits bio en Europe et dans le monde entier par fret aérien avec un délai de transit court.`,
-                        metaTitle: 'Moroccan Organica | Grossiste d\'Huile d\'Argan et Cosmétiques Bio',
-                        metaDesc: 'Principaux fournisseurs en gros d\'huile d\'argan bio, d\'huile de figue de barbarie et de produits de beauté marocains. Qualité certifiée, expédition mondiale.',
+                metaTitle: 'Moroccan Organica | Grossiste d\'Huile d\'Argan et Cosmétiques Bio',
+                metaDesc: 'Principaux fournisseurs en gros d\'huile d\'argan bio, d\'huile de figue de barbarie et de produits de beauté marocains. Qualité certifiée, expédition mondiale.',
                     },
                 ],
             },
@@ -1547,8 +1620,8 @@ Customs regulations require all cosmetic products to be labeled. We provide labe
 - 🤝 Flexibility for small and large businesses
 - 🌍 Worldwide shipping and logistics support
 - ✅ Full documentation (COA, MSDS, Organic Certificates)`,
-                        metaTitle: 'Private Label Moroccan Organic Cosmetics - White Label Manufacturing',
-                        metaDesc: 'Looking for private label argan oil or cosmetics? Organica Group offers custom branding, unique packaging, and organic certified products from Morocco.',
+                metaTitle: 'Private Label Moroccan Organic Cosmetics - White Label Manufacturing',
+                metaDesc: 'Looking for private label argan oil or cosmetics? Organica Group offers custom branding, unique packaging, and organic certified products from Morocco.',
                         keywords: 'private label argan oil, white label cosmetics morocco, custom branding beauty products, organic cosmetics manufacturer',
                     },
                     {
@@ -1603,7 +1676,7 @@ Nous fournissons des étiquettes en **anglais, arabe, français** ou autres lang
     console.log('📊 Summary:');
     console.log(`   - Admin users: 1`);
     console.log(`   - Customers: 1`);
-    console.log(`   - Categories: ${categories.length} (with multilingual translations)`);
+    console.log(`   - Categories: ${createdCategories.length} (with multilingual translations)`);
     console.log(`   - Products: 9 (based on old site, with variants and translations)`);
     console.log(`   - Blog posts: 2 (multilingual)`);
     console.log(`   - Static pages: 7 (Home, About, Contact, Privacy, Delivery, Terms, Private Label)`);

@@ -130,5 +130,58 @@
     "languages": {
         "en": "الإنجليزية",
         "ar": "العربية"
+    },
+    "checkout": {
+        "title": "إتمام الطلب",
+        "customerInfo": {
+            "title": "معلومات العميل",
+            "firstName": "الاسم الأول",
+            "lastName": "اسم العائلة",
+            "email": "البريد الإلكتروني",
+            "phone": "رقم الهاتف"
+        },
+        "shippingAddress": {
+            "title": "عنوان الشحن",
+            "street": "عنوان الشارع",
+            "city": "المدينة",
+            "state": "الولاية/المقاطعة",
+            "postalCode": "الرمز البريدي",
+            "country": "البلد"
+        },
+        "orderNotes": {
+            "title": "ملاحظات الطلب (اختياري)",
+            "placeholder": "تعليمات خاصة، ملاحظات التوصيل، إلخ."
+        },
+        "paymentMethod": {
+            "title": "طريقة الدفع",
+            "stripe": {
+                "label": "بطاقة ائتمان/خصم",
+                "description": "ادفع بأمان مع Stripe"
+            },
+            "paypal": {
+                "label": "PayPal",
+                "description": "ادفع باستخدام حساب PayPal الخاص بك"
+            },
+            "cardNumber": "رقم البطاقة",
+            "cardExpiry": "تاريخ الانتهاء",
+            "cardCvc": "رمز الأمان",
+            "cardName": "اسم حامل البطاقة"
+        },
+        "orderSummary": {
+            "title": "ملخص الطلب",
+            "subtotal": "المجموع الفرعي",
+            "shipping": "الشحن",
+            "tax": "الضريبة",
+            "total": "المجموع",
+            "items": "عنصر"
+        },
+        "completeOrder": "إتمام الطلب",
+        "processing": "جاري المعالجة...",
+        "terms": "من خلال تقديم طلبك، أنت توافق على",
+        "termsLink": "شروط الخدمة",
+        "privacyLink": "سياسة الخصوصية",
+        "and": "و",
+        "emptyCart": "سلة التسوق فارغة",
+        "backToShop": "العودة إلى المتجر"
     }
 }

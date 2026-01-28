@@ -1,6 +1,3 @@
-// Database: Moroccan Organica (V8.0)
-// Architecture: Admin Auth + Guest CRM + Polyglot (EN/AR/FR)
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,19 +7,338 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// --- ENUMS ---
-enum Role {
-  ADMIN
-  STAFF
+model address {
+  id           String   @id
+  customerId   String
+  label        String?
+  addressLine1 String
+  city         String
+  postalCode   String
+  country      String   @default("Morocco")
+  phone        String?
+  customer     customer @relation(fields: [customerId], references: [id], onDelete: Cascade, map: "Address_customerId_fkey")
+  order        order[]
+
+  @@index([customerId], map: "Address_customerId_idx")
 }
 
-enum LanguageCode {
-  en // English
-  ar // Arabic
-  fr // French
+model blogcategory {
+  id          String     @id
+  name        String
+  nameAr      String?
+  slug        String     @unique(map: "BlogCategory_slug_key")
+  description String?
+  color       String?
+  icon        String?
+  sortOrder   Int        @default(0)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  blogpost    blogpost[]
+
+  @@index([slug], map: "BlogCategory_slug_idx")
 }
 
-enum OrderStatus {
+model blogmedia {
+  id            String    @id
+  postId        String?
+  mediaType     String    @default("image")
+  url           String    @db.LongText
+  storagePath   String?
+  altText       String?
+  caption       String?
+  fileSizeBytes Int?
+  mimeType      String?
+  createdAt     DateTime  @default(now())
+  blogpost      blogpost? @relation(fields: [postId], references: [id], map: "BlogMedia_postId_fkey")
+
+  @@index([postId], map: "BlogMedia_postId_idx")
+}
+
+model blogpost {
+  id               String        @id
+  title            String
+  titleAr          String?
+  slug             String        @unique(map: "BlogPost_slug_key")
+  excerpt          String?
+  excerptAr        String?
+  content          String        @db.LongText
+  contentAr        String?       @db.LongText
+  featuredImageUrl String?
+  authorId         String
+  categoryId       String?
+  tags             String?       @db.Text
+  status           String        @default("draft")
+  publishedAt      DateTime?
+  viewCount        Int           @default(0)
+  readTimeMinutes  Int           @default(5)
+  metaTitle        String?
+  metaDescription  String?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime
+  blogmedia        blogmedia[]
+  user             user          @relation(fields: [authorId], references: [id], map: "BlogPost_authorId_fkey")
+  blogcategory     blogcategory? @relation(fields: [categoryId], references: [id], map: "BlogPost_categoryId_fkey")
+
+  @@index([authorId], map: "BlogPost_authorId_idx")
+  @@index([categoryId], map: "BlogPost_categoryId_idx")
+  @@index([slug], map: "BlogPost_slug_idx")
+  @@index([status], map: "BlogPost_status_idx")
+}
+
+model category {
+  id                  String                @id
+  image               String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime
+  categorytranslation categorytranslation[]
+  product             product[]
+}
+
+model categorytranslation {
+  id         String                       @id
+  categoryId String
+  language   categorytranslation_language
+  name       String
+  slug       String
+  metaTitle  String?
+  metaDesc   String?                      @db.Text
+  keywords   String?
+  ogImage    String?
+  canonical  String?
+  category   category                     @relation(fields: [categoryId], references: [id], onDelete: Cascade, map: "CategoryTranslation_categoryId_fkey")
+
+  @@unique([categoryId, language], map: "CategoryTranslation_categoryId_language_key")
+  @@unique([language, slug], map: "CategoryTranslation_language_slug_key")
+  @@index([categoryId], map: "CategoryTranslation_categoryId_idx")
+  @@index([slug], map: "CategoryTranslation_slug_idx")
+}
+
+model customer {
+  id             String    @id
+  email          String    @unique(map: "Customer_email_key")
+  phone          String?
+  firstName      String
+  lastName       String
+  isWholesale    Boolean   @default(false)
+  companyName    String?
+  taxId          String?
+  totalSpent     Decimal   @default(0.00) @db.Decimal(10, 2)
+  lastOrderDate  DateTime?
+  marketingOptIn Boolean   @default(false)
+  adminNotes     String?   @db.Text
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime
+  address        address[]
+  order          order[]
+
+  @@index([email], map: "Customer_email_idx")
+  @@index([phone], map: "Customer_phone_idx")
+}
+
+model order {
+  id                String       @id
+  reference         String       @unique(map: "Order_reference_key")
+  customerId        String
+  shippingAddressId String
+  status            order_status @default(PENDING)
+  totalAmount       Decimal      @db.Decimal(10, 2)
+  paymentProvider   String
+  paymentId         String?
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime
+  customer          customer     @relation(fields: [customerId], references: [id], map: "Order_customerId_fkey")
+  address           address      @relation(fields: [shippingAddressId], references: [id], map: "Order_shippingAddressId_fkey")
+  orderitem         orderitem[]
+
+  @@index([createdAt], map: "Order_createdAt_idx")
+  @@index([customerId], map: "Order_customerId_idx")
+  @@index([reference], map: "Order_reference_idx")
+  @@index([shippingAddressId], map: "Order_shippingAddressId_fkey")
+  @@index([status], map: "Order_status_idx")
+}
+
+model orderitem {
+  id                  String         @id
+  orderId             String
+  variantId           String
+  productNameSnapshot String
+  variantNameSnapshot String
+  priceSnapshot       Decimal        @db.Decimal(10, 2)
+  quantity            Int
+  order               order          @relation(fields: [orderId], references: [id], onDelete: Cascade, map: "OrderItem_orderId_fkey")
+  productvariant      productvariant @relation(fields: [variantId], references: [id], map: "OrderItem_variantId_fkey")
+
+  @@index([orderId], map: "OrderItem_orderId_idx")
+  @@index([variantId], map: "OrderItem_variantId_idx")
+}
+
+model post {
+  id              String            @id
+  published       Boolean           @default(false)
+  authorName      String?
+  publishedAt     DateTime?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime
+  posttranslation posttranslation[]
+
+  @@index([publishedAt], map: "Post_publishedAt_idx")
+  @@index([published], map: "Post_published_idx")
+}
+
+model posttranslation {
+  id        String                   @id
+  postId    String
+  language  posttranslation_language
+  title     String
+  content   String?                  @db.LongText
+  slug      String
+  metaTitle String?
+  metaDesc  String?                  @db.Text
+  keywords  String?
+  ogImage   String?
+  canonical String?
+  post      post                     @relation(fields: [postId], references: [id], onDelete: Cascade, map: "PostTranslation_postId_fkey")
+
+  @@unique([language, slug], map: "PostTranslation_language_slug_key")
+  @@unique([postId, language], map: "PostTranslation_postId_language_key")
+  @@index([postId], map: "PostTranslation_postId_idx")
+  @@index([slug], map: "PostTranslation_slug_idx")
+}
+
+model product {
+  id                 String               @id
+  categoryId         String
+  basePrice          Decimal              @db.Decimal(10, 2)
+  sku                String               @unique(map: "Product_sku_key")
+  stock              Int                  @default(0)
+  isAvailable        Boolean              @default(true)
+  isFeatured         Boolean              @default(false)
+  isTopSale          Boolean              @default(false)
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime
+  category           category             @relation(fields: [categoryId], references: [id], map: "Product_categoryId_fkey")
+  productimage       productimage[]
+  producttranslation producttranslation[]
+  productvariant     productvariant[]
+
+  @@index([categoryId], map: "Product_categoryId_idx")
+  @@index([isFeatured], map: "Product_isFeatured_idx")
+  @@index([isTopSale], map: "Product_isTopSale_idx")
+  @@index([sku], map: "Product_sku_idx")
+}
+
+model productimage {
+  id        String  @id
+  productId String
+  url       String
+  isPrimary Boolean @default(false)
+  product   product @relation(fields: [productId], references: [id], onDelete: Cascade, map: "ProductImage_productId_fkey")
+
+  @@index([productId], map: "ProductImage_productId_idx")
+}
+
+model producttranslation {
+  id          String                      @id
+  productId   String
+  language    producttranslation_language
+  name        String
+  description String?                     @db.LongText
+  slug        String
+  metaTitle   String?
+  metaDesc    String?                     @db.Text
+  keywords    String?
+  ogImage     String?
+  canonical   String?
+  product     product                     @relation(fields: [productId], references: [id], onDelete: Cascade, map: "ProductTranslation_productId_fkey")
+
+  @@unique([language, slug], map: "ProductTranslation_language_slug_key")
+  @@unique([productId, language], map: "ProductTranslation_productId_language_key")
+  @@index([productId], map: "ProductTranslation_productId_idx")
+  @@index([slug], map: "ProductTranslation_slug_idx")
+}
+
+model productvariant {
+  id        String      @id
+  productId String
+  sku       String      @unique(map: "ProductVariant_sku_key")
+  sizeName  String
+  price     Decimal     @db.Decimal(10, 2)
+  stock     Int         @default(0)
+  orderitem orderitem[]
+  product   product     @relation(fields: [productId], references: [id], onDelete: Cascade, map: "ProductVariant_productId_fkey")
+
+  @@index([productId], map: "ProductVariant_productId_idx")
+  @@index([sku], map: "ProductVariant_sku_idx")
+}
+
+model staticpage {
+  id                    String                  @id
+  systemName            String                  @unique(map: "StaticPage_systemName_key")
+  createdAt             DateTime                @default(now())
+  updatedAt             DateTime
+  staticpagetranslation staticpagetranslation[]
+
+  @@index([systemName], map: "StaticPage_systemName_idx")
+}
+
+model staticpagetranslation {
+  id           String                         @id
+  staticPageId String
+  language     staticpagetranslation_language
+  title        String
+  content      String?                        @db.LongText
+  slug         String
+  metaTitle    String?
+  metaDesc     String?                        @db.Text
+  keywords     String?
+  ogImage      String?
+  canonical    String?
+  staticpage   staticpage                     @relation(fields: [staticPageId], references: [id], onDelete: Cascade, map: "StaticPageTranslation_staticPageId_fkey")
+
+  @@unique([language, slug], map: "StaticPageTranslation_language_slug_key")
+  @@unique([staticPageId, language], map: "StaticPageTranslation_staticPageId_language_key")
+  @@index([slug], map: "StaticPageTranslation_slug_idx")
+  @@index([staticPageId], map: "StaticPageTranslation_staticPageId_idx")
+}
+
+model user {
+  id            String     @id
+  name          String?
+  email         String?    @unique(map: "User_email_key")
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          user_role  @default(ADMIN)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime
+  blogpost      blogpost[]
+}
+
+enum categorytranslation_language {
+  en
+  ar
+  fr
+}
+
+enum posttranslation_language {
+  en
+  ar
+  fr
+}
+
+enum producttranslation_language {
+  en
+  ar
+  fr
+}
+
+enum staticpagetranslation_language {
+  en
+  ar
+  fr
+}
+
+enum order_status {
   PENDING
   PROCESSING
   SHIPPED
@@ -31,356 +347,7 @@ enum OrderStatus {
   REFUNDED
 }
 
-// --- 1. AUTHENTICATION (Admins Only) ---
-model User {
-  id            String     @id @default(cuid())
-  name          String?
-  email         String?    @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?    // For admin credentials
-  role          Role       @default(ADMIN)
-  blogPosts     BlogPost[]
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-}
-
-// --- 2. CUSTOMER CRM (Guest Mode) ---
-model Customer {
-  id            String    @id @default(cuid())
-  
-  // Guest Identity (No Password)
-  email         String    @unique
-  phone         String?   // Important for delivery
-  firstName     String
-  lastName      String
-  
-  // B2B / Wholesale Fields
-  isWholesale   Boolean   @default(false)
-  companyName   String?
-  taxId         String?   // ICE
-  
-  // Metadata
-  totalSpent    Decimal   @default(0) @db.Decimal(10, 2)
-  lastOrderDate DateTime?
-  marketingOptIn Boolean  @default(false)
-  adminNotes    String?   @db.Text
-  
-  // Relations
-  addresses     Address[]
-  orders        Order[]
-  
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  @@index([email])
-  @@index([phone])
-}
-
-model Address {
-  id          String   @id @default(cuid())
-  customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  
-  label       String?  // "Home", "Office"
-  addressLine1 String
-  city        String
-  postalCode  String
-  country     String   @default("Morocco")
-  phone       String?
-
-  orders      Order[]
-
-  @@index([customerId])
-}
-
-// --- 3. PRODUCT CATALOG (Multilingual) ---
-model Category {
-  id           String   @id @default(cuid())
-  image        String?
-  
-  products     Product[]
-  translations CategoryTranslation[]
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
-model CategoryTranslation {
-  id          String       @id @default(cuid())
-  categoryId  String
-  category    Category     @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  language    LanguageCode
-  
-  name        String
-  slug        String
-  
-  // SEO
-  metaTitle   String?
-  metaDesc    String?      @db.Text
-  keywords    String?
-  ogImage     String?
-  canonical   String?
-  
-  @@unique([categoryId, language])
-  @@unique([language, slug])
-  @@index([categoryId])
-  @@index([slug])
-}
-
-model Product {
-  id           String   @id @default(cuid())
-  categoryId   String
-  category     Category @relation(fields: [categoryId], references: [id])
-  
-  // Neutral Data (Shared)
-  basePrice    Decimal  @db.Decimal(10, 2)
-  sku          String   @unique
-  stock        Int      @default(0)
-  isAvailable  Boolean  @default(true)
-  isFeatured   Boolean  @default(false)
-  isTopSale    Boolean  @default(false)
-  
-  variants     ProductVariant[]
-  images       ProductImage[]
-  translations ProductTranslation[]
-  
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([categoryId])
-  @@index([sku])
-  @@index([isFeatured])
-  @@index([isTopSale])
-}
-
-model ProductTranslation {
-  id          String       @id @default(cuid())
-  productId   String
-  product     Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
-  language    LanguageCode
-  
-  name        String
-  description String?      @db.LongText
-  slug        String
-  
-  // SEO
-  metaTitle   String?
-  metaDesc    String?      @db.Text
-  keywords    String?
-  ogImage     String?
-  canonical   String?
-  
-  @@unique([productId, language])
-  @@unique([language, slug])
-  @@index([productId])
-  @@index([slug])
-}
-
-model ProductVariant {
-  id        String      @id @default(cuid())
-  productId String
-  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  
-  sku       String      @unique
-  sizeName  String      // e.g. "50ml", "1 Liter"
-  price     Decimal     @db.Decimal(10, 2)
-  stock     Int         @default(0)
-  
-  orderItems OrderItem[]
-
-  @@index([productId])
-  @@index([sku])
-}
-
-model ProductImage {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  url       String
-  isPrimary Boolean  @default(false)
-
-  @@index([productId])
-}
-
-// --- 4. BLOG & STATIC PAGES ---
-model Post {
-  id           String   @id @default(cuid())
-  published    Boolean  @default(false)
-  authorName   String?
-  translations PostTranslation[]
-  publishedAt  DateTime?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([published])
-  @@index([publishedAt])
-}
-
-model PostTranslation {
-  id          String       @id @default(cuid())
-  postId      String
-  post        Post         @relation(fields: [postId], references: [id], onDelete: Cascade)
-  language    LanguageCode
-  
-  title       String
-  content     String?      @db.LongText
-  slug        String
-  
-  // SEO
-  metaTitle   String?
-  metaDesc    String?      @db.Text
-  keywords    String?
-  ogImage     String?
-  canonical   String?
-  
-  @@unique([postId, language])
-  @@unique([language, slug])
-  @@index([postId])
-  @@index([slug])
-}
-
-model StaticPage {
-  id           String   @id @default(cuid())
-  systemName   String   @unique // e.g. "ABOUT_US"
-  translations StaticPageTranslation[]
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  @@index([systemName])
-}
-
-model StaticPageTranslation {
-  id           String       @id @default(cuid())
-  staticPageId String
-  staticPage   StaticPage   @relation(fields: [staticPageId], references: [id], onDelete: Cascade)
-  language     LanguageCode
-  
-  title        String
-  content      String?      @db.LongText
-  slug         String
-  
-  // SEO
-  metaTitle    String?
-  metaDesc     String?      @db.Text
-  keywords     String?
-  ogImage      String?
-  canonical    String?
-  
-  @@unique([staticPageId, language])
-  @@unique([language, slug])
-  @@index([staticPageId])
-  @@index([slug])
-}
-
-// --- 5. ORDERS & TRANSACTIONS ---
-model Order {
-  id                String      @id @default(cuid())
-  reference         String      @unique // MO-2025-001
-  
-  customerId        String
-  customer          Customer    @relation(fields: [customerId], references: [id])
-  
-  shippingAddressId String
-  shippingAddress   Address     @relation(fields: [shippingAddressId], references: [id])
-  
-  status            OrderStatus @default(PENDING)
-  totalAmount       Decimal     @db.Decimal(10, 2)
-  
-  paymentProvider   String      // STRIPE, PAYPAL
-  paymentId         String?
-  
-  items             OrderItem[]
-  
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
-
-  @@index([reference])
-  @@index([customerId])
-  @@index([status])
-  @@index([createdAt])
-}
-
-model OrderItem {
-  id                  String         @id @default(cuid())
-  orderId             String
-  order               Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  
-  variantId           String
-  variant             ProductVariant @relation(fields: [variantId], references: [id])
-  
-  // Snapshots (Data at time of purchase)
-  productNameSnapshot String 
-  variantNameSnapshot String
-  priceSnapshot       Decimal        @db.Decimal(10, 2)
-  
-  quantity            Int
-
-  @@index([orderId])
-  @@index([variantId])
-}
-
-// ================== BLOG MODELS ==================
-
-model BlogCategory {
-  id          String     @id @default(cuid())
-  name        String
-  nameAr      String?
-  slug        String     @unique
-  description String?
-  color       String?
-  icon        String?
-  sortOrder   Int        @default(0)
-  posts       BlogPost[]
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-
-  @@index([slug])
-}
-
-model BlogPost {
-  id               String        @id @default(cuid())
-  title            String
-  titleAr          String?
-  slug             String        @unique
-  excerpt          String?
-  excerptAr        String?
-  content          String        @db.LongText // JSON content from TipTap
-  contentAr        String?       @db.LongText
-  featuredImageUrl String?
-  authorId         String
-  author           User          @relation(fields: [authorId], references: [id])
-  categoryId       String?
-  category         BlogCategory? @relation(fields: [categoryId], references: [id])
-  tags             String?       @db.Text // JSON array of tags
-  status           String        @default("draft") // draft, published, review, archived
-  publishedAt      DateTime?
-  viewCount        Int           @default(0)
-  readTimeMinutes  Int           @default(5)
-  metaTitle        String?
-  metaDescription  String?
-  media            BlogMedia[]
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-
-  @@index([slug])
-  @@index([status])
-  @@index([authorId])
-  @@index([categoryId])
-}
-
-model BlogMedia {
-  id            String    @id @default(cuid())
-  postId        String?
-  post          BlogPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
-  mediaType     String    @default("image") // image, video
-  url           String    @db.LongText
-  storagePath   String?
-  altText       String?
-  caption       String?
-  fileSizeBytes Int?
-  mimeType      String?
-  createdAt     DateTime  @default(now())
-
-  @@index([postId])
+enum user_role {
+  ADMIN
+  STAFF
 }

@@ -130,5 +130,58 @@
     "languages": {
         "en": "English",
         "ar": "Arabic"
+    },
+    "checkout": {
+        "title": "Checkout",
+        "customerInfo": {
+            "title": "Customer Information",
+            "firstName": "First Name",
+            "lastName": "Last Name",
+            "email": "Email Address",
+            "phone": "Phone Number"
+        },
+        "shippingAddress": {
+            "title": "Shipping Address",
+            "street": "Street Address",
+            "city": "City",
+            "state": "State/Province",
+            "postalCode": "Postal Code",
+            "country": "Country"
+        },
+        "orderNotes": {
+            "title": "Order Notes (Optional)",
+            "placeholder": "Special instructions, delivery notes, etc."
+        },
+        "paymentMethod": {
+            "title": "Payment Method",
+            "stripe": {
+                "label": "Credit/Debit Card",
+                "description": "Pay securely with Stripe"
+            },
+            "paypal": {
+                "label": "PayPal",
+                "description": "Pay with your PayPal account"
+            },
+            "cardNumber": "Card Number",
+            "cardExpiry": "Expiry Date",
+            "cardCvc": "CVC",
+            "cardName": "Cardholder Name"
+        },
+        "orderSummary": {
+            "title": "Order Summary",
+            "subtotal": "Subtotal",
+            "shipping": "Shipping",
+            "tax": "Tax",
+            "total": "Total",
+            "items": "items"
+        },
+        "completeOrder": "Complete Order",
+        "processing": "Processing...",
+        "terms": "By placing your order, you agree to our",
+        "termsLink": "Terms of Service",
+        "privacyLink": "Privacy Policy",
+        "and": "and",
+        "emptyCart": "Your cart is empty",
+        "backToShop": "Back to Shop"
     }
 }

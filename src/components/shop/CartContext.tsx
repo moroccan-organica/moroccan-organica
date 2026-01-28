@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, useEffect, type ReactNode } from "react";
 import type { ShopProduct } from "@/data/shop-products";
 
 export interface CartItem {
@@ -10,6 +10,8 @@ export interface CartItem {
 
 interface CartContextValue {
   items: CartItem[];
+  isCartOpen: boolean;
+  setIsCartOpen: (open: boolean) => void;
   addItem: (product: ShopProduct, quantity?: number) => void;
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, delta: number) => void;
@@ -20,8 +22,39 @@ interface CartContextValue {
 
 const CartContext = createContext<CartContextValue | undefined>(undefined);
 
+const CART_STORAGE_KEY = "moroccan-organica-cart";
+
 export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedCart = localStorage.getItem(CART_STORAGE_KEY);
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          setItems(parsedCart);
+        }
+      } catch (error) {
+        console.error("Error loading cart from localStorage:", error);
+      }
+      setIsInitialized(true);
+    }
+  }, []);
+
+  // Save cart to localStorage whenever items change (but only after initial load)
+  useEffect(() => {
+    if (isInitialized && typeof window !== "undefined") {
+      try {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+      } catch (error) {
+        console.error("Error saving cart to localStorage:", error);
+      }
+    }
+  }, [items, isInitialized]);
 
   const addItem = useCallback((product: ShopProduct, quantity = 1) => {
     setItems((prev) => {
@@ -35,6 +68,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       }
       return [...prev, { product, quantity }];
     });
+    // Open the cart drawer automatically when an item is added
+    setIsCartOpen(true);
   }, []);
 
   const removeItem = useCallback((productId: string) => {
@@ -53,6 +88,9 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
   const clearCart = useCallback(() => {
     setItems([]);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem(CART_STORAGE_KEY);
+    }
   }, []);
 
   const { totalItems, totalPrice } = useMemo(() => {
@@ -67,6 +105,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const value = useMemo(
     () => ({
       items,
+      isCartOpen,
+      setIsCartOpen,
       addItem,
       removeItem,
       updateQuantity,
@@ -74,7 +114,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       totalItems,
       totalPrice,
     }),
-    [items, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice]
+    [items, isCartOpen, addItem, removeItem, updateQuantity, clearCart, totalItems, totalPrice]
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

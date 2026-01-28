@@ -150,7 +150,7 @@ const Header = ({ dict, lang }: HeaderProps) => {
                     {/* Right Section */}
                     <div className="hidden lg:flex items-center gap-6">
                         <LanguageSwitcher />
-                        <CartDrawer isRTL={isRTL} />
+                        <CartDrawer isRTL={isRTL} lang={lang} />
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -223,7 +223,7 @@ const Header = ({ dict, lang }: HeaderProps) => {
                             {/* Mobile Utilities */}
                             <div className={`flex items-center gap-6 pt-4 border-t border-gray-700 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}>
                                 <LanguageSwitcher />
-                                <CartDrawer isRTL={isRTL} />
+                                <CartDrawer isRTL={isRTL} lang={lang} />
                             </div>
                         </div>
                     </nav>
