@@ -41,7 +41,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
   return (
     <div className="w-full min-h-screen flex">
       {/* Left side - Hero section */}
-      <div className="flex-1 bg-linear-to-br from-[#0b4022] via-[#0f5f30] to-[#bc6c25] flex items-center justify-center p-12">
+      <div className="flex-1 bg-linear-to-br from-forest-dark via-primary to-accent flex items-center justify-center p-12">
         <div className="text-white max-w-lg">
           <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
             Welcome to Organica Dashboard.
@@ -63,11 +63,12 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
 
           {/* Logo/Icon */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#118f14] rounded-lg mb-4 shadow-lg shadow-emerald-200/80">
-              <div className="w-6 h-6 bg-white rounded-sm relative">
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-3 bg-[#bc6c25] rounded-b-sm" />
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-1 h-2 bg-[#118f14] rounded-t-sm" />
-              </div>
+            <div className="inline-flex items-center justify-center mb-4">
+              <img
+                src="/images/logo.png"
+                alt="Moroccan Organica"
+                className="h-16 w-auto object-contain"
+              />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               {isLogin ? "Welcome Back" : "Join Us Today"}
@@ -91,7 +92,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                 placeholder="Enter your email"
                 required
               />
@@ -108,7 +109,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
                   name="password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all bg-white"
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition-all bg-white"
                   placeholder={isLogin ? "Enter your password" : "Create a secure password"}
                   required
                 />
@@ -127,11 +128,11 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
                 <label className="flex items-center gap-2 text-sm text-gray-600">
                   <input
                     type="checkbox"
-                    className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                    className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
                   />
                   Remember me
                 </label>
-                <button type="button" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                <button type="button" className="text-sm text-primary hover:text-primary/80 font-medium">
                   Forgot password?
                 </button>
               </div>
@@ -140,7 +141,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#118f14] hover:bg-[#0f7a11] text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-[#118f14] focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
+              className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-4 rounded-lg transition-colors duration-200 focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isLoading ? "Processing..." : isLogin ? "Sign In" : "Create a new account"}
             </button>

@@ -67,19 +67,19 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
   return (
     <aside
       className={cn(
-        'fixed left-0 top-0 z-40 h-screen bg-slate-900 text-white transition-all duration-300 flex flex-col',
+        'fixed left-0 top-0 z-40 h-screen bg-secondary text-white transition-all duration-300 flex flex-col',
         collapsed ? 'w-20' : 'w-64'
       )}
     >
       {/* Header */}
       <div className={cn(
-        "flex h-16 items-center border-b border-slate-700 px-4",
+        "flex h-16 items-center border-b border-border/10 px-4",
         collapsed ? "justify-center" : "justify-between"
       )}>
         {!collapsed && (
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-linear-to-br from-[#606C38] to-[#BC6C25] flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+            <div className="h-9 w-9 overflow-hidden flex items-center justify-center">
+              <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain" />
             </div>
             <div>
               <h2 className="font-bold text-sm">Moroccan Organica</h2>
@@ -87,10 +87,15 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
             </div>
           </div>
         )}
+        {collapsed && (
+          <div className="h-9 w-9 overflow-hidden flex items-center justify-center">
+            <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain" />
+          </div>
+        )}
         {!collapsed && (
           <button
             onClick={onToggle}
-            className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -98,7 +103,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
         {collapsed && (
           <button
             onClick={onToggle}
-            className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -120,8 +125,8 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
                 className={cn(
                   'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all',
                   active || childActive
-                    ? 'bg-linear-to-r from-[#606C38] to-[#606C38]/80 text-white shadow-lg'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white',
+                    ? 'bg-linear-to-r from-primary to-primary/80 text-white shadow-lg'
+                    : 'text-slate-300 hover:bg-white/5 hover:text-white',
                   collapsed && 'justify-center px-3'
                 )}
                 title={collapsed ? item.label : undefined}
@@ -142,8 +147,8 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
                         className={cn(
                           'flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-all',
                           childIsActive
-                            ? 'bg-slate-800 text-white'
-                            : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                            ? 'bg-white/10 text-white'
+                            : 'text-slate-300 hover:bg-white/5 hover:text-white'
                         )}
                       >
                         <ChildIcon className={cn('h-4 w-4 shrink-0', childIsActive && 'text-white')} />
@@ -159,7 +164,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-slate-700 p-4">
+      <div className="border-t border-border/10 p-4">
         <button
           onClick={() => signOut({ callbackUrl: `/${lang}/login` })}
           className={cn(

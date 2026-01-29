@@ -1,5 +1,9 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import Image, { StaticImageData } from "next/image";
+import { useCart } from "@/components/shop/CartContext";
+import type { ShopProduct } from "@/data/shop-products";
 
 interface ProductCardProps {
   image: string | StaticImageData;
@@ -7,13 +11,55 @@ interface ProductCardProps {
   description: string;
   badge: string;
   badgeVariant?: "organic" | "bulk" | "premium";
+  id?: string;
+  price?: number;
+  volume?: string;
+  category?: string;
+  slug?: string;
+  name?: string;
+  nameAr?: string;
+  descriptionAr?: string;
 }
 
-const ProductCard = ({ image, title, description, badge, badgeVariant = "organic" }: ProductCardProps) => {
+const ProductCard = ({
+  image,
+  title,
+  description,
+  badge,
+  badgeVariant = "organic",
+  id,
+  price,
+  volume,
+  category,
+  slug,
+  name,
+  nameAr,
+  descriptionAr
+}: ProductCardProps) => {
+  const { addItem } = useCart();
   const badgeStyles = {
     organic: "bg-primary text-primary-foreground",
     bulk: "bg-accent text-accent-foreground",
     premium: "bg-secondary text-secondary-foreground",
+  };
+
+  const handleAddToCart = () => {
+    if (!id || price === undefined) return;
+
+    const product: ShopProduct = {
+      id,
+      slug: slug || "",
+      category: category || "General",
+      image: typeof image === 'string' ? image : (image as any).src || "",
+      volume: volume || "Standard",
+      name: name || title,
+      nameAr: nameAr || title,
+      description: description,
+      descriptionAr: descriptionAr || description,
+      price: price,
+      notes: [],
+    };
+    addItem(product);
   };
 
   return (
@@ -35,8 +81,13 @@ const ProductCard = ({ image, title, description, badge, badgeVariant = "organic
 
         {/* Add to Cart - appears on hover with slide up */}
         <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out p-4">
-          <Button className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground">
+          <Button
+            className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground cursor-pointer"
+            onClick={handleAddToCart}
+            disabled={!id || price === undefined}
+          >
             Add to Cart
+            {price !== undefined && <span className="ml-2">(${price})</span>}
           </Button>
         </div>
       </div>

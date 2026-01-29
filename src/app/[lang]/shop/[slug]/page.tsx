@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 
 import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data/shop-products";
 import { getProductBySlug, getRelatedProducts, getProducts } from "@/actions/product.actions";
+import { getGlobalSeoSettings } from "@/lib/queries";
+import { Metadata } from "next";
 import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
@@ -51,13 +53,42 @@ const copy = {
 
 type Params = Promise<{ lang: string; slug: string }>;
 
+export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
+    const { lang, slug } = await params;
+    const product = await getProductBySlug(slug, lang as any);
+    const globalSeo = await getGlobalSeoSettings(lang);
+
+    if (!product) {
+        return {
+            title: 'Product Not Found',
+        };
+    }
+
+    const name = lang === 'ar' ? product.nameAr : product.name;
+    const description = lang === 'ar' ? product.descriptionAr : product.description;
+
+    return {
+        title: product.metaTitle || name,
+        description: product.metaDesc || description?.substring(0, 160),
+        keywords: product.keywords || undefined,
+        openGraph: {
+            title: product.metaTitle || name,
+            description: product.metaDesc || description?.substring(0, 160),
+            images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
+        },
+        alternates: {
+            canonical: product.canonical || undefined,
+        }
+    };
+}
+
 export default async function ProductDetailPage({ params }: { params: Params }) {
     const { lang, slug } = await params;
-    
+
     // Try to fetch from database first, fallback to static data
     let product: ShopProductDB | null = await getProductBySlug(slug, lang as 'en' | 'ar' | 'fr');
     let relatedProducts: ShopProductDB[] = [];
-    
+
     // Fallback to static data if DB returns nothing
     if (!product) {
         const staticProduct = getProductBySlugStatic(slug);
@@ -86,7 +117,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 sku: staticProduct.id,
                 variants: [],
             };
-            
+
             // Get related from static
             relatedProducts = shopProducts
                 .filter((item) => item.id !== staticProduct.id && item.category === staticProduct.category)
@@ -118,22 +149,24 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         }
     } else {
         // Get related from DB - try by category first
-        if (product.categorySlug) {
+        if (product && product.categorySlug) {
+            const currentProduct = product;
             // Find category by slug to get ID
             const { getCategories } = await import('@/actions/category.actions');
             const categories = await getCategories();
-            const category = categories.find(c => c.slug === product.categorySlug || c.slugAr === product.categorySlug);
-            
+            const category = categories.find(c => c.slug === currentProduct.categorySlug || c.slugAr === currentProduct.categorySlug);
+
             if (category) {
-                relatedProducts = await getRelatedProducts(product.id, category.id, 3);
+                relatedProducts = await getRelatedProducts(currentProduct.id, category.id, 3);
             }
         }
-        
+
         // If no related products found, get any 3 available products (excluding current)
-        if (relatedProducts.length === 0) {
+        if (product && relatedProducts.length === 0) {
+            const currentProduct = product;
             const allProductsResult = await getProducts({ isAvailable: true, limit: 10 });
             relatedProducts = allProductsResult.products
-                .filter(p => p.id !== product.id)
+                .filter(p => p.id !== currentProduct.id)
                 .slice(0, 3);
         }
     }

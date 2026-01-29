@@ -3,11 +3,11 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma, $Enums } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
-import { 
-  ShopProductDB, 
-  CreateProductInput, 
+import {
+  ShopProductDB,
+  CreateProductInput,
   UpdateProductInput,
-  LanguageCode 
+  LanguageCode
 } from '@/types/product';
 
 type DbProductWithRelations = Prisma.ProductGetPayload<{
@@ -36,15 +36,15 @@ function transformToShopProduct(product: DbProductWithRelations, preferredLang: 
 
   const primaryImage = product.images.find((img) => img.isPrimary);
   // Filter out base64 and blob URLs - they're temporary and won't work after page reload
-  const validImages = product.images.filter(img => 
-    img.url && 
-    !img.url.startsWith('data:') && 
+  const validImages = product.images.filter(img =>
+    img.url &&
+    !img.url.startsWith('data:') &&
     !img.url.startsWith('blob:')
   );
-  const mainImage = validImages.length > 0 
-    ? (primaryImage && !primaryImage.url.startsWith('data:') && !primaryImage.url.startsWith('blob:') 
-        ? primaryImage.url 
-        : validImages[0]?.url)
+  const mainImage = validImages.length > 0
+    ? (primaryImage && !primaryImage.url.startsWith('data:') && !primaryImage.url.startsWith('blob:')
+      ? primaryImage.url
+      : validImages[0]?.url)
     : '/images/placeholder.svg';
   const gallery = validImages.map((img) => img.url);
 
@@ -79,6 +79,11 @@ function transformToShopProduct(product: DbProductWithRelations, preferredLang: 
       price: Number(v.price),
       stock: v.stock,
     })),
+    metaTitle: translation?.metaTitle || undefined,
+    metaDesc: translation?.metaDesc || undefined,
+    keywords: translation?.keywords || undefined,
+    ogImage: translation?.ogImage || undefined,
+    canonical: translation?.canonical || undefined,
   };
 }
 
@@ -93,21 +98,21 @@ export async function getProducts(options?: {
 }): Promise<{ products: ShopProductDB[]; total: number }> {
   try {
     const { categoryId, search, isAvailable, isFeatured, page = 1, limit = 50 } = options || {};
-    
+
     const where: Prisma.ProductWhereInput = {};
-    
+
     if (categoryId) {
       where.categoryId = categoryId;
     }
-    
+
     if (typeof isAvailable === 'boolean') {
       where.isAvailable = isAvailable;
     }
-    
+
     if (typeof isFeatured === 'boolean') {
       where.isFeatured = isFeatured;
     }
-    
+
     if (search) {
       where.OR = [
         { sku: { contains: search } },
@@ -303,13 +308,13 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
 
 // UPDATE PRODUCT
 export async function updateProduct(
-  id: string, 
+  id: string,
   input: UpdateProductInput
 ): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
   try {
     // Update main product data
     const updateData: Prisma.ProductUpdateInput = {};
-    
+
     if (input.categoryId) {
       updateData.category = { connect: { id: input.categoryId } };
     }
@@ -365,15 +370,15 @@ export async function updateProduct(
     // Update images if provided
     if (input.images) {
       // Filter out data URLs and blob URLs (they're temporary)
-      const validImages = input.images.filter(img => 
-        img.url && 
-        !img.url.startsWith('data:') && 
+      const validImages = input.images.filter(img =>
+        img.url &&
+        !img.url.startsWith('data:') &&
         !img.url.startsWith('blob:')
       );
-      
+
       // Delete existing images
       await prisma.productImage.deleteMany({ where: { productId: id } });
-      
+
       // Create new images only if we have valid URLs
       if (validImages.length > 0) {
         await prisma.productImage.createMany({
@@ -448,8 +453,8 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
 
 // GET RELATED PRODUCTS
 export async function getRelatedProducts(
-  productId: string, 
-  categoryId: string, 
+  productId: string,
+  categoryId: string,
   limit: number = 4
 ): Promise<ShopProductDB[]> {
   try {

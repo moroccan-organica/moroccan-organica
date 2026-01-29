@@ -79,6 +79,11 @@ export interface ShopProductDB {
     price: number;
     stock: number;
   }[];
+  metaTitle?: string;
+  metaDesc?: string;
+  keywords?: string;
+  ogImage?: string;
+  canonical?: string;
 }
 
 // Input for creating a product

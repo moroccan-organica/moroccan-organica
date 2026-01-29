@@ -79,7 +79,7 @@ export function MediaLibrary({ items, onUpload, onSelect, onDelete, isLoading, t
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row sm:items-center gap-6">
           <h2 className="text-xl font-playfair font-bold text-slate-900">
-            {translations.title} <span className="text-[#606C38] font-sans text-sm ml-1">({items.length})</span>
+            {translations.title} <span className="text-primary font-sans text-sm ml-1">({items.length})</span>
           </h2>
           {/* Filter Tabs */}
           <div className="flex items-center rounded-xl bg-slate-50 border border-slate-100 p-1">
@@ -94,7 +94,7 @@ export function MediaLibrary({ items, onUpload, onSelect, onDelete, isLoading, t
                 className={cn(
                   'px-4 py-1.5 text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-300',
                   filter === tab.id
-                    ? 'bg-white text-[#606C38] shadow-sm ring-1 ring-slate-100'
+                    ? 'bg-white text-primary shadow-sm ring-1 ring-slate-100'
                     : 'text-slate-400 hover:text-slate-600'
                 )}
               >
@@ -103,7 +103,7 @@ export function MediaLibrary({ items, onUpload, onSelect, onDelete, isLoading, t
             ))}
           </div>
         </div>
-        <Button onClick={onUpload} className="gap-2 bg-[#606C38] hover:bg-[#4a542b] rounded-xl shadow-lg shadow-[#606C38]/20">
+        <Button onClick={onUpload} className="gap-2 bg-primary hover:bg-primary/90 rounded-xl shadow-lg shadow-primary/20">
           <Upload className="h-4 w-4" /> {translations.upload}
         </Button>
       </div>

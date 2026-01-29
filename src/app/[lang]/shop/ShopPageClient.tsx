@@ -15,11 +15,11 @@ interface ShopPageClientProps {
     dict: Record<string, unknown>;
 }
 
-export function ShopPageClient({ 
-    lang, 
-    initialProducts, 
+export function ShopPageClient({
+    lang,
+    initialProducts,
     categories,
-    dict 
+    dict
 }: ShopPageClientProps) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -44,10 +44,10 @@ export function ShopPageClient({
         return initialProducts.filter(product => {
             const localizedName = lang === 'ar' ? product.nameAr : product.name;
             const localizedDesc = lang === 'ar' ? product.descriptionAr : product.description;
-            const matchesSearch = !searchTerm || 
+            const matchesSearch = !searchTerm ||
                 localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
-            const matchesCategory = !selectedCategory || product.id === selectedCategory || 
+            const matchesCategory = !selectedCategory || product.id === selectedCategory ||
                 categories.find(c => c.id === selectedCategory)?.name === product.category;
             const productPrice = product.price || 0;
             const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
@@ -72,7 +72,7 @@ export function ShopPageClient({
         id: cat.id,
         name: lang === 'ar' ? cat.nameAr : cat.name,
         slug: cat.slug,
-        color: '#606C38',
+        color: 'var(--primary)',
     }));
 
     // Convert ShopProductDB to ShopProduct format for ShopCard
@@ -95,7 +95,7 @@ export function ShopPageClient({
 
     return (
         <main className="min-h-screen bg-slate-50/50">
-            <ShopHero 
+            <ShopHero
                 title={dict.title as string}
                 subtitle={dict.subtitle as string}
             />
@@ -104,7 +104,7 @@ export function ShopPageClient({
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
                     {/* Sidebar */}
                     <div className="w-full lg:w-1/4 xl:w-1/5 lg:pr-4 xl:pr-6">
-                        <FilterSidebar 
+                        <FilterSidebar
                             categories={categoriesForFilter}
                             selectedCategory={selectedCategory}
                             onCategoryChange={(cat) => {
@@ -151,9 +151,9 @@ export function ShopPageClient({
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                     {paginatedProducts.map((product) => (
-                                        <ShopCard 
-                                            key={product.id} 
-                                            product={convertToShopProduct(product)} 
+                                        <ShopCard
+                                            key={product.id}
+                                            product={convertToShopProduct(product)}
                                             lang={lang}
                                             translations={{
                                                 viewDetails: dict.viewDetails as string,
@@ -164,7 +164,7 @@ export function ShopPageClient({
                                 </div>
                                 {filteredProducts.length > productsPerPage && (
                                     <div className="flex justify-center pt-10">
-                                        <BlogPagination 
+                                        <BlogPagination
                                             currentPage={currentPage}
                                             totalPages={totalPages}
                                             onPageChange={setCurrentPage}
@@ -173,7 +173,7 @@ export function ShopPageClient({
                                 )}
                             </>
                         ) : (
-                            <BlogEmptyState 
+                            <BlogEmptyState
                                 title={dict.noResults as string || "No products found"}
                                 description={dict.subtitle as string}
                                 showClearButton={!!selectedCategory || !!searchTerm}

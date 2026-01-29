@@ -56,12 +56,12 @@ const SidebarItem: React.FC<SidebarItemExtendedProps> = ({
       className={cn(
         'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold transition-all duration-300',
         active
-          ? 'bg-[#606C38] text-white shadow-lg shadow-[#606C38]/20'
-          : 'text-slate-500 hover:bg-slate-50 hover:text-[#606C38]',
+          ? 'bg-primary text-white shadow-lg shadow-primary/20'
+          : 'text-slate-500 hover:bg-slate-50 hover:text-primary',
         collapsed && 'justify-center px-0'
       )}
     >
-      <Icon className={cn("h-5 w-5 shrink-0", active ? "text-white" : "text-slate-400 group-hover:text-[#606C38]")} />
+      <Icon className={cn("h-5 w-5 shrink-0", active ? "text-white" : "text-slate-400 group-hover:text-primary")} />
       {!collapsed && <span className="truncate">{label}</span>}
     </Link>
   );
@@ -72,7 +72,7 @@ const SidebarItem: React.FC<SidebarItemExtendedProps> = ({
         <TooltipTrigger asChild>
           {content}
         </TooltipTrigger>
-        <TooltipContent side="right" className="font-bold border-none bg-slate-900 text-white rounded-lg px-3 py-1.5 text-xs">
+        <TooltipContent side="right" className="font-bold border-none bg-secondary text-white rounded-lg px-3 py-1.5 text-xs">
           {label}
         </TooltipContent>
       </Tooltip>
@@ -137,7 +137,7 @@ export function BlogLayout({
   const subtitle = translations.views[currentView]?.subtitle || 'Manage your content';
 
   return (
-    <div className="flex h-screen flex-col lg:flex-row bg-[#FBF2E5]/30 overflow-hidden font-sans">
+    <div className="flex h-screen flex-col lg:flex-row bg-background overflow-hidden font-sans">
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
         <div
@@ -161,22 +161,22 @@ export function BlogLayout({
           'flex h-20 items-center justify-between border-b border-slate-50 shrink-0',
           isSidebarCollapsed ? 'lg:px-4' : 'px-8'
         )}>
-          <Link 
-            href="/blog/admin" 
+          <Link
+            href="/blog/admin"
             className="flex items-center gap-3 group transition-all duration-300"
           >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#606C38] shadow-lg shadow-[#606C38]/20 shrink-0 transition-transform group-hover:scale-110">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/20 shrink-0 transition-transform group-hover:scale-110">
               <span className="text-lg font-playfair font-bold text-white">O</span>
             </div>
             {!isSidebarCollapsed && (
-              <span className="text-xl font-playfair font-bold text-slate-900 tracking-tight group-hover:text-[#606C38] transition-colors">ORGANICA</span>
+              <span className="text-xl font-playfair font-bold text-slate-900 tracking-tight group-hover:text-primary transition-colors">ORGANICA</span>
             )}
           </Link>
-          
+
           <button
             type="button"
             onClick={toggleSidebar}
-            className="p-2 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-[#606C38] transition-all duration-300 hidden lg:block"
+            className="p-2 rounded-xl hover:bg-slate-50 text-slate-400 hover:text-primary transition-all duration-300 hidden lg:block"
           >
             {isSidebarCollapsed ? (
               <ChevronRight className="h-5 w-5" />
@@ -184,7 +184,7 @@ export function BlogLayout({
               <ChevronLeft className="h-5 w-5" />
             )}
           </button>
-          
+
           <button
             className="lg:hidden p-2 rounded-xl hover:bg-slate-50"
             onClick={() => setIsMobileMenuOpen(false)}
@@ -218,7 +218,7 @@ export function BlogLayout({
             "flex items-center gap-3 rounded-2xl bg-white p-3 shadow-sm border border-slate-100 transition-all duration-300",
             isSidebarCollapsed && "justify-center px-2"
           )}>
-            <div className="h-10 w-10 overflow-hidden rounded-xl bg-[#FBF2E5] shrink-0 border-2 border-white shadow-sm relative">
+            <div className="h-10 w-10 overflow-hidden rounded-xl bg-background shrink-0 border-2 border-white shadow-sm relative">
               {blogger?.avatar_url ? (
                 <Image
                   src={blogger.avatar_url}
@@ -227,7 +227,7 @@ export function BlogLayout({
                   className="object-cover"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-sm font-bold text-[#606C38]">
+                <div className="flex h-full w-full items-center justify-center text-sm font-bold text-primary">
                   {blogger?.name?.charAt(0) || 'A'}
                 </div>
               )}
@@ -256,7 +256,7 @@ export function BlogLayout({
       </aside>
 
       {/* Main Content Wrapper */}
-      <div 
+      <div
         className={cn(
           'flex flex-1 flex-col overflow-x-hidden transition-all duration-500 ease-in-out relative z-0',
           isSidebarCollapsed ? 'lg:ml-24' : 'lg:ml-72'
@@ -272,7 +272,7 @@ export function BlogLayout({
               <Menu className="h-5 w-5" />
             </button>
             <div className="min-w-0">
-              <h1 className="text-xl font-playfair font-bold text-[#606C38] lg:text-2xl truncate">{title}</h1>
+              <h1 className="text-xl font-playfair font-bold text-primary lg:text-2xl truncate">{title}</h1>
               <p className="hidden text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] lg:block mt-0.5">{subtitle}</p>
             </div>
           </div>
@@ -280,10 +280,10 @@ export function BlogLayout({
           <div className="flex items-center gap-4">
             {/* Additional Header Actions (Language, etc) could go here */}
             <div className="h-10 w-px bg-slate-100 hidden sm:block" />
-            <Button 
-              variant="ghost" 
-              size="sm" 
-              className="rounded-xl text-[#BC6C25] font-bold hover:bg-[#BC6C25]/5 gap-2"
+            <Button
+              variant="ghost"
+              size="sm"
+              className="rounded-xl text-accent font-bold hover:bg-accent/5 gap-2"
               asChild
             >
               <Link href="/blog" target="_blank">

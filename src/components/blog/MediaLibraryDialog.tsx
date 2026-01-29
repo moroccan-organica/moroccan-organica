@@ -134,7 +134,7 @@ export function MediaLibraryDialog({
             className={cn(
               'px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all border-b-2 -mb-px',
               activeTab === 'upload'
-                ? 'border-[#606C38] text-[#606C38]'
+                ? 'border-primary text-primary'
                 : 'border-transparent text-slate-400 hover:text-slate-600'
             )}
           >
@@ -145,7 +145,7 @@ export function MediaLibraryDialog({
             className={cn(
               'px-8 py-4 text-xs font-bold uppercase tracking-widest transition-all border-b-2 -mb-px',
               activeTab === 'library'
-                ? 'border-[#606C38] text-[#606C38]'
+                ? 'border-primary text-primary'
                 : 'border-transparent text-slate-400 hover:text-slate-600'
             )}
           >
@@ -165,25 +165,25 @@ export function MediaLibraryDialog({
                 className={cn(
                   'flex h-full w-full max-w-3xl cursor-pointer flex-col items-center justify-center rounded-3xl border-2 border-dashed transition-all duration-500 group',
                   dragActive
-                    ? 'border-[#606C38] bg-[#606C38]/5'
-                    : 'border-slate-200 bg-slate-50/50 hover:border-[#606C38] hover:bg-[#606C38]/5'
+                    ? 'border-primary bg-primary/5'
+                    : 'border-slate-200 bg-slate-50/50 hover:border-primary hover:bg-primary/5'
                 )}
               >
                 {isUploading ? (
                   <div className="flex flex-col items-center gap-6">
-                    <div className="h-16 w-16 animate-spin rounded-full border-4 border-[#606C38] border-t-transparent" />
+                    <div className="h-16 w-16 animate-spin rounded-full border-4 border-primary border-t-transparent" />
                     <p className="text-sm font-bold text-slate-600 uppercase tracking-widest">Uploading...</p>
                   </div>
                 ) : (
                   <>
-                    <div className="mb-6 rounded-full bg-white p-6 shadow-sm group-hover:bg-[#606C38] group-hover:text-white transition-all duration-500">
+                    <div className="mb-6 rounded-full bg-white p-6 shadow-sm group-hover:bg-primary group-hover:text-white transition-all duration-500">
                       <Upload className="h-10 w-10 text-slate-400 group-hover:text-inherit" />
                     </div>
                     <p className="mb-2 text-xl font-playfair font-bold text-slate-900">
                       Drag & drop your files here
                     </p>
                     <p className="mb-6 text-sm text-slate-500 font-medium">or</p>
-                    <Button className="bg-[#606C38] hover:bg-[#4a542b] rounded-xl px-8 shadow-lg shadow-[#606C38]/20">
+                    <Button className="bg-primary hover:bg-primary/90 rounded-xl px-8 shadow-lg shadow-primary/20">
                       Select Files
                     </Button>
                     <p className="mt-8 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
@@ -209,7 +209,7 @@ export function MediaLibraryDialog({
                     className={cn(
                       'flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all',
                       filter === 'all'
-                        ? 'bg-white text-[#606C38] shadow-sm'
+                        ? 'bg-white text-primary shadow-sm'
                         : 'text-slate-400 hover:text-slate-600'
                     )}
                   >
@@ -221,7 +221,7 @@ export function MediaLibraryDialog({
                     className={cn(
                       'flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all',
                       filter === 'image'
-                        ? 'bg-white text-[#606C38] shadow-sm'
+                        ? 'bg-white text-primary shadow-sm'
                         : 'text-slate-400 hover:text-slate-600'
                     )}
                   >
@@ -233,7 +233,7 @@ export function MediaLibraryDialog({
                     className={cn(
                       'flex items-center gap-2 px-4 py-1.5 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all',
                       filter === 'video'
-                        ? 'bg-white text-[#606C38] shadow-sm'
+                        ? 'bg-white text-primary shadow-sm'
                         : 'text-slate-400 hover:text-slate-600'
                     )}
                   >
@@ -270,8 +270,8 @@ export function MediaLibraryDialog({
                         className={cn(
                           'group relative aspect-square cursor-pointer overflow-hidden rounded-xl border-2 transition-all duration-300',
                           selectedMedia?.id === item.id
-                            ? 'border-[#606C38] ring-4 ring-[#606C38]/10'
-                            : 'border-transparent hover:border-[#606C38]/30 shadow-sm hover:shadow-lg'
+                            ? 'border-primary ring-4 ring-primary/10'
+                            : 'border-transparent hover:border-primary/30 shadow-sm hover:shadow-lg'
                         )}
                       >
                         {item.media_type === 'video' ? (
@@ -307,13 +307,13 @@ export function MediaLibraryDialog({
                         )}
 
                         {selectedMedia?.id === item.id && (
-                          <div className="absolute inset-0 bg-[#606C38]/20 flex items-center justify-center">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#606C38] text-white shadow-xl scale-110 animate-in zoom-in-50 duration-300">
+                          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white shadow-xl scale-110 animate-in zoom-in-50 duration-300">
                               <Check className="h-5 w-5" />
                             </div>
                           </div>
                         )}
-                        
+
                         <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/5" />
                       </div>
                     ))}
@@ -328,7 +328,7 @@ export function MediaLibraryDialog({
               <h3 className="mb-6 text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">
                 File Details
               </h3>
-              
+
               <div className="mb-6 aspect-video overflow-hidden rounded-xl border border-slate-100 bg-slate-50 relative shadow-sm">
                 {selectedMedia.media_type === 'video' ? (
                   <div className="relative h-full w-full">
@@ -357,7 +357,7 @@ export function MediaLibraryDialog({
               <div className="space-y-5">
                 <div>
                   <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Title</label>
-                  <p className="text-sm font-bold text-slate-900 line-clamp-2">{selectedMedia.alt_text || translations.untitled}</p>
+                  <p className="text-sm font-bold text-slate-900 line-clamp-2">{selectedMedia.alt_text || "Untitled"}</p>
                 </div>
                 {selectedMedia.caption && (
                   <div>
@@ -368,7 +368,7 @@ export function MediaLibraryDialog({
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 block">Type</label>
-                    <p className="text-sm font-bold text-[#606C38] uppercase tracking-tighter">{selectedMedia.media_type}</p>
+                    <p className="text-sm font-bold text-primary uppercase tracking-tighter">{selectedMedia.media_type}</p>
                   </div>
                   {selectedMedia.duration_seconds && (
                     <div>
@@ -399,7 +399,7 @@ export function MediaLibraryDialog({
           <Button
             onClick={handleInsert}
             disabled={!selectedMedia}
-            className="bg-[#606C38] hover:bg-[#4a542b] rounded-xl px-10 shadow-lg shadow-[#606C38]/20 disabled:opacity-50"
+            className="bg-primary hover:bg-primary/90 rounded-xl px-10 shadow-lg shadow-primary/20 disabled:opacity-50"
           >
             Insert into Article
           </Button>

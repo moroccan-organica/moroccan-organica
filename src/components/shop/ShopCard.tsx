@@ -20,9 +20,9 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
   const isRTL = lang === 'ar';
   const localizedName = isRTL ? product.nameAr : product.name;
   const localizedDescription = isRTL ? product.descriptionAr : product.description;
-  
+
   const category = shopCategories.find((c: ShopCategory) => c.name === product.category);
-  const categoryColor = category?.color || '#606C38';
+  const categoryColor = category?.color || 'var(--primary)';
 
   const priceFormatter = new Intl.NumberFormat(isRTL ? 'ar-MA' : 'en-US', {
     style: 'currency',
@@ -41,7 +41,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
         />
         {product.badge && (
           <div className="absolute top-4 left-4">
-            <Badge 
+            <Badge
               className="bg-white/90 text-slate-900 hover:bg-white border-none uppercase text-xs font-semibold"
               style={{ borderLeft: `4px solid ${categoryColor}` }}
             >
@@ -50,7 +50,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
           </div>
         )}
         <div className="absolute bottom-4 right-4">
-          <Badge className="bg-[#606C38]/90 text-white hover:bg-[#606C38] border-none text-xs">
+          <Badge className="bg-primary/90 text-white hover:bg-primary border-none text-xs">
             {product.volume}
           </Badge>
         </div>
@@ -58,7 +58,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
 
       <div className="flex flex-col flex-1 p-6">
         <div className="flex items-center gap-3 text-xs text-slate-500 mb-3">
-          <span 
+          <span
             className="h-2.5 w-2.5 rounded-full"
             style={{ backgroundColor: categoryColor }}
           />
@@ -66,7 +66,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
         </div>
 
         <Link href={`/${lang}/shop/${product.slug}`}>
-          <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-[#BC6C25] transition-colors line-clamp-2">
+          <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-accent transition-colors line-clamp-2">
             {localizedName}
           </h3>
         </Link>
@@ -80,14 +80,14 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
             <p className="text-xs uppercase tracking-wider text-slate-400 mb-1">
               {translations.priceLabel}
             </p>
-            <p className="text-xl font-bold text-[#606C38]">
+            <p className="text-xl font-bold text-primary">
               {priceFormatter.format(product.price)}
             </p>
           </div>
 
-          <Link 
+          <Link
             href={`/${lang}/shop/${product.slug}`}
-            className="text-[#BC6C25] text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+            className="text-accent text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
           >
             {translations.viewDetails}
             <ArrowRight className="h-4 w-4" />
