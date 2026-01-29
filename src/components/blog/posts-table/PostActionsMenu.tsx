@@ -19,7 +19,7 @@ export function PostActionsMenu(props: {
   onEdit?: () => void;
   onAction?: (action: 'archive' | 'publish') => void;
 }) {
-  const { post, isOpen, onToggle, onClose, menuPlacement = 'top', t, onView, onEdit, onAction } = props;
+  const { post, isOpen, onToggle, onClose, menuPlacement = 'bottom', t, onView, onEdit, onAction } = props;
 
   return (
     <div className="relative inline-block text-left action-menu-container">

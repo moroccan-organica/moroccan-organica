@@ -160,7 +160,7 @@ export function PostsTable({
 
   // Reset page when filters change
   const filterKey = `${search}-${selectedStatuses.join(',')}-${selectedCategories.join(',')}`;
-  
+
   const [prevFilterKey, setPrevFilterKey] = useState(filterKey);
 
   if (filterKey !== prevFilterKey) {

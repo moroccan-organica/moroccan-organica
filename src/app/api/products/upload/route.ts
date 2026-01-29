@@ -3,7 +3,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 const UPLOAD_DIR = join(process.cwd(), 'public', 'images', 'products');
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB

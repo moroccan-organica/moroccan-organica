@@ -103,10 +103,10 @@ export function PostsGridView(props: {
             className="group relative rounded-2xl border border-slate-100 bg-white shadow-sm transition-all duration-300 hover:shadow-md overflow-hidden"
           >
             <div className="aspect-video relative overflow-hidden">
-              <img 
-                src={post.featured_image_url} 
-                alt={post.title} 
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" 
+              <img
+                src={post.featured_image_url}
+                alt={post.title}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute top-3 left-3">
                 <StatusBadge status={post.status} t={t} />

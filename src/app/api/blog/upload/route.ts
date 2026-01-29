@@ -3,7 +3,7 @@ import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
 const UPLOAD_DIR = join(process.cwd(), 'public', 'images', 'blog');
