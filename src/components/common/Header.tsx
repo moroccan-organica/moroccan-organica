@@ -77,22 +77,12 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16 md:h-20">
                     {/* Logo */}
-                    <Link href={`/${lang}/`} className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full bg-[#118f14] flex items-center justify-center">
-                            <Leaf className="w-6 h-6 text-white" />
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-white text-lg leading-tight">
-                                {isRTL ? (
-                                    <>مغربي<span className="font-bold">أورغانيكا</span></>
-                                ) : (
-                                    <>Moroccan<span className="font-bold">Organica</span></>
-                                )}
-                            </span>
-                            <span className="text-gray-400 text-xs">
-                                {isRTL ? "إنتاج وتصدير" : "Production & export"}
-                            </span>
-                        </div>
+                    <Link href={`/${lang}/`} className="flex items-center cursor-pointer">
+                        <img
+                            src="/images/logo.png"
+                            alt="Moroccan Organica"
+                            className="h-10 md:h-12 w-auto object-contain"
+                        />
                     </Link>
 
                     {/* Desktop Navigation */}
@@ -107,7 +97,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                 {link.isRoute ? (
                                     <Link
                                         href={link.href}
-                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
@@ -119,7 +109,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                 ) : (
                                     <a
                                         href={link.href}
-                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
@@ -141,7 +131,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                                     key={item.name}
                                                     href={item.href}
                                                     onClick={() => setOpenDropdown(null)}
-                                                    className={`block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-[#118f14]/20 transition-colors duration-150 ${isRTL ? 'text-right' : 'text-left'}`}
+                                                    className={`block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-[#118f14]/20 transition-colors duration-150 cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
                                                 >
                                                     {item.name}
                                                 </Link>
@@ -161,7 +151,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
 
                     {/* Mobile Menu Button */}
                     <button
-                        className="lg:hidden p-2 text-white"
+                        className="lg:hidden p-2 text-white cursor-pointer"
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         aria-label="Toggle menu"
                     >
@@ -179,7 +169,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                         <div>
                                             <button
                                                 onClick={() => setOpenMobileDropdown(openMobileDropdown === link.name ? null : link.name)}
-                                                className={`w-full flex items-center justify-between text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 ${isRTL ? 'flex-row-reverse' : ''}`}
+                                                className={`w-full flex items-center justify-between text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                             >
                                                 {link.name}
                                                 <ChevronDown
@@ -197,7 +187,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                                         <Link
                                                             key={item.name}
                                                             href={item.href}
-                                                            className={`text-sm text-gray-400 hover:text-[#118f14] transition-colors duration-150 py-1.5 ${isRTL ? 'text-right' : 'text-left'}`}
+                                                            className={`text-sm text-gray-400 hover:text-[#118f14] transition-colors duration-150 py-1.5 cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
                                                             onClick={() => setIsMenuOpen(false)}
                                                         >
                                                             {item.name}
@@ -209,7 +199,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     ) : link.isRoute ? (
                                         <Link
                                             href={link.href}
-                                            className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
+                                            className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 cursor-pointer ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >
                                             {link.name}
@@ -217,7 +207,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     ) : (
                                         <a
                                             href={link.href}
-                                            className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
+                                            className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-[#118f14] transition-colors duration-200 py-2 cursor-pointer ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >
                                             {link.name}

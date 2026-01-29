@@ -78,13 +78,18 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
       )}>
         {!collapsed && (
           <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-lg bg-linear-to-br from-[#606C38] to-[#BC6C25] flex items-center justify-center">
-              <span className="text-white font-bold text-lg">M</span>
+            <div className="h-9 w-9 overflow-hidden flex items-center justify-center">
+              <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain" />
             </div>
             <div>
               <h2 className="font-bold text-sm">Moroccan Organica</h2>
               <p className="text-xs text-slate-400">Admin Panel</p>
             </div>
+          </div>
+        )}
+        {collapsed && (
+          <div className="h-9 w-9 overflow-hidden flex items-center justify-center">
+            <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain" />
           </div>
         )}
         {!collapsed && (

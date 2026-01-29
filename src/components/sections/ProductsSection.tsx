@@ -9,7 +9,14 @@ interface ProductItem {
   image: string;
   badgeVariant?: ProductBadge;
   description: string;
-  [key: string]: unknown;
+  id?: string;
+  price?: number;
+  volume?: string;
+  name?: string;
+  nameAr?: string;
+  descriptionAr?: string;
+  slug?: string;
+  [key: string]: any;
 }
 
 interface ProductsContent {
@@ -32,7 +39,7 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
 
     return {
       ...item,
-      description: item.desc ?? '',
+      description: (item.desc as string) ?? (item.description as string) ?? '',
       badgeVariant,
     };
   });

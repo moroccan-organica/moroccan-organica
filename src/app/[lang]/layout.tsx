@@ -4,7 +4,7 @@ import { Inter, Playfair_Display, Cairo } from "next/font/google";
 import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
 import { LayoutContent } from "@/components/common/LayoutContent";
-import { getTopSaleProducts } from "@/lib/queries";
+import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,13 +24,45 @@ const cairo = Cairo({
   variable: "--font-cairo",
 });
 
-export const metadata: Metadata = {
-  title: "Moroccan Organica - Premium Organic Products from Morocco",
-  description: "Discover authentic Moroccan organic products. Shop natural argan oil, rose water, and traditional beauty products.",
-};
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  const globalSeo = await getGlobalSeoSettings(lang);
+
+  const siteName = globalSeo?.translation?.siteName || "Moroccan Organica";
+  const titleSuffix = globalSeo?.translation?.titleSuffix || " | Premium Organic Products from Morocco";
+  const defaultDesc = globalSeo?.translation?.defaultMetaDesc || "Discover authentic Moroccan organic products. Shop natural argan oil, rose water, and traditional beauty products.";
+  const keywords = globalSeo?.translation?.defaultKeywords || "argan oil, morocco, organic, beauty, wholesale";
+
+  return {
+    title: {
+      default: siteName,
+      template: `%s${titleSuffix}`,
+    },
+    description: defaultDesc,
+    keywords: keywords,
+    openGraph: {
+      type: 'website',
+      siteName: siteName,
+      title: siteName,
+      description: defaultDesc,
+      images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      site: globalSeo?.twitterHandle || undefined,
+    },
+    icons: {
+      icon: [
+        { url: '/favicon.ico' },
+        { url: '/favicon.png', type: 'image/png' },
+      ],
+      apple: '/favicon.png',
+    },
+  };
+}
 
 export async function generateStaticParams() {
-  return [{ lang: 'en' }, { lang: 'ar' }]
+  return [{ lang: 'en' }, { lang: 'ar' }, { lang: 'fr' }]
 }
 
 export default async function RootLayout({

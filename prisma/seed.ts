@@ -44,9 +44,9 @@ async function upsertProduct(productData: {
             where: { id: existingProduct.id },
             data: {
                 categoryId: productData.categoryId,
-            basePrice: productData.basePrice,
-            stock: productData.stock,
-            isAvailable: productData.isAvailable,
+                basePrice: productData.basePrice,
+                stock: productData.stock,
+                isAvailable: productData.isAvailable,
                 isFeatured: productData.isFeatured,
                 isTopSale: productData.isTopSale,
                 translations: {
@@ -74,9 +74,9 @@ async function upsertProduct(productData: {
             data: {
                 sku: productData.sku,
                 categoryId: productData.categoryId,
-            basePrice: productData.basePrice,
-            stock: productData.stock,
-            isAvailable: productData.isAvailable,
+                basePrice: productData.basePrice,
+                stock: productData.stock,
+                isAvailable: productData.isAvailable,
                 isFeatured: productData.isFeatured,
                 isTopSale: productData.isTopSale,
                 translations: {
@@ -271,6 +271,32 @@ async function main() {
                     },
                 ],
             },
+            {
+                image: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80',
+                translations: [
+                    {
+                        language: 'en',
+                        name: 'Powders & Herbs',
+                        slug: 'powders-herbs',
+                        metaTitle: 'Moroccan Organic Powders & Herbs',
+                        metaDesc: 'Authentic Moroccan beauty powders including Nila, Aker Fassi, and Sidr.',
+                    },
+                    {
+                        language: 'ar',
+                        name: 'البودرة والأعشاب',
+                        slug: 'بودرة-وأعشاب',
+                        metaTitle: 'بودرة وأعشاب مغربية عضوية',
+                        metaDesc: 'مساحيق التجميل المغربية الأصيلة بما في ذلك النيلة والعكر الفاسي والسدر.',
+                    },
+                    {
+                        language: 'fr',
+                        name: 'Poudres & Herbes',
+                        slug: 'poudres-herbes',
+                        metaTitle: 'Poudres et Herbes Bio du Maroc',
+                        metaDesc: 'Poudres de beauté marocaines authentiques : Nila, Aker Fassi, Sidr.',
+                    },
+                ],
+            },
         ];
 
     const createdCategories = [];
@@ -304,8 +330,8 @@ async function main() {
                             language: t.language as LanguageCode,
                             name: t.name,
                             slug: t.slug,
-                    metaTitle: t.metaTitle,
-                    metaDesc: t.metaDesc,
+                            metaTitle: t.metaTitle,
+                            metaDesc: t.metaDesc,
                         })),
                     },
                 },
@@ -324,8 +350,8 @@ async function main() {
                             language: t.language as LanguageCode,
                             name: t.name,
                             slug: t.slug,
-                    metaTitle: t.metaTitle,
-                    metaDesc: t.metaDesc,
+                            metaTitle: t.metaTitle,
+                            metaDesc: t.metaDesc,
                         })),
                     },
                 },
@@ -355,17 +381,17 @@ async function main() {
             {
                 language: 'en',
                 name: 'Organic Virgin Argan Oil',
-                        slug: 'moroccan-wholesale-suppliers-of-argan-oil',
+                slug: 'moroccan-wholesale-suppliers-of-argan-oil',
                 description: 'Buy Organic argan oil 100% pure in bulk, certified direct from Morocco. Cold-pressed from Atlas Mountain kernels. Fights against aging skin, restores vital functions, and protects against dehydration. Rich in Vitamin E and essential fatty acids. Certified CCPB/USDA NOP/ECOCERT.',
                 metaTitle: 'Organic Virgin Argan Oil - 100% Pure Certified | Wholesale',
                 metaDesc: 'Premium organic argan oil wholesale from Morocco. CCPB/USDA certified. Cold-pressed, rich in Vitamin E. Bulk quantities available.',
-                        keywords: 'argan oil, organic argan oil, virgin argan oil, wholesale argan oil, certified argan oil',
-                        ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
+                keywords: 'argan oil, organic argan oil, virgin argan oil, wholesale argan oil, certified argan oil',
+                ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
             },
             {
                 language: 'ar',
                 name: 'زيت الأركان العضوي البكر',
-                        slug: 'زيت-الأركان-العضوي-البكر',
+                slug: 'زيت-الأركان-العضوي-البكر',
                 description: 'زيت الأركان العضوي 100% نقي معتمد من المغرب. معصور على البارد من نوى جبال الأطلس. يحارب شيخوخة البشرة ويحمي من الجفاف. غني بفيتامين E.',
                 metaTitle: 'زيت الأركان العضوي البكر - 100% نقي معتمد',
                 metaDesc: 'زيت الأركان المغربي بالجملة. معتمد CCPB/USDA. معصور على البارد.',
@@ -373,30 +399,30 @@ async function main() {
             {
                 language: 'fr',
                 name: 'Huile d\'Argan Vierge Bio',
-                        slug: 'huile-argan-vierge-bio',
+                slug: 'huile-argan-vierge-bio',
                 description: 'Huile d\'argan bio 100% pure certifiée du Maroc. Pressée à froid. Lutte contre le vieillissement cutané. Riche en vitamine E. Certifiée CCPB/USDA/ECOCERT.',
                 metaTitle: 'Huile d\'Argan Vierge Bio - 100% Pure Certifiée',
                 metaDesc: 'Huile d\'argan marocaine en gros. Certifiée CCPB/USDA. Pressée à froid.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
                 sku: 'ARG-VIRGIN-1L',
                 sizeName: '1 Liter',
                 price: 35.00,
-            stock: 100,
+                stock: 100,
             },
             {
                 sku: 'ARG-VIRGIN-5L',
                 sizeName: '5 Liters',
                 price: 160.00,
-            stock: 50,
+                stock: 50,
             },
             {
                 sku: 'ARG-VIRGIN-10L',
                 sizeName: '10 Liters',
                 price: 300.00,
-            stock: 30,
+                stock: 30,
             },
         ],
         images: [
@@ -450,13 +476,13 @@ async function main() {
                 sku: 'PRICKLY-1L',
                 sizeName: '1 Liter',
                 price: 850.00,
-            stock: 20,
+                stock: 20,
             },
             {
                 sku: 'PRICKLY-500ML',
                 sizeName: '500ml',
                 price: 450.00,
-            stock: 30,
+                stock: 30,
             },
         ],
         images: [
@@ -509,13 +535,13 @@ async function main() {
                 sku: 'BLACKSOAP-1KG',
                 sizeName: '1 Kg',
                 price: 12.00,
-            stock: 100,
+                stock: 100,
             },
             {
                 sku: 'BLACKSOAP-5KG',
                 sizeName: '5 Kg',
                 price: 55.00,
-            stock: 50,
+                stock: 50,
             },
         ],
         images: [
@@ -540,7 +566,7 @@ async function main() {
             {
                 language: 'en',
                 name: 'Pure Damascena Rose Water',
-                        slug: 'wholesale-pure-rosewater-from-morocco-organic-natural',
+                slug: 'wholesale-pure-rosewater-from-morocco-organic-natural',
                 description: 'Pure natural organic Damascena rose water. Traditional Moroccan beauty product. Tones, refreshes, and hydrates skin. 100% natural with no additives. Wholesale available.',
                 metaTitle: 'Damascena Rose Water - Pure Organic Wholesale',
                 metaDesc: 'Pure Moroccan rose water. 100% natural and organic. Traditional beauty product. Bulk wholesale.',
@@ -548,7 +574,7 @@ async function main() {
             {
                 language: 'ar',
                 name: 'ماء الورد الدمشقي النقي',
-                        slug: 'ماء-الورد-الدمشقي',
+                slug: 'ماء-الورد-الدمشقي',
                 description: 'ماء الورد الدمشقي الطبيعي العضوي. منتج جمال مغربي تقليدي. ينعش ويرطب البشرة.',
                 metaTitle: 'ماء الورد الدمشقي - عضوي نقي',
                 metaDesc: 'ماء ورد مغربي نقي. طبيعي وعضوي 100%. منتج جمال تقليدي.',
@@ -556,24 +582,24 @@ async function main() {
             {
                 language: 'fr',
                 name: 'Eau de Rose Damascena Pure',
-                        slug: 'eau-rose-damascena-pure',
+                slug: 'eau-rose-damascena-pure',
                 description: 'Eau de rose damascena pure naturelle bio. Produit de beauté marocain traditionnel. Tonifie et hydrate la peau.',
                 metaTitle: 'Eau de Rose Damascena - Bio Pure',
                 metaDesc: 'Eau de rose marocaine pure. 100% naturelle et bio. Produit beauté traditionnel.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
                 sku: 'ROSEWATER-1L',
                 sizeName: '1 Liter',
                 price: 18.00,
-            stock: 80,
+                stock: 80,
             },
             {
                 sku: 'ROSEWATER-10L',
                 sizeName: '10 Liters',
                 price: 160.00,
-            stock: 40,
+                stock: 40,
             },
         ],
         images: [
@@ -598,16 +624,16 @@ async function main() {
             {
                 language: 'en',
                 name: 'Moroccan Ghassoul Lava Clay Powder',
-                        slug: 'moroccan-rhassoul-clay-powder-bulk-wholesale-suppliers',
+                slug: 'moroccan-rhassoul-clay-powder-bulk-wholesale-suppliers',
                 description: 'Moroccan Rhassoul (Ghassoul) clay powder 100% organic. Natural mineral-rich clay from Atlas Mountains. Deep cleanses, detoxifies, and purifies. Available in brown, green, and red varieties. Bulk wholesale.',
                 metaTitle: 'Ghassoul Lava Clay Powder - Wholesale Organic',
                 metaDesc: 'Authentic Moroccan ghassoul clay. 100% organic mineral clay. Bulk wholesale from Morocco.',
-                        keywords: 'ghassoul clay, rhassoul clay, moroccan clay, lava clay',
+                keywords: 'ghassoul clay, rhassoul clay, moroccan clay, lava clay',
             },
             {
                 language: 'ar',
                 name: 'طين الغسول المغربي البركاني',
-                        slug: 'طين-الغسول-المغربي',
+                slug: 'طين-الغسول-المغربي',
                 description: 'مسحوق طين الغسول المغربي 100% عضوي. طين طبيعي غني بالمعادن من جبال الأطلس.',
                 metaTitle: 'طين الغسول المغربي - عضوي بالجملة',
                 metaDesc: 'طين غسول مغربي أصيل. طين معدني عضوي 100%.',
@@ -615,24 +641,24 @@ async function main() {
             {
                 language: 'fr',
                 name: 'Poudre d\'Argile Ghassoul Marocaine',
-                        slug: 'argile-ghassoul-marocaine',
+                slug: 'argile-ghassoul-marocaine',
                 description: 'Poudre d\'argile Rhassoul (Ghassoul) marocaine 100% bio. Argile minérale naturelle des montagnes de l\'Atlas.',
                 metaTitle: 'Argile Ghassoul Marocaine - Bio En Gros',
                 metaDesc: 'Argile ghassoul marocaine authentique. Argile minérale bio 100%.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
                 sku: 'GHASSOUL-1KG',
                 sizeName: '1 Kg',
                 price: 8.00,
-            stock: 150,
+                stock: 150,
             },
             {
                 sku: 'GHASSOUL-25KG',
                 sizeName: '25 Kg',
                 price: 180.00,
-            stock: 50,
+                stock: 50,
             },
         ],
         images: [
@@ -657,16 +683,16 @@ async function main() {
             {
                 language: 'en',
                 name: 'Organic Culinary Argan Oil',
-                        slug: 'culinary-argan-oil-of-morocco',
+                slug: 'culinary-argan-oil-of-morocco',
                 description: 'Argan oil for culinary use - the miracle oil from Morocco. Made from roasted argan seeds. Rich in Vitamin E and antioxidants. Perfect for Moroccan recipes, tajines, couscous. CCPB Organic certified. Wholesale bulk available.',
                 metaTitle: 'Culinary Argan Oil of Morocco - Organic Certified',
                 metaDesc: 'Organic culinary argan oil from Morocco. CCPB certified. Perfect for cooking. Wholesale bulk available.',
-                        keywords: 'culinary argan oil, cooking argan oil, edible argan oil, moroccan cooking oil',
+                keywords: 'culinary argan oil, cooking argan oil, edible argan oil, moroccan cooking oil',
             },
             {
                 language: 'ar',
                 name: 'زيت الأركان الطهوي العضوي',
-                        slug: 'زيت-الأركان-الطهوي',
+                slug: 'زيت-الأركان-الطهوي',
                 description: 'زيت الأركان للطبخ - الزيت المعجزة من المغرب. مصنوع من بذور الأركان المحمصة. غني بفيتامين E.',
                 metaTitle: 'زيت الأركان الطهوي المغربي - عضوي معتمد',
                 metaDesc: 'زيت أركان طهوي عضوي من المغرب. معتمد CCPB. مثالي للطبخ.',
@@ -674,32 +700,32 @@ async function main() {
             {
                 language: 'fr',
                 name: 'Huile d\'Argan Culinaire Bio',
-                        slug: 'huile-argan-culinaire-bio',
+                slug: 'huile-argan-culinaire-bio',
                 description: 'Huile d\'argan culinaire - l\'huile miracle du Maroc. Fabriquée à partir de graines d\'argan torréfiées. Riche en vitamine E.',
                 metaTitle: 'Huile d\'Argan Culinaire du Maroc - Bio Certifiée',
                 metaDesc: 'Huile d\'argan culinaire bio du Maroc. Certifiée CCPB. Parfaite pour la cuisine.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
-                        sku: 'ARG-CULINARY-1L',
-                        sizeName: '1 Liter',
-                        price: 40.00,
-                    stock: 60,
-                    },
-                    {
-                        sku: 'ARG-CULINARY-5L',
-                        sizeName: '5 Liters',
-                        price: 185.00,
-                    stock: 40,
-                    },
-                ],
+                sku: 'ARG-CULINARY-1L',
+                sizeName: '1 Liter',
+                price: 40.00,
+                stock: 60,
+            },
+            {
+                sku: 'ARG-CULINARY-5L',
+                sizeName: '5 Liters',
+                price: 185.00,
+                stock: 40,
+            },
+        ],
         images: [
             {
-                        url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+                url: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Culinary Argan Oil');
 
@@ -724,36 +750,36 @@ async function main() {
             {
                 language: 'ar',
                 name: 'زيت إكليل الجبل الأساسي العضوي',
-                        slug: 'زيت-إكليل-الجبل',
+                slug: 'زيت-إكليل-الجبل',
                 description: 'زيت إكليل الجبل الأساسي نقي وطبيعي 100% من المغرب. مثالي للعلاج العطري والعناية بالشعر.',
             },
             {
                 language: 'fr',
                 name: 'Huile Essentielle de Romarin Bio',
-                        slug: 'huile-essentielle-romarin',
+                slug: 'huile-essentielle-romarin',
                 description: 'Huile essentielle de romarin 100% pure et naturelle du Maroc. Idéal pour l\'aromathérapie et les soins capillaires.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
-                        sku: 'ROSEMARY-100ML',
-                        sizeName: '100ml',
-                        price: 25.00,
-                    stock: 50,
-                    },
-                    {
-                        sku: 'ROSEMARY-1L',
-                        sizeName: '1 Liter',
-                        price: 180.00,
-                    stock: 30,
-                    },
-                ],
+                sku: 'ROSEMARY-100ML',
+                sizeName: '100ml',
+                price: 25.00,
+                stock: 50,
+            },
+            {
+                sku: 'ROSEMARY-1L',
+                sizeName: '1 Liter',
+                price: 180.00,
+                stock: 30,
+            },
+        ],
         images: [
             {
-                        url: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+                url: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Rosemary Essential Oil');
 
@@ -770,7 +796,7 @@ async function main() {
             {
                 language: 'en',
                 name: 'Organic Atlas Cedarwood Essential Oil',
-                        slug: 'cedarwood-essential-oil',
+                slug: 'cedarwood-essential-oil',
                 description: 'Authentic Atlas Cedarwood oil from the Moroccan mountains. Warm, woody aroma. Excellent for grounding, skin health, and natural pest repellent.',
                 metaTitle: 'Atlas Cedarwood Essential Oil - Moroccan Wholesale',
                 metaDesc: 'Pure Atlas Cedarwood oil from Morocco. Traditional extraction, organic certified.',
@@ -778,36 +804,36 @@ async function main() {
             {
                 language: 'ar',
                 name: 'زيت خشب الأرز الأطلسي الأساسي',
-                        slug: 'زيت-خشب-الأرز',
+                slug: 'زيت-خشب-الأرز',
                 description: 'زيت خشب الأرز الأطلسي الأصيل من جبال المغرب. رائحة خشبية دافئة.',
             },
             {
                 language: 'fr',
                 name: 'Huile Essentielle de Cèdre de l\'Atlas Bio',
-                        slug: 'huile-essentielle-cedre',
+                slug: 'huile-essentielle-cedre',
                 description: 'Huile de cèdre de l\'Atlas authentique des montagnes marocaines. Arôme boisé et chaud.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
-                        sku: 'CEDAR-100ML',
-                        sizeName: '100ml',
-                        price: 22.00,
-                    stock: 60,
-                    },
-                    {
-                        sku: 'CEDAR-1L',
-                        sizeName: '1 Liter',
-                        price: 150.00,
-                    stock: 40,
-                    },
-                ],
+                sku: 'CEDAR-100ML',
+                sizeName: '100ml',
+                price: 22.00,
+                stock: 60,
+            },
+            {
+                sku: 'CEDAR-1L',
+                sizeName: '1 Liter',
+                price: 150.00,
+                stock: 40,
+            },
+        ],
         images: [
             {
-                        url: 'https://images.unsplash.com/photo-1611080511005-4202302484a0?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+                url: 'https://images.unsplash.com/photo-1611080511005-4202302484a0?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Cedarwood Essential Oil');
 
@@ -824,7 +850,7 @@ async function main() {
             {
                 language: 'en',
                 name: 'Organic Moroccan Blue Tansy Oil',
-                        slug: 'moroccan-blue-tansy-essential-oil',
+                slug: 'moroccan-blue-tansy-essential-oil',
                 description: 'Rare and precious Moroccan Blue Tansy oil. Famous for its vibrant blue color and powerful anti-inflammatory properties. Calms troubled skin and provides emotional balance.',
                 metaTitle: 'Blue Tansy Essential Oil - Rare Moroccan Wholesale',
                 metaDesc: 'Rare Blue Tansy oil from Morocco. Anti-inflammatory, premium quality.',
@@ -832,38 +858,233 @@ async function main() {
             {
                 language: 'ar',
                 name: 'زيت التانسي الأزرق المغربي',
-                        slug: 'زيت-التانسي-الأزرق',
+                slug: 'زيت-التانسي-الأزرق',
                 description: 'زيت التانسي الأزرق المغربي النادر والثمين. مشهور بلونه الأزرق النابض بالحياة.',
             },
             {
                 language: 'fr',
                 name: 'Huile de Tanaisie Bleue du Maroc Bio',
-                        slug: 'huile-tanaisie-bleue',
+                slug: 'huile-tanaisie-bleue',
                 description: 'Huile de Tanaisie Bleue rare et précieuse. Célèbre pour sa couleur bleue vibrante.',
-                    },
-                ],
+            },
+        ],
         variants: [
             {
-                        sku: 'BLUETANSY-15ML',
-                        sizeName: '15ml',
-                        price: 95.00,
-                    stock: 20,
-                    },
-                    {
-                        sku: 'BLUETANSY-50ML',
-                        sizeName: '50ml',
-                        price: 280.00,
-                    stock: 10,
-                    },
-                ],
+                sku: 'BLUETANSY-15ML',
+                sizeName: '15ml',
+                price: 95.00,
+                stock: 20,
+            },
+            {
+                sku: 'BLUETANSY-50ML',
+                sizeName: '50ml',
+                price: 280.00,
+                stock: 10,
+            },
+        ],
         images: [
             {
-                        url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
-                        isPrimary: true,
-                    },
-                ],
+                url: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80',
+                isPrimary: true,
+            },
+        ],
     });
     console.log('✅ Product created: Moroccan Blue Tansy Oil');
+
+    // Product 10: Aker Fassi Powder
+    await upsertProduct({
+        categoryId: createdCategories[3].id, // Powders & Herbs
+        sku: 'POWDER-AKER-001',
+        basePrice: 15.00,
+        stock: 200,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Aker Fassi Powder',
+                slug: 'aker-fassi-powder-benefits',
+                description: '100% natural Moroccan Aker Fassi powder, made from dried poppy petals and pomegranate bark. Known for its brightening and antioxidant properties. Traditional Moroccan blush and lip stain.',
+                metaTitle: 'Organic Aker Fassi Powder - Moroccan Beauty Secret',
+                metaDesc: 'Pure Aker Fassi powder from Morocco. Natural brightening and antioxidant. Traditional beauty product.',
+            },
+            {
+                language: 'ar',
+                name: 'مسحوق العكر الفاسي العضوي',
+                slug: 'عكر-فاسي',
+                description: 'بودرة العكر الفاسي هي من أسرار الجمال المغربي التقليدي. تُستخدم لتفتيح البشرة، إزالة التصبغات، ومنح الوجه إشراقة طبيعية.',
+            },
+            {
+                language: 'fr',
+                name: 'Poudre Aker Fassi Bio',
+                slug: 'poudre-aker-fassi',
+                description: 'Poudre d\'Aker Fassi 100% naturelle. Secret de beauté traditionnel marocain pour l\'éclat du teint et des lèvres.',
+            },
+        ],
+        variants: [
+            { sku: 'AKER-50G', sizeName: '50g', price: 15.00, stock: 100 },
+            { sku: 'AKER-100G', sizeName: '100g', price: 28.00, stock: 100 },
+        ],
+        images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80', isPrimary: true }],
+    });
+    console.log('✅ Product created: Aker Fassi Powder');
+
+    // Product 11: Nila (Indigo) Powder
+    await upsertProduct({
+        categoryId: createdCategories[3].id, // Powders & Herbs
+        sku: 'POWDER-NILA-001',
+        basePrice: 18.00,
+        stock: 150,
+        isAvailable: true,
+        isFeatured: true,
+        isTopSale: true,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Moroccan Nila Powder',
+                slug: 'moroccan-indigo-powder-benefits',
+                description: 'Authentic Moroccan Nila (Indigo) powder. Famous for its skin-lightening and purifying properties. Traditionally used by Sahrawi women for glowing, even skin tone.',
+                metaTitle: 'Moroccan Nila Powder - Natural Skin Whitening',
+                metaDesc: 'Discover the power of Moroccan Nila powder. Natural skin lightening and purification. Authentic Sahrawi beauty secret.',
+            },
+            {
+                language: 'ar',
+                name: 'مسحوق النيلة الزرقاء المغربية',
+                slug: 'نيلة-زرقاء',
+                description: 'مسحوق النيلة المغربية طبيعي 100% ومثالي للبشرة. يساعد على تفتيح البشرة وإزالة التصبغات وتنقية الوجه.',
+            },
+            {
+                language: 'fr',
+                name: 'Poudre de Nila Bleue du Maroc',
+                slug: 'poudre-nila-bleue',
+                description: 'Poudre de Nila bleue authentique du Maroc. Reconnue pour ses propriétés éclaircissantes et purifiantes pour la peau.',
+            },
+        ],
+        variants: [
+            { sku: 'NILA-100G', sizeName: '100g', price: 18.00, stock: 80 },
+            { sku: 'NILA-250G', sizeName: '250g', price: 40.00, stock: 70 },
+        ],
+        images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80', isPrimary: true }],
+    });
+    console.log('✅ Product created: Nila Powder');
+
+    // Product 12: Sidr Powder
+    await upsertProduct({
+        categoryId: createdCategories[3].id, // Powders & Herbs
+        sku: 'POWDER-SIDR-001',
+        basePrice: 10.00,
+        stock: 180,
+        isAvailable: true,
+        isFeatured: false,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Moroccan Sidr Powder',
+                slug: 'sidr-powder-benefits',
+                description: '100% pure Sidr (Lote tree) powder from Morocco. Excellent for hair growth, treating scalp issues, and deep cleansing skin. A natural alternative to shampoo.',
+                metaTitle: 'Sidr Powder Morocco - Hair & Skin Care',
+                metaDesc: 'Pure Sidr powder for healthy hair and skin. Natural shampoo alternative. Moroccan organic quality.',
+            },
+            {
+                language: 'ar',
+                name: 'مسحوق السدر المغربي العضوي',
+                slug: 'سدر-مغربي',
+                description: 'مسحوق السدر المغربي الطبيعي 100%. يساعد على تنظيف المسام، تعزيز نمو الشعر، ومنحه اللمعان والحيوية.',
+            },
+            {
+                language: 'fr',
+                name: 'Poudre de Sidr Bio du Maroc',
+                slug: 'poudre-sidr-bio',
+                description: 'Poudre de Sidr pure du Maroc. Idéale pour la croissance des cheveux et le soin du cuir chevelu.',
+            },
+        ],
+        variants: [
+            { sku: 'SIDR-250G', sizeName: '250g', price: 10.00, stock: 100 },
+            { sku: 'SIDR-1KG', sizeName: '1kg', price: 35.00, stock: 80 },
+        ],
+        images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80', isPrimary: true }],
+    });
+    console.log('✅ Product created: Sidr Powder');
+
+    // Product 13: Tabrima Powder
+    await upsertProduct({
+        categoryId: createdCategories[3].id, // Powders & Herbs
+        sku: 'POWDER-TABRIMA-001',
+        basePrice: 20.00,
+        stock: 120,
+        isAvailable: true,
+        isFeatured: false,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Moroccan Tabrima Powder',
+                slug: 'tabrima-powder-benefits',
+                description: 'Traditional Moroccan Tabrima is a mixture of several Moroccan herbs and powders. Used in the hammam for skin whitening, unification of skin tone, and deep exfoliation.',
+                metaTitle: 'Moroccan Tabrima Powder - Traditional Hammam Herb Blend',
+                metaDesc: 'Authentic Moroccan Tabrima herb blend. Traditional hammam treatment for skin whitening and unification.',
+            },
+            {
+                language: 'ar',
+                name: 'مسحوق التبريمة المغربية الصحراوية',
+                slug: 'تبريمة-مغربية',
+                description: 'مزيج التبريمة المغربية التقليدي من الأعشاب. يستخدم في الحمام لتفتيح البشرة وتوحيد لونها.',
+            },
+            {
+                language: 'fr',
+                name: 'Poudre de Tabrima Marocaine Traditionnelle',
+                slug: 'poudre-tabrima',
+                description: 'Mélange traditionnel d\'herbes marocaines pour le hammam. Idéal pour l\'unification du teint et l\'exfoliation.',
+            },
+        ],
+        variants: [
+            { sku: 'TABRIMA-200G', sizeName: '200g', price: 20.00, stock: 60 },
+            { sku: 'TABRIMA-500G', sizeName: '500g', price: 45.00, stock: 60 },
+        ],
+        images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80', isPrimary: true }],
+    });
+    console.log('✅ Product created: Tabrima Powder');
+
+    // Product 14: Clementine Essential Oil (Representative for missing citrus oils)
+    await upsertProduct({
+        categoryId: createdCategories[1].id, // Essential Oils
+        sku: 'ESS-CLEMENTINE-001',
+        basePrice: 28.00,
+        stock: 60,
+        isAvailable: true,
+        isFeatured: false,
+        isTopSale: false,
+        translations: [
+            {
+                language: 'en',
+                name: 'Organic Clementine Essential Oil',
+                slug: 'clementine-essential-oil',
+                description: '100% pure Moroccan Clementine essential oil. Uplifting, sweet citrus aroma. Rich in antioxidants and perfect for aromatherapy and boosting mood.',
+                metaTitle: 'Clementine Essential Oil - Pure Moroccan Wholesale',
+                metaDesc: 'Premium Clementine oil from Morocco. Sweet citrus scent, organic certified. Wholesale available.',
+            },
+            {
+                language: 'ar',
+                name: 'زيت الكليمنتين الأساسي العضوي',
+                slug: 'زيت-الكليمنتين',
+                description: 'زيت الكليمنتين الأساسي النقي 100% من المغرب. خيار مثالي للعلاج العطري وتحسين المزاج.',
+            },
+            {
+                language: 'fr',
+                name: 'Huile Essentielle de Clémentine Bio',
+                slug: 'huile-essentielle-clementine',
+                description: 'Huile essentielle de clémentine 100% pure du Maroc. Arôme doux et revitalisant.',
+            },
+        ],
+        variants: [
+            { sku: 'CLEM-50ML', sizeName: '50ml', price: 28.00, stock: 30 },
+            { sku: 'CLEM-100ML', sizeName: '100ml', price: 50.00, stock: 30 },
+        ],
+        images: [{ url: 'https://images.unsplash.com/photo-1595981267035-7b04ca84a82d?w=800&q=80', isPrimary: true }],
+    });
+    console.log('✅ Product created: Clementine Essential Oil');
 
     // ==========================================
     // 5. Create Blog Posts
@@ -894,8 +1115,8 @@ async function main() {
 - Anti-inflammatory properties
 
 Discover our premium selection of 100% pure argan oil, cold-pressed and organic.`,
-                metaTitle: 'The Amazing Benefits of Moroccan Argan Oil | Moroccan Organica',
-                metaDesc: 'Discover the incredible beauty and health benefits of authentic Moroccan argan oil. Learn why it\'s called liquid gold.',
+                        metaTitle: 'The Amazing Benefits of Moroccan Argan Oil | Moroccan Organica',
+                        metaDesc: 'Discover the incredible beauty and health benefits of authentic Moroccan argan oil. Learn why it\'s called liquid gold.',
                         ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
                     },
                     {
@@ -903,16 +1124,16 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                         title: 'فوائد زيت الأركان المغربي',
                         slug: 'فوائد-زيت-الأركان-المغربي',
                         content: 'يستخدم زيت الأركان المغربي منذ قرون من قبل النساء البربريات لفوائده الجمالية والصحية المذهلة. يُعرف بـ "الذهب السائل"، ويتم استخراج هذا الزيت الثمين من نوى شجرة الأركان التي تنمو حصرياً في المغرب.',
-                metaTitle: 'فوائد زيت الأركان المغربي المذهلة',
-                metaDesc: 'اكتشف الفوائد الجمالية والصحية المذهلة لزيت الأركان المغربي الأصيل.',
+                        metaTitle: 'فوائد زيت الأركان المغربي المذهلة',
+                        metaDesc: 'اكتشف الفوائد الجمالية والصحية المذهلة لزيت الأركان المغربي الأصيل.',
                     },
                     {
                         language: 'fr',
                         title: 'Les Bienfaits de l\'Huile d\'Argan Marocaine',
                         slug: 'bienfaits-huile-argan-marocaine',
                         content: 'L\'huile d\'argan marocaine est utilisée depuis des siècles par les femmes berbères pour ses incroyables bienfaits beauté et santé. Connue comme "l\'or liquide", cette huile précieuse est extraite des amandons de l\'arganier, qui pousse exclusivement au Maroc.',
-                metaTitle: 'Les Bienfaits Incroyables de l\'Huile d\'Argan Marocaine',
-                metaDesc: 'Découvrez les incroyables bienfaits beauté et santé de l\'huile d\'argan marocaine authentique.',
+                        metaTitle: 'Les Bienfaits Incroyables de l\'Huile d\'Argan Marocaine',
+                        metaDesc: 'Découvrez les incroyables bienfaits beauté et santé de l\'huile d\'argan marocaine authentique.',
                     },
                 ],
             },
@@ -932,8 +1153,8 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                         title: 'Traditional Moroccan Spices: A Culinary Journey',
                         slug: 'traditional-moroccan-spices',
                         content: `Moroccan cuisine is renowned worldwide for its rich flavors and aromatic spices. The secret lies in the unique blend of spices that have been used for generations. From the famous Ras el Hanout to saffron, Moroccan spices tell a story of tradition and culture.`,
-                metaTitle: 'Traditional Moroccan Spices Guide | Moroccan Organica',
-                metaDesc: 'Explore the world of traditional Moroccan spices. Learn about authentic blends and their culinary uses.',
+                        metaTitle: 'Traditional Moroccan Spices Guide | Moroccan Organica',
+                        metaDesc: 'Explore the world of traditional Moroccan spices. Learn about authentic blends and their culinary uses.',
                     },
                     {
                         language: 'ar',
@@ -969,23 +1190,23 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                     {
                         language: 'en',
                         siteName: 'Moroccan Organica',
-                        titleSuffix: ' | Premium Wholesale Supplier',
-                        defaultMetaDesc: 'Your trusted source for premium organic oils and natural beauty products from Morocco.',
-                        defaultKeywords: 'argan oil, wholesale, organic, morocco, supplier',
+                        titleSuffix: ' | Argan Oil Wholesale Morocco',
+                        defaultMetaDesc: 'Buy Moroccan organic beauty products and cosmetics wholesale. Using natural, 100% pure ingredients and natural, skincare haircare.',
+                        defaultKeywords: 'Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure, bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic',
                     },
                     {
                         language: 'fr',
                         siteName: 'Moroccan Organica',
-                        titleSuffix: ' | Fournisseur Grossiste Premium',
-                        defaultMetaDesc: 'Votre source de confiance pour des huiles biologiques premium et produits de beauté naturels du Maroc.',
-                        defaultKeywords: 'huile d\'argan, gros, bio, maroc, fournisseur',
+                        titleSuffix: ' | Vente en Gros Huile d\'Argan',
+                        defaultMetaDesc: 'Achetez des produits de beauté bio marocains et des cosmétiques en gros. Ingrédients 100% purs et naturels pour le soin de la peau et des cheveux.',
+                        defaultKeywords: 'huile d\'argan, gros, bio, maroc, fournisseur, cosmétiques naturels',
                     },
                     {
                         language: 'ar',
                         siteName: 'موروكان أورجانيكا',
-                        titleSuffix: ' | مورد الجملة الممتاز',
-                        defaultMetaDesc: 'مصدرك الموثوق للزيوت العضوية الممتازة ومنتجات التجميل الطبيعية من المغرب.',
-                        defaultKeywords: 'زيت الأركان, جملة, عضوي, المغرب, مورد',
+                        titleSuffix: ' | زيت الأرغان المغربي بالجملة',
+                        defaultMetaDesc: 'اشترِ شركة مستحضرات التجميل العضوية وزيت الأرغان المغربية بالجملة. باستخدام المكونات التقليدية والمنتجات الطبيعية للعناية بالبشرة والجمال والعناية بالشعر.',
+                        defaultKeywords: 'زيت الأرغان ، فوائد زيت الأرغان للبشرة ، زيت التين الشوكي ، زيت الأرغان للشعر ، زيت الأرغان للوجه ، زيت الأرغان النقي ، زيت الأرغان للبشرة ، سعر زيت الأرغان ، منتجات تجميل نقية بنسبة 100٪ ، بكميات كبيرة ، زيت أركان المغربي ، مستحضرات تجميل على الإنترنت ، جمال ، ماركة تجميل ، مستحضرات تجميل ',
                     },
                 ],
             },
@@ -1000,28 +1221,120 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
 
     const staticPagesData = [
         {
+            systemName: 'BLOG',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'Our Blog',
+                    slug: 'blog',
+                    metaTitle: 'Our Blog - Organic Beauty Tips & News | Moroccan Organica',
+                    metaDesc: 'Stay updated with our blog for organic beauty tips, news about Moroccan argan oil, and benefits of natural skincare.',
+                    keywords: 'organic beauty blog, argan oil tips, natural skincare news, morocco beauty trends',
+                },
+                {
+                    language: 'ar',
+                    h1: 'مدونتنا',
+                    slug: 'المدونة',
+                    metaTitle: 'مدونتنا - نصائح وأخبار الجمال العضوي | مغربية أورجانيكا',
+                    metaDesc: 'ابق على تواصل مع مدونتنا للحصول على نصائح الجمال العضوي، وأخبار زيت الأركان المغربي، وفوائد العناية الطبيعية بالبشرة.',
+                    keywords: 'مدونة الجمال العضوي، نصائح زيت الأركان، أخبار العناية بالبشرة، اتجاهات الجمال في المغرب',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Notre Blog',
+                    slug: 'blog',
+                    metaTitle: 'Notre Blog - Conseils de Beauté Bio & Actualités | Moroccan Organica',
+                    metaDesc: 'Restez informé avec notre blog pour des conseils de beauté bio, des actualités sur l\'huile d\'argan marocaine et les bienfaits des soins naturels.',
+                    keywords: 'blog beauté bio, conseils huile d\'argan, actualités soins naturels, tendances beauté maroc',
+                },
+            ]
+        },
+        {
+            systemName: 'SHOP',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'Our Shop',
+                    slug: 'shop',
+                    metaTitle: 'Shop Moroccan Organica - Premium Organic Cosmetics Wholesale',
+                    metaDesc: 'Explore our range of premium organic Moroccan beauty products. Wholesale argan oil, prickly pear oil, black soap, and more.',
+                    keywords: 'shop argan oil, wholesale cosmetics morocco, organic beauty products online',
+                },
+                {
+                    language: 'ar',
+                    h1: 'متجرنا',
+                    slug: 'المتجر',
+                    metaTitle: 'متجر مغربية أورجانيكا - مستحضرات تجميل عضوية بالجملة',
+                    metaDesc: 'اكتشف مجموعتنا من منتجات التجميل المغربية العضوية الممتازة. زيت الأركان، زيت التين الشوكي، الصابون الأسود والمزيد بالجملة.',
+                    keywords: 'متجر زيت أركان، مستحضرات تجميل بالجملة المغرب، منتجات تجميل عضوية',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Notre Boutique',
+                    slug: 'boutique',
+                    metaTitle: 'Boutique Moroccan Organica - Cosmétiques Bio en Gros',
+                    metaDesc: 'Découvrez notre gamme de produits de beauté marocains bio de qualité. Huile d\'argan, huile de figue de barbarie, savon noir et plus en gros.',
+                    keywords: 'boutique huile d\'argan, cosmétiques en gros maroc, produits de beauté bio en ligne',
+                },
+            ]
+        },
+        {
+            systemName: 'PRODUCTS',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'Moroccan beauty products wholesale',
+                    slug: 'products',
+                    metaTitle: 'Moroccan cosmetic wholesale | Moroccan Organica',
+                    metaDesc: 'Moroccan beauty cosmetics made with argan oil, ghassoul, and natural ingredients. Shop premium skincare & haircare online.',
+                    keywords: 'Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure, bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic',
+                },
+                {
+                    language: 'ar',
+                    h1: 'البيع بالجملة لمستحضرات التجميل المغربية',
+                    slug: 'المنتجات',
+                    metaTitle: 'زيت الأرغان المغربي الاصلي للشعر | مغربية أورجانيكا',
+                    metaDesc: 'اشترِ شركة مستحضرات التجميل العضوية وزيت الأرغان المغربية بالجملة. باستخدام المكونات التقليدية والمنتجات الطبيعية للعناية بالبشرة والجمال والعناية بالشعر.',
+                    keywords: 'زيت الأرغان ، فوائد زيت الأرغان للبشرة ، زيت التين الشوكي ، زيت الأرغان للشعر ، زيت الأرغان للوجه ، زيت الأرغان النقي ، زيت الأرغان للبشرة ، سعر زيت الأرغان ، منتجات تجميل نقية بنسبة 100٪ ، بكميات كبيرة ، زيت أركان المغربي ، مستحضرات تجميل على الإنترنت ، جمال ، ماركة تجميل ، مستحضرات تجميل',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Cosmétiques marocains en gros',
+                    slug: 'produits',
+                    metaTitle: 'Vente en gros de cosmétiques marocains | Moroccan Organica',
+                    metaDesc: 'Produits de beauté marocains à base d\'huile d\'argan, de ghassoul et d\'ingrédients naturels. Découvrez nos soins premium en ligne.',
+                    keywords: 'huile d\'argan, cosmétiques marocains gros, produits de beauté bio, ghassoul, savon noir',
+                },
+            ]
+        },
+        {
             systemName: 'HOME',
             translations: [
                 {
                     language: 'en',
                     slug: '',
-                    h1: 'Authentic Moroccan Organic Products Wholesale',
-                    metaTitle: 'Moroccan Organica - Premium Wholesale Supplier',
-                    description: 'We supply high-quality organic Argan oil, Prickly Pear oil, and more directly from Morocco.'
+                    h1: 'Moroccan beauty products wholesale',
+                    description: 'Trusted Wholesale Suppliers of argan oil and different cosmetics products based on **organic oils** in morocco.',
+                    metaTitle: 'Argan oil wholesale company - in Bulk - Morocco',
+                    metaDesc: 'Buy Moroccan organic beauty products and cosmetics wholesale. Using natural, 100% pure ingredients and natural, skincare haircare.',
+                    keywords: 'Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure, bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic'
                 },
                 {
                     language: 'fr',
                     slug: '',
-                    h1: 'Produits Bio Marocains Authentiques en Gros',
-                    metaTitle: 'Moroccan Organica - Fournisseur Grossiste Premium',
-                    description: 'Nous fournissons de l\'huile d\'Argan bio de haute qualité, de l\'huile de Figue de Barbarie et plus encore directement du Maroc.'
+                    h1: 'Vente en gros de produits bio marocains authentiques',
+                    description: 'Fournisseurs de gros d\'huile d\'argan et de différents produits cosmétiques basés sur des **huiles biologiques** au Maroc.',
+                    metaTitle: 'Moroccan Organica - Fournisseur Premium en Gros',
+                    metaDesc: 'Achetez des produits de beauté bio marocains et des cosmétiques en gros. Ingrédients 100% purs et naturels pour le soin de la peau et des cheveux.'
                 },
                 {
                     language: 'ar',
                     slug: '',
-                    h1: 'منتجات عضوية مغربية أصيلة بالجملة',
-                    metaTitle: 'موروكان أورجانيكا - مورد جملة ممتاز',
-                    description: 'نحن نورد زيت الأركان العضوي عالي الجودة، وزيت التين الشوكي، والمزيد مباشرة من المغرب.'
+                    h1: 'البيع بالجملة لمنتجات مغربية عضوية أصلية',
+                    description: 'موردين الجملة الموثوق بهم لزيت الأرغان ومنتجات التجميل المختلفة القائمة على **الزيوت العضوية** في المغرب.',
+                    metaTitle: 'مغربية أورجانيكا - مورد متميز بالجملة',
+                    metaDesc: 'اشترِ شركة مستحضرات التجميل العضوية وزيت الأرغان المغربية بالجملة. باستخدام المكونات التقليدية والمنتجات الطبيعية للعناية بالبشرة والجمال والعناية بالشعر.',
+                    keywords: 'زيت الأرغان ، فوائد زيت الأرغان للبشرة ، زيت التين الشوكي ، زيت الأرغان للشعر ، زيت الأرغان للوجه ، زيت الأرغان النقي ، زيت الأرغان للبشرة ، سعر زيت الأرغان ، منتجات تجميل نقية بنسبة 100٪ ، بكميات كبيرة ، زيت أركان المغربي ، مستحضرات تجميل على الإنترنت ، جمال ، ماركة تجميل ، مستحضرات تجميل '
                 }
             ]
         },
@@ -1030,69 +1343,71 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
             translations: [
                 {
                     language: 'en',
-                    h1: 'About Organica Group SARL',
+                    h1: 'Wholesale of organic cosmetics products',
                     slug: 'about-organica-group-sarl',
-                    description: `# Wholesale of Organic Cosmetics Products\n\nOrganica Group is a producer and exporter of organic cosmetics products, operating outside and inside of Morocco, for wholesale of 100% pure organic cosmetic products. Using traditional ingredients and natural products for beauty, skincare, and haircare.\n\nOur company provides different Moroccan organic products and services including **private label** for its worldwide customers. We deal with international countries all over the world, in Europe, Asia, America, Australia, and Africa.\n\n## Produced by Cooperatives\n\nOur products are manufactured by cooperatives of the south-west of Morocco, with traditional techniques and ancestral knowledge in this field. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world.\n\n## Fair Trade Principles\n\nThe business practices of Organica Group are based on 3 fundamental principles:\n\n1. **Quality**: 100% organic cosmetics\n2. **Ethics**: Fair Trade Practices\n3. **Authenticity**: Guaranteed by a personal relationship with the women of the cooperatives\n\n## Our Mission\n\nTo share the natural wealth of Morocco while supporting local communities and sustainable practices. We work directly with Berber women's cooperatives to ensure authenticity and fair compensation.\n\n## Our Values\n\n- 🌿 100% Organic and Natural Products\n- 🤝 Fair Trade and Ethical Sourcing\n- 👥 Support for Local Artisans and Women's Cooperatives\n- 🌍 Environmental Sustainability\n- ✅ Certified Quality (CCPB, USDA NOP, ECOCERT)\n\nEvery product we offer is carefully selected, authenticated, and sourced from trusted partners across Morocco, particularly from the Atlas Mountains region and traditional cooperatives.`,
-                    metaTitle: 'About Organica Group SARL - Wholesale Organic Cosmetics from Morocco',
-                    metaDesc: 'Learn about Organica Group SARL, producer and exporter of 100% organic Moroccan cosmetic products. Fair trade, certified quality, direct from cooperatives.',
-                    keywords: 'organica group, moroccan cosmetics wholesale, organic beauty products, fair trade morocco, argan oil producer',
+                    description: 'Our company provides different moroccan organic products, and services including **private label** for its worldwide customers we deals with international countries all over the world, in Europe, Asia, America, Australia and Africa.',
+                    metaTitle: 'Wholesale of organic cosmetics beauty products',
+                    metaDesc: 'Help re-establish the link between the women Argan oil-cooperatives and Argan oil end customers',
+                    keywords: 'Organica Group,Buy organic Oil,About Organica Group,Argan oil-cooperatives',
                     ogImage: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1200&q=80',
                     canonical: 'https://moroccanorganica.com/about-us',
                 },
                 {
                     language: 'ar',
-                    h1: 'عن مجموعة أورجانيكا',
+                    h1: 'منتجات التجميل العضوية بالجملة',
                     slug: 'من-نحن',
-                    description: `# بيع منتجات التجميل العضوية بالجملة\n\nمجموعة أورجانيكا هي منتج ومصدر لمنتجات التجميل العضوية، تعمل داخل وخارج المغرب، لبيع منتجات التجميل العضوية النقية 100% بالجملة. نستخدم المكونات التقليدية والمنتجات الطبيعية للجمال والعناية بالبشرة والشعر.\n\nتقدم شركتنا منتجات مغربية عضوية مختلفة وخدمات تشمل **العلامة التجارية الخاصة** لعملائها في جميع أنحاء العالم. نتعامل مع دول في جميع أنحاء العالم، في أوروبا وآسيا وأمريكا وأستراليا وأفريقيا.\n\n## إنتاج التعاونيات\n\nيتم تصنيع منتجاتنا من قبل تعاونيات جنوب غرب المغرب، بتقنيات تقليدية ومعرفة موروثة في هذا المجال. يتم تصدير جميع منتجاتنا التجميلية والطهوية مباشرة من التعاونيات إلى عملائنا في جميع أنحاء العالم.\n\n## مبادئ التجارة العادلة\n\nتستند الممارسات التجارية لمجموعة أورجانيكا على 3 مبادئ أساسية:\n\n1. **الجودة**: مستحضرات تجميل عضوية 100%\n2. **الأخلاقيات**: ممارسات التجارة العادلة\n3. **الأصالة**: مضمونة من خلال علاقة شخصية مع نساء التعاونيات\n\n## قيمنا\n\n- 🌿 منتجات عضوية وطبيعية 100%\n- 🤝 مصادر أخلاقية وتجارة عادلة\n- 👥 دعم الحرفيين المحليين والتعاونيات النسائية\n- 🌍 الاستدامة البيئية\n- ✅ جودة معتمدة (CCPB، USDA NOP، ECOCERT)`,
-                    metaTitle: 'عن مجموعة أورجانيكا - مستحضرات تجميل عضوية بالجملة من المغرب',
-                    metaDesc: 'تعرف على مجموعة أورجانيكا، منتج ومصدر منتجات التجميل المغربية العضوية 100%. تجارة عادلة، جودة معتمدة.',
-                    keywords: 'مجموعة أورجانيكا، مستحضرات تجميل مغربية، منتجات عضوية، تجارة عادلة',
+                    description: 'تقدم شركتنا منتجات عضوية مغربية مختلفة ، وخدمات بما في ذلك العلامة الخاصة لعملائها في جميع أنحاء العالم ، نتعامل مع دول عالمية في جميع أنحاء العالم ، في أوروبا وآسيا وأمريكا وأستراليا وأفريقيا.',
+                    metaTitle: 'بيع منتجات التجميل التجميلية العضوية بالجملة',
+                    metaDesc: 'ساعد في إعادة إنشاء الرابط بين تعاونيات زيت أركان النسائية والعملاء النهائيين لزيت أركان',
+                    keywords: 'اورجانيكا جروب ، شراء زيت عضوي ، حول اورجانيكا جروب ، زيت الارجان-التعاونيات',
                 },
                 {
                     language: 'fr',
-                    h1: 'À Propos d\'Organica Group SARL',
+                    h1: 'Vente en gros de produits cosmétiques biologiques',
                     slug: 'a-propos',
-                    description: `# Grossiste de Produits Cosmétiques Biologiques\n\nOrganica Group est un producteur et exportateur de produits cosmétiques biologiques, opérant à l'intérieur et à l'extérieur du Maroc, pour la vente en gros de produits cosmétiques biologiques 100% purs. Utilisant des ingrédients traditionnels et des produits naturels pour la beauté, les soins de la peau et des cheveux.\n\nNotre entreprise fournit différents produits biologiques marocains et services, y compris la **marque privée** pour ses clients du monde entier. Nous traitons avec des pays internationaux partout dans le monde, en Europe, en Asie, en Amérique, en Australie et en Afrique.\n\n## Produit par des Coopératives\n\nNos produits sont fabriqués par des coopératives du sud-ouest du Maroc, avec des techniques traditionnelles et un savoir ancestral dans ce domaine. Tous nos produits cosmétiques et culinaires sont exportés directement des coopératives vers nos clients du monde entier.\n\n## Principes du Commerce Équitable\n\nLes pratiques commerciales d'Organica Group sont basées sur 3 principes fondamentaux :\n\n1. **Qualité** : Cosmétiques biologiques 100%\n2. **Éthique** : Pratiques de Commerce Équitable\n3. **Authenticité** : Garantie par une relation personnelle avec les femmes des coopératives\n\n## Nos Valeurs\n\n- 🌿 Produits 100% Bio et Naturels\n- 🤝 Commerce Équitable et Approvisionnement Éthique\n- 👥 Soutien aux Artisans Locaux et Coopératives Féminines\n- 🌍 Durabilité Environnementale\n- ✅ Qualité Certifiée (CCPB, USDA NOP, ECOCERT)`,
-                    metaTitle: 'À Propos d\'Organica Group SARL - Cosmétiques Bio en Gros du Maroc',
-                    metaDesc: 'Découvrez Organica Group SARL, producteur et exportateur de produits cosmétiques marocains 100% bio. Commerce équitable, qualité certifiée.',
+                    description: 'Notre entreprise fournit différents produits biologiques marocains et services, y compris la **marque privée** pour ses clients du monde entier.',
+                    metaTitle: 'À propos d\'Organica Group SARL - Grossiste Bio du Maroc',
+                    metaDesc: 'Découvrez Organica Group SARL, producteur et exportateur de produits cosmétiques marocains 100% bio. Boutique en gros et marque privée.',
                     keywords: 'organica group, cosmétiques marocains, produits bio, commerce équitable maroc',
                 },
             ]
         },
+
         {
             systemName: 'CONTACT',
             translations: [
                 {
                     language: 'en',
-                    h1: 'Contact Us - Get in Touch',
+                    h1: 'Keep in touch',
                     slug: 'contact',
-                    description: `# Get in Touch\n\nWholesale suppliers of organic cosmetic products | Organica Group\n\n## Contact Information\n\n**Phone:** [+212 648-273228](tel:+212648273228)\n\n**Email:** [inquiry@moroccanorganica.com](mailto:inquiry@moroccanorganica.com)\n\n**Office Address:**\nLot 377 N°3/6 Sidi Ghanem Industrial Zone\n40110 Marrakesh, Morocco\n\n## Business Hours\n\n**Monday - Friday:** 9:00 AM - 6:00 PM (GMT+1)\n**Saturday:** 10:00 AM - 2:00 PM\n**Sunday:** Closed\n\n## Follow Us\n\nStay connected with us on social media:\n\n- Facebook: [@moroccanorganica](https://www.facebook.com/moroccanorganica/)\n- Instagram: [@moroccanorganic](https://www.instagram.com/moroccanorganic/)\n- Twitter: [@morocanorganica](https://twitter.com/morocanorganica)\n- Pinterest: [@moroccano](https://www.pinterest.com/moroccano/)\n- LinkedIn: [Organica Moroccan Organica](https://www.linkedin.com/in/organicamoroccanorganica/)\n\n## Send Us a Message\n\nFor wholesale inquiries, private label services, or any questions about our organic products, please use the contact form or reach out directly via email or phone.\n\nWe respond to all inquiries within 24-48 hours during business days.\n\n### Services Available:\n\n- Wholesale/Bulk Orders\n- Private Label Manufacturing\n- Custom Formulations\n- International Shipping\n- Product Certifications (CCPB, USDA, ECOCERT)\n- Quality Assurance Documentation`,
-                    metaTitle: 'Contact Moroccan Organica - Wholesale Organic Products Supplier',
-                    metaDesc: 'Contact Organica Group for wholesale organic cosmetic products from Morocco. Phone: +212 648-273228. Email: inquiry@moroccanorganica.com',
-                    keywords: 'contact moroccan organica, wholesale inquiry, organic products supplier, marrakesh morocco',
+                    description: 'Wholesale organic cosmetic products suppliers | Organica group',
+                    metaTitle: 'Wholesale of organic cosmetic products Organica group',
+                    metaDesc: 'Need any help just send a message via our email address',
+                    keywords: 'Organica group SARL,contact Organica group',
                     ogImage: 'https://images.unsplash.com/photo-1423666639041-f56000c27a9a?w=1200&q=80',
                     canonical: 'https://moroccanorganica.com/contact',
                 },
                 {
                     language: 'ar',
-                    h1: 'اتصل بنا - تواصل معنا',
+                    h1: 'ابقى على تواصل',
                     slug: 'اتصل-بنا',
-                    description: `# تواصل معنا\n\nموردو منتجات التجميل العضوية بالجملة | مجموعة أورجانيكا\n\n## معلومات الاتصال\n\n**الهاتف:** [+212 648-273228](tel:+212648273228)\n\n**البريد الإلكتروني:** [inquiry@moroccanorganica.com](mailto:inquiry@moroccanorganica.com)\n\n**عنوان المكتب:**\nالقطعة 377 رقم 3/6 المنطقة الصناعية سيدي غانم\n40110 مراكش، المغرب\n\n## ساعات العمل\n\n**الإثنين - الجمعة:** 9:00 صباحاً - 6:00 مساءً (GMT+1)\n**السبت:** 10:00 صباحاً - 2:00 مساءً\n**الأحد:** مغلق\n\n## تابعنا\n\n### الخدمات المتاحة:\n\n- طلبات الجملة/الكميات الكبيرة\n- تصنيع العلامات التجارية الخاصة\n- تركيبات مخصصة\n- الشحن الدولي\n- شهادات المنتجات (CCPB، USDA، ECOCERT)`,
-                    metaTitle: 'اتصل بـمغربية أورجانيكا - مورد منتجات عضوية بالجملة',
-                    metaDesc: 'اتصل بمجموعة أورجانيكا لمنتجات التجميل العضوية بالجملة من المغرب. هاتف: +212 648-273228',
-                    keywords: 'اتصل مغربية أورجانيكا، استفسار جملة، مورد منتجات عضوية، مراكش',
+                    description: 'مورّدو مستحضرات التجميل العضوية بالجملة | مجموعة اورجانيكا',
+                    metaTitle: 'Organica بيع منتجات التجميل العضوية مجموعة',
+                    metaDesc: 'هل تحتاج إلى أي مساعدة ، فما عليك سوى إرسال رسالة عبر عنوان البريد الإلكتروني الخاص بنا',
+                    keywords: 'مجموعة Organica SARL ، اتصل بمجموعة Organica',
                 },
                 {
                     language: 'fr',
-                    h1: 'Contactez-Nous - Prenez Contact',
+                    h1: 'Contactez-Nous',
                     slug: 'contact',
-                    description: `# Prenez Contact\n\nFournisseurs en gros de produits cosmétiques biologiques | Organica Group\n\n## Informations de Contact\n\n**Téléphone:** [+212 648-273228](tel:+212648273228)\n\n**Email:** [inquiry@moroccanorganica.com](mailto:inquiry@moroccanorganica.com)\n\n**Adresse du Bureau:**\nLot 377 N°3/6 Zone Industrielle Sidi Ghanem\n40110 Marrakech, Maroc\n\n## Heures d'Ouverture\n\n**Lundi - Vendredi:** 9h00 - 18h00 (GMT+1)\n**Samedi:** 10h00 - 14h00\n**Dimanche:** Fermé\n\n## Suivez-Nous\n\n### Services Disponibles:\n\n- Commandes en Gros/Bulk\n- Fabrication de Marque Privée\n- Formulations Personnalisées\n- Expédition Internationale\n- Certifications de Produits (CCPB, USDA, ECOCERT)`,
+                    description: 'Fournisseurs en gros de produits cosmétiques biologiques | Organica Group',
                     metaTitle: 'Contactez Moroccan Organica - Fournisseur de Produits Bio en Gros',
                     metaDesc: 'Contactez Organica Group pour des produits cosmétiques bio en gros du Maroc. Tél: +212 648-273228',
                     keywords: 'contact moroccan organica, demande grossiste, fournisseur bio, marrakech',
                 },
             ]
         },
+
         {
             systemName: 'PRIVACY_POLICY',
             translations: [
@@ -1100,30 +1415,31 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                     language: 'en',
                     h1: 'Privacy Policy',
                     slug: 'privacy-policy',
-                    description: `# Privacy Policy\n\n**Last Updated:** January 2026\n\nAt Moroccan Organica (Organica Group SARL), we respect your privacy and are committed to protecting your personal information. This privacy policy explains how we collect, use, and safeguard your data.\n\n## Information We Collect\n\nWe collect information that you provide directly to us when you:\n\n- Request a quote or make an inquiry\n- Place an order for wholesale products\n- Subscribe to our newsletter\n- Create an account on our website\n- Contact us via email, phone, or contact form\n\n### Types of Information:\n\n- **Personal Information**: Name, email address, phone number\n- **Business Information**: Company name, tax ID (ICE), business address\n- **Shipping Information**: Delivery addresses and contact details\n- **Order Information**: Product selections, quantities, order history\n- **Communication Preferences**: Marketing opt-in/opt-out preferences\n\n## How We Use Your Information\n\nWe use the collected information to:\n\n1. **Process and Fulfill Orders**: Handle your wholesale orders and shipments\n2. **Communication**: Send order confirmations, shipping updates, and respond to inquiries\n3. **Customer Service**: Provide support and address your concerns\n4. **Business Relationships**: Maintain B2B relationships with wholesale clients\n5. **Improve Services**: Enhance our products, services, and website experience\n6. **Marketing**: Send promotional communications (only with your consent)\n7. **Legal Compliance**: Meet regulatory requirements and legal obligations\n\n## Data Security\n\nWe implement industry-standard security measures to protect your personal information:\n\n- Secure SSL encryption for data transmission\n- Restricted access to personal information\n- Regular security audits and updates\n- Secure storage systems\n- Employee training on data protection\n\n## Data Sharing\n\nWe do not sell your personal information to third parties. We may share your information only with:\n\n- **Shipping Partners**: To deliver your orders\n- **Payment Processors**: To process transactions securely\n- **Business Partners**: For legitimate business purposes (with your consent)\n- **Legal Authorities**: When required by law\n\n## Your Rights\n\nYou have the right to:\n\n- Access your personal data\n- Correct inaccurate information\n- Request deletion of your data\n- Opt-out of marketing communications\n- Withdraw consent at any time\n\n## Contact Us\n\n**Email:** inquiry@moroccanorganica.com\n**Phone:** +212 648-273228`,
-                    metaTitle: 'Privacy Policy - Moroccan Organica',
-                    metaDesc: 'Read our privacy policy to learn how Moroccan Organica collects, uses, and protects your personal information. GDPR compliant.',
-                    keywords: 'privacy policy, data protection, gdpr, moroccan organica privacy',
+                    description: 'moroccanorganica.com we,us or the "Company" is committed to guarantee the privacy protection. We understand the importance of keeping personal information private and secure. This policy describes generally how we manage personal information. If you would like more information, please don’t hesitate to contact us. \n\n# Privacy Policy\n\n**Last Updated:** January 2026\n\nAt Moroccan Organica (Organica Group SARL), we respect your privacy and are committed to protecting your personal information. This privacy policy explains how we collect, use, and safeguard your data.\n\n## Information We Collect\n\nWe collect information that you provide directly to us when you:\n\n- Request a quote or make an inquiry\n- Place an order for wholesale products\n- Subscribe to our newsletter\n- Create an account on our website\n- Contact us via email, phone, or contact form\n\n### Types of Information:\n\n- **Personal Information**: Name, email address, phone number\n- **Business Information**: Company name, tax ID (ICE), business address\n- **Shipping Information**: Delivery addresses and contact details\n- **Order Information**: Product selections, quantities, order history\n- **Communication Preferences**: Marketing opt-in/opt-out preferences\n\n## How We Use Your Information\n\nWe use the collected information to:\n\n1. **Process and Fulfill Orders**: Handle your wholesale orders and shipments\n2. **Communication**: Send order confirmations, shipping updates, and respond to inquiries\n3. **Customer Service**: Provide support and address your concerns\n4. **Business Relationships**: Maintain B2B relationships with wholesale clients\n5. **Improve Services**: Enhance our products, services, and website experience\n6. **Marketing**: Send promotional communications (only with your consent)\n7. **Legal Compliance**: Meet regulatory requirements and legal obligations\n\n## Data Security\n\nWe implement industry-standard security measures to protect your personal information:\n\n- Secure SSL encryption for data transmission\n- Restricted access to personal information\n- Regular security audits and updates\n- Secure storage systems\n- Employee training on data protection\n\n## Data Sharing\n\nWe do not sell your personal information to third parties. We may share your information only with:\n\n- **Shipping Partners**: To deliver your orders\n- **Payment Processors**: To process transactions securely\n- **Business Partners**: For legitimate business purposes (with your consent)\n- **Legal Authorities**: When required by law\n\n## Your Rights\n\nYou have the right to:\n\n- Access your personal data\n- Correct inaccurate information\n- Request deletion of your data\n- Opt-out of marketing communications\n- Withdraw consent at any time\n\n## Contact Us\n\n**Email:** inquiry@moroccanorganica.com\n**Phone:** +212 648-273228',
+                    metaTitle: 'Organica Group - Privacy policy',
+                    metaDesc: 'moroccanorganica.com we,us or the "Company" is committed to guarantee the privacy protection. We understand the importance of keeping personal information private and secure. This policy describes generally how we manage personal information. If you would like more information, please don’t hesitate to contact us.',
+                    keywords: 'Organica Group privacy policy,moroccanorganica.com terms',
                     canonical: 'https://moroccanorganica.com/privacy-policy',
                 },
                 {
                     language: 'ar',
                     h1: 'سياسة الخصوصية',
                     slug: 'سياسة-الخصوصية',
-                    description: `# سياسة الخصوصية\n\n**آخر تحديث:** يناير 2026\n\nفي Moroccan Organica (مجموعة أورجانيكا)، نحترم خصوصيتك ونلتزم بحماية معلوماتك الشخصية.\n\n## المعلومات التي نجمعها\n\nنجمع المعلومات التي تقدمها لنا مباشرة.\n\n## كيف نستخدم معلوماتك\n\nنستخدم المعلومات لمعالجة الطلبات وتحسين خدماتنا.\n\n## حقوقك\n\nلديك الحق في الوصول إلى بياناتك وتصحيحها.\n\n## اتصل بنا\n\nالبريد الإلكتروني: inquiry@moroccanorganica.com`,
-                    metaTitle: 'سياسة الخصوصية - مغربية أورجانيكا',
-                    metaDesc: 'اقرأ سياسة الخصوصية الخاصة بنا لمعرفة كيف نجمع ونستخدم ونحمي معلوماتك الشخصية.',
+                    description: 'moroccanorganica.com نحن أو "الشركة" ملتزمون بضمان حماية الخصوصية. نحن نتفهم أهمية الحفاظ على خصوصية المعلومات الشخصية وأمانها. تصف هذه السياسة بشكل عام كيفية إدارتنا للمعلومات الشخصية. إذا كنت ترغب في مزيد من المعلومات ، فلا تتردد في الاتصال بنا. \n\n# سياسة الخصوصية\n\n**آخر تحديث:** يناير 2026\n\nفي Moroccan Organica (مجموعة أورجانيكا)، نحترم خصوصيتك ونلتزم بحماية معلوماتك الشخصية.',
+                    metaTitle: 'Organica Group - سياسة الخصوصية',
+                    metaDesc: 'moroccanorganica.com نحن أو "الشركة" ملتزمون بضمان حماية الخصوصية. نحن نتفهم أهمية الحفاظ على خصوصية المعلومات الشخصية وأمانها. تصف هذه السياسة بشكل عام كيفية إدارتنا للمعلومات الشخصية. إذا كنت ترغب في مزيد من المعلومات ، فلا تتردد في الاتصال بنا.',
                 },
                 {
                     language: 'fr',
                     h1: 'Politique de Confidentialité',
                     slug: 'politique-confidentialite',
-                    description: `# Politique de Confidentialité\n\n**Dernière mise à jour:** Janvier 2026\n\nChez Moroccan Organica (Organica Group SARL), nous respectons votre vie privée et nous nous engageons à protéger vos informations personnelles.\n\n## Informations que Nous Collectons\n\nNous collectons les informations que vous nous fournissez directement.\n\n## Comment Nous Utilisons Vos Informations\n\nNous utilisons les informations pour traiter les commandes et améliorer nos services.\n\n## Vos Droits\n\nVous avez le droit d'accéder à vos données et de les corriger.\n\n## Contactez-Nous\n\nEmail: inquiry@moroccanorganica.com`,
+                    description: 'Chez Moroccan Organica, nous respectons votre vie privée. Découvrez comment nous collectons et protégeons vos données.',
                     metaTitle: 'Politique de Confidentialité - Moroccan Organica',
                     metaDesc: 'Lisez notre politique de confidentialité pour savoir comment nous collectons, utilisons et protégeons vos informations personnelles.',
                 },
             ]
         },
+
         {
             systemName: 'DELIVERY_INFO',
             translations: [
@@ -1131,24 +1447,31 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                     language: 'en',
                     h1: 'Delivery Information',
                     slug: 'delivery-Information',
-                    description: `# Delivery Information\n\n## General Information\nAll orders are subject to product availability. If an item is not in stock at the time you place your order, we will notify you and refund the total amount of your order.\n\n## Delivery Time\nAn estimated delivery time will be provided to you once you place your order. Delivery times are estimates and commence from the date of shipping.\n\n## Shipping Costs\nShipping costs are based on the weight of your order and the delivery method.`,
-                    metaTitle: 'Delivery Information - Moroccan Organica',
-                    metaDesc: 'Worldwide delivery information for Moroccan Organica wholesale products. Shipping times and costs.',
+                    description: 'Delivery Information terms and conditions for Organica Group SARL . \n\n# Delivery Information\n\n## General Information\nAll orders are subject to product availability. If an item is not in stock at the time you place your order, we will notify you and refund the total amount of your order.\n\n## Delivery Time\nAn estimated delivery time will be provided to you once you place your order. Delivery times are estimates and commence from the date of shipping.\n\n## Shipping Costs\nShipping costs are based on the weight of your order and the delivery method.',
+                    metaTitle: 'Organica Group - Delivery Information',
+                    metaDesc: 'Delivery Information terms and conditions for Organica Group SARL .',
+                    keywords: 'Organica Group SARL Delivery Information,moroccanorganica.com terms',
                 },
                 {
                     language: 'ar',
                     h1: 'معلومات التوصيل',
                     slug: 'معلومات-التوصيل',
-                    description: `# معلومات التوصيل\n\n## معلومات عامة\nتخضع جميع الطلبات لتوفر المنتج.\n\n## الشحن الدولي\nنحن نشحن في جميع أنحاء العالم.`,
+                    description: 'أحكام وشروط معلومات التسليم لشركة Organica Group SARL. \n\n# معلومات التوصيل\n\n## معلومات عامة\nتخضع جميع الطلبات لتوفر المنتج.\n\n## الشحن الدولي\nنحن نشحن في جميع أنحاء العالم.',
+                    metaTitle: 'Organica Group - معلومات التسليم',
+                    metaDesc: 'أحكام وشروط معلومات التسليم لشركة Organica Group SARL.',
+                    keywords: 'معلومات تسليم Organica Group SARL ، شروط moroccanorganica.com',
                 },
                 {
                     language: 'fr',
                     h1: 'Informations de Livraison',
                     slug: 'informations-livraison',
-                    description: `# Informations de Livraison\n\n## Informations Générales\nToutes les commandes sont sujettes à la disponibilité des produits.`,
+                    description: 'Toutes les informations sur nos délais et frais de livraison.',
+                    metaTitle: 'Informations de Livraison - Moroccan Organica',
+                    metaDesc: 'Découvrez nos conditions de livraison pour vos commandes en gros.',
                 },
             ]
         },
+
         {
             systemName: 'TERMS_CONDITIONS',
             translations: [
@@ -1156,37 +1479,27 @@ Discover our premium selection of 100% pure argan oil, cold-pressed and organic.
                     language: 'en',
                     h1: 'Terms & Conditions',
                     slug: 'terms-conditions',
-                    description: `# Terms & Conditions
-
-**Last Updated:** February 2026
-
-## Statement of Rights and Responsibilities
-This Statement of Rights and Responsibilities ("Statement," "Terms," or "SRR") derives from Moroccan Organica, and is our terms of service that governs our relationship with users and others who interact with moroccanorganica.com.
-
-## Copyright
-All content included on this website, such as text, graphics, logos, images, digital downloads, and data compilations, is the property of Organica Group SARL protected by international copyright laws.
-
-## License and Site Access
-Organica Group SARL grants you a limited license to access and make personal use of this site. This license does not include any resale or commercial use of this site or its contents without express written consent.
-
-## Applicable Law
-By visiting moroccanorganica.com, you agree that the laws of Morocco will govern these Conditions of Use.`,
-                    metaTitle: 'Terms & Conditions - Moroccan Organica',
-                    metaDesc: 'Terms and conditions for using the Moroccan Organica website and purchasing wholesale products.',
+                    description: 'Terms & Conditions Organica Group SARL This agreement was written in English. \n\n# Terms & Conditions\n\n**Last Updated:** February 2026\n\n## Statement of Rights and Responsibilities\nThis Statement of Rights and Responsibilities ("Statement," "Terms," or "SRR") derives from Moroccan Organica, and is our terms of service that governs our relationship with users and others who interact with moroccanorganica.com.',
+                    metaTitle: 'Organica Group - Terms & Conditions',
+                    metaDesc: 'Terms & Conditions Organica Group SARL This agreement was written in English.',
+                    keywords: 'Organica Group SARL Terms & Conditions,moroccanorganica.com Terms and Conditions',
                 },
                 {
                     language: 'ar',
-                    h1: 'الشروط والأحكام',
+                    h1: 'شروط الاستخدام',
                     slug: 'الشروط-والأحكام',
-                    description: `# الشروط والأحكام
-تخضع هذه الشروط لقوانين المملكة المغربية.`,
+                    description: 'Terms & Conditions Organica Group SARL تمت كتابة هذه الاتفاقية باللغة الإنجليزية. \n\n# الشروط والأحكام\nتخضع هذه الشروط لقوانين المملكة المغربية.',
+                    metaTitle: 'Organica Group - الشروط والأحكام',
+                    metaDesc: 'Terms & Conditions Organica Group SARL تمت كتابة هذه الاتفاقية باللغة الإنجليزية.',
+                    keywords: 'شروط وأحكام شركة Organica Group SARL ، شروط وأحكام moroccanorganica.com',
                 },
                 {
                     language: 'fr',
                     h1: 'Termes et Conditions',
                     slug: 'termes-et-conditions',
-                    description: `# Termes et Conditions
-Ces conditions sont régies par les lois du Maroc.`,
+                    description: 'Nos conditions générales de vente et d\'utilisation.',
+                    metaTitle: 'Termes et Conditions - Moroccan Organica',
+                    metaDesc: 'Lisez nos conditions générales de vente et d\'utilisation.',
                 }
             ]
         },
@@ -1195,79 +1508,107 @@ Ces conditions sont régies par les lois du Maroc.`,
             translations: [
                 {
                     language: 'en',
-                    h1: 'Private Label & White Label Services',
+                    h1: 'Private label service for Argan Oil manufacturers',
                     slug: 'argan-oil-private-label-manufacturer',
-                    description: `# Private Labeling Services
-
-Organica Group is the ideal manufacturing partner for Private Label. With a wide range of organic skincare product categories, we are very flexible, supplying you with the highest level products at the best price.
-
-## Add Your Own Brand to Your Product
-
-Organica Group has the ability to provide our customers with unique packaging that can be customized for your brand. We have partnered with many specialized factories around the world that design and manufacture packaging for all product types.
-
-## Our Private Label Solutions
-
-We can provide a significant selection of pre-set products, sizes, and packaging types, but also entirely unique products customized for sale by your business only.
-
-### Design Services
-You can either provide your own design (we will provide measurements), or we can offer professional design services (additional surcharge applies).
-
-### Minimum Order Quantities (MOQ)
-- **Tubes (T5)**: 2,500 units
-- **Boxes**: 1,000 units
-- **Custom Labels & Stickers**: Only 100 units minimum
-
-### Product Labeling
-Customs regulations require all cosmetic products to be labeled. We provide labels in **English, Arabic, French** or other languages containing essential product information at no further surcharge.
-
-## Why Choose Us?
-- 🌿 100% Organic certified ingredients
-- 🤝 Flexibility for small and large businesses
-- 🌍 Worldwide shipping and logistics support
-- ✅ Full documentation (COA, MSDS, Organic Certificates)`,
-                    metaTitle: 'Private Label Moroccan Organic Cosmetics - White Label Manufacturing',
-                    metaDesc: 'Looking for private label argan oil or cosmetics? Organica Group offers custom branding, unique packaging, and organic certified products from Morocco.',
-                    keywords: 'private label argan oil, white label cosmetics morocco, custom branding beauty products, organic cosmetics manufacturer',
+                    description: 'Organica group is your ideal private label manufacturing partner, with a wide range of organic skin care product categories, we are very flexible, providing you with the highest level of products at the best prices. We can provide a huge variety of pre-defined products, sizes, and packaging types, but also completely unique, custom products for sale through your business alone.',
+                    metaTitle: 'Moroccan private label products skincare brands',
+                    metaDesc: 'Private labeling is available for all our products, Ready Your Own Brand, Your logo. for moroccan skin care products.',
+                    keywords: 'private label products, private label cosmetics, private label wholesale, private label manufacturers, moroccanskinecare, Health, and beauty private label, white label products to sell',
                 },
                 {
                     language: 'ar',
-                    h1: 'خدمات العلامة التجارية الخاصة',
+                    h1: 'خدمة العلامة الخاصة لمصنعي زيت الأرغان',
                     slug: 'العلامة-التجارية-الخاصة',
-                    description: `# خدمات العلامة التجارية الخاصة
-
-تعد مجموعة أورجانيكا الشريك المثالي للتصنيع بالعلامة التجارية الخاصة. مع مجموعة واسعة من فئات منتجات العناية بالبشرة العضوية، نحن مرنون للغاية في تزويدك بمنتجات عالية المستوى بأفضل الأسعار.
-
-## أضف علامتك التجارية الخاصة إلى منتجك
-
-تمتلك مجموعة أورجانيكا القدرة على تزويد عملائنا بتغليف فريد يمكن تخصيصه لعلامتكم التجارية.
-
-### الحد الأدنى لكمية الطلب (MOQ)
-- **الأنابيب (T5)**: 2500 وحدة
-- **الصناديق**: 1000 وحدة
-- **الملصقات المخصصة**: ابتداءً من 100 ملصق فقط
-
-### لغات الملصقات
-نحن نوفر ملصقات باللغات **الإنجليزية والعربية والفرنسية** دون أي رسوم إضافية.`,
+                    description: 'مجموعة اورجانيكا هي الشريك التصنيعي المثالي للعلامة التجارية الخاصة ، مع مجموعة واسعة من فئات منتجات العناية بالبشرة العضوية ، نحن مرنون للغاية ، ونوفر لك أعلى مستوى من المنتجات بأفضل الأسعار. يمكننا توفير مجموعة كبيرة من المنتجات والأحجام وأنواع التغليف المحددة مسبقًا ، ولكن أيضًا المنتجات الفريدة تمامًا والمخصصة للبيع من خلال عملك فقط.',
+                    metaTitle: 'خدمة العلامة الخاصة لمصنعي زيت الأرغان',
+                    metaDesc: 'ملصقات جاهزة لجميع المنتجات ، مشهد من صورة رقمية من الصورة الرقمية ، الصورة الخاصة بك ، والملصق الخاص بزيت الأرغان العضوي',
+                    keywords: 'ملصقات جاهزة لجميع المنتجات ، مشهد رقمي من الصورة الرقمية ، الصورة الرقمية ، الصورة الأصلية ، الصورة الرمزية الخاصة بزيت الأرغان العضوي',
                 },
                 {
                     language: 'fr',
                     h1: 'Services de Marque Privée',
                     slug: 'marque-privee',
-                    description: `# Services de Marque Privée (Private Label)
-
-Organica Group est le partenaire de fabrication idéal pour la Marque Privée. Avec une large gamme de catégories de produits cosmétiques bio, nous sommes très flexibles.
-
-## Ajoutez Votre Propre Marque
-
-Nous offrons à nos clients des emballages uniques personnalisables. Nous collaborons avec des usines spécialisées dans la conception d'emballages.
-
-### Quantités Minimales de Commande (MOQ)
-- **Tubes (T5)** : 2 500 unités
-- **Boîtes** : 1 000 unités
-- **Étiquettes Personnalisées** : Minimum 100 unités seulement
-
-### Langues d'Étiquetage
-Nous fournissons des étiquettes en **anglais, arabe, français** ou autres langues sans supplément de prix.`,
+                    description: 'Votre partenaire idéal pour la fabrication de produits cosmétiques sous votre propre marque.',
+                    metaTitle: 'Marque Privée - Moroccan Organica',
+                    metaDesc: 'Lancez votre propre marque de cosmétiques bio avec notre service de fabrication sur mesure.',
+                }
+            ]
+        },
+        {
+            systemName: 'HOW_TO_ORDER',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'How to Order & Payment',
+                    slug: 'how-to-order-pay',
+                    description: 'Organica group - Paying by Paypal without an account. Simple steps to order your Moroccan organic products wholesale.',
+                    metaTitle: 'How to Order Moroccan Products - Payment Options',
+                    metaDesc: 'Learn how to order from Moroccan Organica. Payment methods include PayPal, credit card, and bank transfer.',
+                    keywords: 'how to order, payment methods, paypal morocco, wholesale ordering',
+                },
+                {
+                    language: 'ar',
+                    h1: 'كيفية الطلب والدفع',
+                    slug: 'كيفية-الطلب',
+                    description: 'مجموعة أورجانيكا - الدفع عن طريق الباي بال بدون حساب. خطوات بسيطة لطلب منتجاتك العضوية المغربية بالجملة.',
+                    metaTitle: 'كيفية طلب المنتجات المغربية - خيارات الدفع',
+                    metaDesc: 'تعرف على كيفية الطلب من مغربية أورجانيكا. تشمل طرق الدفع PayPal والبطاقة الائتمانية والتحويل البنكي.',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Comment Commander & Paiement',
+                    slug: 'comment-commander',
+                    description: 'Découvrez comment passer commande chez Moroccan Organica et les options de paiement disponibles.',
+                }
+            ]
+        },
+        {
+            systemName: 'AKER_FASSI_BENEFITS',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'Benefits of Moroccan Aker Fassi Powder',
+                    slug: 'aker-fassi-powder-benefits',
+                    description: '100% natural Moroccan Aker Fassi powder, ideal for skin and hair. It helps brighten the skin, treat acne, and stimulate hair growth.',
+                    metaTitle: 'Benefits of Moroccan Aker Fassi Powder - Natural Glow',
+                    metaDesc: 'Discover the amazing benefits of Aker Fassi powder for skin brightening and hair care.',
+                },
+                {
+                    language: 'ar',
+                    h1: 'فوائد مسحوق أكر فاسي المغربي',
+                    slug: 'فوائد-أكر-فاسي',
+                    description: 'مسحوق أكر فاسي المغربي طبيعي 100% ومثالي للبشرة والشعر. يساعد على تفتيح البشرة، علاج حب الشباب، وتحفيز نمو الشعر.',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Bienfaits de la Poudre Aker Fassi',
+                    slug: 'bienfaits-aker-fassi',
+                    description: 'Découvrez les bienfaits de la poudre Aker Fassi pour l\'éclat du teint et le soin des cheveux.',
+                }
+            ]
+        },
+        {
+            systemName: 'NILA_BENEFITS',
+            translations: [
+                {
+                    language: 'en',
+                    h1: 'Moroccan Indigo (Nila) Powder Benefits',
+                    slug: 'moroccan-indigo-powder-benefits',
+                    description: 'Moroccan Indigo Powder is 100% natural and ideal for skin and hair. It helps lighten the skin, treat acne, and stimulate hair growth.',
+                    metaTitle: 'Moroccan Nila Powder Benefits - Skin Lightening',
+                    metaDesc: 'Learn about the benefits of Nila powder for skin whitening and treating pigmentation.',
+                },
+                {
+                    language: 'ar',
+                    h1: 'فوائد مسحوق النيلة المغربية',
+                    slug: 'فوائد-النيلة',
+                    description: 'مسحوق النيلة المغربية طبيعي 100% ومثالي للبشرة والشعر. يساعد على تفتيح البشرة، إزالة التصبغات، وتنقية الوجه.',
+                },
+                {
+                    language: 'fr',
+                    h1: 'Bienfaits de la Poudre de Nila',
+                    slug: 'bienfaits-nila',
+                    description: 'Découvrez les propriétés éclaircissantes et purifiantes de la poudre de Nila marocaine.',
                 }
             ]
         }
@@ -1318,16 +1659,14 @@ Nous fournissons des étiquettes en **anglais, arabe, français** ou autres lang
     console.log('📊 Summary:');
     console.log(`   - Admin users: 1`);
     console.log(`   - Customers: 1`);
-    console.log(`   - Categories: ${createdCategories.length} (with multilingual translations)`);
-    console.log(`   - Products: 9 (based on old site, with variants and translations)`);
+    console.log(`   - Categories: ${createdCategories.length}`);
+    console.log(`   - Products: 14 (with variants and translations)`);
     console.log(`   - Blog posts: 2 (multilingual)`);
-    console.log(`   - Static pages: ${staticPagesData.length} (Home, About, Contact, Privacy, Delivery, Terms, Private Label)`);
-    console.log(`   - Total variants: 19`);
+    console.log(`   - Static pages: ${staticPagesData.length}`);
     console.log('');
     console.log('🔑 Admin Login:');
     console.log('   Email: admin@moroccan-organica.com');
-    // Removed duplicate Global SEO and Static Page creation
-    console.log('🌱 Database seeding completed successfully!');
+    console.log('🌱 Database seeding session finished!');
 }
 
 main()

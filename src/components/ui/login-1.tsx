@@ -63,11 +63,12 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
 
           {/* Logo/Icon */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-12 h-12 bg-[#118f14] rounded-lg mb-4 shadow-lg shadow-emerald-200/80">
-              <div className="w-6 h-6 bg-white rounded-sm relative">
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2 h-3 bg-[#bc6c25] rounded-b-sm" />
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-1 h-2 bg-[#118f14] rounded-t-sm" />
-              </div>
+            <div className="inline-flex items-center justify-center mb-4">
+              <img
+                src="/images/logo.png"
+                alt="Moroccan Organica"
+                className="h-16 w-auto object-contain"
+              />
             </div>
             <h2 className="text-3xl font-bold text-gray-900 mb-2">
               {isLogin ? "Welcome Back" : "Join Us Today"}
