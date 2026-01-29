@@ -52,13 +52,13 @@ const CartDrawer = ({ isRTL = false, lang = "en" }: CartDrawerProps) => {
             <SheetTrigger asChild>
                 <button className={`relative cursor-pointer group ${isAnimating ? 'animate-bounce' : ''}`}>
                     <ShoppingCart
-                        className={`w-6 h-6 text-white group-hover:text-[#118f14] transition-all duration-300 ${isAnimating ? 'scale-125 rotate-12' : ''
+                        className={`w-6 h-6 text-white group-hover:text-primary transition-all duration-300 ${isAnimating ? 'scale-125 rotate-12' : ''
                             }`}
                     />
                     {totalItems > 0 && (
                         <div
                             className={`absolute -top-2 ${isRTL ? "-left-2" : "-right-2"
-                                } w-5 h-5 bg-[#118f14] rounded-full flex items-center justify-center transition-all duration-300 ${isAnimating ? 'scale-150 animate-pulse' : ''
+                                } w-5 h-5 bg-primary rounded-full flex items-center justify-center transition-all duration-300 ${isAnimating ? 'scale-150 animate-pulse' : ''
                                 }`}
                         >
                             <span className="text-white text-xs font-bold">{totalItems}</span>

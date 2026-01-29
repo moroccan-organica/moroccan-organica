@@ -52,9 +52,9 @@ export function BlogPagination({
             onClick={() => onPageChange(page)}
             className={cn(
               'h-11 w-11 rounded-full font-semibold transition-all duration-300',
-              currentPage === page 
-                ? 'bg-[#606C38] hover:bg-[#4a542b] shadow-lg shadow-[#606C38]/20' 
-                : 'border-slate-200 text-slate-600 hover:border-[#606C38] hover:text-[#606C38]'
+              currentPage === page
+                ? 'bg-primary hover:bg-primary/90 shadow-lg shadow-primary/20'
+                : 'border-slate-200 text-slate-600 hover:border-primary hover:text-primary'
             )}
           >
             {page}

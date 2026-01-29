@@ -32,6 +32,7 @@ export interface FilterSidebarProps {
     maxPrice?: string;
     from?: string;
     to?: string;
+    go?: string;
   };
 }
 
@@ -85,7 +86,7 @@ export function FilterSidebar({
       {/* Header */}
       <div className="flex items-center justify-between bg-slate-50 px-4 py-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-[#606C38]" />
+          <Filter className="h-4 w-4 text-primary" />
           <h3 className="font-playfair font-bold text-slate-900">{translations.title}</h3>
         </div>
         {isMobile && onClose && (
@@ -105,7 +106,7 @@ export function FilterSidebar({
               placeholder={translations.search || "Search products..."}
               value={localSearch}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="pl-10 h-10 rounded-lg border-slate-200 focus:ring-[#606C38] focus:border-[#606C38]"
+              className="pl-10 h-10 rounded-lg border-slate-200 focus:ring-primary focus:border-primary"
             />
           </div>
         </div>
@@ -133,15 +134,15 @@ export function FilterSidebar({
               className={cn(
                 'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all border border-transparent',
                 !selectedCategory
-                  ? 'bg-[#606C38]/10 text-[#606C38] font-semibold border-[#606C38]/30'
+                  ? 'bg-primary/10 text-primary font-semibold border-primary/30'
                   : 'text-slate-700 hover:bg-slate-50'
               )}
             >
               <span className={cn(
                 'h-4 w-4 rounded border flex items-center justify-center',
-                !selectedCategory ? 'border-[#606C38] bg-white' : 'border-slate-300 bg-white'
+                !selectedCategory ? 'border-primary bg-white' : 'border-slate-300 bg-white'
               )}>
-                {!selectedCategory && <Check className="h-3 w-3 text-[#606C38]" />}
+                {!selectedCategory && <Check className="h-3 w-3 text-primary" />}
               </span>
               <span className="font-semibold">{translations.allCategories}</span>
             </button>
@@ -153,19 +154,19 @@ export function FilterSidebar({
                 className={cn(
                   'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all border border-transparent',
                   selectedCategory === category.id
-                    ? 'bg-[#606C38]/10 text-[#606C38] font-semibold border-[#606C38]/30'
+                    ? 'bg-primary/10 text-primary font-semibold border-primary/30'
                     : 'text-slate-700 hover:bg-slate-50'
                 )}
               >
                 <span className={cn(
                   'h-4 w-4 rounded border flex items-center justify-center',
-                  selectedCategory === category.id ? 'border-[#606C38] bg-white' : 'border-slate-300 bg-white'
+                  selectedCategory === category.id ? 'border-primary bg-white' : 'border-slate-300 bg-white'
                 )}>
-                  {selectedCategory === category.id && <Check className="h-3 w-3 text-[#606C38]" />}
+                  {selectedCategory === category.id && <Check className="h-3 w-3 text-primary" />}
                 </span>
                 <span
                   className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: category.color || '#606C38' }}
+                  style={{ backgroundColor: category.color || 'var(--primary)' }}
                 />
                 <span className="text-sm">{category.name}</span>
               </button>
@@ -182,7 +183,7 @@ export function FilterSidebar({
             className="flex w-full items-center justify-between text-sm font-bold text-slate-900 mb-3"
           >
             <div className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4 text-[#606C38]" />
+              <DollarSign className="h-4 w-4 text-primary" />
               {translations.price || "Price"}
             </div>
             <ChevronDown
@@ -214,7 +215,7 @@ export function FilterSidebar({
               <div className="flex justify-end pt-2">
                 <Button
                   onClick={handlePriceChange}
-                  className="px-6 py-2 h-9 bg-slate-100 hover:bg-[#606C38] hover:text-white text-slate-700 rounded-lg text-sm font-medium transition-colors"
+                  className="px-6 py-2 h-9 bg-slate-100 hover:bg-primary hover:text-white text-slate-700 rounded-lg text-sm font-medium transition-colors"
                 >
                   {translations.go || "Go"}
                 </Button>
