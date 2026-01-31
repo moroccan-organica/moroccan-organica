@@ -12,6 +12,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CreditCard, Lock, ShoppingBag, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -477,11 +478,30 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                         <Label htmlFor="country">
                                             {dict.shippingAddress?.country || "Country"}
                                         </Label>
-                                        <Input
-                                            id="country"
-                                            {...register("country")}
-                                            className={errors.country ? "border-destructive" : ""}
-                                        />
+                                        <Select
+                                            value={watch("country") || ""}
+                                            onValueChange={(value) => setValue("country", value)}
+                                        >
+                                            <SelectTrigger
+                                                id="country"
+                                                className={errors.country ? "border-destructive" : ""}
+                                            >
+                                                <SelectValue placeholder="Select a country" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="Morocco">Morocco</SelectItem>
+                                                <SelectItem value="Netherlands">Netherlands</SelectItem>
+                                                <SelectItem value="India">India</SelectItem>
+                                                <SelectItem value="Ireland">Ireland</SelectItem>
+                                                <SelectItem value="KSA">KSA (Saudi Arabia)</SelectItem>
+                                                <SelectItem value="UAE">UAE (United Arab Emirates)</SelectItem>
+                                                <SelectItem value="Poland">Poland</SelectItem>
+                                                <SelectItem value="China">China</SelectItem>
+                                                <SelectItem value="France">France</SelectItem>
+                                                <SelectItem value="Spain">Spain</SelectItem>
+                                                <SelectItem value="Other">Other</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                         {errors.country && (
                                             <p className="text-sm text-destructive mt-1">
                                                 {errors.country.message}
