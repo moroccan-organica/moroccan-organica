@@ -143,7 +143,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
             },
             include: {
                 customer: true,
-                shippingAddress: true,
+                address: true,
                 items: true,
             },
         });

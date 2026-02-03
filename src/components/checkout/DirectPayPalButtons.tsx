@@ -21,16 +21,24 @@ export function DirectPayPalButtons({
     onCancel,
     onClick,
 }: DirectPayPalButtonsProps) {
-    const [{ isPending, isResolved }] = usePayPalScriptReducer();
+    const [{ isPending, isResolved, isRejected }] = usePayPalScriptReducer();
     const [isSdkReady, setIsSdkReady] = useState(false);
 
     useEffect(() => {
-        if (!isPending && isResolved && window.paypal) {
+        if (isResolved && window?.paypal?.Buttons) {
             setIsSdkReady(true);
         }
-    }, [isPending, isResolved]);
+    }, [isResolved, isPending]);
 
-    if (!isSdkReady) {
+    if (isRejected) {
+        return (
+            <div className="p-4 border border-destructive/20 bg-destructive/10 rounded-lg text-destructive text-sm">
+                Failed to load PayPal SDK. Please refresh the page or use another payment method.
+            </div>
+        );
+    }
+
+    if (!isSdkReady || isPending) {
         return (
             <div className="flex items-center justify-center py-8">
                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>

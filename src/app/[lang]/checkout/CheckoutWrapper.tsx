@@ -21,6 +21,10 @@ export function CheckoutWrapper({ dict, lang }: CheckoutWrapperProps) {
                 currency: "USD",
                 intent: "capture",
                 components: "buttons",
+                locale: lang === "ar" ? "ar_EG" : "en_US",
+                "buyer-country": "US",
+                "enable-funding": "venmo,paylater",
+                "data-sdk-integration-source": "integrationbuilder_sc",
             }}
         >
             <CheckoutClient dict={dict} lang={lang} />
