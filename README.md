@@ -7,7 +7,7 @@ A premium, bilingual (English/Arabic) e-commerce platform for Moroccan organic p
 - **Framework**: Next.js 14+ (App Router)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS (with RTL support)
-- **Database**: MySQL with Prisma ORM
+- **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: NextAuth.js (Admin only)
 - **UI Components**: Custom components with premium design
 
@@ -46,7 +46,7 @@ npm install
 
 ### 2. Database Setup
 
-Create a MySQL database and update the `.env` file:
+Create a PostgreSQL database and update the `.env` file:
 
 ```bash
 cp .env.example .env
@@ -55,7 +55,7 @@ cp .env.example .env
 Update the `DATABASE_URL` in `.env`:
 
 ```env
-DATABASE_URL="mysql://user:password@localhost:3306/moroccan_organica"
+DATABASE_URL="postgresql://user:password@localhost:5432/moroccan_organica?schema=public"
 ```
 
 ### 3. Generate NextAuth Secret
