@@ -19,19 +19,26 @@ export default function LoginPage() {
         setIsLoading(true)
 
         try {
+            console.log('Attempting login for:', data.email)
             const result = await signIn('credentials', {
                 email: data.email,
                 password: data.password,
                 redirect: false,
             })
 
+            console.log('Login result:', result)
+
             if (result?.error) {
                 setError(lang === 'ar' ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة' : 'Invalid email or password')
                 return
             }
 
-            router.push(`/${lang}/admin`)
-        } catch {
+            if (result?.ok) {
+                // Force a hard refresh or ensure router is ready
+                window.location.href = `/${lang}/admin`
+            }
+        } catch (err) {
+            console.error('Login error:', err)
             setError(lang === 'ar' ? 'حدث خطأ. حاول مرة أخرى.' : 'An error occurred. Please try again.')
         } finally {
             setIsLoading(false)
