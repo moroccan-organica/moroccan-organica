@@ -54,11 +54,14 @@ const iconMap: Record<string, any> = {
 export default function ContactClient({ data, dict, lang }: ContactClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",
         phone: "",
-        company: "",
+        type: "Organic Virgin",
+        liters: "",
+        destination: "",
         message: ""
     });
 
@@ -69,7 +72,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
         transition: { duration: 0.6, ease: "easeOut" }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
     };
@@ -78,15 +81,54 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
         e.preventDefault();
         setIsSubmitting(true);
 
-        // Simulate form submission
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        try {
+            const payload = {
+                ...formData,
+                company: "Not Provided (Contact Form)",
+                message: `
+                Product Type: ${formData.type}
+                Quantity: ${formData.liters} Liters
+                Destination: ${formData.destination}
+                
+                Message:
+                ${formData.message}
+                `
+            };
 
-        setIsSuccess(true);
-        setFormData({ name: "", email: "", phone: "", company: "", message: "" });
-        setIsSubmitting(false);
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
 
-        // Reset success message after 5 seconds
-        setTimeout(() => setIsSuccess(false), 5000);
+            const result = await response.json();
+
+            if (!response.ok) {
+                throw new Error(result.error || 'Failed to send message');
+            }
+
+            setIsSuccess(true);
+            setFormData({
+                name: "",
+                email: "",
+                phone: "",
+                type: "Organic Virgin",
+                liters: "",
+                destination: "",
+                message: ""
+            });
+
+            // Reset success message after 5 seconds
+            setTimeout(() => setIsSuccess(false), 5000);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            // Optionally set an error state here to display to the user
+            alert('Failed to send message. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     // Merge data with translations if available
@@ -241,13 +283,44 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="company">Company Name</Label>
-                                            <Input
-                                                id="company"
-                                                name="company"
-                                                value={formData.company}
+                                            <Label htmlFor="type">Product Type</Label>
+                                            <select
+                                                id="type"
+                                                name="type"
+                                                value={formData.type}
                                                 onChange={handleInputChange}
-                                                placeholder="Your Company"
+                                                className="flex h-12 w-full rounded-xl border border-border bg-muted px-3 py-2 text-sm ring-offset-background focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                            >
+                                                <option value="Organic Virgin">Organic Virgin</option>
+                                                <option value="Deodorized">Deodorized</option>
+                                                <option value="Culinary">Culinary</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid sm:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="liters">Quantity (Liters)</Label>
+                                            <Input
+                                                id="liters"
+                                                name="liters"
+                                                type="number"
+                                                value={formData.liters}
+                                                onChange={handleInputChange}
+                                                placeholder="Liters"
+                                                required
+                                                className="bg-muted border-border focus:border-primary rounded-xl h-12"
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="destination">Destination</Label>
+                                            <Input
+                                                id="destination"
+                                                name="destination"
+                                                value={formData.destination}
+                                                onChange={handleInputChange}
+                                                placeholder="Country / City"
+                                                required
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
                                         </div>

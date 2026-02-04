@@ -5,9 +5,11 @@ import { AdminHeader } from "@/components/admin/AdminHeader";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Search, Plus, Tag, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Search, Plus, Tag, Pencil, Trash2, Loader2, Grid3X3, List } from "lucide-react";
 import { createCategory, getCategories, deleteCategory } from "@/actions/category.actions";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
+import { LanguageCode } from "@/types/product";
 
 type CategoryItem = {
   id: string;
@@ -29,6 +31,7 @@ interface CategoryForm {
 export default function CategoriesPage() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
+  const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -103,18 +106,18 @@ export default function CategoriesPage() {
         const result = await createCategory({
           translations: [
             {
-              language: "en",
+              language: "en" as LanguageCode,
               name: form.name,
               slug: form.slug,
             },
             ...(form.nameAr.trim()
               ? [
-                  {
-                    language: "ar",
-                    name: form.nameAr,
-                    slug: form.slug + "-ar", // You might want to generate a proper Arabic slug
-                  },
-                ]
+                {
+                  language: "ar" as LanguageCode,
+                  name: form.nameAr,
+                  slug: form.slug + "-ar", // You might want to generate a proper Arabic slug
+                },
+              ]
               : []),
           ],
         });
@@ -180,10 +183,32 @@ export default function CategoriesPage() {
               />
             </div>
           </div>
-          <Button className="bg-[#606C38] hover:bg-[#4a5429] text-white" onClick={openAddModal}>
-            <Plus className="h-4 w-4 mr-2" />
-            Add Category
-          </Button>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden">
+              <button
+                onClick={() => setViewMode('table')}
+                className={cn(
+                  'p-2 transition-colors cursor-pointer',
+                  viewMode === 'table' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+                )}
+              >
+                <List className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  'p-2 transition-colors cursor-pointer',
+                  viewMode === 'grid' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+                )}
+              >
+                <Grid3X3 className="h-4 w-4" />
+              </button>
+            </div>
+            <Button className="bg-[#606C38] hover:bg-[#4a5429] text-white cursor-pointer" onClick={openAddModal}>
+              <Plus className="h-4 w-4 mr-2" />
+              Add Category
+            </Button>
+          </div>
         </div>
 
         {/* Categories Grid */}
@@ -191,51 +216,120 @@ export default function CategoriesPage() {
           <div className="flex items-center justify-center py-20">
             <Loader2 className="h-8 w-8 animate-spin text-[#606C38]" />
           </div>
-        ) : (
+        ) : viewMode === 'grid' ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredCategories.map((cat) => (
-            <div
-              key={cat.id}
-              className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3 hover:shadow-md transition-shadow"
-            >
-              <div className="flex items-center gap-3">
-                <div
-                  className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold"
-                  style={{ backgroundColor: cat.color }}
-                >
-                  <Tag className="h-5 w-5" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between gap-2">
-                    <h3 className="font-semibold text-slate-900 truncate">{cat.name}</h3>
-                    <Badge
-                      variant="secondary"
-                      className="text-xs"
-                      style={{
-                        backgroundColor: `${cat.color}20`,
-                        color: cat.color,
-                      }}
-                    >
-                      {cat.slug}
-                    </Badge>
+              <div
+                key={cat.id}
+                className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 space-y-3 hover:shadow-md transition-shadow"
+              >
+                <div className="flex items-center gap-3">
+                  <div
+                    className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold"
+                    style={{ backgroundColor: cat.color }}
+                  >
+                    {/* We can dynamically load icons if needed, for now just generic Tag */}
+                    <Tag className="h-5 w-5" />
                   </div>
-                  <p className="text-xs text-slate-500 truncate">{cat.icon}</p>
-                </div>
-                <div className="flex items-center justify-end gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => openEditModal(cat)}>
-                    <Pencil className="h-4 w-4" />
-                  </Button>
-                  <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700" onClick={() => handleDelete(cat.id)}>
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2">
+                      <h3 className="font-semibold text-slate-900 truncate">{cat.name}</h3>
+                      <Badge
+                        variant="secondary"
+                        className="text-xs"
+                        style={{
+                          backgroundColor: `${cat.color}20`,
+                          color: cat.color,
+                        }}
+                      >
+                        {cat.slug}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-slate-500 truncate">{cat.icon}</p>
+                  </div>
+                  <div className="flex items-center justify-end gap-2">
+                    <Button variant="ghost" size="icon" onClick={() => openEditModal(cat)} className="cursor-pointer">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button variant="ghost" size="icon" className="text-red-600 hover:text-red-700 cursor-pointer" onClick={() => handleDelete(cat.id)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
             {filteredCategories.length === 0 && (
               <div className="col-span-full text-center text-slate-500 py-10 border border-dashed border-slate-200 rounded-2xl">
                 No categories found
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+            <table className="w-full">
+              <thead className="bg-slate-50 border-b border-slate-100">
+                <tr>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider w-16">Icon</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Slug</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Icon Ref</th>
+                  <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {filteredCategories.map((cat) => (
+                  <tr key={cat.id} className="hover:bg-slate-50 transition-colors">
+                    <td className="px-6 py-4">
+                      <div
+                        className="h-10 w-10 rounded-lg flex items-center justify-center text-white font-bold"
+                        style={{ backgroundColor: cat.color }}
+                      >
+                        <Tag className="h-5 w-5" />
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-slate-900">{cat.name}</div>
+                      {cat.nameAr && <div className="text-xs text-slate-500">{cat.nameAr}</div>}
+                    </td>
+                    <td className="px-6 py-4">
+                      <Badge
+                        variant="secondary"
+                        style={{ backgroundColor: `${cat.color}20`, color: cat.color }}
+                      >
+                        {cat.slug}
+                      </Badge>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-slate-500">
+                      {cat.icon}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-end gap-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openEditModal(cat)}
+                          className="hover:text-blue-600 hover:bg-blue-50 cursor-pointer"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-red-400 hover:text-red-600 hover:bg-red-50 cursor-pointer"
+                          onClick={() => handleDelete(cat.id)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {filteredCategories.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-slate-500">No categories found</p>
               </div>
             )}
           </div>

@@ -218,6 +218,11 @@
     @apply bg-background text-foreground antialiased font-sans;
   }
 
+  button,
+  a {
+    @apply cursor-pointer;
+  }
+
   h1,
   h2,
   h3,

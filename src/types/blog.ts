@@ -30,7 +30,7 @@ export interface BlogPost {
   author_id: string;
   category_id: string;
   tags: string[];
-  status: 'draft' | 'published' | 'review';
+  status: 'draft' | 'published' | 'review' | 'archived';
   published_at: string;
   created_at: string;
   updated_at: string;

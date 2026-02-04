@@ -10,7 +10,7 @@ interface BlogPostContentProps {
 export function BlogPostContent({ content, contentUnavailableText }: BlogPostContentProps) {
   // Simple mock implementation for now until Tiptap is set up
   // In a real scenario, we'd use generateHTML or a custom renderer
-  
+
   if (!content) {
     return <p className="text-slate-500 italic">{contentUnavailableText}</p>;
   }
@@ -43,10 +43,10 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
   const renderInlineContent = (content: JSONContent[], parentIndex: number): React.ReactNode[] => {
     return content.map((node, idx) => {
       const key = `${parentIndex}-${idx}`;
-      
+
       if (node.type === 'text') {
         let textNode: React.ReactNode = node.text || '';
-        
+
         // Apply marks in the correct order (link should be outermost, then bold/italic)
         if (node.marks && Array.isArray(node.marks)) {
           // Sort marks: link first (outermost), then bold/italic
@@ -55,7 +55,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
             if (b.type === 'link') return -1;
             return 0;
           });
-          
+
           sortedMarks.forEach((mark) => {
             if (mark.type === 'bold') {
               textNode = <strong key={`strong-${key}`}>{textNode}</strong>;
@@ -76,14 +76,14 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
             }
           });
         }
-        
+
         return <React.Fragment key={key}>{textNode}</React.Fragment>;
       }
-      
+
       if (node.type === 'hardBreak') {
         return <br key={`br-${key}`} />;
       }
-      
+
       // Handle nested inline nodes (like link with bold inside)
       if (node.type === 'link' && node.attrs?.href) {
         const linkContent = node.content ? renderInlineContent(node.content, Number(key)) : [];
@@ -99,7 +99,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
           </a>
         );
       }
-      
+
       // Recursively render other inline nodes
       if (node.content && Array.isArray(node.content)) {
         return (
@@ -108,7 +108,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
           </React.Fragment>
         );
       }
-      
+
       return null;
     });
   };
@@ -119,7 +119,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       const text = extractText(node);
       const id = nextId(text);
       const headingContent = node.content ? renderInlineContent(node.content, index) : text;
-      
+
       return React.createElement(
         tag,
         {
@@ -156,7 +156,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       const width = node.attrs.width ? Number(node.attrs.width) : undefined;
       const height = node.attrs.height ? Number(node.attrs.height) : undefined;
       const style = node.attrs.style as string | undefined;
-      
+
       // Parse inline styles
       const parsedStyle: React.CSSProperties = { maxWidth: '100%', height: 'auto' };
       if (style) {
@@ -164,11 +164,11 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
           const [key, value] = rule.split(':').map(s => s.trim());
           if (key && value) {
             const camelKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-            parsedStyle[camelKey as keyof React.CSSProperties] = value;
+            (parsedStyle as any)[camelKey] = value;
           }
         });
       }
-      
+
       // Handle blob URLs and data URLs with regular img tag
       if (src.startsWith('blob:') || src.startsWith('data:')) {
         return (
@@ -232,10 +232,10 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
 
     if (node.type === 'bulletList' || node.type === 'orderedList') {
       const Tag = node.type === 'orderedList' ? 'ol' : 'ul';
-      const className = node.type === 'orderedList' 
-        ? 'list-decimal list-inside mb-4 space-y-2 ml-4' 
+      const className = node.type === 'orderedList'
+        ? 'list-decimal list-inside mb-4 space-y-2 ml-4'
         : 'list-disc list-inside mb-4 space-y-2 ml-4';
-      
+
       return (
         <Tag key={`${node.type}-${index}`} className={className}>
           {node.content?.map((child, childIdx) => renderNode(child, Number(`${index}${childIdx}`)))}

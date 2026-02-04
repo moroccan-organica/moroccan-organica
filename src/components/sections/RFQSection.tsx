@@ -15,6 +15,9 @@ interface Feature {
 }
 
 const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,11 +28,58 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Form submitted:", formData);
-    alert("Thank you! We will contact you within 24 hours.");
+    setIsSubmitting(true);
+
+    try {
+      const payload = {
+        ...formData,
+        // Format the message to include the extra fields from this specific form
+        company: "Not Provided (RFQ Form)", // or add a company field if needed
+        message: `
+            Product Type: ${formData.type}
+            Quantity: ${formData.liters} Liters
+            Destination: ${formData.destination}
+            
+            Message:
+            ${formData.message}
+            `
+      };
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to send message');
+      }
+
+      setIsSuccess(true);
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        type: "Organic Virgin",
+        liters: "",
+        destination: "",
+        message: "",
+      });
+
+      // Reset success message after 5 seconds
+      setTimeout(() => setIsSuccess(false), 5000);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to send message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -60,109 +110,138 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
             <div className="bg-card rounded-2xl p-8 shadow-card sticky top-8">
               <h3 className="text-xl font-semibold text-foreground mb-6">{data.form?.title || "Get Quick Quote"}</h3>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="name">{data.form?.name || "Your Name"}</Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    placeholder={data.form?.name || "Your Name"}
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="bg-background"
-                  />
+              {isSuccess ? (
+                <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 text-center animate-in fade-in zoom-in duration-300">
+                  <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
+                    <PackageCheck className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-lg font-bold text-foreground mb-2">Quote Request Sent!</h3>
+                  <p className="text-sm text-muted-foreground mb-4">We'll get back to you with a quote within 24 hours.</p>
+                  <Button
+                    onClick={() => setIsSuccess(false)}
+                    variant="outline"
+                    size="sm"
+                    className="rounded-full"
+                  >
+                    Send Another Request
+                  </Button>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email">{data.form?.email || "Email"}</Label>
+                    <Label htmlFor="name">{data.form?.name || "Your Name"}</Label>
                     <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      placeholder={data.form?.email || "Email"}
+                      id="name"
+                      name="name"
+                      placeholder={data.form?.name || "Your Name"}
                       required
-                      value={formData.email}
+                      value={formData.name}
                       onChange={handleChange}
                       className="bg-background"
                     />
                   </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="email">{data.form?.email || "Email"}</Label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder={data.form?.email || "Email"}
+                        required
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="bg-background"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="phone">{data.form?.phone || "Phone"}</Label>
+                      <Input
+                        id="phone"
+                        name="phone"
+                        type="tel"
+                        placeholder={data.form?.phone || "Phone"}
+                        required
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="bg-background"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="type">{data.form?.type || "Type"}</Label>
+                      <select
+                        id="type"
+                        name="type"
+                        value={formData.type}
+                        onChange={handleChange}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="Organic Virgin">Organic Virgin</option>
+                        <option value="Deodorized">Deodorized</option>
+                        <option value="Culinary">Culinary</option>
+                      </select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="liters">{data.form?.quantity || "Quantity"}</Label>
+                      <Input
+                        id="liters"
+                        name="liters"
+                        type="number"
+                        placeholder="Liters"
+                        required
+                        value={formData.liters}
+                        onChange={handleChange}
+                        className="bg-background"
+                      />
+                    </div>
+                  </div>
+
                   <div className="space-y-2">
-                    <Label htmlFor="phone">{data.form?.phone || "Phone"}</Label>
+                    <Label htmlFor="destination">{data.form?.destination || "Destination"}</Label>
                     <Input
-                      id="phone"
-                      name="phone"
-                      type="tel"
-                      placeholder={data.form?.phone || "Phone"}
+                      id="destination"
+                      name="destination"
+                      placeholder="Country / City"
                       required
-                      value={formData.phone}
+                      value={formData.destination}
                       onChange={handleChange}
                       className="bg-background"
                     />
                   </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label htmlFor="type">{data.form?.type || "Type"}</Label>
-                    <select
-                      id="type"
-                      name="type"
-                      value={formData.type}
+                    <Label htmlFor="message">{data.form?.message || "Your Message"}</Label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      placeholder={data.form?.message || "Your Message Here..."}
+                      rows={3}
+                      value={formData.message}
                       onChange={handleChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="Organic Virgin">Organic Virgin</option>
-                      <option value="Deodorized">Deodorized</option>
-                      <option value="Culinary">Culinary</option>
-                    </select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="liters">{data.form?.quantity || "Quantity"}</Label>
-                    <Input
-                      id="liters"
-                      name="liters"
-                      type="number"
-                      placeholder="Liters"
-                      required
-                      value={formData.liters}
-                      onChange={handleChange}
-                      className="bg-background"
+                      className="bg-background resize-none"
                     />
                   </div>
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="destination">{data.form?.destination || "Destination"}</Label>
-                  <Input
-                    id="destination"
-                    name="destination"
-                    placeholder="Country / City"
-                    required
-                    value={formData.destination}
-                    onChange={handleChange}
-                    className="bg-background"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="message">{data.form?.message || "Your Message"}</Label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    placeholder={data.form?.message || "Your Message Here..."}
-                    rows={3}
-                    value={formData.message}
-                    onChange={handleChange}
-                    className="bg-background resize-none"
-                  />
-                </div>
-
-                <button type="submit" className="btn-accent w-full py-3 rounded-lg font-semibold transition-all hover:opacity-90">
-                  {data.form?.submit || "Send"}
-                </button>
-              </form>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="btn-accent w-full py-3 rounded-lg font-semibold transition-all hover:opacity-90 disabled:opacity-70 flex items-center justify-center gap-2"
+                  >
+                    {isSubmitting ? (
+                      "Sending..."
+                    ) : (
+                      <>
+                        {data.form?.submit || "Send Request"}
+                        <Send className="w-4 h-4" />
+                      </>
+                    )}
+                  </button>
+                </form>
+              )}
             </div>
           </div>
 

@@ -15,7 +15,8 @@ import {
   Plus,
   FileText,
   Search,
-  BookOpen
+  BookOpen,
+  Users
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
@@ -39,6 +40,7 @@ const navItems: NavItem[] = [
     ],
   },
   { label: 'Orders', path: '/admin/orders', icon: ShoppingCart },
+  { label: 'CRM Customers', path: '/admin/customers', icon: Users },
   { label: 'Blog', path: '/admin/blog', icon: FileText },
   { label: 'SEO Settings', path: '/admin/seo', icon: Search },
   { label: 'Static Pages', path: '/admin/static-pages', icon: BookOpen },
@@ -77,13 +79,9 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
         collapsed ? "justify-center" : "justify-between"
       )}>
         {!collapsed && (
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 overflow-hidden flex items-center justify-center">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="h-12 w-auto overflow-hidden flex items-center justify-start relative">
               <img src="/images/logo.png" alt="Logo" className="h-full w-auto object-contain" />
-            </div>
-            <div>
-              <h2 className="font-bold text-sm">Moroccan Organica</h2>
-              <p className="text-xs text-slate-400">Admin Panel</p>
             </div>
           </div>
         )}
@@ -95,7 +93,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
         {!collapsed && (
           <button
             onClick={onToggle}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
           >
             <ChevronLeft className="h-4 w-4" />
           </button>
@@ -103,7 +101,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
         {collapsed && (
           <button
             onClick={onToggle}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors cursor-pointer"
           >
             <ChevronRight className="h-4 w-4" />
           </button>
@@ -168,7 +166,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
         <button
           onClick={() => signOut({ callbackUrl: `/${lang}/login` })}
           className={cn(
-            'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-red-500/10 hover:text-red-400 transition-all',
+            'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-red-500/10 hover:text-red-400 transition-all cursor-pointer',
             collapsed && 'justify-center px-3'
           )}
           title={collapsed ? 'Logout' : undefined}

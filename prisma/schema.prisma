@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -171,7 +171,7 @@ model ProductTranslation {
   productId   String
   language    LanguageCode
   name        String
-  description String?      @db.LongText
+  description String?      @db.Text
   slug        String
   metaTitle   String?
   metaDesc    String?      @db.Text
@@ -253,8 +253,8 @@ model BlogPost {
   slug             String        @unique
   excerpt          String?
   excerptAr        String?
-  content          String        @db.LongText
-  contentAr        String?       @db.LongText
+  content          String        @db.Text
+  contentAr        String?       @db.Text
   featuredImageUrl String?
   authorId         String
   author           User          @relation(fields: [authorId], references: [id])
@@ -282,7 +282,7 @@ model BlogMedia {
   postId        String?
   post          BlogPost? @relation(fields: [postId], references: [id], onDelete: SetNull)
   mediaType     String    @default("image")
-  url           String    @db.LongText
+  url           String    @db.Text
   storagePath   String?
   altText       String?
   caption       String?
@@ -341,7 +341,7 @@ model PostTranslation {
   postId    String
   language  LanguageCode
   title     String
-  content   String?      @db.LongText
+  content   String?      @db.Text
   slug      String
   metaTitle String?
   metaDesc  String?      @db.Text

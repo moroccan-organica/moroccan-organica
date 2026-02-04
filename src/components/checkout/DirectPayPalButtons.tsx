@@ -69,7 +69,7 @@ export function DirectPayPalButtons({
                     return actions.resolve();
                 }}
                 createOrder={(_data, actions) => {
-                    console.log("Creating PayPal order for", total);
+
                     return actions.order.create({
                         intent: "CAPTURE",
                         purchase_units: [
@@ -83,7 +83,7 @@ export function DirectPayPalButtons({
                     });
                 }}
                 onApprove={async (_data, actions) => {
-                    console.log("PayPal payment approved");
+
                     if (!actions.order) return;
                     try {
                         const order = await actions.order.capture();
@@ -98,7 +98,7 @@ export function DirectPayPalButtons({
                     onError(err);
                 }}
                 onCancel={() => {
-                    console.log("PayPal payment cancelled");
+
                     if (onCancel) onCancel();
                 }}
             />

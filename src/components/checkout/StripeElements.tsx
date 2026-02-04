@@ -138,7 +138,6 @@ const StripePaymentForm = forwardRef<StripeElementsHandle, Omit<StripeElementsPr
                     <PaymentElement
                         onReady={() => {
                             setIsReady(true);
-                            console.log("Stripe PaymentElement is ready");
                         }}
                         options={{
                             layout: "tabs",
