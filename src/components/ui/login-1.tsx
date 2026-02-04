@@ -41,7 +41,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
   return (
     <div className="w-full min-h-screen flex">
       {/* Left side - Hero section */}
-      <div className="flex-1 bg-linear-to-br from-forest-dark via-primary to-accent flex items-center justify-center p-12">
+      <div className="hidden md:flex flex-1 bg-linear-to-br from-forest-dark via-primary to-accent items-center justify-center p-12">
         <div className="text-white max-w-lg">
           <h1 className="text-5xl md:text-6xl font-bold mb-8 leading-tight">
             Welcome to Organica Dashboard.
