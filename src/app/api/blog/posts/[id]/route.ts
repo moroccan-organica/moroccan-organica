@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 function generateSlug(title: string): string {
   return title
@@ -31,7 +31,7 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    
+
     const post = await prisma.blogPost.findUnique({
       where: { id },
       include: {
@@ -130,7 +130,7 @@ export async function PUT(
     if (featuredImageUrl !== undefined) updateData.featuredImageUrl = featuredImageUrl || null;
     if (metaTitle !== undefined) updateData.metaTitle = metaTitle || null;
     if (metaDescription !== undefined) updateData.metaDescription = metaDescription || null;
-    
+
     if (status !== undefined) {
       updateData.status = status;
       if (status === 'published' && existingPost.status !== 'published') {
@@ -149,8 +149,8 @@ export async function PUT(
     });
 
     // Update BlogMedia if featured image URL changed
-    if (featuredImageUrl !== undefined && featuredImageUrl && 
-        !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
+    if (featuredImageUrl !== undefined && featuredImageUrl &&
+      !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
       // Check if media already exists for this post
       const existingMedia = await prisma.blogMedia.findFirst({
         where: {

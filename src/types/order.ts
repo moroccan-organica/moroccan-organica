@@ -17,4 +17,12 @@ export interface AdminOrder {
         city: string;
     } | null;
     itemsCount: number;
+    items?: {
+        id: string;
+        name: string;
+        variantName: string | null;
+        quantity: number;
+        price: number;
+        image: string | null;
+    }[];
 }

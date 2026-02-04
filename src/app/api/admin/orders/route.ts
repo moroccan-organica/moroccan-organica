@@ -13,7 +13,7 @@ export async function GET() {
                         email: true,
                     }
                 },
-                shippingAddress: {
+                address: {
                     select: {
                         country: true,
                         city: true,
@@ -21,7 +21,20 @@ export async function GET() {
                 },
                 items: {
                     select: {
-                        id: true
+                        id: true,
+                        quantity: true,
+                        priceSnapshot: true,
+                        productNameSnapshot: true,
+                        variantNameSnapshot: true,
+                        variant: {
+                            select: {
+                                product: {
+                                    select: {
+                                        images: true
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             },
@@ -38,8 +51,16 @@ export async function GET() {
             status: order.status,
             totalAmount: Number(order.totalAmount),
             customer: order.customer,
-            shippingAddress: order.shippingAddress,
-            itemsCount: order.items.length
+            shippingAddress: order.address,
+            itemsCount: order.items.length,
+            items: order.items.map(item => ({
+                id: item.id,
+                name: item.productNameSnapshot,
+                variantName: item.variantNameSnapshot,
+                price: Number(item.priceSnapshot),
+                quantity: item.quantity,
+                image: item.variant.product.images[0]?.url || null
+            }))
         }));
 
         return NextResponse.json(formattedOrders);

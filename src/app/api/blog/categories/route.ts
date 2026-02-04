@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 function generateSlug(name: string): string {
   return name
@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = generateSlug(name);
-    
+
     // Ensure unique slug
     let counter = 1;
     let uniqueSlug = slug;

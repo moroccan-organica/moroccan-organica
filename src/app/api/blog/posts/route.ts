@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 
 function generateSlug(title: string): string {
   return title
@@ -35,15 +35,15 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
 
     const where: Record<string, unknown> = {};
-    
+
     if (status && status !== 'all') {
       where.status = status;
     }
-    
+
     if (categoryId) {
       where.categoryId = categoryId;
     }
-    
+
     if (search) {
       where.OR = [
         { title: { contains: search } },
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     }
 
     const slug = generateSlug(title);
-    
+
     // Ensure unique slug
     let counter = 1;
     let uniqueSlug = slug;

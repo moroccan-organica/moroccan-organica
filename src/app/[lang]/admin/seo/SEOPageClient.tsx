@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { toast } from 'react-hot-toast';
+// import { toast } from 'react-hot-toast';
 import {
     Save,
     Globe,
@@ -84,10 +84,12 @@ export function SEOPageClient() {
             };
 
             await updateSettings.mutateAsync(payload);
-            toast.success('SEO settings saved successfully!');
+            // toast.success('SEO settings saved successfully!');
+            alert('SEO settings saved successfully!');
         } catch (error) {
             console.error(error);
-            toast.error('Failed to save settings');
+            // toast.error('Failed to save settings');
+            alert('Failed to save settings');
         }
     };
 

@@ -40,7 +40,7 @@ async function testMultilingual() {
                 console.log(`  Name: ${translation.name}`);
                 console.log(`  Slug: ${translation.slug}`);
                 console.log(`  Category: ${categoryTranslation?.name}`);
-                console.log(`  Description: ${translation.description.substring(0, 80)}...`);
+                console.log(`  Description: ${(translation.description ?? '').substring(0, 80)}...`);
                 console.log(`  Base Price: $${product.basePrice}`);
                 console.log(`  Variants: ${product.variants.length}`);
 
