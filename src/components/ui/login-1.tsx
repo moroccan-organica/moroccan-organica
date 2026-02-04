@@ -28,7 +28,7 @@ export default function LoginScreen({ onSubmit, isLoading = false, errorMessage 
     if (onSubmit) {
       await onSubmit(formData, isLogin ? "login" : "signup");
     } else {
-      console.log("Form submitted:", formData);
+      // No-op
     }
   };
 

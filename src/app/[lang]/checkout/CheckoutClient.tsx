@@ -631,7 +631,7 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                                     setPaypalError(isRTL ? "حدث خطأ مع PayPal" : "An error occurred with PayPal");
                                                 }}
                                                 onCancel={() => {
-                                                    console.log("PayPal payment cancelled");
+
                                                 }}
                                             />
                                             {paypalError && (
