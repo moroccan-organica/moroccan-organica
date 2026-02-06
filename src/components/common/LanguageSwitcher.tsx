@@ -8,7 +8,8 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Globe, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import ReactCountryFlag from "react-country-flag";
 
 const LanguageSwitcher = () => {
     const pathname = usePathname();
@@ -21,9 +22,9 @@ const LanguageSwitcher = () => {
     const currentLang = ['en', 'ar', 'fr'].includes(pathLang) ? pathLang : 'en';
 
     const languages = [
-        { code: 'en', name: 'English', icon: '🇬🇧', letter: 'E' },
-        { code: 'ar', name: 'العربية', icon: '🇲🇦', letter: 'ع' },
-        { code: 'fr', name: 'Français', icon: '🇫🇷', letter: 'F' },
+        { code: 'en', name: 'English', countryCode: 'US' },
+        { code: 'ar', name: 'العربية', countryCode: 'MA' },
+        { code: 'fr', name: 'Français', countryCode: 'FR' },
     ];
 
     const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
@@ -51,9 +52,16 @@ const LanguageSwitcher = () => {
                     className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity p-2 rounded-full hover:bg-white/10"
                     aria-label="Select language"
                 >
-                    <span className="text-2xl leading-none filter drop-shadow-sm">
-                        {currentLanguage.icon}
-                    </span>
+                    <ReactCountryFlag
+                        countryCode={currentLanguage.countryCode}
+                        svg
+                        style={{
+                            width: '1.5em',
+                            height: '1.5em',
+                            borderRadius: '3px',
+                        }}
+                        aria-hidden="true"
+                    />
                     <ChevronDown className="w-4 h-4 text-white" />
                 </button>
             </DropdownMenuTrigger>
@@ -65,7 +73,16 @@ const LanguageSwitcher = () => {
                         className={`flex items-center gap-3 cursor-pointer hover:bg-primary/20 transition-colors py-2 ${currentLang === lang.code ? 'bg-primary/30' : ''
                             }`}
                     >
-                        <span className="text-2xl leading-none">{lang.icon}</span>
+                        <ReactCountryFlag
+                            countryCode={lang.countryCode}
+                            svg
+                            style={{
+                                width: '1.5em',
+                                height: '1.5em',
+                                borderRadius: '3px',
+                            }}
+                            aria-hidden="true"
+                        />
                         <span className="text-white text-sm font-medium">{lang.name}</span>
                         {currentLang === lang.code && (
                             <span className="ms-auto text-primary text-xs">✓</span>
