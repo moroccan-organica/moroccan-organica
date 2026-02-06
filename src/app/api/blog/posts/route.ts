@@ -45,9 +45,10 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
+      const searchLower = search.toLowerCase();
       where.OR = [
-        { title: { contains: search } },
-        { excerpt: { contains: search } },
+        { title: { contains: searchLower } },
+        { excerpt: { contains: searchLower } },
       ];
     }
 

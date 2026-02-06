@@ -114,10 +114,11 @@ export async function getProducts(options?: {
     }
 
     if (search) {
+      const searchLower = search.toLowerCase();
       where.OR = [
-        { sku: { contains: search } },
-        { translations: { some: { name: { contains: search } } } },
-        { translations: { some: { description: { contains: search } } } },
+        { sku: { contains: searchLower } },
+        { translations: { some: { name: { contains: searchLower } } } },
+        { translations: { some: { description: { contains: searchLower } } } },
       ];
     }
 
