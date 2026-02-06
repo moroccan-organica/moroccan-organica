@@ -102,19 +102,21 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     }))
   };
   const socialProofData = dict.socialProof;
+  const pressFeatureData = dict.pressFeature;
+  const privateLabelData = dict.privateLabel;
 
   return (
     <main className="min-h-screen">
       <Hero data={heroData} lang={lang} />
 
-      <PrivateLabelSection />
+      <PrivateLabelSection data={privateLabelData} />
       <TrustedSupplierSection data={categoriesData} />
       <ProductsSection data={productsData} />
-      <PressFeatureSection />
+      <PressFeatureSection data={pressFeatureData} />
       <SocialProofSection data={socialProofData} />
       <TrustSection data={trustData} />
-      <InstagramSection />
-      <RFQSection data={rfqData} aboutData={aboutData} />
+      <InstagramSection data={dict.instagram} />
+      <RFQSection data={rfqData} aboutData={dict.about} />
     </main>
   );
 }

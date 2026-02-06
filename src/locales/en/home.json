@@ -80,50 +80,59 @@
         }
     },
     "categories": {
-        "title": "TOP SELLING PRODUCTS",
+        "badge": "Wholesale",
+        "title": "Trusted Moroccan beauty ingredient supplier",
         "subtitle": "Directly from the source in Morocco",
         "items": [
             {
                 "title": "ARGAN OILS CERTIFIED ORGANIC",
-                "label": "Wholesale"
+                "subtitle": "Wholesale"
             },
             {
                 "title": "ORGANIC PRICKLY PEAR SEED OIL",
-                "label": "Wholesale"
+                "subtitle": "Wholesale"
             },
             {
                 "title": "MOROCCAN BLACK SOAP",
-                "label": "Wholesale"
+                "subtitle": "Wholesale"
             },
             {
                 "title": "PURE ROSE WATER",
-                "label": "Wholesale"
+                "subtitle": "Wholesale"
             },
             {
                 "title": "GHASSOUL CLAY POWDER",
-                "label": "Wholesale"
+                "subtitle": "Wholesale"
             }
         ]
     },
     "productsSection": {
-        "title": "Featured Organic Collections",
-        "subtitle": "Discover our most popular Moroccan beauty essentials",
+        "badge": "Our Product Range",
+        "title": "TOP SELLING",
+        "highlight": "PRODUCTS",
+        "description": "Discover our curated selection of certified organic ingredients, sourced directly from Moroccan artisan cooperatives and farms.",
+        "cta": "Request Full Product Catalog",
+        "subtitle": "Directly from the source in Morocco",
         "viewAll": "View All Products",
+        "ctaButton": "Add to Cart",
         "items": [
             {
                 "name": "Pure Argan Oil",
                 "category": "Organic Oil",
-                "description": "100% Pure certified organic argan oil from the heart of Morocco."
+                "description": "100% Pure certified organic argan oil from the heart of Morocco.",
+                "badgeLabel": "Organic"
             },
             {
                 "name": "Prickly Pear Oil",
                 "category": "Organic Oil",
-                "description": "High grade cosmetic Prickly pear cactus seeds oil production."
+                "description": "High grade cosmetic Prickly pear cactus seeds oil production.",
+                "badgeLabel": "Organic"
             },
             {
                 "name": "Moroccan Black Soap",
                 "category": "Hammam",
-                "description": "Traditional black soap with olive oil and vitamin E."
+                "description": "Traditional black soap with olive oil and vitamin E.",
+                "badgeLabel": "Hammam"
             }
         ]
     },
@@ -179,6 +188,15 @@
             "destination": "Destination",
             "message": "Your Message",
             "submit": "Send"
+        },
+        "successTitle": "Quote Request Sent!",
+        "successMessage": "We'll get back to you with a quote within 24 hours.",
+        "sendAnother": "Send Another Request",
+        "readyDispatch": "Ready for Dispatch — Your Order Ships Within 48 Hours",
+        "productTypes": {
+            "Organic Virgin": "Organic Virgin",
+            "Deodorized": "Deodorized",
+            "Culinary": "Culinary"
         }
     },
     "socialProof": {
@@ -190,5 +208,81 @@
             "score": "4.9/5 Rating",
             "source": "Based on verified Google Reviews"
         }
+    },
+    "pressFeature": {
+        "date": "International Day of Argania • 10 May",
+        "title": "Argan oil and the importance of the argan tree to Morocco",
+        "subtitle": "Celebrated as \"Liquid Gold\" for Skin, Hair, and Culinary Excellence",
+        "intro1": "On 10 May, we celebrate the International Day of Argania, a multipurpose tree that produces the world-renowned argan oil. Argan oil, often called 'liquid gold,' has become a renowned beauty and health product worldwide, celebrated for its numerous benefits and versatile uses. Extracted from the nuts of the argan tree (<em>Argania spinosa</em>), native to the southwestern regions of Morocco, this oil has been used for centuries by the Berber people for both culinary and cosmetic purposes. Its rich composition makes it an exceptional natural resource with applications in skin care, hair care, health, and even cooking.",
+        "intro2": "There are many benefits of argan oil, as outlined below:",
+        "benefits": [
+            {
+                "title": "Skin care",
+                "description": "Argan oil is packed with essential fatty acids, vitamin E, and antioxidants, making it an excellent moisturizer for dry and sensitive skin. Its anti-inflammatory properties and high linoleic acid content help maintain the skin's natural barrier, preventing moisture loss while softening and smoothing the skin. It's also beneficial for reducing wrinkles and fine lines, promoting elasticity, and soothing conditions such as acne, eczema, and psoriasis."
+            },
+            {
+                "title": "Hair care",
+                "description": "Thanks to its high vitamin E content and antioxidants, argan oil nourishes and repairs hair, improving strength, softness, and shine—especially for dry, damaged, or frizzy hair. Applying a few drops directly to the hair helps reduce split ends, tame frizz, restore moisture, and promote overall scalp health."
+            },
+            {
+                "title": "Anti-aging",
+                "description": "The potent vitamin E content fights free radicals responsible for the breakdown of skin cells. This keeps the skin youthful and vibrant, minimizing the appearance of fine lines and wrinkles while supporting long-term elasticity."
+            },
+            {
+                "title": "Health benefits",
+                "description": "Argan oil is also a staple in Moroccan cuisine. Its monounsaturated fats and polyphenols make it heart-healthy, supporting better cholesterol levels, boosting cardiovascular health, and promoting overall well-being. Its anti-inflammatory properties may help reduce the risk of chronic diseases such as diabetes and heart disease."
+            },
+            {
+                "title": "Nail and cuticle care",
+                "description": "Rich nourishment helps moisturize nails and cuticles, preventing cracking or peeling and improving overall strength and appearance."
+            }
+        ],
+        "importanceTitle": "The importance of the argan tree to Morocco",
+        "importanceIntro": "The argan tree is a vital part of Morocco's natural and cultural heritage. It is not only a source of income for many families, but it also plays a key role in the environment and the local economy.",
+        "importancePoints": [
+            {
+                "title": "Economic significance",
+                "description": "Argan oil is one of Morocco's most important export products. Its growing popularity in international markets has created new income opportunities for rural communities in southern Morocco. Women-led cooperatives, established in the 1990s, have empowered local communities economically by providing financial independence and access to education and healthcare."
+            },
+            {
+                "title": "Environmental importance",
+                "description": "The argan tree plays a crucial role in protecting Morocco's ecosystem. These trees are adapted to semi-arid regions, and their deep roots help prevent soil erosion and desertification. Argan forests, covering approximately 800,000 hectares, act as a barrier against the Sahara Desert's expansion, sustain biodiversity, and even provide food for the famous tree-climbing goats."
+            },
+            {
+                "title": "Cultural and heritage significance",
+                "description": "The argan tree has long been central to Berber culture. Traditional extraction methods, which involve grinding the nuts by hand, have been passed down through generations and remain an essential part of the region's cultural heritage. The production process is often a communal activity led by women, strengthening social bonds."
+            },
+            {
+                "title": "Sustainability and conservation",
+                "description": "Rising global demand raised concerns about sustainability, but significant efforts are underway to protect argan forests. UNESCO recognized the argan forest as a biosphere reserve in 1998, encouraging responsible farming and harvesting practices. Many cooperatives now focus on organic and sustainable production to ensure this valuable resource endures."
+            },
+            {
+                "title": "International recognition and preservation",
+                "description": "The International Day of Argania, celebrated on 10 May each year, highlights the economic, social, and environmental importance of the argan tree. It underscores the need to preserve and protect this treasure, whose impact extends far beyond Morocco, enriching global beauty, health, and wellness industries. Argan oil is not just a cosmetic or culinary product; it is a testament to the ingenuity and resilience of the Berber people and a resource that must be preserved for future generations."
+            }
+        ],
+        "cta": "Read full article on UN Today"
+    },
+    "instagram": {
+        "handle": "@moroccanorganic",
+        "title": "Follow Our Journey",
+        "description": "Behind the scenes of sustainable sourcing, from field to shipment",
+        "cta": "Follow on Instagram"
+    },
+    "privateLabel": {
+        "badge": "Our Services",
+        "discoverTitle": "Discover our",
+        "discoverHighlight": "private labelling",
+        "discoverSuffix": "service",
+        "discoverText1": "Organica Group offers comprehensive private labeling services for organic beauty products and body care products, supporting brands worldwide in developing high-quality cosmetic lines. We specialize in organic beauty and cosmetic private label solutions, providing end-to-end services tailored to professional brands, distributors, and retailers.",
+        "discoverText2": "Our portfolio includes a wide range of organic body care and cosmetic products, manufactured according to international quality and safety standards. We proudly collaborate with partners across global markets, including the USA, UK, Canada, Malaysia, Japan, South Korea, China, Australia, Qatar, KSA, India, Pakistan, France, Netherlands, and South Africa, ensuring reliable production, compliance, and export capabilities.",
+        "discoverText3": "With proven expertise in private label cosmetics manufacturing, Organica Group helps brands bring authentic organic beauty products to international markets with confidence, consistency, and certified quality.",
+        "brandTitle": "Add your own brand to",
+        "brandHighlight": "your product",
+        "brandText1": "Organica Group offers comprehensive private label and custom packaging solutions, enabling our clients to develop a fully personalized brand identity. We provide unique packaging options that can be tailored specifically to your brand's vision and market positioning. Through long-standing partnerships with international packaging manufacturers, we design and produce packaging suitable for all product categories. All partner factories are fully approved for the US and European markets, ensuring compliance, safety, and quality standards. In addition, we offer a wide selection of ready-to-use standard packaging, developed to deliver modern, high-performance, and visually appealing packaging solutions.",
+        "brandText2": "Customize your products by adding your logo and branding to create a distinctive private label line. Whether your project focuses on argan oil, rose water, prickly pear seed oil, Nila powder, Aker Fassi powder, or natural skincare essentials, we provide an end-to-end solution to bring your brand to market with authentic origin. Our professional design team supports you throughout the process, offering expert guidance in developing a unique range of health, beauty, and wellness products aligned with your business goals.",
+        "brandText3": "Partner with Organica Group, a trusted manufacturer, to enrich your brand with high-quality natural products, combining authenticity, certified quality, and reliable private label production in every item.",
+        "countriesServed": "Countries Served",
+        "globalExport": "Global Export Ready"
     }
 }

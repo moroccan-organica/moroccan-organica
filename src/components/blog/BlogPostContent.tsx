@@ -125,7 +125,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
         {
           key: `${id}-${index}`,
           id,
-          className: 'mt-8 mb-4 scroll-mt-32 font-playfair font-bold',
+          className: 'scroll-mt-32',
         },
         headingContent,
       );
@@ -136,7 +136,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       if (node.content && Array.isArray(node.content) && node.content.length > 0) {
         // Render paragraph with inline content
         return (
-          <p key={`p-${index}`} className="mb-4 leading-relaxed text-slate-700">
+          <p key={`p-${index}`}>
             {renderInlineContent(node.content, index)}
           </p>
         );
@@ -291,7 +291,7 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
   };
 
   return (
-    <div className="prose prose-lg max-w-none prose-headings:font-playfair prose-headings:font-bold prose-p:text-slate-700 prose-a:text-[#BC6C25] prose-img:rounded-2xl">
+    <div className="rich-text-content">
       {/* Fallback rendering for mock content with anchorable headings */}
       {content.content?.map((node, idx) => renderNode(node, idx))}
     </div>

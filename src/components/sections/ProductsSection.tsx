@@ -16,6 +16,7 @@ interface ProductItem {
   nameAr?: string;
   descriptionAr?: string;
   slug?: string;
+  badgeLabel?: string;
   [key: string]: any;
 }
 
@@ -25,22 +26,31 @@ interface ProductsContent {
   highlight: string;
   description: string;
   cta: string;
+  ctaButton?: string;
   items: ProductItem[];
 }
 
 const ProductsSection = ({ data }: { data: ProductsContent }) => {
   const content = data;
   const products: ProductItem[] = content.items.map((item) => {
-    const badgeVariant: ProductBadge = item.badge.toLowerCase() === "bulk"
+    const badgeKey = item.badge || "organic";
+    const badgeVariant: ProductBadge = badgeKey.toLowerCase() === "bulk"
       ? "bulk"
-      : item.badge.toLowerCase() === "premium"
+      : badgeKey.toLowerCase() === "premium"
         ? "premium"
         : "organic";
+
+    // "Use the EN slug": Generate slug from English title if missing
+    // item.title currently holds the English title (from static data) as dictionary uses 'name'
+    const slug = item.slug || item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
     return {
       ...item,
       description: (item.desc as string) ?? (item.description as string) ?? '',
       badgeVariant,
+      badge: item.badgeLabel || item.badge || "Organic",
+      slug,
+      title: item.name || item.title, // Use translated name for display if available
     };
   });
 
@@ -68,7 +78,7 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
               className="animate-fade-in"
               style={{ animationDelay: `${0.1 * (index + 1)}s` }}
             >
-              <ProductCard {...product} />
+              <ProductCard {...product} addToCartText={content.ctaButton} />
             </div>
           ))}
         </div>

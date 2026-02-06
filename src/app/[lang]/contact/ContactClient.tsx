@@ -137,6 +137,9 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
         info: { ...data.info, ...dict.info },
         form: { ...data.form, ...dict.form },
         benefits: { ...data.benefits, ...dict.benefits },
+        formFields: dict.formFields || {},
+        success: dict.success || {},
+        map: dict.map || {}
     };
 
     return (
@@ -229,40 +232,40 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                     <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
                                         <Check className="w-8 h-8 text-white" />
                                     </div>
-                                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">Message Sent!</h3>
-                                    <p className="text-muted-foreground">Thank you for your inquiry. We'll get back to you within 24 hours.</p>
+                                    <h3 className="text-2xl font-serif font-bold text-foreground mb-2">{content.success.title || "Message Sent!"}</h3>
+                                    <p className="text-muted-foreground">{content.success.message || "Thank you for your inquiry. We'll get back to you within 24 hours."}</p>
                                     <Button
                                         onClick={() => setIsSuccess(false)}
                                         variant="outline"
                                         className="mt-6 rounded-full"
                                     >
-                                        Send Another Message
+                                        {content.success.button || "Send Another Message"}
                                     </Button>
                                 </motion.div>
                             ) : (
                                 <form onSubmit={handleSubmit} className="space-y-6">
                                     <div className="grid sm:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label htmlFor="name">Full Name *</Label>
+                                            <Label htmlFor="name">{content.formFields.fullName || "Full Name *"}</Label>
                                             <Input
                                                 id="name"
                                                 name="name"
                                                 value={formData.name}
                                                 onChange={handleInputChange}
-                                                placeholder="John Doe"
+                                                placeholder={content.formFields.fullNamePlaceholder || "John Doe"}
                                                 required
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="email">Email Address *</Label>
+                                            <Label htmlFor="email">{content.formFields.email || "Email Address *"}</Label>
                                             <Input
                                                 id="email"
                                                 name="email"
                                                 type="email"
                                                 value={formData.email}
                                                 onChange={handleInputChange}
-                                                placeholder="john@company.com"
+                                                placeholder={content.formFields.emailPlaceholder || "john@company.com"}
                                                 required
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
@@ -271,19 +274,19 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
 
                                     <div className="grid sm:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label htmlFor="phone">Phone Number</Label>
+                                            <Label htmlFor="phone">{content.formFields.phone || "Phone Number"}</Label>
                                             <Input
                                                 id="phone"
                                                 name="phone"
                                                 type="tel"
                                                 value={formData.phone}
                                                 onChange={handleInputChange}
-                                                placeholder="+1 (555) 000-0000"
+                                                placeholder={content.formFields.phonePlaceholder || "+1 (555) 000-0000"}
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="type">Product Type</Label>
+                                            <Label htmlFor="type">{content.formFields.productType || "Product Type"}</Label>
                                             <select
                                                 id="type"
                                                 name="type"
@@ -291,35 +294,35 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                                 onChange={handleInputChange}
                                                 className="flex h-12 w-full rounded-xl border border-border bg-muted px-3 py-2 text-sm ring-offset-background focus:border-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                             >
-                                                <option value="Organic Virgin">Organic Virgin</option>
-                                                <option value="Deodorized">Deodorized</option>
-                                                <option value="Culinary">Culinary</option>
+                                                <option value="Organic Virgin">{content.formFields.productTypes?.["Organic Virgin"] || "Organic Virgin"}</option>
+                                                <option value="Deodorized">{content.formFields.productTypes?.["Deodorized"] || "Deodorized"}</option>
+                                                <option value="Culinary">{content.formFields.productTypes?.["Culinary"] || "Culinary"}</option>
                                             </select>
                                         </div>
                                     </div>
 
                                     <div className="grid sm:grid-cols-2 gap-6">
                                         <div className="space-y-2">
-                                            <Label htmlFor="liters">Quantity (Liters)</Label>
+                                            <Label htmlFor="liters">{content.formFields.quantity || "Quantity (Liters)"}</Label>
                                             <Input
                                                 id="liters"
                                                 name="liters"
                                                 type="number"
                                                 value={formData.liters}
                                                 onChange={handleInputChange}
-                                                placeholder="Liters"
+                                                placeholder={content.formFields.quantityPlaceholder || "Liters"}
                                                 required
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
                                         </div>
                                         <div className="space-y-2">
-                                            <Label htmlFor="destination">Destination</Label>
+                                            <Label htmlFor="destination">{content.formFields.destination || "Destination"}</Label>
                                             <Input
                                                 id="destination"
                                                 name="destination"
                                                 value={formData.destination}
                                                 onChange={handleInputChange}
-                                                placeholder="Country / City"
+                                                placeholder={content.formFields.destinationPlaceholder || "Country / City"}
                                                 required
                                                 className="bg-muted border-border focus:border-primary rounded-xl h-12"
                                             />
@@ -327,13 +330,13 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="message">Your Message *</Label>
+                                        <Label htmlFor="message">{content.formFields.message || "Your Message *"}</Label>
                                         <Textarea
                                             id="message"
                                             name="message"
                                             value={formData.message}
                                             onChange={handleInputChange}
-                                            placeholder="Tell us about your requirements, quantities needed, and any specific questions..."
+                                            placeholder={content.formFields.messagePlaceholder || "Tell us about your requirements..."}
                                             rows={6}
                                             required
                                             className="bg-muted border-border focus:border-primary resize-none rounded-2xl p-4"
@@ -346,10 +349,10 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                         className="w-full sm:w-auto px-10 py-7 bg-bronze hover:bg-bronze-dark text-white font-semibold text-lg rounded-full transition-all duration-300 shadow-lg hover:shadow-xl"
                                     >
                                         {isSubmitting ? (
-                                            "Sending..."
+                                            content.formFields.sending || "Sending..."
                                         ) : (
                                             <>
-                                                Send Message
+                                                {content.formFields.submit || "Send Message"}
                                                 <Send className="ml-2 w-5 h-5" />
                                             </>
                                         )}
@@ -385,8 +388,8 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="text-center">
                                         <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                                        <p className="font-serif text-xl font-semibold text-foreground">Agadir, Morocco</p>
-                                        <p className="text-muted-foreground">Industrial Zone, Ait Melloul</p>
+                                        <p className="font-serif text-xl font-semibold text-foreground">{content.map.city || "Agadir, Morocco"}</p>
+                                        <p className="text-muted-foreground">{content.map.address || "Industrial Zone, Ait Melloul"}</p>
                                     </div>
                                 </div>
                                 {/* Simple overlay to make it look like a map */}

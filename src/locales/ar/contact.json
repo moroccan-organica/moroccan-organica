@@ -24,8 +24,8 @@
       {
         "type": "address",
         "title": "قم بزيارتنا",
-        "details": "مراكش، المغرب",
-        "subtext": "منطقة سيدي غانم الصناعية"
+        "details": "أكادير، المغرب",
+        "subtext": "المنطقة الصناعية، آيت ملول"
       },
       {
         "type": "hours",
@@ -49,5 +49,36 @@
       "وثائق تصدير كاملة",
       "يتوفر شحن لجميع أنحاء العالم"
     ]
+  },
+  "formFields": {
+    "fullName": "الاسم الكامل *",
+    "fullNamePlaceholder": "الاسم الكامل",
+    "email": "البريد الإلكتروني *",
+    "emailPlaceholder": "name@company.com",
+    "phone": "رقم الهاتف",
+    "phonePlaceholder": "+212 600 000 000",
+    "productType": "نوع المنتج",
+    "productTypes": {
+      "Organic Virgin": "عضوي بكر",
+      "Deodorized": "مزال الرائحة",
+      "Culinary": "للطهي"
+    },
+    "quantity": "الكمية (لتر)",
+    "quantityPlaceholder": "لتر",
+    "destination": "الوجهة",
+    "destinationPlaceholder": "البلد / المدينة",
+    "message": "رسالتك *",
+    "messagePlaceholder": "أخبرنا عن متطلباتك، الكميات المطلوبة، وأي أسئلة محددة...",
+    "submit": "إرسال الرسالة",
+    "sending": "جاري الإرسال..."
+  },
+  "success": {
+    "title": "تم إرسال الرسالة!",
+    "message": "شكراً لاستفسارك. سنرد عليك خلال 24 ساعة.",
+    "button": "إرسال رسالة أخرى"
+  },
+  "map": {
+    "city": "أكادير، المغرب",
+    "address": "المنطقة الصناعية، آيت ملول"
   }
 }

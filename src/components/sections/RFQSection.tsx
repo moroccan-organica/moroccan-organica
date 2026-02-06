@@ -115,15 +115,15 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
                     <PackageCheck className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">Quote Request Sent!</h3>
-                  <p className="text-sm text-muted-foreground mb-4">We'll get back to you with a quote within 24 hours.</p>
+                  <h3 className="text-lg font-bold text-foreground mb-2">{data.successTitle || "Quote Request Sent!"}</h3>
+                  <p className="text-sm text-muted-foreground mb-4">{data.successMessage || "We'll get back to you with a quote within 24 hours."}</p>
                   <Button
                     onClick={() => setIsSuccess(false)}
                     variant="outline"
                     size="sm"
                     className="rounded-full"
                   >
-                    Send Another Request
+                    {data.sendAnother || "Send Another Request"}
                   </Button>
                 </div>
               ) : (
@@ -180,9 +180,9 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
                         onChange={handleChange}
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        <option value="Organic Virgin">Organic Virgin</option>
-                        <option value="Deodorized">Deodorized</option>
-                        <option value="Culinary">Culinary</option>
+                        <option value="Organic Virgin">{data.productTypes?.["Organic Virgin"] || "Organic Virgin"}</option>
+                        <option value="Deodorized">{data.productTypes?.["Deodorized"] || "Deodorized"}</option>
+                        <option value="Culinary">{data.productTypes?.["Culinary"] || "Culinary"}</option>
                       </select>
                     </div>
                     <div className="space-y-2">
@@ -317,7 +317,7 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <p className="text-primary-foreground font-semibold">
-                  Ready for Dispatch — Your Order Ships Within 48 Hours
+                  {data.readyDispatch || "Ready for Dispatch — Your Order Ships Within 48 Hours"}
                 </p>
               </div>
             </div>

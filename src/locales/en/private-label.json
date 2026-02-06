@@ -24,23 +24,23 @@
   },
   "expertise": {
     "label": "Our Expertise",
-    "title": "Why Choose Our Private Label?",
+    "title": "Why choose Moroccan organic beauty products?",
     "features": [
       {
-        "title": "Guaranteed Quality",
-        "description": "Rigorous quality control on Argan oil, Sidr powder, and Rose oil. Every product undergoes testing to ensure effectiveness and safety."
+        "title": "Guaranteed quality and naturalness",
+        "description": "Our products are made from natural ingredients for which Morocco is renowned, such as argan oil, sidr powder, and rose oil. Every product undergoes rigorous quality control to ensure its effectiveness and safety."
       },
       {
-        "title": "Skin Rejuvenation",
-        "description": "Formulas rich in vitamins and antioxidants for lasting radiance. Naturally brightens skin and reduces wrinkles."
+        "title": "Skin brightening and rejuvenation",
+        "description": "Moroccan organic beauty products naturally brighten the skin, remove dark spots, and reduce wrinkles. Thanks to their formulas rich in vitamins and antioxidants, they give the skin lasting radiance and vitality."
       },
       {
-        "title": "Hair Nourishment",
-        "description": "Strengthens and hydrates using traditional ingredients like argan oil. Stimulates growth and gives natural shine."
+        "title": "Hair Nourishment and Hydration",
+        "description": "Our products contain natural ingredients like argan oil, which helps strengthen hair, stimulate growth, and give it a natural shine. These products also contribute to hair hydration and address problems such as dandruff and hair loss."
       },
       {
-        "title": "Environmental Protection",
-        "description": "Rich in fatty acids and Vitamin E to protect skin and hair from pollution and harmful sun rays."
+        "title": "Protection from Environmental Damage",
+        "description": "Our ingredients, rich in fatty acids and vitamin E, help protect skin and hair from the damaging effects of pollution and harmful sun rays."
       }
     ]
   },
@@ -60,16 +60,16 @@
     "title": "How to Start with Private Label",
     "steps": [
       {
-        "title": "Selection",
-        "description": "Choose from our wide range of pre-set organic formulas or request a custom blend tailored to your market."
+        "title": "Product Selection",
+        "description": "Define the product range you wish to launch under your private label, such as skin care oils, moisturizing creams, shampoos, and other organic products."
       },
       {
-        "title": "Branding",
-        "description": "We help design distinctive logos and packaging that reflect your brand vision and identity."
+        "title": "Packaging and Logo Design",
+        "description": "We can help you design distinctive packaging and logos that reflect your brand vision."
       },
       {
-        "title": "Launch",
-        "description": "Receive fully certified, professionally packaged products ready for your market."
+        "title": "Product Customization",
+        "description": "You can customize product formulations according to the needs of the local market and your target customers."
       }
     ]
   },
@@ -101,11 +101,11 @@
   },
   "compliance": {
     "title": "Export Regulation Notice",
-    "description": "Customs do not allow the export of unlabeled cosmetic products. All products must have at least removable stickers to avoid customs issues. We provide labeling in multiple languages at no extra cost."
+    "description": "Customs do not allow to export of unlabeled cosmetic products and the buyer is pushed to make some small easy removed stickers to avoid any kind of troubles that might happen with customs."
   },
   "cta": {
     "title": "Ready to Start?",
-    "description": "Organica Group is your flexible manufacturing partner. From 100 units to thousands, we support your growth every step of the way.",
+    "description": "Organica group is the ideal manufacturing partner for Private label, with a wide range of organic skincare product categories, we are very flexible, supplying you with the highest level products at the best price.",
     "buttonText": "Contact Our Export Team"
   }
 }
