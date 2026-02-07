@@ -334,7 +334,7 @@
   .rich-text-content h2,
   .rich-text-content h3,
   .rich-text-content h4 {
-    font-family: var(--font-playfair), serif;
+    font-family: var(--font-sans), sans-serif;
     font-weight: 700;
     color: #606C38;
     /* Forest Green */

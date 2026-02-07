@@ -1218,13 +1218,13 @@ export const benefitsData: BenefitPost[] = [
     },
     {
         slug: "argan-oil-for-face",
-        title: "Moroccan argan oil benefits",
-        title_ar: "فوائد زيت الأرغان المغربي",
+        title: "Argan Oil Benefits for Face",
+        title_ar: "فوائد زيت الأرغان للوجه",
         image: "/images/benefits/argan-oil-skin.jpg",
         excerpt: "Argan oil has many benefits because it contains rich compounds.",
         excerpt_ar: "زيت الأرغان هو أحد أفضل الحلول الطبيعية للحفاظ على جمال وجاذبية الشعر والبشرة.",
         content: `
-        <p>"Argan oil has many benefits because it contains rich compounds. Learn about its benefits:</p>
+        <p>Argan oil has many benefits because it contains rich compounds. Learn about its benefits:</p>
 
         <p>1 - It treats acne<br>
         Argan oil has been shown to help reduce sebum levels in people with oily skin, reduce sebum, and improve the overall appearance. Argan oil contains a high amount of linoleic acid and helps reduce inflammation caused by acne while soothing damaged skin cells.</p>
@@ -1238,7 +1238,7 @@ export const benefitsData: BenefitPost[] = [
         <p>Argan oil can be used as a moisturizing hair mask, especially if your hair is damaged, as the vitamin in the oil helps smooth dull tresses and close split ends, while the omega fatty acids work to strengthen your hair for 15-30 minutes to reap the full benefits of the oil.</p>
 
         <p> 4 - Anti - aging<br>
-        Argan oil has been used since ancient times to combat aging and maintain skin elasticity, according to a study conducted on postmenopausal women, so it is recommended to apply it directly to the skin."</p>
+        Argan oil has been used since ancient times to combat aging and maintain skin elasticity, according to a study conducted on postmenopausal women, so it is recommended to apply it directly to the skin.</p>
         `,
         content_ar: `
         <p> <bdi>سواء كنت تعاني من الشعر الجاف أو الخشن أو التالف أو الخفيف ، فإن زيت الأركان هو أحد أفضل الحلول الطبيعية للحفاظ على جمال وجاذبية الشعر.فوائد زيت الأركان للشعر عديدة وتشمل علاج معظم مشاكله مثل تقصف الأطراف وتساقط الشعر والجفاف.لا تفكر مليًا في تضمين هذا الزيت في روتين العناية بشعرك وبالتالي استفد منه.فيما يلي نقدم لكم بالتفصيل فوائد زيت الأركان للشعر ، بالإضافة إلى طريقة تحضير الخلطات منه التي تعيد لكم صفاتكم الحيوية ومظهر صحي.</bdi></p>
