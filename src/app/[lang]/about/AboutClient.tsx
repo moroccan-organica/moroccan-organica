@@ -1,7 +1,8 @@
 "use client";
 
-import { motion, MotionProps } from "framer-motion";
-import { Leaf, Handshake, Heart, Check, ArrowRight, LucideIcon } from "lucide-react";
+import { useState } from "react";
+import { motion, MotionProps, AnimatePresence } from "framer-motion";
+import { Leaf, Handshake, Heart, Check, ArrowRight, LucideIcon, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -50,6 +51,13 @@ interface AboutPageData {
         title: string;
         description: string;
     };
+    cooperatives: {
+        title: string;
+        description: string;
+        fairTitle: string;
+        fairPrinciples: string[];
+        paragraphs: string[];
+    };
     promise: {
         label: string;
         title: string;
@@ -84,6 +92,12 @@ const principleIcons: Record<string, LucideIcon> = {
 const defaultIcons = [Leaf, Handshake, Heart];
 
 export default function AboutClient({ data, dict, lang }: AboutClientProps) {
+    const [openPromise, setOpenPromise] = useState<string | null>(null);
+
+    const togglePromise = (title: string) => {
+        setOpenPromise(openPromise === title ? null : title);
+    };
+
     const fadeInUp: MotionProps = {
         initial: { opacity: 0, y: 40 },
         whileInView: { opacity: 1, y: 0 },
@@ -98,9 +112,37 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
         values: { ...data.values, ...dict.values },
         journey: { ...data.journey, ...dict.journey },
         origins: { ...data.origins, ...dict.origins },
+        cooperatives: { ...data.cooperatives, ...dict.cooperatives },
         promise: { ...data.promise, ...dict.promise },
         offer: { ...data.offer, ...dict.offer },
         partnership: { ...data.partnership, ...dict.partnership },
+    };
+
+    const renderWithHighlights = (text: string) => {
+        const highlights = [
+            "MoroccanOrganica",
+            "premium Moroccan organic beauty products",
+            "100% natural",
+            "wholesale company",
+            "Moroccan organic beauty industry",
+            "Argan Oil",
+            "Black Soap",
+            "Rhassoul Clay",
+            "Nila Powder",
+            "authentic Moroccan beauty",
+        ];
+
+        const regex = new RegExp(`(${highlights.join("|")})`, "gi");
+        return text.split(regex).map((part, idx) => {
+            const isHighlight = highlights.some(h => h.toLowerCase() === part.toLowerCase());
+            return isHighlight ? (
+                <strong key={`hl-${idx}`} className="font-semibold text-foreground">
+                    {part}
+                </strong>
+            ) : (
+                <span key={`txt-${idx}`}>{part}</span>
+            );
+        });
     };
 
     return (
@@ -262,20 +304,56 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                 </div>
             </section>
 
-            {/* Section E: Production & Origins */}
-            <section className="py-20 md:py-28 bg-primary/5">
+
+
+            {/* Section E2: Cooperatives & Fair Trade */}
+            <section className="section-padding bg-background">
                 <div className="container-main">
-                    <motion.div className="max-w-4xl mx-auto text-center" {...fadeInUp}>
-                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                            {content.origins.label}
-                        </span>
-                        <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-                            {content.origins.title}
-                        </h2>
-                        <p className="text-body text-muted-foreground leading-relaxed text-lg md:text-xl">
-                            {content.origins.description}
-                        </p>
-                    </motion.div>
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+                        <motion.div className="space-y-6" {...fadeInUp}>
+                            <div>
+                                <h3 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-4">
+                                    {content.cooperatives.title}
+                                </h3>
+                                <p className="text-lg text-muted-foreground leading-relaxed">
+                                    {content.cooperatives.description}
+                                </p>
+                            </div>
+
+                            <div className="bg-card border border-border rounded-2xl p-6 shadow-sm">
+                                <h4 className="font-serif text-2xl font-semibold text-foreground mb-3">
+                                    {content.cooperatives.fairTitle}
+                                </h4>
+                                <ul className="space-y-2 text-muted-foreground">
+                                    {content.cooperatives.fairPrinciples.map((item) => (
+                                        <li key={item} className="flex items-start gap-3">
+                                            <div className="mt-1 w-2 h-2 rounded-full bg-primary" />
+                                            <span className="text-base leading-relaxed">{item}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </motion.div>
+
+                        <motion.div
+                            className="space-y-4"
+                            initial={{ opacity: 0, x: 40 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            {content.cooperatives.paragraphs.map((paragraph, idx) => (
+                                <div
+                                    key={idx}
+                                    className="bg-card border border-border rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow duration-300"
+                                >
+                                    <p className="text-base md:text-lg text-foreground leading-relaxed space-x-0">
+                                        {renderWithHighlights(paragraph)}
+                                    </p>
+                                </div>
+                            ))}
+                        </motion.div>
+                    </div>
                 </div>
             </section>
 
@@ -291,29 +369,61 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         </h2>
                     </motion.div>
 
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        {content.promise.reasons.map((item: Reason, index: number) => (
-                            <motion.div
-                                key={item.title}
-                                className="flex gap-5 p-6 rounded-2xl bg-background border border-border"
-                                initial={{ opacity: 0, x: -30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: index * 0.1, duration: 0.5 }}
-                            >
-                                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-bronze/10 flex items-center justify-center mt-1">
-                                    <Check className="w-5 h-5 text-bronze" />
-                                </div>
-                                <div>
-                                    <h3 className="font-serif text-xl font-bold text-foreground mb-2">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-muted-foreground leading-relaxed">
-                                        {item.description}
-                                    </p>
-                                </div>
-                            </motion.div>
-                        ))}
+                    <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto items-start">
+                        {content.promise.reasons.map((item: Reason, index: number) => {
+                            const isOpen = openPromise === item.title;
+                            return (
+                                <motion.div
+                                    key={item.title}
+                                    layout
+                                    className={`group rounded-2xl bg-background border transition-all duration-300 overflow-hidden cursor-pointer ${isOpen
+                                            ? "border-primary shadow-lg ring-1 ring-primary/20"
+                                            : "border-border hover:border-primary/50 hover:shadow-md"
+                                        }`}
+                                    onMouseEnter={() => setOpenPromise(item.title)}
+                                    onMouseLeave={() => setOpenPromise(null)}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1, duration: 0.4 }}
+                                >
+                                    <div className="p-6 flex items-start gap-4">
+                                        <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${isOpen ? "bg-primary text-white" : "bg-primary/10 text-primary group-hover:bg-primary/20"
+                                            }`}>
+                                            <Check className="w-6 h-6" />
+                                        </div>
+
+                                        <div className="flex-1 pt-1">
+                                            <div className="flex items-center justify-between gap-4 mb-2">
+                                                <h3 className={`font-serif text-lg font-bold transition-colors duration-300 ${isOpen ? "text-primary" : "text-foreground group-hover:text-primary"
+                                                    }`}>
+                                                    {item.title}
+                                                </h3>
+                                                <ChevronDown
+                                                    className={`w-5 h-5 text-muted-foreground transition-transform duration-300 ${isOpen ? "rotate-180 text-primary" : ""
+                                                        }`}
+                                                />
+                                            </div>
+
+                                            <AnimatePresence>
+                                                {isOpen && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: "auto", opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                    >
+                                                        <p className="text-muted-foreground leading-relaxed pt-2 pb-1 border-t border-border/50 mt-3">
+                                                            {item.description}
+                                                        </p>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>

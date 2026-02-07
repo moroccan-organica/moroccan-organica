@@ -49,6 +49,20 @@ export const aboutPageData = {
         title: "Produced by Cooperatives",
         description: "Our products are manufactured by cooperatives in the south-west of Morocco, with techniques and knowledge passed down through generations. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world."
     },
+    cooperatives: {
+        title: "Produced by cooperatives",
+        description: "Our products manufactured by cooperatives of the south-west of Morocco, with techniques and knowledge in this field. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world.",
+        fairTitle: "Fair Trade Principles",
+        fairPrinciples: [
+            "Quality: 100% organic cosmetics",
+            "Ethics: Fair Trade Practices",
+            "Authenticity: guaranteed by a personal relationship with the women of the cooperatives"
+        ],
+        paragraphs: [
+            "Welcome to MoroccanOrganica, your trusted source for premium Moroccan organic beauty products. We specialize in providing 100% natural skincare and haircare products sourced from the heart of Morocco. Our products are carefully crafted to deliver the highest quality, ensuring you receive only the best in beauty, health, and wellness.",
+            "As a leading wholesale company in the Moroccan organic beauty industry, we offer a wide range of products, including Argan Oil, Black Soap, Rhassoul Clay, and Nila Powder, all sourced directly from local Moroccan producers. Our products are perfect for businesses looking to add authentic Moroccan beauty to their product line."
+        ]
+    },
     promise: {
         label: "Our Promise",
         title: "Why Choose MoroccanOrganica?",
