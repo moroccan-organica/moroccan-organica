@@ -1,6 +1,15 @@
 import { Instagram } from "lucide-react";
 
-const InstagramSection = () => {
+interface InstagramData {
+  handle: string;
+  title: string;
+  description: string;
+  cta: string;
+}
+
+const InstagramSection = ({ data }: { data?: InstagramData }) => {
+  if (!data) return null;
+
   return (
     <section className="section-padding bg-background">
       <div className="container-main">
@@ -8,13 +17,13 @@ const InstagramSection = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
             <Instagram className="w-8 h-8 text-primary" />
-            <span className="text-2xl font-semibold text-foreground">@moroccanorganic</span>
+            <span className="text-2xl font-semibold text-foreground">{data.handle}</span>
           </div>
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
-            Follow Our Journey
+            {data.title}
           </h2>
           <p className="text-muted-foreground max-w-xl mx-auto">
-            Behind the scenes of sustainable sourcing, from field to shipment
+            {data.description}
           </p>
         </div>
 
@@ -41,7 +50,7 @@ const InstagramSection = () => {
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
           >
             <Instagram className="w-5 h-5" />
-            Follow on Instagram
+            {data.cta}
           </a>
         </div>
       </div>

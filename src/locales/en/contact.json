@@ -49,5 +49,36 @@
       "Full export documentation",
       "Worldwide shipping available"
     ]
+  },
+  "formFields": {
+    "fullName": "Full Name *",
+    "fullNamePlaceholder": "John Doe",
+    "email": "Email Address *",
+    "emailPlaceholder": "john@company.com",
+    "phone": "Phone Number",
+    "phonePlaceholder": "+1 (555) 000-0000",
+    "productType": "Product Type",
+    "productTypes": {
+      "Organic Virgin": "Organic Virgin",
+      "Deodorized": "Deodorized",
+      "Culinary": "Culinary"
+    },
+    "quantity": "Quantity (Liters)",
+    "quantityPlaceholder": "Liters",
+    "destination": "Destination",
+    "destinationPlaceholder": "Country / City",
+    "message": "Your Message *",
+    "messagePlaceholder": "Tell us about your requirements, quantities needed, and any specific questions...",
+    "submit": "Send Message",
+    "sending": "Sending..."
+  },
+  "success": {
+    "title": "Message Sent!",
+    "message": "Thank you for your inquiry. We'll get back to you within 24 hours.",
+    "button": "Send Another Message"
+  },
+  "map": {
+    "city": "Agadir, Morocco",
+    "address": "Industrial Zone, Ait Melloul"
   }
 }

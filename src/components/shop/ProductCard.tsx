@@ -19,6 +19,7 @@ interface ProductCardProps {
   name?: string;
   nameAr?: string;
   descriptionAr?: string;
+  addToCartText?: string;
 }
 
 const ProductCard = ({
@@ -34,7 +35,8 @@ const ProductCard = ({
   slug,
   name,
   nameAr,
-  descriptionAr
+  descriptionAr,
+  addToCartText
 }: ProductCardProps) => {
   const { addItem } = useCart();
   const badgeStyles = {
@@ -86,7 +88,7 @@ const ProductCard = ({
             onClick={handleAddToCart}
             disabled={!id || price === undefined}
           >
-            Add to Cart
+            {addToCartText || "Add to Cart"}
             {price !== undefined && <span className="ml-2">(${price})</span>}
           </Button>
         </div>

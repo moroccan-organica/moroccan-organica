@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
 import CartDrawer from "@/components/shop/CartDrawer";
+import { benefitsData } from "@/data/benefits";
+
 
 type Dict = Record<string, unknown>;
 
@@ -50,9 +52,11 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         ];
 
     const benefitsDropdownItems = [
-        { name: t('nav.certifications'), href: "#trust" },
-        { name: t('nav.sustainability'), href: "#about" },
-        { name: t('nav.quality'), href: "#trust" },
+        { name: t('nav.allBenefits'), href: `/${lang}/benefits` },
+        ...benefitsData.map(benefit => ({
+            name: isRTL && benefit.title_ar ? benefit.title_ar : benefit.title,
+            href: `/${lang}/benefits/${benefit.slug}`
+        }))
     ];
 
     const navLinks = [
@@ -61,7 +65,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         { name: t('nav.about'), href: `/${lang}/about`, isRoute: true },
         { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true }, // Added lang prefix to route
-        { name: t('nav.benefits'), href: "#trust", hasDropdown: true, dropdownItems: benefitsDropdownItems },
+        { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems },
         { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true },
         { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true },
     ];
@@ -125,7 +129,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     <div
                                         className={`absolute top-full pt-2 z-50 animate-in fade-in slide-in-from-top-1 duration-200 ${isRTL ? 'right-0' : 'left-0'}`}
                                     >
-                                        <div className="bg-secondary border border-border/20 rounded-lg shadow-xl min-w-[200px] py-1 overflow-hidden">
+                                        <div className="bg-secondary border border-border/20 rounded-lg shadow-xl min-w-[240px] max-h-[400px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                                             {link.dropdownItems?.map((item) => (
                                                 <Link
                                                     key={item.name}
@@ -179,7 +183,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
 
                                             {/* Mobile Dropdown Items */}
                                             <div
-                                                className={`overflow-hidden transition-all duration-300 ease-in-out ${openMobileDropdown === link.name ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+                                                className={`transition-all duration-300 ease-in-out ${openMobileDropdown === link.name ? 'max-h-[300px] overflow-y-auto opacity-100' : 'max-h-0 overflow-hidden opacity-0'
                                                     }`}
                                             >
                                                 <div className={`flex flex-col gap-1 py-2 ${isRTL ? 'pr-4' : 'pl-4'}`}>

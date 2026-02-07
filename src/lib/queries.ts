@@ -183,7 +183,7 @@ export async function getTopSaleProducts(lang: string) {
                 description: trans.description || "",
                 badge: "Top Seller",
                 image: image,
-                slug: trans.slug || p.id,
+                slug: transEn.slug || p.id,
                 // Additional fields for ShopProduct
                 category: catTrans.name || "Category",
                 price: variant ? Number(variant.price) : Number(p.basePrice),
