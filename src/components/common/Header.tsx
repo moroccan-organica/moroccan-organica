@@ -52,7 +52,6 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         ];
 
     const benefitsDropdownItems = [
-        { name: t('nav.allBenefits'), href: `/${lang}/benefits` },
         ...benefitsData.map(benefit => ({
             name: isRTL && benefit.title_ar ? benefit.title_ar : benefit.title,
             href: `/${lang}/benefits/${benefit.slug}`
@@ -60,14 +59,14 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     ];
 
     const navLinks = [
-        { name: t('nav.home'), href: `/${lang}/`, isRoute: true },
-        { name: t('nav.products'), href: `/${lang}/products`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems },
-        { name: t('nav.about'), href: `/${lang}/about`, isRoute: true },
-        { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true },
-        { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true }, // Added lang prefix to route
-        { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems },
-        { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true },
-        { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true },
+        { name: t('nav.home'), href: `/${lang}/`, isRoute: true, title: "Home page" },
+        { name: t('nav.products'), href: `/${lang}/products`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
+        { name: t('nav.about'), href: `/${lang}/about`, isRoute: true, title: "About our company" },
+        { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
+        { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },
+        { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
+        { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true, title: "Shop" },
+        { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true, title: "Get in touch" },
     ];
 
 
@@ -101,6 +100,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                 {link.isRoute ? (
                                     <Link
                                         href={link.href}
+                                        title={link.title}
                                         className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
@@ -113,6 +113,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                 ) : (
                                     <a
                                         href={link.href}
+                                        title={link.title}
                                         className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
@@ -203,6 +204,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     ) : link.isRoute ? (
                                         <Link
                                             href={link.href}
+                                            title={link.title}
                                             className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 py-2 cursor-pointer ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >
@@ -211,6 +213,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     ) : (
                                         <a
                                             href={link.href}
+                                            title={link.title}
                                             className={`flex items-center gap-1 text-sm font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 py-2 cursor-pointer ${isRTL ? 'flex-row-reverse justify-end' : ''}`}
                                             onClick={() => setIsMenuOpen(false)}
                                         >
