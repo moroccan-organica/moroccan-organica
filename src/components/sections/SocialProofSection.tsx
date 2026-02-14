@@ -51,7 +51,7 @@ const SocialProofSection = ({ data }: SocialProofSectionProps) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background relative overflow-hidden">
+    <section className="section-padding bg-background relative overflow-hidden pt-2 md:pt-4">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
@@ -95,9 +95,9 @@ const SocialProofSection = ({ data }: SocialProofSectionProps) => {
           {/* Main Slider Container */}
           <div className="relative bg-card rounded-[2.5rem] shadow-card border border-border/50 p-4 sm:p-12 overflow-hidden">
             {/* Glossy Overlay effect */}
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+            <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/20 to-transparent" />
 
-            <div className="relative aspect-[3/1] sm:aspect-[4.5/1] w-full transform transition-all duration-700">
+            <div className="relative aspect-3/1 sm:aspect-[4.5/1] w-full transform transition-all duration-700">
               <Image
                 src={reviewImages[currentIndex]}
                 alt={`Customer review snapshot ${currentIndex + 1}`}

@@ -11,8 +11,20 @@ import "swiper/css/parallax";
 
 import { StaticImageData } from "next/image";
 
+interface CategoryItem {
+  image: string | StaticImageData;
+  title: string;
+  subtitle: string;
+}
+
+interface TrustedSupplierContent {
+  badge: string;
+  title: string;
+  items: CategoryItem[];
+}
+
 interface ProductCategoryCarouselProps {
-  data: any;
+  data: TrustedSupplierContent;
 }
 
 const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
@@ -22,7 +34,7 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
   const [isEnd, setIsEnd] = useState(false);
 
   const content = data;
-  const categories = content.items;
+  const categories: CategoryItem[] = content.items;
 
   const handleSlideChange = (swiper: SwiperType) => {
     setActiveIndex(swiper.activeIndex);
@@ -31,7 +43,7 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
   };
 
   return (
-    <section className="py-20 md:py-28 bg-background overflow-hidden">
+    <section className="pt-6 md:pt-10 pb-12 md:pb-16 bg-background overflow-hidden">
       <div className="container mx-auto px-4">
         {/* Header with Navigation */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 md:mb-16">
@@ -88,7 +100,6 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="cursor-grab active:cursor-grabbing"
         >
           <Swiper
             modules={[Parallax, Navigation, Autoplay]}
@@ -125,9 +136,9 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
                 spaceBetween: 28,
               },
             }}
-            className="!overflow-visible"
+            className="overflow-visible!"
           >
-            {categories.map((category: any, index: number) => (
+            {categories.map((category, index) => (
               <SwiperSlide key={index}>
                 <CategoryCard category={category} index={index} />
               </SwiperSlide>
@@ -143,7 +154,7 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
           transition={{ duration: 0.6, delay: 0.5 }}
           className="flex justify-center gap-2 mt-10 md:mt-14"
         >
-          {categories.map((_: any, index: number) => (
+          {categories.map((_, index) => (
             <button
               key={index}
               onClick={() => swiperInstance?.slideTo(index)}
@@ -183,7 +194,7 @@ const CategoryCard = ({ category, index }: CategoryCardProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Card Container - 4:5 Aspect Ratio for slightly smaller look */}
-      <div className="relative aspect-[4/5] rounded-2xl overflow-hidden bg-card shadow-md transition-all duration-300 group-hover:shadow-2xl border border-primary/10">
+      <div className="relative aspect-4/5 rounded-2xl overflow-hidden bg-card shadow-md transition-all duration-300 group-hover:shadow-2xl border border-primary/10">
         {/* Image - Standard Cover */}
         <div
           className="absolute inset-0 w-full h-full"

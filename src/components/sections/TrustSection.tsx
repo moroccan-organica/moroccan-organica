@@ -1,9 +1,24 @@
 import Image from "next/image";
-const TrustSection = ({ data }: { data: any }) => {
+
+interface TrustStat {
+  value: string;
+  label: string;
+}
+
+interface TrustContent {
+  badge: string;
+  title: string;
+  highlight: string;
+  warehouse: { title: string; desc: string; image: string };
+  bulk: { title: string; desc: string; image: string };
+  stats: TrustStat[];
+}
+
+const TrustSection = ({ data }: { data: TrustContent }) => {
   const content = data;
 
   return (
-    <section id="trust" className="section-padding bg-background">
+    <section id="trust" className="section-padding bg-background pt-2 md:pt-4">
       <div className="container-main">
         {/* Manufacturing Scale Images */}
         <div className="text-center mb-12">
@@ -24,7 +39,7 @@ const TrustSection = ({ data }: { data: any }) => {
               height={600}
               className="w-full h-64 md:h-80 object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6">
               <h3 className="font-serif text-xl font-semibold text-primary-foreground mb-1">
                 {content.warehouse.title}
@@ -43,7 +58,7 @@ const TrustSection = ({ data }: { data: any }) => {
               height={600}
               className="w-full h-64 md:h-80 object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-secondary/80 to-transparent" />
+            <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
             <div className="absolute bottom-6 left-6 right-6">
               <h3 className="font-serif text-xl font-semibold text-primary-foreground mb-1">
                 {content.bulk.title}
@@ -58,7 +73,7 @@ const TrustSection = ({ data }: { data: any }) => {
         {/* Stats Bar */}
         <div className="bg-primary rounded-2xl p-8 md:p-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {content.stats.map((stat: any, index: number) => (
+            {content.stats.map((stat: TrustStat, index: number) => (
               <div key={index}>
                 <p className="text-4xl md:text-5xl font-serif font-bold text-primary-foreground mb-2">{stat.value}</p>
                 <p className="text-primary-foreground/80">{stat.label}</p>

@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu, X, Leaf, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import LanguageSwitcher from "./LanguageSwitcher";
@@ -101,7 +101,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     <Link
                                         href={link.href}
                                         title={link.title}
-                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-base md:text-lg font-semibold text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
@@ -114,7 +114,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     <a
                                         href={link.href}
                                         title={link.title}
-                                        className={`flex items-center gap-1 text-xs font-medium text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-sm md:text-base font-semibold text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
