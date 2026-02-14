@@ -6,15 +6,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Truck, Clock, ShieldCheck, Send, DollarSign, PackageCheck, Award } from "lucide-react";
+import { Send, PackageCheck } from "lucide-react";
 
-interface Feature {
-  title: string;
-  description: string;
-  icon: any;
+interface RFQFormContent {
+  title?: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  type?: string;
+  quantity?: string;
+  destination?: string;
+  message?: string;
+  submit?: string;
 }
 
-const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
+interface RFQContent {
+  form?: RFQFormContent;
+  features: Array<{ title: string; description: string }>;
+  successTitle?: string;
+  successMessage?: string;
+  sendAnother?: string;
+  productTypes?: Record<string, string>;
+  image: string;
+  readyDispatch?: string;
+}
+
+interface AboutContent {
+  title: string;
+  highlight: string;
+  description: string;
+  stats?: Record<string, { value: string; label: string }>;
+}
+
+const RFQSection = ({ data, aboutData }: { data: RFQContent; aboutData: AboutContent }) => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -86,15 +110,8 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const featureIcons = [DollarSign, PackageCheck, Award, Truck];
-
-  const features = data.features.map((f: any, i: number) => ({
-    ...f,
-    icon: featureIcons[i] || Truck
-  }));
-
   return (
-    <section id="contact" className="section-padding bg-muted">
+    <section id="contact" className="section-padding bg-muted pt-2 md:pt-4">
       <div className="container-main">
         {/* Main Title */}
         <div className="text-center mb-12">
@@ -282,27 +299,9 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
           </div>
         </div>
 
-        {/* Why Choose Us Section */}
+        {/* Why Choose Us Section (placeholder) */}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          {/* Info Column */}
-          <div className="animate-fade-in-right -mt-2">
-            {/* Feature Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-              {features.map((feature: Feature, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-3 p-4 bg-card rounded-xl shadow-sm border border-border"
-                >
-                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                    <feature.icon className="w-5 h-5 text-primary" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sm text-foreground">{feature.title}</h3>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <div className="animate-fade-in-right -mt-2" />
 
           {/* Warehouse Image */}
           <div className="relative animate-fade-in-left -mt-24">
@@ -314,7 +313,7 @@ const RFQSection = ({ data, aboutData }: { data: any; aboutData: any }) => {
                 height={400}
                 className="w-full h-64 object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 to-transparent" />
+              <div className="absolute inset-0 bg-linear-to-t from-secondary/90 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4">
                 <p className="text-primary-foreground font-semibold">
                   {data.readyDispatch || "Ready for Dispatch — Your Order Ships Within 48 Hours"}

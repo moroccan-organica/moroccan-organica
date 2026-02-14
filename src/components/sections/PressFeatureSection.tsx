@@ -27,7 +27,7 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-background pt-4 md:pt-6">
       <div className="container mx-auto px-4">
         {/* UN Today Logo */}
         <div className="text-center">
@@ -42,7 +42,7 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
         </div>
 
         {/* Article Content */}
-        <article className="max-w-3xl mx-auto">
+        <article className="max-w-5xl mx-auto">
           <header className="mb-8 text-center">
             <p className="text-sm text-muted-foreground uppercase tracking-wide mb-3">
               {data.date}
@@ -56,10 +56,10 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
           </header>
 
           <div className="prose prose-lg max-w-none text-foreground/80 font-serif leading-relaxed">
-            <p className="mb-6" dangerouslySetInnerHTML={{ __html: data.intro1 }} />
-            <p className="mb-6">
-              {data.intro2}
-            </p>
+            <p
+              className="mb-4"
+              dangerouslySetInnerHTML={{ __html: `${data.intro1} ${data.intro2}` }}
+            />
 
             {data.benefits.map((benefit, index) => (
               <div key={index}>

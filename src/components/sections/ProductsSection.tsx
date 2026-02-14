@@ -17,7 +17,6 @@ interface ProductItem {
   descriptionAr?: string;
   slug?: string;
   badgeLabel?: string;
-  [key: string]: any;
 }
 
 interface ProductsContent {
@@ -55,10 +54,10 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
   });
 
   return (
-    <section id="products" className="section-padding bg-muted">
+    <section id="products" className="section-padding bg-muted pt-8 md:pt-10">
       <div className="container-main">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
+        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-14">
           <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
             {content.badge}
           </span>
@@ -83,16 +82,6 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
           ))}
         </div>
 
-        {/* View All Button */}
-        <div className="text-center mt-12">
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
-          >
-            {content.cta}
-            <span className="text-lg">→</span>
-          </a>
-        </div>
       </div>
     </section>
   );

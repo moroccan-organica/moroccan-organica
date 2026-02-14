@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { Instagram } from "lucide-react";
 
 interface InstagramData {
@@ -11,10 +12,10 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background">
+    <section className="section-padding bg-background pt-0 md:pt-1">
       <div className="container-main">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-8 md:mb-10">
           <div className="inline-flex items-center gap-3 mb-4">
             <Instagram className="w-8 h-8 text-primary" />
             <span className="text-2xl font-semibold text-foreground">{data.handle}</span>
@@ -29,12 +30,12 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
 
         {/* Instagram Grid (LightWidget) */}
         <div className="w-full max-w-[1240px] mx-auto">
-          <script src="https://cdn.lightwidget.com/widgets/lightwidget.js"></script>
+          <Script src="https://cdn.lightwidget.com/widgets/lightwidget.js" strategy="lazyOnload" />
           <iframe
             suppressHydrationWarning
             src="https://cdn.lightwidget.com/widgets/d21c5ef5d980559590b3caaa76cdfb02.html"
             scrolling="no"
-            // @ts-ignore
+            // @ts-expect-error allow legacy iframe attribute
             allowtransparency="true"
             className="lightwidget-widget w-full border-0 overflow-hidden"
             style={{ width: '100%', border: 0, overflow: 'hidden' }}
@@ -47,7 +48,7 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
             href="https://www.instagram.com/moroccanorganic/"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-purple-500 via-pink-500 to-orange-500 text-white font-semibold rounded-full hover:opacity-90 transition-opacity"
           >
             <Instagram className="w-5 h-5" />
             {data.cta}

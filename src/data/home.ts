@@ -7,49 +7,49 @@ export const homePageData = {
                 heading: "Moroccan Beauty Products",
                 highlight: "Wholesale",
                 description: "Trusted Wholesale Suppliers of argan oil and different cosmetics products based on organic oils in Morocco.",
-                image: "/images/slider/slide_1.webp"
+                image: "/images/slider/slide_7.webp"
             },
             {
                 badge: "100% Organic",
-                heading: "Argan Oil of",
+                heading: "ARGAN OIL OF ",
                 highlight: "Morocco",
                 description: "Argan oil for Hair, The Liquid Gold for your Skin, Hair, and Nails.",
-                image: "/images/slider/slide_2.webp"
+                image: "/images/slider/hero-authentic-argan-oil.webp"
             },
             {
                 badge: "Global Export",
-                heading: "Exporter of Argan Oil",
+                heading: "EXPORTER OF ARGAN OIL.",
                 highlight: "Worldwide",
                 description: "Organica Group is a specialist in Pure Organic Argan Oil and 100% Organic Prickly Pear Seed Cactus Oil, distributed and packaged in bulk.",
-                image: "/images/slider/slide_3.webp"
+                image: "/images/slider/hero-moroccan-saffron-threads.webp"
             },
             {
                 badge: "Fast Shipping",
                 heading: "We Ship Organic Products to the",
                 highlight: "USA",
                 description: "We are able to ship our argan oil by air cargo worldwide with a short transit time.",
-                image: "/images/slider/slide_4.webp"
+                image: "/images/slider/slide_3.webp"
             },
             {
                 badge: "Premium Quality",
                 heading: "Pure Prickly Pear Seed Oil",
                 highlight: "Suppliers",
                 description: "High grade cosmetic Prickly pear cactus seeds oil production.",
-                image: "/images/slider/slide_5.webp"
+                image: "/images/slider/slide_4.webp"
             },
             {
                 badge: "Mineral Rich",
                 heading: "Moroccan Rhassoul Clay",
                 highlight: "100% Organic",
                 description: "Moroccan Rhassoul clay is the best organic solution to keep your face and skin clean and soft.",
-                image: "/images/slider/slide_6.webp"
+                image: "/images/slider/slide_5.webp"
             },
             {
                 badge: "Traditional Spa",
                 heading: "Moroccan Black Soap",
                 highlight: "Wholesale",
                 description: "Moroccan BLACK SOAP with vitamin E is the best organic solution to keep your face and skin clean and soft.",
-                image: "/images/slider/slide_7.webp"
+                image: "/images/slider/slide_6.webp"
             }
         ],
         cta: {

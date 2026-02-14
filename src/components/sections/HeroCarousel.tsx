@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { ArrowRight, ArrowLeft, Globe, Truck, Shield, Leaf, Award } from "lucide-react";
 import {
     Carousel,
@@ -13,30 +14,35 @@ import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import Image from "next/image";
 
-// Map string icon names to components if needed, or pass components.
-// Since content comes from JSON, icons are static here. 
-// We will hardcode icons matching the slide index or map them.
-// Looking at original HeroSection, there are 3 slides with specific icons.
-// We'll receive the slides data from props.
-
-const iconMap = {
-    globe: Globe,
-    leaf: Leaf,
-    award: Award,
-    truck: Truck,
-    shield: Shield
-} as const;
-
 // Helper to get icon component or default
 const getIcon = (index: number) => {
     const icons = [Globe, Leaf, Award, Truck, Shield];
     return icons[index % icons.length];
 }
 
+interface HeroSlide {
+    badge: string;
+    heading: string;
+    highlight: string;
+    description: string;
+    image: string;
+}
+
+interface HeroTrust {
+    logistics: string;
+    certified: string;
+    moq: string;
+}
+
+interface HeroCta {
+    quote: string;
+    view: string;
+}
+
 interface HeroCarouselProps {
-    slides: any[];
-    trust: any;
-    cta: any;
+    slides: HeroSlide[];
+    trust: HeroTrust;
+    cta: HeroCta;
     lang: string;
 }
 
@@ -66,7 +72,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                             className="object-cover"
                                             priority={index === 0}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/85 to-secondary/70" />
+                                        <div className="absolute inset-0 bg-linear-to-r from-secondary/70 via-secondary/50 to-secondary/35" />
                                     </div>
 
                                     {/* Content */}
@@ -81,10 +87,42 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                             </div>
 
                                             {/* Main Heading */}
-                                            <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
-                                                {slide.heading}{" "}
-                                                <span className="text-primary">{slide.highlight}</span>
-                                            </h1>
+                                            {(() => {
+                                                const headingText = slide.heading?.trim() || "";
+                                                const highlightText = slide.highlight?.trim() || "";
+                                                const hasHighlight = highlightText.length > 0;
+
+                                                if (!hasHighlight) {
+                                                    return (
+                                                        <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                            {headingText}
+                                                        </h1>
+                                                    );
+                                                }
+
+                                                const lowerHeading = headingText.toLowerCase();
+                                                const lowerHighlight = highlightText.toLowerCase();
+                                                const matchIndex = lowerHeading.indexOf(lowerHighlight);
+
+                                                if (matchIndex !== -1) {
+                                                    const before = headingText.slice(0, matchIndex);
+                                                    const match = headingText.slice(matchIndex, matchIndex + highlightText.length);
+                                                    const after = headingText.slice(matchIndex + highlightText.length);
+                                                    return (
+                                                        <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                            {before}
+                                                            <span className="text-primary">{match}</span>
+                                                            {after}
+                                                        </h1>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                        {headingText} <span className="text-primary">{highlightText}</span>
+                                                    </h1>
+                                                );
+                                            })()}
 
                                             {/* Subheading */}
                                             <p className="text-lg md:text-xl text-primary-foreground/80 mb-10 max-w-2xl mx-auto leading-relaxed">
@@ -93,19 +131,24 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
 
                                             {/* CTA Buttons */}
                                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
-                                                <Button className="btn-accent text-lg px-8 py-6 font-semibold group">
-                                                    {cta.quote}
-                                                    {isRtl ? (
-                                                        <ArrowLeft className="me-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                                                    ) : (
-                                                        <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                                    )}
+                                                <Button asChild className="btn-accent text-lg px-8 py-6 font-semibold group">
+                                                    <Link href={`/${lang}/contact`}>
+                                                        {cta.quote}
+                                                        {isRtl ? (
+                                                            <ArrowLeft className="me-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                                                        ) : (
+                                                            <ArrowRight className="ms-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                                        )}
+                                                    </Link>
                                                 </Button>
                                                 <Button
+                                                    asChild
                                                     variant="outline"
                                                     className="text-lg px-8 py-6 border-2 border-primary/50 text-primary-foreground bg-transparent hover:bg-primary/20 hover:border-primary"
                                                 >
-                                                    {cta.view}
+                                                    <Link href={`/${lang}/shop`}>
+                                                        {cta.view}
+                                                    </Link>
                                                 </Button>
                                             </div>
 
