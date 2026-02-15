@@ -3,6 +3,7 @@
 import { Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import LanguageSwitcher from "./LanguageSwitcher";
 import CartDrawer from "@/components/shop/CartDrawer";
 import { benefitsData } from "@/data/benefits";
@@ -81,9 +82,12 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                 <div className="flex items-center justify-between h-16 md:h-20">
                     {/* Logo */}
                     <Link href={`/${lang}/`} className="flex items-center cursor-pointer">
-                        <img
+                        <Image
                             src="/images/logo.png"
                             alt="Moroccan Organica"
+                            width={160}
+                            height={48}
+                            priority
                             className="h-10 md:h-12 w-auto object-contain"
                         />
                     </Link>
@@ -133,7 +137,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                         <div className="bg-secondary border border-border/20 rounded-lg shadow-xl min-w-[240px] max-h-[400px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
                                             {link.dropdownItems?.map((item) => (
                                                 <Link
-                                                    key={item.href}
+                                                    key={`${item.href}-${item.name}`}
                                                     href={item.href}
                                                     onClick={() => setOpenDropdown(null)}
                                                     className={`block px-4 py-2.5 text-sm text-gray-300 hover:text-white hover:bg-primary/20 transition-colors duration-150 cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
@@ -190,7 +194,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                                 <div className={`flex flex-col gap-1 py-2 ${isRTL ? 'pr-4' : 'pl-4'}`}>
                                                     {link.dropdownItems?.map((item) => (
                                                         <Link
-                                                            key={item.href}
+                                                            key={`${item.href}-${item.name}`}
                                                             href={item.href}
                                                             className={`text-sm text-gray-400 hover:text-primary transition-colors duration-150 py-1.5 cursor-pointer ${isRTL ? 'text-right' : 'text-left'}`}
                                                             onClick={() => setIsMenuOpen(false)}
