@@ -211,6 +211,25 @@ export async function getProductById(id: string): Promise<ShopProductDB | null> 
 }
 
 // CREATE PRODUCT
+async function generateUniqueTranslationSlugs(translations: CreateProductInput['translations']) {
+  const resolved = [] as CreateProductInput['translations'];
+
+  for (const t of translations) {
+    let slug = t.slug;
+    let suffix = 1;
+
+    // try to find a free slug for the language
+    while (await prisma.productTranslation.findUnique({ where: { language_slug: { language: t.language as $Enums.LanguageCode, slug } } })) {
+      suffix += 1;
+      slug = `${t.slug}-${suffix}`;
+    }
+
+    resolved.push({ ...t, slug });
+  }
+
+  return resolved;
+}
+
 export async function createProduct(input: CreateProductInput): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
   try {
     // Validate required fields
@@ -247,6 +266,8 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     // Filter out data URLs from images (too large for DB)
     const validImages = input.images?.filter(img => !img.url.startsWith('data:')) || [];
 
+    const translationsWithUniqueSlugs = await generateUniqueTranslationSlugs(input.translations);
+
     const product = await prisma.product.create({
       data: {
         categoryId: input.categoryId,
@@ -257,7 +278,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
         isFeatured: input.isFeatured ?? false,
         isTopSale: input.isTopSale ?? false,
         translations: {
-          create: input.translations.map((t) => ({
+          create: translationsWithUniqueSlugs.map((t) => ({
             language: t.language as $Enums.LanguageCode,
             name: t.name,
             description: t.description || null,
