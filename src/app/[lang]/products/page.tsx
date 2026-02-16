@@ -1,8 +1,9 @@
-
 import { getDictionary } from "@/lib/dictionaries";
-import { getStaticPageBySystemName, getGlobalSeoSettings, getTopSaleProducts } from "@/lib/queries";
 import { Metadata } from "next";
-import ProductsClient from "./ProductsClient";
+import { ProductsContent } from "@/features/shop/components/ProductsContent";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
+import { getProducts } from "@/features/shop/actions";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -30,12 +31,22 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function ProductsPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'products');
-    const page = await getStaticPageBySystemName('PRODUCTS', lang);
-    const topProducts = await getTopSaleProducts(lang);
+    const [dict, page, productsResult] = await Promise.all([
+        getDictionary(lang, 'products'),
+        getStaticPageBySystemName('PRODUCTS', lang),
+        getProducts({ isTopSale: true })
+    ]);
+
+    const topProducts = productsResult.products.map(p => ({
+        image: p.image,
+        title: p.name,
+        description: p.description,
+        badge: "Top Seller",
+        slug: p.slug
+    }));
 
     return (
-        <ProductsClient
+        <ProductsContent
             pageData={page}
             topProducts={topProducts}
             dict={dict}

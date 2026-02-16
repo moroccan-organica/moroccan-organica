@@ -1,5 +1,5 @@
 import { getDictionary } from "@/lib/dictionaries";
-import { CheckoutWrapper } from "./CheckoutWrapper";
+import { CheckoutWrapper } from "@/features/checkout/components/CheckoutWrapper";
 
 type Params = Promise<{ lang: string }>;
 

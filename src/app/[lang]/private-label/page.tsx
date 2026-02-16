@@ -1,7 +1,8 @@
 import { getDictionary } from "@/lib/dictionaries";
-import PrivateLabelClient from "./PrivateLabelClient";
+import { PrivateLabelContent } from "@/features/static-pages/components/PrivateLabelContent";
 import { privateLabelData } from "@/data/private-label";
-import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -41,7 +42,7 @@ export default async function PrivateLabelPage({ params }: { params: Promise<{ l
     }
 
     return (
-        <PrivateLabelClient
+        <PrivateLabelContent
             data={privateLabelData}
             dict={dict}
             lang={lang}

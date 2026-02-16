@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {

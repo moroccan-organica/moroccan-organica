@@ -1,8 +1,8 @@
-import { getStaticPageBySlug } from "@/lib/queries";
-import { Markdown } from "@/components/common/Markdown";
+import { getStaticPageBySlug } from "@/features/static-pages/actions";
+import { Markdown } from "@/components/shared/Markdown";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
-import { getGlobalSeoSettings } from "@/lib/queries";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 
 // Re-validate content every hour
 export const revalidate = 3600;

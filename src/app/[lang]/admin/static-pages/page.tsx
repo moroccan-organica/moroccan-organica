@@ -1,6 +1,6 @@
 
 import { Metadata } from 'next';
-import { StaticPagesClient } from './StaticPagesClient';
+import { StaticPagesAdminContent } from "@/features/static-pages/components/StaticPagesAdminContent";
 
 export const metadata: Metadata = {
     title: 'Static Pages | Admin Dashboard',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function StaticPagesPage() {
-    return <StaticPagesClient />;
+    return <StaticPagesAdminContent />;
 }

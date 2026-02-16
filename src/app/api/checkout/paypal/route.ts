@@ -4,7 +4,7 @@ import {
     OrdersController,
     Environment,
 } from "@paypal/paypal-server-sdk";
-import { createOrder } from "@/actions/order.actions";
+import { createOrder } from "@/features/admin/actions/order.actions";
 
 /**
  * PayPal Payment API Route

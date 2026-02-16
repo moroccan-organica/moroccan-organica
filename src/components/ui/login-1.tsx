@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Chrome, Eye, EyeOff, Facebook } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 
 interface FormState {
   email: string;

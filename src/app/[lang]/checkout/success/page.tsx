@@ -1,13 +1,13 @@
 import { getDictionary } from "@/lib/dictionaries";
-import { CheckoutSuccessClient } from "./CheckoutSuccessClient";
+import { CheckoutSuccessContent } from "@/features/checkout/components/CheckoutSuccessContent";
 
 type Params = Promise<{ lang: string }>;
 type SearchParams = Promise<{ orderId?: string }>;
 
-export default async function CheckoutSuccessPage({ 
+export default async function CheckoutSuccessPage({
     params,
-    searchParams 
-}: { 
+    searchParams
+}: {
     params: Params;
     searchParams: SearchParams;
 }) {
@@ -15,5 +15,5 @@ export default async function CheckoutSuccessPage({
     const { orderId } = await searchParams;
     const dict = await getDictionary(lang, 'common');
 
-    return <CheckoutSuccessClient dict={dict} lang={lang} orderId={orderId} />;
+    return <CheckoutSuccessContent dict={dict} lang={lang} orderId={orderId} />;
 }

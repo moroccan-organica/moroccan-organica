@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { AdminHeader } from "@/components/admin/AdminHeader";
+import { AdminHeader } from "@/features/admin/components/AdminHeader";
 import { Package, ShoppingCart, DollarSign, TrendingUp, Loader2 } from "lucide-react";
-import { getDashboardStats, getRecentOrders, getTopProducts } from "@/actions/dashboard.actions";
-import type { DashboardStats, RecentOrder, TopProduct } from "@/actions/dashboard.actions";
+import { getDashboardStats, getRecentOrders, getTopProducts } from "@/features/admin/actions/dashboard.actions";
+import type { DashboardStats, RecentOrder, TopProduct } from "@/features/admin/actions/dashboard.actions";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

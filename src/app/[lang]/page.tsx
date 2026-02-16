@@ -1,16 +1,18 @@
-import Hero from "@/components/sections/Hero";
-import TrustedSupplierSection from "@/components/sections/TrustedSupplierSection";
-import ProductsSection from "@/components/sections/ProductsSection";
-import PrivateLabelSection from "@/components/sections/PrivateLabelSection";
-import PressFeatureSection from "@/components/sections/PressFeatureSection";
-import SocialProofSection from "@/components/sections/SocialProofSection";
-import TrustSection from "@/components/sections/TrustSection";
-import InstagramSection from "@/components/sections/InstagramSection";
-import RFQSection from "@/components/sections/RFQSection";
+import Hero from "@/features/home/components/Hero";
+import TrustedSupplierSection from "@/features/home/components/TrustedSupplierSection";
+import ProductsSection from "@/features/home/components/ProductsSection";
+import PrivateLabelSection from "@/features/home/components/PrivateLabelSection";
+import PressFeatureSection from "@/features/home/components/PressFeatureSection";
+import SocialProofSection from "@/features/home/components/SocialProofSection";
+import TrustSection from "@/features/home/components/TrustSection";
+import InstagramSection from "@/features/home/components/InstagramSection";
+import RFQSection from "@/features/home/components/RFQSection";
 import { homePageData } from "@/data/home";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
-import { getStaticPageBySystemName, getGlobalSeoSettings, getFeaturedProducts, getTopSaleProducts } from "@/lib/queries";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
+import { getProducts } from "@/features/shop/actions";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -39,10 +41,32 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang, 'home');
-  const page = await getStaticPageBySystemName('HOME', lang);
-  const featuredProducts = await getFeaturedProducts(lang);
-  const topSaleProducts = await getTopSaleProducts(lang);
+  // Parallel Fetching
+  const [dict, page, featuredResult, topSaleResult] = await Promise.all([
+    getDictionary(lang, 'home'),
+    getStaticPageBySystemName('HOME', lang),
+    getProducts({ isFeatured: true, limit: 10 }),
+    getProducts({ isTopSale: true, limit: 6 })
+  ]);
+
+  const featuredProducts = featuredResult.products.map(p => ({
+    image: p.image,
+    title: p.name,
+    subtitle: p.category
+  }));
+
+  const topSaleProducts = topSaleResult.products.map(p => ({
+    id: p.id,
+    title: p.name,
+    desc: p.description,
+    description: p.description,
+    badge: "Top Seller",
+    image: p.image,
+    price: p.price,
+    volume: p.volume,
+    name: p.name,
+    slug: p.slug
+  }));
 
   // Merge localized content into data structures
   const heroData = {

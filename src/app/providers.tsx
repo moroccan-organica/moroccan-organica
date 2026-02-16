@@ -6,7 +6,7 @@ import { useState } from 'react';
 import '../lib/i18n';
 import i18n from '../lib/i18n';
 import { useEffect } from 'react';
-import { CartProvider } from '@/components/shop/CartContext';
+import { CartProvider } from '@/features/shop/components/CartContext';
 
 export function Providers({ children, lang }: { children: React.ReactNode, lang?: string }) {
     const [queryClient] = useState(() => new QueryClient({

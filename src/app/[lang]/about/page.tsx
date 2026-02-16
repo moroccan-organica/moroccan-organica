@@ -1,8 +1,9 @@
 import { getDictionary } from "@/lib/dictionaries";
-import AboutClient from "./AboutClient";
+import { AboutContent } from "@/features/static-pages/components/AboutContent";
 import { Metadata } from "next";
 import { aboutPageData } from "@/data/about";
-import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -42,7 +43,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
 
     return (
         <main>
-            <AboutClient data={aboutPageData} dict={dict} lang={lang} />
+            <AboutContent data={aboutPageData} dict={dict} lang={lang} />
         </main>
     );
 }

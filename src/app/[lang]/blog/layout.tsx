@@ -1,4 +1,5 @@
-import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 import { Metadata } from "next";
 
 type Params = Promise<{ lang: string }>;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { createOrder } from "@/actions/order.actions";
+import { createOrder } from "@/features/admin/actions/order.actions";
 
 /**
  * Stripe Payment API Route

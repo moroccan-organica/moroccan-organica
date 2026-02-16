@@ -1,6 +1,6 @@
 
 import { Metadata } from 'next';
-import { SEOPageClient } from './SEOPageClient';
+import { SEOContent } from "@/features/seo/components/SEOContent";
 
 export const metadata: Metadata = {
     title: 'SEO Settings | Admin Dashboard',
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function SEOPage() {
-    return <SEOPageClient />;
+    return <SEOContent />;
 }

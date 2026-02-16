@@ -1,7 +1,8 @@
 import { getDictionary } from "@/lib/dictionaries";
-import ContactClient from "./ContactClient";
+import { ContactContent } from "@/features/static-pages/components/ContactContent";
 import { contactPageData } from "@/data/contact";
-import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
+import { getStaticPageBySystemName } from "@/features/static-pages/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -41,7 +42,7 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
     }
 
     return (
-        <ContactClient
+        <ContactContent
             data={contactPageData}
             dict={dict}
             lang={lang}

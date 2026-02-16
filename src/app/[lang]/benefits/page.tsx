@@ -4,8 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getDictionary } from "@/lib/dictionaries";
 import { benefitsData } from "@/data/benefits";
 import { BenefitsCard } from "@/components/benefits/BenefitsCard";
-import { BlogHero } from "@/components/blog/BlogHero";
-import Link from 'next/link';
+import { BlogHero } from "@/features/blog/components/BlogHero";
 
 export default function BenefitsPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = React.use(params);

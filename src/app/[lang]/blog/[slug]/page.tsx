@@ -4,10 +4,10 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getDictionary } from "@/lib/dictionaries";
-import { getPublishedPostBySlug, incrementPostViewCount } from "@/lib/blog/actions";
-import { BlogPostContent } from "@/components/blog/BlogPostContent";
-import { BlogPostMeta } from "@/components/blog/BlogPostMeta";
-import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
+import { getPublishedPostBySlug, incrementPostViewCount } from "@/features/blog/actions";
+import { BlogPostContent } from "@/features/blog/components/BlogPostContent";
+import { BlogPostMeta } from "@/features/blog/components/BlogPostMeta";
+import { BlogPostTimeline } from "@/features/blog/components/BlogPostTimeline";
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
 

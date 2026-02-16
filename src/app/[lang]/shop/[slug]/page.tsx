@@ -2,12 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data/shop-products";
-import { getProductBySlug, getRelatedProducts, getProducts } from "@/actions/product.actions";
-import { getGlobalSeoSettings } from "@/lib/queries";
+import { getProductBySlug, getRelatedProducts, getProducts } from "@/features/shop/actions";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
 import { Metadata } from "next";
-import AddToCartButton from "@/components/shop/AddToCartButton";
-import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
+import AddToCartButton from "@/features/shop/components/AddToCartButton";
+import { ProductImageGallery } from "@/features/shop/components/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
 
 const copy = {
@@ -85,74 +84,16 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 export default async function ProductDetailPage({ params }: { params: Params }) {
     const { lang, slug } = await params;
 
-    // Try to fetch from database first, fallback to static data
+    // Fetch from database
     let product: ShopProductDB | null = await getProductBySlug(slug, lang as 'en' | 'ar' | 'fr');
     let relatedProducts: ShopProductDB[] = [];
 
-    // Fallback to static data if DB returns nothing
-    if (!product) {
-        const staticProduct = getProductBySlugStatic(slug);
-        if (staticProduct) {
-            product = {
-                id: staticProduct.id,
-                slug: staticProduct.slug,
-                category: staticProduct.category,
-                categorySlug: staticProduct.category.toLowerCase().replace(/\s+/g, '-'),
-                image: staticProduct.image,
-                gallery: staticProduct.gallery || [],
-                badge: staticProduct.badge,
-                volume: staticProduct.volume,
-                name: staticProduct.name,
-                nameAr: staticProduct.nameAr,
-                nameFr: staticProduct.name,
-                description: staticProduct.description,
-                descriptionAr: staticProduct.descriptionAr,
-                descriptionFr: staticProduct.description,
-                notes: staticProduct.notes,
-                price: staticProduct.price,
-                stock: staticProduct.stockQuantity || 100,
-                isAvailable: true,
-                isFeatured: staticProduct.badge === 'bestseller',
-                isTopSale: false,
-                sku: staticProduct.id,
-                variants: [],
-            };
-
-            // Get related from static
-            relatedProducts = shopProducts
-                .filter((item) => item.id !== staticProduct.id && item.category === staticProduct.category)
-                .slice(0, 3)
-                .map(p => ({
-                    id: p.id,
-                    slug: p.slug,
-                    category: p.category,
-                    categorySlug: p.category.toLowerCase().replace(/\s+/g, '-'),
-                    image: p.image,
-                    gallery: p.gallery || [],
-                    badge: p.badge,
-                    volume: p.volume,
-                    name: p.name,
-                    nameAr: p.nameAr,
-                    nameFr: p.name,
-                    description: p.description,
-                    descriptionAr: p.descriptionAr,
-                    descriptionFr: p.description,
-                    notes: p.notes,
-                    price: p.price,
-                    stock: p.stockQuantity || 100,
-                    isAvailable: true,
-                    isFeatured: p.badge === 'bestseller',
-                    isTopSale: false,
-                    sku: p.id,
-                    variants: [],
-                }));
-        }
-    } else {
+    if (product) {
         // Get related from DB - try by category first
-        if (product && product.categorySlug) {
+        if (product.categorySlug) {
             const currentProduct = product;
             // Find category by slug to get ID
-            const { getCategories } = await import('@/actions/category.actions');
+            const { getCategories } = await import('@/features/shop/actions/category.actions');
             const categories = await getCategories();
             const category = categories.find(c => c.slug === currentProduct.categorySlug || c.slugAr === currentProduct.categorySlug);
 
@@ -162,15 +103,16 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         }
 
         // If no related products found, get any 3 available products (excluding current)
-        if (product && relatedProducts.length === 0) {
+        if (relatedProducts.length === 0) {
             const currentProduct = product;
             const allProductsResult = await getProducts({ isAvailable: true, limit: 10 });
             relatedProducts = allProductsResult.products
                 .filter(p => p.id !== currentProduct.id)
                 .slice(0, 3);
         }
+    } else {
+        notFound();
     }
-
     if (!product) {
         notFound();
     }

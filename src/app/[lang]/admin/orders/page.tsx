@@ -1,8 +1,6 @@
-'use client';
-
-import { OrdersPageClient } from './OrdersPageClient';
+import { OrdersContent } from "@/features/admin/components/OrdersContent";
 
 export default function OrdersPage() {
-  return <OrdersPageClient />;
+  return <OrdersContent />;
 }
 

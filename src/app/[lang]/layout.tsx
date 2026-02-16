@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display, Cairo } from "next/font/google";
 import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
-import { LayoutContent } from "@/components/common/LayoutContent";
-import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
+import { LayoutContent } from "@/components/shared/LayoutContent";
+import { getGlobalSeoSettings } from "@/features/seo/actions";
+import { getProducts } from "@/features/shop/actions";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -74,7 +75,11 @@ export default async function RootLayout({
 }) {
   const { lang } = await params;
   const dict = await getDictionary(lang, 'common');
-  const topProducts = await getTopSaleProducts(lang);
+  const productsResult = await getProducts({ isTopSale: true, limit: 6 });
+  const topProducts = productsResult.products.map(p => ({
+    title: p.name,
+    slug: p.slug
+  }));
 
   return (
     <html lang={lang} dir={lang === 'ar' ? 'rtl' : 'ltr'} suppressHydrationWarning>

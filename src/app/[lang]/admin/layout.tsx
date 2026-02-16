@@ -1,4 +1,4 @@
-import { AdminLayoutClient } from '@/components/admin/AdminLayoutClient'
+import { AdminLayoutClient } from '@/features/admin/components/AdminLayoutClient'
 
 export default async function AdminLayout({
     children,

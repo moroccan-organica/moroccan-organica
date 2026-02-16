@@ -2,11 +2,11 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import { useParams } from 'next/navigation';
-import { AdminHeader } from '@/components/admin/AdminHeader';
-import { PostsTable } from '@/components/blog/PostsTable';
-import { PostForm } from '@/components/blog/PostForm';
-import { StatsOverview } from '@/components/blog/StatsOverview';
-import { QuickActionsGrid } from '@/components/blog/QuickActions';
+import { AdminHeader } from '@/features/admin/components/AdminHeader';
+import { PostsTable } from '@/features/blog/components/PostsTable';
+import { PostForm } from '@/features/blog/components/PostForm';
+import { StatsOverview } from '@/features/blog/components/StatsOverview';
+import { QuickActionsGrid } from '@/features/blog/components/QuickActions';
 import { 
   useBlogPosts, 
   useBlogCategories, 
@@ -16,7 +16,7 @@ import {
   useArchiveBlogPost,
   useCreateBlogCategory, 
   useDeleteBlogCategory,
-} from '@/lib/blog/hooks';
+} from '@/features/blog/hooks';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LayoutDashboard, FileText, FolderOpen, Plus, Loader2 } from 'lucide-react';

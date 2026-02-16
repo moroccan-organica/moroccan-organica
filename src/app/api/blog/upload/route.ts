@@ -4,7 +4,7 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 const UPLOAD_DIR = join(process.cwd(), 'public', 'images', 'blog');
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
