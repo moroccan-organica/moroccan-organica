@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -15,20 +15,20 @@ export async function GET(request: NextRequest) {
     const postId = searchParams.get('postId');
     const mediaType = searchParams.get('mediaType'); // 'image' or 'video'
 
-    const where: Record<string, unknown> = {};
+    let query = supabase.from('BlogMedia').select('*');
+
     if (postId) {
-      where.postId = postId;
+      query = query.eq('postId', postId);
     }
     if (mediaType) {
-      where.mediaType = mediaType;
+      query = query.eq('mediaType', mediaType);
     }
 
-    const media = await prisma.blogMedia.findMany({
-      where,
-      orderBy: { createdAt: 'desc' },
-    });
+    const { data: media, error } = await query.order('createdAt', { ascending: false });
 
-    const formattedMedia = media.map((item) => ({
+    if (error) throw error;
+
+    const formattedMedia = (media || []).map((item: any) => ({
       id: item.id,
       blogger_id: session.user.id,
       post_id: item.postId,
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
       caption: item.caption,
       file_size_bytes: item.fileSizeBytes,
       mime_type: item.mimeType,
-      created_at: item.createdAt.toISOString(),
+      created_at: item.createdAt,
     }));
 
     return NextResponse.json(formattedMedia);
@@ -64,9 +64,12 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Media ID is required' }, { status: 400 });
     }
 
-    await prisma.blogMedia.delete({
-      where: { id },
-    });
+    const { error } = await supabase
+      .from('BlogMedia')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {

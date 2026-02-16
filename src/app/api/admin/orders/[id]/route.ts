@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -21,10 +21,14 @@ export async function PUT(
             return NextResponse.json({ error: 'Status is required' }, { status: 400 });
         }
 
-        const order = await prisma.order.update({
-            where: { id },
-            data: { status },
-        });
+        const { data: order, error } = await supabase
+            .from('Order')
+            .update({ status })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
 
         return NextResponse.json(order);
     } catch (error) {

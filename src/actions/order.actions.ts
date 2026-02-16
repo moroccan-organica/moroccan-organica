@@ -1,7 +1,17 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { supabase } from "@/lib/supabase";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
+
+async function checkAdmin() {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized');
+    }
+    return session;
+}
 
 interface CreateOrderInput {
     customer: {
@@ -50,68 +60,64 @@ export async function createOrder(input: CreateOrderInput): Promise<{
     error?: string;
 }> {
     try {
-        // Find or create customer
-        const customer = await prisma.customer.upsert({
-            where: { email: input.customer.email },
-            update: {
-                firstName: input.customer.firstName,
-                lastName: input.customer.lastName,
-                phone: input.customer.phone,
-                companyName: input.customer.companyName,
-                lastOrderDate: new Date(),
-            },
-            create: {
+        const { data: customer, error: customerError } = await supabase
+            .from('Customer')
+            .upsert({
                 email: input.customer.email,
                 firstName: input.customer.firstName,
                 lastName: input.customer.lastName,
                 phone: input.customer.phone,
                 companyName: input.customer.companyName,
-                lastOrderDate: new Date(),
-            },
-        });
+                lastOrderDate: new Date().toISOString(),
+            }, { onConflict: 'email' })
+            .select()
+            .single();
 
-        // Create shipping address
-        const address = await prisma.address.create({
-            data: {
+        if (customerError) throw customerError;
+
+        const { data: address, error: addressError } = await supabase
+            .from('Address')
+            .insert({
                 customerId: customer.id,
                 addressLine1: input.shippingAddress.street,
                 city: input.shippingAddress.city,
                 postalCode: input.shippingAddress.postalCode,
                 country: input.shippingAddress.country,
                 phone: input.customer.phone,
-            },
-        });
+            })
+            .select()
+            .single();
 
-        // Generate order reference
+        if (addressError) throw addressError;
+
         let orderReference = generateOrderReference();
         let attempts = 0;
         while (attempts < 10) {
-            const existing = await prisma.order.findUnique({
-                where: { reference: orderReference },
-            });
+            const { data: existing } = await supabase
+                .from('Order')
+                .select('id')
+                .eq('reference', orderReference)
+                .maybeSingle();
             if (!existing) break;
             orderReference = generateOrderReference();
             attempts++;
         }
 
-        // Resolve items and variants before creating the order
         const orderItemsData = await Promise.all(input.items.map(async (item) => {
-            // Find a valid variant for this product
-            // Check if item.productId is a variant ID or a base product ID
-            let variant = await prisma.productVariant.findFirst({
-                where: {
-                    OR: [
-                        { id: item.productId },
-                        { productId: item.productId }
-                    ]
-                }
-            });
+            let { data: variant, error: varError } = await supabase
+                .from('ProductVariant')
+                .select('id, sizeName')
+                .or(`id.eq.${item.productId},productId.eq.${item.productId}`)
+                .limit(1)
+                .maybeSingle();
 
             if (!variant) {
-                // If still not found, try to find by SKU if productId happens to be SKU
-                variant = await prisma.productVariant.findUnique({
-                    where: { sku: item.productId }
-                });
+                const { data: vBySku } = await supabase
+                    .from('ProductVariant')
+                    .select('id, sizeName')
+                    .eq('sku', item.productId)
+                    .maybeSingle();
+                variant = vBySku;
             }
 
             if (!variant) {
@@ -122,52 +128,116 @@ export async function createOrder(input: CreateOrderInput): Promise<{
                 variantId: variant.id,
                 productNameSnapshot: item.productName,
                 variantNameSnapshot: variant.sizeName || item.productName,
-                priceSnapshot: new Prisma.Decimal(item.price),
+                priceSnapshot: item.price,
                 quantity: item.quantity,
             };
         }));
 
-        // Create order with resolved items
-        const order = await prisma.order.create({
-            data: {
+        const { data: order, error: orderError } = await supabase
+            .from('Order')
+            .insert({
                 reference: orderReference,
                 customerId: customer.id,
                 shippingAddressId: address.id,
-                totalAmount: new Prisma.Decimal(input.totalAmount),
+                totalAmount: input.totalAmount,
                 paymentProvider: input.paymentProvider,
                 paymentId: input.paymentId,
                 status: "PENDING",
-                items: {
-                    create: orderItemsData
-                },
-            },
-            include: {
-                customer: true,
-                address: true,
-                items: true,
-            },
-        });
+            })
+            .select()
+            .single();
 
-        // Update customer total spent
-        await prisma.customer.update({
-            where: { id: customer.id },
-            data: {
-                totalSpent: {
-                    increment: new Prisma.Decimal(input.totalAmount),
-                },
-            },
-        });
+        if (orderError) throw orderError;
+
+        const { error: itemsError } = await supabase
+            .from('OrderItem')
+            .insert(orderItemsData.map(item => ({
+                ...item,
+                orderId: order.id
+            })));
+
+        if (itemsError) throw itemsError;
+
+        await supabase
+            .from('Customer')
+            .update({
+                totalSpent: (customer.totalSpent || 0) + input.totalAmount
+            })
+            .eq('id', customer.id);
 
         return {
             success: true,
             orderId: order.id,
             orderReference: order.reference,
         };
-    } catch (error) {
+    } catch (error: any) {
         console.error("Error creating order:", error);
         return {
             success: false,
-            error: error instanceof Error ? error.message : "Failed to create order",
+            error: error.message || "Failed to create order",
         };
+    }
+}
+
+/**
+ * Get all orders (ADMIN ONLY)
+ */
+export async function getOrders() {
+    await checkAdmin();
+
+    try {
+        const { data: orders, error } = await supabase
+            .from('Order')
+            .select(`
+                *,
+                customer:Customer(*),
+                address:Address(*),
+                items:OrderItem(*)
+            `)
+            .order('createdAt', { ascending: false });
+
+        if (error) throw error;
+
+        // Map to expected AdminOrder structure if needed
+        return (orders || []).map((o: any) => ({
+            ...o,
+            itemsCount: o.items?.length || 0,
+            shippingAddress: o.address,
+            // Nested items might need image mapping if stored elsewhere
+            items: o.items?.map((item: any) => ({
+                ...item,
+                name: item.productNameSnapshot,
+                variantName: item.variantNameSnapshot,
+                price: Number(item.priceSnapshot),
+                // image: ... (might need to fetch from ProductImage if needed)
+            }))
+        }));
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        throw new Error('Failed to fetch orders');
+    }
+}
+
+/**
+ * Update order status (ADMIN ONLY)
+ */
+export async function updateOrderStatus(id: string, status: string) {
+    await checkAdmin();
+
+    try {
+        const { data, error } = await supabase
+            .from('Order')
+            .update({ status })
+            .eq('id', id)
+            .select()
+            .single();
+
+        if (error) throw error;
+
+        revalidatePath('/[lang]/admin/orders');
+        return { success: true, data };
+    } catch (error: any) {
+        console.error('Error updating order:', error);
+        return { success: false, error: error.message };
     }
 }

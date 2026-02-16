@@ -1,22 +1,18 @@
 
-import { prisma } from './prisma';
-export { prisma };
-import { LanguageCode } from '@prisma/client';
+import { supabase } from './supabase';
 
 export async function getStaticPageBySystemName(systemName: string, lang: string) {
     try {
-        const page = await prisma.staticPage.findUnique({
-            where: { systemName },
-            include: {
-                translations: {
-                    where: { language: lang as LanguageCode }
-                }
-            }
-        });
+        const { data: page, error } = await supabase
+            .from('StaticPage')
+            .select('*, translations:StaticPageTranslation(*)')
+            .eq('systemName', systemName)
+            .eq('translations.language', lang)
+            .single();
 
-        if (!page) return null;
+        if (error || !page) return null;
 
-        const translation = (page.translations[0] as any) || null;
+        const translation = (page.translations?.[0] as any) || null;
 
         return {
             ...page,
@@ -41,19 +37,18 @@ export async function getStaticPageBySystemName(systemName: string, lang: string
 
 export async function getGlobalSeoSettings(lang: string) {
     try {
-        const settings = await prisma.globalSeoSetting.findFirst({
-            include: {
-                translations: {
-                    where: { language: lang as LanguageCode }
-                }
-            }
-        });
+        const { data: settings, error } = await supabase
+            .from('GlobalSeoSetting')
+            .select('*, translations:GlobalSeoTranslation(*)')
+            .eq('translations.language', lang)
+            .limit(1)
+            .single();
 
-        if (!settings) return null;
+        if (error || !settings) return null;
 
         return {
             ...settings,
-            translation: settings.translations[0] || null
+            translation: settings.translations?.[0] || null
         };
     } catch (error) {
         console.warn("Failed to fetch global SEO settings:", error);
@@ -63,25 +58,17 @@ export async function getGlobalSeoSettings(lang: string) {
 
 export async function getStaticPageBySlug(slug: string, lang: string) {
     try {
-        const page = await prisma.staticPage.findFirst({
-            where: {
-                translations: {
-                    some: {
-                        slug: slug,
-                        language: lang as LanguageCode
-                    }
-                }
-            },
-            include: {
-                translations: {
-                    where: { language: lang as LanguageCode }
-                }
-            }
-        });
+        const { data: page, error } = await supabase
+            .from('StaticPage')
+            .select('*, translations:StaticPageTranslation(*)')
+            .eq('translations.slug', slug)
+            .eq('translations.language', lang)
+            .limit(1)
+            .single();
 
-        if (!page) return null;
+        if (error || !page) return null;
 
-        const translation = (page.translations[0] as any) || null;
+        const translation = (page.translations?.[0] as any) || null;
 
         return {
             ...page,
@@ -106,31 +93,28 @@ export async function getStaticPageBySlug(slug: string, lang: string) {
 
 export async function getFeaturedProducts(lang: string) {
     try {
-        const products = await prisma.product.findMany({
-            where: { isFeatured: true, isAvailable: true },
-            include: {
-                category: {
-                    include: {
-                        translations: {
-                            where: { language: lang as LanguageCode }
-                        }
-                    }
-                },
-                translations: {
-                    where: { language: lang as LanguageCode }
-                },
-                images: {
-                    where: { isPrimary: true }
-                }
-            },
-            take: 10
-        });
+        const { data: products, error } = await supabase
+            .from('Product')
+            .select(`
+                *,
+                category:Category(*, translations:CategoryTranslation(*)),
+                translations:ProductTranslation(*),
+                images:ProductImage(*)
+            `)
+            .eq('isFeatured', true)
+            .eq('isAvailable', true)
+            .eq('category.translations.language', lang)
+            .eq('translations.language', lang)
+            .eq('images.isPrimary', true)
+            .limit(10);
 
-        return products.map(p => {
-            const trans = p.translations[0] || {};
-            const catTrans = p.category.translations[0] || {};
+        if (error || !products) return [];
+
+        return products.map((p: any) => {
+            const trans = p.translations?.[0] || {};
+            const catTrans = p.category?.translations?.[0] || {};
             // Category image if no product image, or placeholder
-            const image = p.images[0]?.url || p.category.image || "/images/placeholder.svg";
+            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
 
             return {
                 title: trans.name || "Untitled Product",
@@ -147,35 +131,31 @@ export async function getFeaturedProducts(lang: string) {
 
 export async function getTopSaleProducts(lang: string) {
     try {
-        const products = await prisma.product.findMany({
-            where: { isTopSale: true, isAvailable: true },
-            include: {
-                category: {
-                    include: {
-                        translations: true // Fetch all category translations
-                    }
-                },
-                translations: true, // Fetch all product translations
-                images: {
-                    where: { isPrimary: true }
-                },
-                variants: {
-                    take: 1, // Get at least one variant for price/volume
-                    orderBy: { price: 'asc' }
-                }
-            },
-            take: 6
-        });
+        const { data: products, error } = await supabase
+            .from('Product')
+            .select(`
+                *,
+                category:Category(*, translations:CategoryTranslation(*)),
+                translations:ProductTranslation(*),
+                images:ProductImage(*),
+                variants:ProductVariant(*)
+            `)
+            .eq('isTopSale', true)
+            .eq('isAvailable', true)
+            .eq('images.isPrimary', true)
+            .limit(6);
 
-        return products.map(p => {
-            const trans = p.translations.find(t => t.language === lang) || p.translations[0] || {};
-            const transEn = p.translations.find(t => t.language === 'en') || p.translations[0] || {};
-            const transAr = p.translations.find(t => t.language === 'ar') || p.translations[0] || {};
+        if (error || !products) return [];
 
-            const catTrans = p.category.translations.find(t => t.language === lang) || p.category.translations[0] || {};
+        return products.map((p: any) => {
+            const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
+            const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
+            const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
 
-            const image = p.images[0]?.url || p.category.image || "/images/placeholder.svg";
-            const variant = p.variants[0];
+            const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
+
+            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
+            const variant = p.variants?.[0];
 
             return {
                 id: p.id,
@@ -204,17 +184,16 @@ export async function getTopSaleProducts(lang: string) {
 
 export async function getAllCategories(lang: string) {
     try {
-        const categories = await prisma.category.findMany({
-            include: {
-                translations: {
-                    where: { language: lang as LanguageCode }
-                }
-            }
-        });
+        const { data: categories, error } = await supabase
+            .from('Category')
+            .select('*, translations:CategoryTranslation(*)')
+            .eq('translations.language', lang);
 
-        return categories.map(c => ({
-            name: c.translations[0]?.name || "Unknown",
-            href: `/${lang}/shop?category=${c.translations[0]?.slug || c.id}`
+        if (error || !categories) return [];
+
+        return categories.map((c: any) => ({
+            name: c.translations?.[0]?.name || "Unknown",
+            href: `/${lang}/shop?category=${c.translations?.[0]?.slug || c.id}`
         }));
     } catch (error) {
         console.error("Error fetching categories:", error);

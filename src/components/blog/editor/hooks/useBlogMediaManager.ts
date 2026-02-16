@@ -8,6 +8,8 @@ interface UseBlogMediaManagerProps {
   onMediaSelect?: (media: BlogPostMedia) => void;
 }
 
+import { getBlogMedia, uploadBlogImage } from '@/actions/media.actions';
+
 export function useBlogMediaManager({ postId, onMediaSelect }: UseBlogMediaManagerProps) {
   const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
   const [mediaItems, setMediaItems] = useState<BlogPostMedia[]>([]);
@@ -16,16 +18,8 @@ export function useBlogMediaManager({ postId, onMediaSelect }: UseBlogMediaManag
   const fetchMedia = useCallback(async () => {
     setMediaLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (postId) {
-        params.append('postId', postId);
-      }
-      
-      const response = await fetch(`/api/blog/media?${params.toString()}`);
-      if (response.ok) {
-        const data = await response.json();
-        setMediaItems(data);
-      }
+      const data = await getBlogMedia({ postId: postId || undefined });
+      setMediaItems(data as BlogPostMedia[]);
     } catch (error) {
       console.error('Error fetching media:', error);
     } finally {
@@ -47,23 +41,18 @@ export function useBlogMediaManager({ postId, onMediaSelect }: UseBlogMediaManag
         formData.append('postId', postId);
       }
 
-      const response = await fetch('/api/blog/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const result = await uploadBlogImage(formData);
 
-      if (!response.ok) {
-        const error = await response.json();
-        console.error('Upload failed:', error);
+      if (!result.success || !result.media) {
+        console.error('Upload failed:', result.error);
         return null;
       }
 
-      const data = await response.json();
-      const media: BlogPostMedia = data.media;
-      
+      const media: BlogPostMedia = result.media as BlogPostMedia;
+
       // Refresh media list
       await fetchMedia();
-      
+
       return media;
     } catch (error) {
       console.error('Error uploading file:', error);

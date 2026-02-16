@@ -1,10 +1,8 @@
-
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { StaticPageInput } from '@/types/static-page';
-import { LanguageCode } from '@prisma/client';
 
 export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     try {
@@ -15,48 +13,52 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
 
         const { id } = await params;
         const body = await req.json() as StaticPageInput;
-        const { systemName, translations } = body; // systemName usually shouldn't change, but allowing update if needed
+        const { systemName, translations } = body;
 
-        // If systemName changes, check unique
-        const existing = await prisma.staticPage.findUnique({
-            where: { id }
-        });
+        const { data: existing, error: fetchError } = await supabase
+            .from('StaticPage')
+            .select('systemName')
+            .eq('id', id)
+            .single();
 
-        if (!existing) {
+        if (fetchError || !existing) {
             return NextResponse.json({ error: 'Page not found' }, { status: 404 });
         }
 
         if (systemName && systemName !== existing.systemName) {
-            const conflict = await prisma.staticPage.findUnique({
-                where: { systemName }
-            });
+            const { data: conflict } = await supabase
+                .from('StaticPage')
+                .select('id')
+                .eq('systemName', systemName)
+                .neq('id', id)
+                .single();
             if (conflict) {
                 return NextResponse.json({ error: 'System Name already exists' }, { status: 400 });
             }
         }
 
-        // Transaction to update page and sync translations
-        const updatedPage = await prisma.$transaction(async (tx) => {
-            // 1. Update main page
-            await tx.staticPage.update({
-                where: { id },
-                data: { systemName }
-            });
+        // Update page
+        const { error: pageUpdateError } = await supabase
+            .from('StaticPage')
+            .update({ systemName })
+            .eq('id', id);
 
-            // 2. Handle Translations
-            // Simplest approach: Delete all and recreate. Or update existing.
-            // Given it's a small set (3 langs), deleteMany + create is often cleaner unless we need to preserve IDs.
-            // Preserving IDs is better for consistent logs or refs, but here minimal refs.
-            // Let's use deleteMany + create for simplicity of "syncing".
+        if (pageUpdateError) throw pageUpdateError;
 
-            await tx.staticPageTranslation.deleteMany({
-                where: { staticPageId: id }
-            });
+        // Sync translations: Delete and Insert
+        const { error: deleteError } = await supabase
+            .from('StaticPageTranslation')
+            .delete()
+            .eq('staticPageId', id);
 
-            await tx.staticPageTranslation.createMany({
-                data: translations.map(t => ({
+        if (deleteError) throw deleteError;
+
+        if (translations && translations.length > 0) {
+            const { error: insertError } = await supabase
+                .from('StaticPageTranslation')
+                .insert(translations.map(t => ({
                     staticPageId: id,
-                    language: t.language as LanguageCode,
+                    language: t.language,
                     slug: t.slug,
                     h1: t.h1,
                     description: t.description,
@@ -65,14 +67,19 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
                     keywords: t.keywords,
                     ogImage: t.ogImage,
                     canonical: t.canonical
-                }))
-            });
+                })));
 
-            return tx.staticPage.findUnique({
-                where: { id },
-                include: { translations: true }
-            });
-        });
+            if (insertError) throw insertError;
+        }
+
+        // Get updated page
+        const { data: updatedPage, error: finalError } = await supabase
+            .from('StaticPage')
+            .select('*, translations:StaticPageTranslation(*)')
+            .eq('id', id)
+            .single();
+
+        if (finalError) throw finalError;
 
         return NextResponse.json(updatedPage);
 
@@ -91,9 +98,12 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
         const { id } = await params;
 
-        await prisma.staticPage.delete({
-            where: { id }
-        });
+        const { error } = await supabase
+            .from('StaticPage')
+            .delete()
+            .eq('id', id);
+
+        if (error) throw error;
 
         return NextResponse.json({ success: true });
     } catch (error) {

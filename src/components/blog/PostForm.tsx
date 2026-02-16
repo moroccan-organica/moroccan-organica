@@ -10,6 +10,7 @@ import { PostFormHeader } from './post-form/PostFormHeader';
 import { PostFormSidebar } from './post-form/PostFormSidebar';
 import { PostPreviewDialog } from './post-form/PostPreviewDialog';
 import { JSONContent } from '@tiptap/core';
+import { uploadBlogImage } from '@/actions/media.actions';
 
 interface PostFormProps {
   post?: BlogPost;
@@ -26,7 +27,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
   const [title, setTitle] = useState(post?.title || '');
   const [contentJson, setContentJson] = useState<JSONContent>(post?.content || { type: 'doc', content: [] });
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
-  
+
   // Form State - Arabic
   const [titleAr, setTitleAr] = useState(post?.title_ar || '');
   const [contentArJson, setContentArJson] = useState<JSONContent>(post?.content_ar || { type: 'doc', content: [] });
@@ -106,7 +107,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
         const raw = localStorage.getItem(DRAFT_KEY);
         if (!raw) return;
         const parsed = JSON.parse(raw);
-        
+
         if (parsed.title) setTitle(parsed.title);
         if (parsed.content) {
           setContentJson(parsed.content);
@@ -144,7 +145,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
   // Auto-save draft to localStorage (debounced)
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    
+
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
@@ -227,7 +228,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
   // Submit Handler
   const handleSubmit = useCallback(async (saveStatus: 'draft' | 'published' | 'review') => {
     let finalFeaturedImageUrl = featuredImageUrl || '';
-    
+
     // Upload new image if a file was selected
     if (featuredImageFile) {
       try {
@@ -237,24 +238,19 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
         if (post?.id) {
           formData.append('postId', post.id);
         }
-        
-        const response = await fetch('/api/blog/upload', {
-          method: 'POST',
-          body: formData,
-        });
-        
-        if (!response.ok) {
-          const error = await response.json();
-          console.error('Upload failed:', error);
+
+        const result = await uploadBlogImage(formData);
+
+        if (!result.success || !result.media) {
+          console.error('Upload failed:', result.error);
           // Fallback: keep existing URL or use preview (but warn user)
           if (!finalFeaturedImageUrl) {
             alert('Failed to upload image. Please try again.');
             return;
           }
         } else {
-          const data = await response.json();
-          finalFeaturedImageUrl = data.url;
-          
+          finalFeaturedImageUrl = result.media.url;
+
           // Clean up blob URL if it was a preview
           if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
             URL.revokeObjectURL(featuredImagePreview);
@@ -267,14 +263,15 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
           return;
         }
       }
-    } else if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
+    }
+    else if (featuredImagePreview && featuredImagePreview.startsWith('blob:')) {
       // If we have a blob preview but no file, it means user selected but didn't save properly
       // In this case, we should not save the blob URL
       if (!finalFeaturedImageUrl) {
         finalFeaturedImageUrl = '';
       }
     }
-    
+
     const postData: Partial<BlogPost> = {
       title,
       title_ar: titleAr || undefined,
@@ -290,7 +287,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
     };
 
     await onSave(postData);
-    
+
     // Clean up after successful save
     if (featuredImageFile) {
       setFeaturedImageFile(null);
@@ -299,7 +296,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading }: Post
       URL.revokeObjectURL(featuredImagePreview);
       setFeaturedImagePreview(null);
     }
-    
+
     if (typeof window !== 'undefined') {
       try {
         localStorage.removeItem(DRAFT_KEY);

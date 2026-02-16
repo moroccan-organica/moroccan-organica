@@ -56,6 +56,8 @@ interface PaginationData {
     totalPages: number;
 }
 
+import { getCustomers } from '@/actions/customer.actions';
+
 export function CustomersListClient() {
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(true);
@@ -71,24 +73,18 @@ export function CustomersListClient() {
     const [dateRange, setDateRange] = useState<{ start: string; end: string }>({ start: '', end: '' });
 
     const fetchCustomers = async () => {
-        // ... (fetch logic) ...
         setLoading(true);
         try {
-            const params = new URLSearchParams({
-                page: page.toString(),
-                limit: '20',
-                search: search,
+            const data = await getCustomers({
+                page,
+                limit: 20,
+                search,
+                startDate: dateRange.start || undefined,
+                endDate: dateRange.end || undefined,
             });
-            if (dateRange.start) params.append('startDate', dateRange.start);
-            if (dateRange.end) params.append('endDate', dateRange.end);
 
-            const response = await fetch(`/api/admin/customers?${params}`);
-            const data = await response.json();
-
-            if (response.ok) {
-                setCustomers(data.customers);
-                setPagination(data.pagination);
-            }
+            setCustomers(data.customers as Customer[]);
+            setPagination(data.pagination);
         } catch (error) {
             console.error('Error fetching customers:', error);
         } finally {

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ShopProductDB, CategoryDB, CreateProductInput, UpdateProductInput } from '@/types/product';
 import { createProduct, updateProduct } from '@/actions/product.actions';
+import { uploadProductImage } from '@/actions/media.actions';
 
 interface ProductFormModalDBProps {
   isOpen: boolean;
@@ -102,8 +103,8 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               },
             ],
             images: [
-              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
-                ? [{ url: formData.image, isPrimary: true }] 
+              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:')
+                ? [{ url: formData.image, isPrimary: true }]
                 : []),
               ...(galleryImages.filter(img => img && !img.startsWith('data:') && !img.startsWith('blob:')).map(url => ({ url, isPrimary: false })))
             ],
@@ -154,8 +155,8 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               },
             ],
             images: [
-              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:') 
-                ? [{ url: formData.image, isPrimary: true }] 
+              ...(formData.image && !formData.image.startsWith('data:') && !formData.image.startsWith('blob:')
+                ? [{ url: formData.image, isPrimary: true }]
                 : []),
               ...(galleryImages.filter(img => img && !img.startsWith('data:') && !img.startsWith('blob:')).map(url => ({ url, isPrimary: false })))
             ],
@@ -206,13 +207,13 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const handleMainImageFile = async (fileList: FileList | null) => {
     if (!fileList || fileList.length === 0) return;
     const file = fileList[0];
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please select a valid image file');
       return;
     }
-    
+
     // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image size must be less than 5MB');
@@ -223,20 +224,15 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       // Upload image to server
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      
-      const response = await fetch('/api/products/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
 
-      if (!response.ok) {
-        const error = await response.json();
-        setError(error.error || 'Failed to upload image');
+      const result = await uploadProductImage(uploadFormData);
+
+      if (!result.success) {
+        setError(result.error || 'Failed to upload image');
         return;
       }
 
-      const data = await response.json();
-      setFormData(prev => ({ ...prev, image: data.url }));
+      setFormData(prev => ({ ...prev, image: result.url! }));
       setError(null);
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -252,7 +248,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const handleGalleryImageCountChange = (count: number) => {
     const newCount = Math.max(0, Math.min(10, count)); // Limit between 0 and 10
     setGalleryImageCount(newCount);
-    
+
     // Adjust gallery images array
     if (newCount > galleryImages.length) {
       setGalleryImages([...galleryImages, ...Array(newCount - galleryImages.length).fill('')]);
@@ -266,13 +262,13 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const handleGalleryImageFile = async (fileList: FileList | null, index: number) => {
     if (!fileList || fileList.length === 0) return;
     const file = fileList[0];
-    
+
     // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please select a valid image file');
       return;
     }
-    
+
     // Validate file size (5MB max)
     if (file.size > 5 * 1024 * 1024) {
       setError('Image size must be less than 5MB');
@@ -283,21 +279,16 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       // Upload image to server
       const uploadFormData = new FormData();
       uploadFormData.append('file', file);
-      
-      const response = await fetch('/api/products/upload', {
-        method: 'POST',
-        body: uploadFormData,
-      });
 
-      if (!response.ok) {
-        const error = await response.json();
-        setError(error.error || 'Failed to upload image');
+      const result = await uploadProductImage(uploadFormData);
+
+      if (!result.success) {
+        setError(result.error || 'Failed to upload image');
         return;
       }
 
-      const data = await response.json();
       const newGalleryImages = [...galleryImages];
-      newGalleryImages[index] = data.url;
+      newGalleryImages[index] = result.url!;
       setGalleryImages(newGalleryImages);
       setFormData(prev => ({ ...prev, gallery: newGalleryImages }));
       setError(null);
@@ -322,7 +313,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
@@ -345,7 +336,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
         {/* Form */}
         <form onSubmit={handleSubmit} className="overflow-y-auto h-[calc(90vh-140px)]">
           <div className="p-6 space-y-6">
-            
+
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                 {error}
@@ -355,7 +346,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
             {/* General Product Information */}
             <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
               <legend className="text-lg font-bold text-[#606C38] px-2">General Product Information</legend>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">
@@ -527,7 +518,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
             {/* Main Image */}
             <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
               <legend className="text-lg font-bold text-[#606C38] px-2">Main Image</legend>
-              
+
               <div>
                 <input
                   type="file"
@@ -577,7 +568,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
             {/* Product Images */}
             <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
               <legend className="text-lg font-bold text-[#606C38] px-2">Product Images</legend>
-              
+
               <div className="mb-4">
                 <label className="block text-sm font-bold text-slate-700 mb-2">
                   Number of Images
@@ -650,7 +641,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
             {/* Product Features */}
             <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
               <legend className="text-lg font-bold text-[#606C38] px-2">Product Features</legend>
-              
+
               <div className="flex gap-3 mb-3">
                 <Input
                   value={newNote}
@@ -688,8 +679,8 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
             <Button type="button" variant="outline" onClick={onClose} disabled={isPending}>
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               className="bg-[#606C38] hover:bg-[#4a5429] text-white"
               disabled={isPending}
             >

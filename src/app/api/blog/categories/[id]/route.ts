@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,18 +17,26 @@ export async function DELETE(
     const { id } = await params;
 
     // Check if category has posts
-    const postsCount = await prisma.blogPost.count({
-      where: { categoryId: id },
-    });
+    const { count: postsCount, error: countError } = await supabase
+      .from('BlogPost')
+      .select('*', { count: 'exact', head: true })
+      .eq('categoryId', id);
 
-    if (postsCount > 0) {
+    if (countError) throw countError;
+
+    if (postsCount !== null && postsCount > 0) {
       return NextResponse.json(
         { error: 'Cannot delete category with existing posts' },
         { status: 400 }
       );
     }
 
-    await prisma.blogCategory.delete({ where: { id } });
+    const { error: deleteError } = await supabase
+      .from('BlogCategory')
+      .delete()
+      .eq('id', id);
+
+    if (deleteError) throw deleteError;
 
     return NextResponse.json({ success: true });
   } catch (error) {

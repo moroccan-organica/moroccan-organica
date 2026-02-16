@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,21 +17,21 @@ function generateSlug(name: string): string {
 // GET /api/blog/categories - List all categories
 export async function GET() {
   try {
-    const categories = await prisma.blogCategory.findMany({
-      orderBy: { sortOrder: 'asc' },
-      include: {
-        _count: { select: { posts: true } },
-      },
-    });
+    const { data: categories, error } = await supabase
+      .from('BlogCategory')
+      .select('*, posts:BlogPost(count)')
+      .order('sortOrder', { ascending: true });
 
-    const formattedCategories = categories.map((cat) => ({
+    if (error) throw error;
+
+    const formattedCategories = categories.map((cat: any) => ({
       id: cat.id,
       name: cat.name,
       slug: cat.slug,
       description: cat.description || '',
       color: cat.color || '#606C38',
       icon: cat.icon || '',
-      postCount: cat._count.posts,
+      postCount: cat.posts?.[0]?.count || 0,
     }));
 
     return NextResponse.json(formattedCategories);
@@ -61,20 +61,33 @@ export async function POST(request: NextRequest) {
     // Ensure unique slug
     let counter = 1;
     let uniqueSlug = slug;
-    while (await prisma.blogCategory.findUnique({ where: { slug: uniqueSlug } })) {
+
+    while (true) {
+      const { data: existing } = await supabase
+        .from('BlogCategory')
+        .select('id')
+        .eq('slug', uniqueSlug)
+        .single();
+
+      if (!existing) break;
+
       uniqueSlug = `${slug}-${counter}`;
       counter++;
     }
 
-    const category = await prisma.blogCategory.create({
-      data: {
+    const { data: category, error } = await supabase
+      .from('BlogCategory')
+      .insert({
         name,
         slug: uniqueSlug,
         description: description || null,
         color: color || '#606C38',
         icon: icon || null,
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({
       id: category.id,

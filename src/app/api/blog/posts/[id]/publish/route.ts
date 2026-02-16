@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -16,18 +16,22 @@ export async function POST(
 
     const { id } = await params;
 
-    const post = await prisma.blogPost.update({
-      where: { id },
-      data: {
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .update({
         status: 'published',
-        publishedAt: new Date(),
-      },
-    });
+        publishedAt: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({
       id: post.id,
       status: post.status,
-      publishedAt: post.publishedAt?.toISOString(),
+      publishedAt: post.publishedAt,
     });
   } catch (error) {
     console.error('Error publishing post:', error);
