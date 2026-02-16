@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { BlogPostFull, BlogCategory } from "@/types/blog";
 import * as actions from "./actions";
 
 // Query keys
@@ -15,16 +14,6 @@ export const blogQueryKeys = {
 };
 
 // Types
-interface PaginatedResponse<T> {
-  data: T[];
-  pagination: {
-    page: number;
-    pageSize: number;
-    total: number;
-    totalPages: number;
-  };
-}
-
 interface PostFilters {
   status?: string;
   categoryId?: string;
@@ -37,8 +26,8 @@ interface PostFilters {
 interface PostInput {
   title: string;
   titleAr?: string;
-  content?: unknown;
-  contentAr?: unknown;
+  content?: Record<string, unknown>;
+  contentAr?: Record<string, unknown>;
   excerpt?: string;
   excerptAr?: string;
   categoryId?: string;

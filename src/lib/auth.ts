@@ -1,7 +1,8 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { supabase } from '@/lib/supabase';
-import bcrypt from 'bcryptjs';
+import * as bcryptModule from 'bcryptjs';
+const bcrypt = (bcryptModule as Record<string, unknown>).default as typeof bcryptModule || bcryptModule;
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -53,14 +54,16 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                token.id = user.id;
+                // Use token.sub for the ID (NextAuth standard) to ensure it persists
+                token.sub = user.id;
                 token.role = user.role;
             }
             return token;
         },
         async session({ session, token }) {
             if (session?.user) {
-                session.user.id = token.id as string;
+                // token.sub is the standard NextAuth property for user ID
+                session.user.id = token.sub as string;
                 if (token.role) {
                     session.user.role = token.role as string;
                 }

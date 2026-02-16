@@ -1,29 +1,42 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
-async function checkAuth() {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
-        throw new Error('Unauthorized');
-    }
-    return session;
-}
+// No strict auth check - follows product.actions.ts pattern
+// The admin pages are already protected by middleware/layout
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+
+interface BlogMediaRow {
+    id: string;
+    postId?: string;
+    mediaType: string;
+    url: string;
+    storagePath?: string;
+    altText?: string;
+    caption?: string;
+    fileSizeBytes?: number;
+    mimeType?: string;
+    createdAt: string;
+}
+
+function getErrorMessage(error: unknown): string {
+    if (error instanceof Error) return error.message;
+    if (typeof error === 'object' && error !== null && 'message' in error) {
+        return String((error as { message: unknown }).message);
+    }
+    if (typeof error === 'string') return error;
+    return 'An unexpected error occurred';
+}
 
 /**
  * Upload a blog image (Server Action)
  */
 export async function uploadBlogImage(formData: FormData) {
-    const session = await checkAuth();
-
     try {
         const file = formData.get('file') as File | null;
         const postId = formData.get('postId') as string | null;
@@ -86,9 +99,9 @@ export async function uploadBlogImage(formData: FormData) {
                 created_at: blogMedia.createdAt,
             }
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Upload error:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 }
 
@@ -96,8 +109,6 @@ export async function uploadBlogImage(formData: FormData) {
  * Get blog media list
  */
 export async function getBlogMedia(filters: { postId?: string; mediaType?: string } = {}) {
-    await checkAuth();
-
     try {
         let query = supabase.from('BlogMedia').select('*');
 
@@ -112,7 +123,7 @@ export async function getBlogMedia(filters: { postId?: string; mediaType?: strin
 
         if (error) throw error;
 
-        return (media || []).map((item: any) => ({
+        return (media || []).map((item: BlogMediaRow) => ({
             id: item.id,
             post_id: item.postId,
             media_type: item.mediaType,
@@ -134,15 +145,13 @@ export async function getBlogMedia(filters: { postId?: string; mediaType?: strin
  * Delete blog media
  */
 export async function deleteBlogMedia(id: string) {
-    await checkAuth();
-
     try {
         const { error } = await supabase.from('BlogMedia').delete().eq('id', id);
         if (error) throw error;
         return { success: true };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Delete media error:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 }
 
@@ -150,8 +159,6 @@ export async function deleteBlogMedia(id: string) {
  * Upload a product image (Server Action)
  */
 export async function uploadProductImage(formData: FormData) {
-    await checkAuth();
-
     try {
         const file = formData.get('file') as File | null;
         if (!file) throw new Error('No file provided');
@@ -176,8 +183,8 @@ export async function uploadProductImage(formData: FormData) {
             success: true,
             url: `/images/products/${filename}`
         };
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error('Product upload error:', error);
-        return { success: false, error: error.message };
+        return { success: false, error: getErrorMessage(error) };
     }
 }

@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams } from 'next/navigation';
+import { getDictionary } from '@/lib/dictionaries';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { PostsTable } from '@/components/blog/PostsTable';
 import { PostForm } from '@/components/blog/PostForm';
@@ -36,191 +37,41 @@ interface CategoryWithCount extends BlogCategory {
   postCount?: number;
 }
 
-const translations = {
-  en: {
-    title: 'Blog Management',
-    subtitle: 'Create, edit and manage your blog posts',
-    tabs: {
-      dashboard: 'Dashboard',
-      posts: 'Posts',
-      categories: 'Categories',
-    },
-    posts: {
-      allPosts: 'All Posts',
-      recentPosts: 'Recent Posts',
-      searchPlaceholder: 'Search posts...',
-      refresh: 'Refresh',
-      gridView: 'Grid View',
-      tableView: 'Table View',
-      archives: 'Archives',
-      addPost: 'New Post',
-      filterTitle: 'Filters',
-      clearAll: 'Clear All',
-      status: 'Status',
-      category: 'Category',
-      noPostsFound: 'No posts found',
-      noPostsMatchFilter: 'No posts match your current filters',
-      clearFilters: 'Clear filters',
-      viewAll: 'View All',
-      table: {
-        title: 'Title',
-        status: 'Status',
-        category: 'Category',
-        actions: 'Actions',
-      },
-      actions: {
-        view: 'View',
-        edit: 'Edit',
-        publish: 'Publish',
-        archive: 'Archive',
-        delete: 'Delete',
-      },
-      statusLabels: {
-        published: 'Published',
-        draft: 'Draft',
-        review: 'In Review',
-        archived: 'Archived',
-      },
-    },
-    stats: {
-      totalArticles: 'Total Articles',
-      totalArticlesDelta: '{count} articles total',
-      totalArticlesDescription: 'All your blog content',
-      noArticles: 'No articles yet',
-      published: 'Published',
-      publishedDelta: '{percentage}% ({count})',
-      publishedDescription: 'Live on your blog',
-      noPublished: 'No published articles',
-      inReview: 'In Review',
-      inReviewDelta: '{percentage}% ({count})',
-      inReviewDescription: 'Awaiting approval',
-      noInReview: 'None in review',
-      drafts: 'Drafts',
-      draftsDelta: '{percentage}% ({count})',
-      draftsDescription: 'Work in progress',
-      noDrafts: 'No drafts',
-    },
-    quickActions: {
-      title: 'Quick Actions',
-      newPost: 'New Post',
-      newPostDescription: 'Create a new blog article',
-      categories: 'Categories',
-      categoriesDescription: 'Manage your categories',
-      mediaLibrary: 'Media Library',
-      mediaLibraryDescription: 'Upload and manage media',
-      viewBlog: 'View Blog',
-      viewBlogDescription: 'See your live blog',
-    },
-    categories: {
-      title: 'Categories',
-      addCategory: 'Add Category',
-      name: 'Name',
-      description: 'Description',
-      color: 'Color',
-      posts: 'Posts',
-      actions: 'Actions',
-      noCategories: 'No categories yet',
-      createFirst: 'Create your first category to organize your blog posts',
-    },
-    form: {
-      cancel: 'Cancel',
-    },
-  },
-  fr: {
-    title: 'Gestion du Blog',
-    subtitle: 'Créer, modifier et gérer vos articles de blog',
-    tabs: {
-      dashboard: 'Tableau de bord',
-      posts: 'Articles',
-      categories: 'Catégories',
-    },
-    posts: {
-      allPosts: 'Tous les articles',
-      recentPosts: 'Articles récents',
-      searchPlaceholder: 'Rechercher des articles...',
-      refresh: 'Rafraîchir',
-      gridView: 'Vue Grille',
-      tableView: 'Vue Tableau',
-      archives: 'Archives',
-      addPost: 'Nouvel Article',
-      filterTitle: 'Filtres',
-      clearAll: 'Effacer tout',
-      status: 'Statut',
-      category: 'Catégorie',
-      noPostsFound: 'Aucun article trouvé',
-      noPostsMatchFilter: 'Aucun article ne correspond à vos filtres',
-      clearFilters: 'Effacer les filtres',
-      viewAll: 'Voir tout',
-      table: {
-        title: 'Titre',
-        status: 'Statut',
-        category: 'Catégorie',
-        actions: 'Actions',
-      },
-      actions: {
-        view: 'Voir',
-        edit: 'Modifier',
-        publish: 'Publier',
-        archive: 'Archiver',
-        delete: 'Supprimer',
-      },
-      statusLabels: {
-        published: 'Publié',
-        draft: 'Brouillon',
-        review: 'En révision',
-        archived: 'Archivé',
-      },
-    },
-    stats: {
-      totalArticles: 'Total Articles',
-      totalArticlesDelta: '{count} articles au total',
-      totalArticlesDescription: 'Tout votre contenu',
-      noArticles: 'Aucun article',
-      published: 'Publiés',
-      publishedDelta: '{percentage}% ({count})',
-      publishedDescription: 'En ligne sur votre blog',
-      noPublished: 'Aucun article publié',
-      inReview: 'En révision',
-      inReviewDelta: '{percentage}% ({count})',
-      inReviewDescription: 'En attente d\'approbation',
-      noInReview: 'Aucun en révision',
-      drafts: 'Brouillons',
-      draftsDelta: '{percentage}% ({count})',
-      draftsDescription: 'Travaux en cours',
-      noDrafts: 'Aucun brouillon',
-    },
-    quickActions: {
-      title: 'Actions Rapides',
-      newPost: 'Nouveau Post',
-      newPostDescription: 'Créer un nouvel article',
-      categories: 'Catégories',
-      categoriesDescription: 'Gérer vos catégories',
-      mediaLibrary: 'Médiathèque',
-      mediaLibraryDescription: 'Télécharger et gérer les médias',
-      viewBlog: 'Voir le Blog',
-      viewBlogDescription: 'Voir votre blog en ligne',
-    },
-    categories: {
-      title: 'Catégories',
-      addCategory: 'Ajouter une catégorie',
-      name: 'Nom',
-      description: 'Description',
-      color: 'Couleur',
-      posts: 'Articles',
-      actions: 'Actions',
-      noCategories: 'Aucune catégorie',
-      createFirst: 'Créez votre première catégorie pour organiser vos articles',
-    },
-    form: {
-      cancel: 'Annuler',
-    },
-  },
-};
+interface AdminBlogTranslations {
+  title?: string;
+  subtitle?: string;
+  tabs?: { dashboard?: string; posts?: string; categories?: string };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  posts?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  stats?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  quickActions?: any;
+  categories?: {
+    title?: string;
+    addCategory?: string;
+    name?: string;
+    description?: string;
+    color?: string;
+    posts?: string;
+    actions?: string;
+    noCategories?: string;
+    createFirst?: string;
+    delete?: string;
+  };
+  form?: { cancel?: string };
+}
 
 export default function BlogAdminPage() {
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
-  const t = translations[lang as keyof typeof translations] || translations.en;
+  const [dict, setDict] = useState<Record<string, unknown> | null>(null);
+
+  useEffect(() => {
+    getDictionary(lang, 'blog').then(setDict);
+  }, [lang]);
+
+  const t: AdminBlogTranslations = (dict?.admin as AdminBlogTranslations) || {};
 
   const [currentView, setCurrentView] = useState<ViewType>('dashboard');
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
@@ -319,6 +170,14 @@ export default function BlogAdminPage() {
     }
   }, [deleteCategory]);
 
+  if (!dict) {
+    return (
+      <div className="flex items-center justify-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-[#606C38]" />
+      </div>
+    );
+  }
+
   // Show editor view
   if (currentView === 'editor') {
     return (
@@ -338,7 +197,7 @@ export default function BlogAdminPage() {
 
   return (
     <div>
-      <AdminHeader title={t.title} subtitle={t.subtitle} />
+      <AdminHeader title={t.title || ''} subtitle={t.subtitle} />
 
       <div className="p-6">
         <Tabs 
@@ -350,15 +209,15 @@ export default function BlogAdminPage() {
             <TabsList className="bg-white border border-slate-200">
               <TabsTrigger value="dashboard" className="gap-2">
                 <LayoutDashboard className="h-4 w-4" />
-                {t.tabs.dashboard}
+                {t.tabs?.dashboard}
               </TabsTrigger>
               <TabsTrigger value="posts" className="gap-2">
                 <FileText className="h-4 w-4" />
-                {t.tabs.posts}
+                {t.tabs?.posts}
               </TabsTrigger>
               <TabsTrigger value="categories" className="gap-2">
                 <FolderOpen className="h-4 w-4" />
-                {t.tabs.categories}
+                {t.tabs?.categories}
               </TabsTrigger>
             </TabsList>
 
@@ -367,7 +226,7 @@ export default function BlogAdminPage() {
               className="bg-[#606C38] hover:bg-[#4a5429] text-white gap-2"
             >
               <Plus className="h-4 w-4" />
-              {t.posts.addPost}
+              {t.posts?.addPost}
             </Button>
           </div>
 
@@ -426,31 +285,31 @@ export default function BlogAdminPage() {
               <TabsContent value="categories" className="mt-0">
                 <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
                   <div className="flex items-center justify-between p-6 border-b border-slate-100">
-                    <h2 className="text-xl font-bold text-slate-900">{t.categories.title}</h2>
+                    <h2 className="text-xl font-bold text-slate-900">{t.categories?.title}</h2>
                     <Button
                       onClick={() => setCategoryDialogOpen(true)}
                       className="bg-[#606C38] hover:bg-[#4a5429] text-white gap-2"
                     >
                       <Plus className="h-4 w-4" />
-                      {t.categories.addCategory}
+                      {t.categories?.addCategory}
                     </Button>
                   </div>
 
                   {categories.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-24 text-center">
                       <FolderOpen className="h-12 w-12 text-slate-200 mb-4" />
-                      <h3 className="text-lg font-semibold text-slate-900">{t.categories.noCategories}</h3>
-                      <p className="text-sm text-slate-500 max-w-xs mt-2">{t.categories.createFirst}</p>
+                      <h3 className="text-lg font-semibold text-slate-900">{t.categories?.noCategories}</h3>
+                      <p className="text-sm text-slate-500 max-w-xs mt-2">{t.categories?.createFirst}</p>
                     </div>
                   ) : (
                     <table className="w-full">
                       <thead className="bg-slate-50 border-b border-slate-100">
                         <tr>
-                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories.name}</th>
-                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories.description}</th>
-                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories.color}</th>
-                          <th className="text-center px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories.posts}</th>
-                          <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories.actions}</th>
+                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories?.name}</th>
+                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories?.description}</th>
+                          <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories?.color}</th>
+                          <th className="text-center px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories?.posts}</th>
+                          <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase">{t.categories?.actions}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
@@ -474,7 +333,7 @@ export default function BlogAdminPage() {
                                 className="text-red-500 hover:text-red-700 hover:bg-red-50"
                                 onClick={() => handleDeleteCategory(category.id)}
                               >
-                                Delete
+                                {t.categories?.delete || 'Delete'}
                               </Button>
                             </td>
                           </tr>
@@ -493,11 +352,11 @@ export default function BlogAdminPage() {
       <Dialog open={categoryDialogOpen} onOpenChange={setCategoryDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{t.categories.addCategory}</DialogTitle>
+            <DialogTitle>{t.categories?.addCategory}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="category-name">{t.categories.name}</Label>
+              <Label htmlFor="category-name">{t.categories?.name}</Label>
               <Input
                 id="category-name"
                 value={newCategoryName}
@@ -506,7 +365,7 @@ export default function BlogAdminPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category-description">{t.categories.description}</Label>
+              <Label htmlFor="category-description">{t.categories?.description}</Label>
               <Input
                 id="category-description"
                 value={newCategoryDescription}
@@ -515,7 +374,7 @@ export default function BlogAdminPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category-color">{t.categories.color}</Label>
+              <Label htmlFor="category-color">{t.categories?.color}</Label>
               <div className="flex items-center gap-3">
                 <input
                   type="color"
@@ -530,7 +389,7 @@ export default function BlogAdminPage() {
           </div>
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={() => setCategoryDialogOpen(false)}>
-              {t.form.cancel}
+              {t.form?.cancel}
             </Button>
             <Button
               onClick={handleCreateCategory}
@@ -540,7 +399,7 @@ export default function BlogAdminPage() {
               {createCategory.isPending ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : (
-                t.categories.addCategory
+                t.categories?.addCategory
               )}
             </Button>
           </div>

@@ -10,8 +10,113 @@
   "noResults": "لم يتم العثور على مقالات تطابق بحثك.",
   "categories": "الأقسام",
   "allCategories": "كل الأقسام",
+  "clearFilters": "مسح التصفية",
   "backToBlog": "العودة للمدونة",
   "publishedOn": "نشر في",
   "share": "مشاركة",
-  "contentUnavailable": "المحتوى غير متوفر حالياً."
+  "contentUnavailable": "المحتوى غير متوفر حالياً.",
+  "admin": {
+    "title": "إدارة المدونة",
+    "subtitle": "إنشاء وتعديل وإدارة مقالاتك",
+    "tabs": {
+      "dashboard": "لوحة التحكم",
+      "posts": "المقالات",
+      "categories": "الأقسام"
+    },
+    "posts": {
+      "allPosts": "كل المقالات",
+      "recentPosts": "المقالات الأخيرة",
+      "searchPlaceholder": "بحث في المقالات...",
+      "refresh": "تحديث",
+      "gridView": "عرض شبكي",
+      "tableView": "عرض جدولي",
+      "archives": "الأرشيف",
+      "addPost": "مقال جديد",
+      "filterTitle": "التصفية",
+      "clearAll": "مسح الكل",
+      "status": "الحالة",
+      "category": "الفئة",
+      "noPostsFound": "لم يتم العثور على مقالات",
+      "noPostsMatchFilter": "لا توجد مقالات تطابق التصفية الحالية",
+      "clearFilters": "مسح التصفية",
+      "viewAll": "عرض الكل",
+      "table": {
+        "title": "العنوان",
+        "status": "الحالة",
+        "category": "الفئة",
+        "actions": "الإجراءات"
+      },
+      "actions": {
+        "view": "عرض",
+        "edit": "تعديل",
+        "publish": "نشر",
+        "archive": "أرشفة",
+        "delete": "حذف"
+      },
+      "statusLabels": {
+        "published": "منشور",
+        "draft": "مسودة",
+        "review": "قيد المراجعة",
+        "archived": "مؤرشف"
+      }
+    },
+    "stats": {
+      "totalArticles": "إجمالي المقالات",
+      "totalArticlesDelta": "{count} مقالات",
+      "totalArticlesDescription": "كل محتوى مدونتك",
+      "noArticles": "لا توجد مقالات بعد",
+      "published": "منشور",
+      "publishedDelta": "{percentage}% ({count})",
+      "publishedDescription": "مباشر على مدونتك",
+      "noPublished": "لا توجد مقالات منشورة",
+      "inReview": "قيد المراجعة",
+      "inReviewDelta": "{percentage}% ({count})",
+      "inReviewDescription": "في انتظار الموافقة",
+      "noInReview": "لا يوجد قيد المراجعة",
+      "drafts": "مسودات",
+      "draftsDelta": "{percentage}% ({count})",
+      "draftsDescription": "قيد العمل",
+      "noDrafts": "لا توجد مسودات"
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "newPost": "مقال جديد",
+      "newPostDescription": "إنشاء مقال جديد",
+      "categories": "الأقسام",
+      "categoriesDescription": "إدارة الأقسام",
+      "mediaLibrary": "مكتبة الوسائط",
+      "mediaLibraryDescription": "رفع وإدارة الوسائط",
+      "viewBlog": "عرض المدونة",
+      "viewBlogDescription": "عرض مدونتك المباشرة"
+    },
+    "categories": {
+      "title": "الأقسام",
+      "addCategory": "إضافة قسم",
+      "name": "الاسم",
+      "description": "الوصف",
+      "color": "اللون",
+      "posts": "المقالات",
+      "actions": "الإجراءات",
+      "noCategories": "لا توجد أقسام بعد",
+      "createFirst": "أنشئ أول قسم لتنظيم مقالاتك",
+      "delete": "حذف"
+    },
+    "form": {
+      "cancel": "إلغاء",
+      "articleTitle": "عنوان المقال",
+      "titlePlaceholder": "أدخل عنوان المقال...",
+      "permanentLink": "الرابط الدائم",
+      "content": "المحتوى",
+      "contentPlaceholder": "في يوم من الأيام في المغرب...",
+      "summary": "الملخص",
+      "summaryPlaceholder": "ملخص مختصر لمقالك...",
+      "arabicSection": "المحتوى بالعربية",
+      "titleArabic": "العنوان بالعربية",
+      "titleArPlaceholder": "أدخل عنوان المقال بالعربية...",
+      "contentArabic": "المحتوى بالعربية",
+      "contentArPlaceholder": "اكتب محتوى المقال بالعربية...",
+      "summaryArabic": "الملخص بالعربية",
+      "summaryArPlaceholder": "ملخص قصير بالعربية..."
+    }
+  }
 }

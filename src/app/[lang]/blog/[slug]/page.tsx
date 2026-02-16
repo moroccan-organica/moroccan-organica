@@ -68,7 +68,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
 
     if (!dict) return null;
 
-    const defaultImage = 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop';
+    const defaultImage = '/images/placeholder.svg';
     const featuredImage = post.featured_image_url || defaultImage;
     
     // Select content based on language

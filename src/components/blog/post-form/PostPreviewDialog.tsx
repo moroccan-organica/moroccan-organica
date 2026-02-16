@@ -4,7 +4,6 @@ import React from 'react';
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
 import { BlogPostContent } from '../BlogPostContent';
@@ -21,7 +20,7 @@ interface PostPreviewDialogProps {
   featuredImagePreview: string | null;
   categoryLabel: string;
   tags: string[];
-  contentJson: any;
+  contentJson: Record<string, unknown> | null;
 }
 
 export function PostPreviewDialog({
@@ -37,6 +36,7 @@ export function PostPreviewDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl h-[90vh] overflow-y-auto p-0 rounded-2xl border-none shadow-2xl">
+        <DialogTitle className="sr-only">Post Preview</DialogTitle>
         <div className="bg-white min-h-full pb-20">
           {/* Hero Preview */}
           <div className="relative h-[400px] w-full">

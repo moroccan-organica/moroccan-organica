@@ -16,7 +16,7 @@ interface BlogCardProps {
   };
 }
 
-const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?q=80&w=800&auto=format&fit=crop';
+const DEFAULT_IMAGE = '/images/placeholder.svg';
 
 export function BlogCard({ post, lang, translations }: BlogCardProps) {
   const categoryColor = post.category?.color || '#606C38';

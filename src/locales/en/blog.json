@@ -10,8 +10,113 @@
   "noResults": "No articles found matching your search.",
   "categories": "Categories",
   "allCategories": "All Categories",
+  "clearFilters": "Clear Filters",
   "backToBlog": "Back to Blog",
   "publishedOn": "Published on",
   "share": "Share",
-  "contentUnavailable": "Content is currently unavailable."
+  "contentUnavailable": "Content is currently unavailable.",
+  "admin": {
+    "title": "Blog Management",
+    "subtitle": "Create, edit and manage your blog posts",
+    "tabs": {
+      "dashboard": "Dashboard",
+      "posts": "Posts",
+      "categories": "Categories"
+    },
+    "posts": {
+      "allPosts": "All Posts",
+      "recentPosts": "Recent Posts",
+      "searchPlaceholder": "Search posts...",
+      "refresh": "Refresh",
+      "gridView": "Grid View",
+      "tableView": "Table View",
+      "archives": "Archives",
+      "addPost": "New Post",
+      "filterTitle": "Filters",
+      "clearAll": "Clear All",
+      "status": "Status",
+      "category": "Category",
+      "noPostsFound": "No posts found",
+      "noPostsMatchFilter": "No posts match your current filters",
+      "clearFilters": "Clear filters",
+      "viewAll": "View All",
+      "table": {
+        "title": "Title",
+        "status": "Status",
+        "category": "Category",
+        "actions": "Actions"
+      },
+      "actions": {
+        "view": "View",
+        "edit": "Edit",
+        "publish": "Publish",
+        "archive": "Archive",
+        "delete": "Delete"
+      },
+      "statusLabels": {
+        "published": "Published",
+        "draft": "Draft",
+        "review": "In Review",
+        "archived": "Archived"
+      }
+    },
+    "stats": {
+      "totalArticles": "Total Articles",
+      "totalArticlesDelta": "{count} articles total",
+      "totalArticlesDescription": "All your blog content",
+      "noArticles": "No articles yet",
+      "published": "Published",
+      "publishedDelta": "{percentage}% ({count})",
+      "publishedDescription": "Live on your blog",
+      "noPublished": "No published articles",
+      "inReview": "In Review",
+      "inReviewDelta": "{percentage}% ({count})",
+      "inReviewDescription": "Awaiting approval",
+      "noInReview": "None in review",
+      "drafts": "Drafts",
+      "draftsDelta": "{percentage}% ({count})",
+      "draftsDescription": "Work in progress",
+      "noDrafts": "No drafts"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "newPost": "New Post",
+      "newPostDescription": "Create a new blog article",
+      "categories": "Categories",
+      "categoriesDescription": "Manage your categories",
+      "mediaLibrary": "Media Library",
+      "mediaLibraryDescription": "Upload and manage media",
+      "viewBlog": "View Blog",
+      "viewBlogDescription": "See your live blog"
+    },
+    "categories": {
+      "title": "Categories",
+      "addCategory": "Add Category",
+      "name": "Name",
+      "description": "Description",
+      "color": "Color",
+      "posts": "Posts",
+      "actions": "Actions",
+      "noCategories": "No categories yet",
+      "createFirst": "Create your first category to organize your blog posts",
+      "delete": "Delete"
+    },
+    "form": {
+      "cancel": "Cancel",
+      "articleTitle": "Article Title",
+      "titlePlaceholder": "Enter article title...",
+      "permanentLink": "Permanent Link",
+      "content": "Content",
+      "contentPlaceholder": "Once upon a time in Morocco...",
+      "summary": "Summary / Excerpt",
+      "summaryPlaceholder": "A brief summary of your article...",
+      "arabicSection": "Arabic Content",
+      "titleArabic": "Title Arabic",
+      "titleArPlaceholder": "Enter article title in Arabic...",
+      "contentArabic": "Content Arabic",
+      "contentArPlaceholder": "Write article content in Arabic...",
+      "summaryArabic": "Summary Arabic",
+      "summaryArPlaceholder": "Brief summary in Arabic..."
+    }
+  }
 }

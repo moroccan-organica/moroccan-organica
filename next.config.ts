@@ -25,6 +25,7 @@ const nextConfig: NextConfig = {
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.paypal.com https://www.paypalobjects.com; frame-src 'self' https://www.paypal.com; connect-src 'self' https://www.paypal.com; sandbox;",
   },
+  serverExternalPackages: ['bcryptjs'],
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',
