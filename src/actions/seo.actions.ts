@@ -1,16 +1,26 @@
-import { NextResponse } from 'next/server';
+'use server';
+
 import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 import { SEOSettings } from '@/types/seo';
 
-export async function GET() {
-    try {
-        const session = await getServerSession(authOptions);
-        if (!session || session.user.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
+async function checkAdmin() {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized');
+    }
+    return session;
+}
 
+/**
+ * Get global SEO settings (ADMIN ONLY)
+ */
+export async function getSEOSettings() {
+    await checkAdmin();
+
+    try {
         const { data: settings, error } = await supabase
             .from('GlobalSeoSetting')
             .select('*, translations:GlobalSeoTranslation(*)')
@@ -45,25 +55,23 @@ export async function GET() {
                 .single();
 
             if (finalError) throw finalError;
-            return NextResponse.json(complete);
+            return complete;
         }
 
-        return NextResponse.json(settings);
+        return settings;
     } catch (error) {
         console.error('Error fetching global SEO settings:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        throw new Error('Failed to fetch SEO settings');
     }
 }
 
-export async function POST(req: Request) {
+/**
+ * Update global SEO settings (ADMIN ONLY)
+ */
+export async function updateSEOSettings(body: SEOSettings) {
+    await checkAdmin();
+
     try {
-        const session = await getServerSession(authOptions);
-        if (!session || session.user.role !== 'ADMIN') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const body = await req.json() as SEOSettings;
-
         // Find existing to update
         const { data: existing } = await supabase
             .from('GlobalSeoSetting')
@@ -85,12 +93,10 @@ export async function POST(req: Request) {
             if (updateError) throw updateError;
 
             // Sync translations: Delete and Insert
-            const { error: deleteError } = await supabase
+            await supabase
                 .from('GlobalSeoTranslation')
                 .delete()
                 .eq('globalSeoSettingId', existing.id);
-
-            if (deleteError) throw deleteError;
 
             if (body.translations && body.translations.length > 0) {
                 const { error: insertError } = await supabase
@@ -107,15 +113,8 @@ export async function POST(req: Request) {
                 if (insertError) throw insertError;
             }
 
-            // Return updated complete
-            const { data: updated, error: finalError } = await supabase
-                .from('GlobalSeoSetting')
-                .select('*, translations:GlobalSeoTranslation(*)')
-                .eq('id', existing.id)
-                .single();
-
-            if (finalError) throw finalError;
-            return NextResponse.json(updated);
+            revalidatePath('/[lang]/admin/seo');
+            return { success: true };
         } else {
             // Create fresh
             const { data: created, error: createError } = await supabase
@@ -145,18 +144,11 @@ export async function POST(req: Request) {
                 if (transError) throw transError;
             }
 
-            const { data: complete, error: finalError } = await supabase
-                .from('GlobalSeoSetting')
-                .select('*, translations:GlobalSeoTranslation(*)')
-                .eq('id', created.id)
-                .single();
-
-            if (finalError) throw finalError;
-            return NextResponse.json(complete);
+            revalidatePath('/[lang]/admin/seo');
+            return { success: true };
         }
-
-    } catch (error) {
+    } catch (error: any) {
         console.error('Error saving global SEO settings:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return { success: false, error: error.message };
     }
 }

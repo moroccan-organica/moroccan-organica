@@ -1,23 +1,19 @@
 'use server';
 
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
 import { CategoryDB, LanguageCode } from '@/types/product';
 
-type DbCategoryWithTranslations = Prisma.CategoryGetPayload<{
-  include: { translations: true };
-}>;
-
 // Helper to transform DB category to shop format
-function transformToShopCategory(category: DbCategoryWithTranslations, preferredLang: LanguageCode = 'en'): CategoryDB {
+function transformToShopCategory(category: any, preferredLang: LanguageCode = 'en'): CategoryDB {
+  const translations = category.translations || [];
   const preferredTranslation =
-    category.translations?.find((t) => t.language === preferredLang) ||
-    category.translations?.find((t) => t.language === 'en') ||
-    category.translations?.[0];
+    translations.find((t: any) => t.language === preferredLang) ||
+    translations.find((t: any) => t.language === 'en') ||
+    translations[0];
 
-  const arTranslation = category.translations?.find((t) => t.language === 'ar');
-  const frTranslation = category.translations?.find((t) => t.language === 'fr');
+  const arTranslation = translations.find((t: any) => t.language === 'ar');
+  const frTranslation = translations.find((t: any) => t.language === 'fr');
 
   return {
     id: category.id,
@@ -34,14 +30,14 @@ function transformToShopCategory(category: DbCategoryWithTranslations, preferred
 // GET ALL CATEGORIES
 export async function getCategories(): Promise<CategoryDB[]> {
   try {
-    const categories = await prisma.category.findMany({
-      include: {
-        translations: true,
-      },
-      orderBy: { createdAt: 'asc' },
-    });
+    const { data: categories, error } = await supabase
+      .from('Category')
+      .select('*, translations:CategoryTranslation(*)')
+      .order('createdAt', { ascending: true });
 
-    return categories.map((category) => transformToShopCategory(category));
+    if (error) throw error;
+
+    return (categories || []).map((category) => transformToShopCategory(category));
   } catch (error) {
     console.error('Error fetching categories:', error);
     return [];
@@ -51,22 +47,14 @@ export async function getCategories(): Promise<CategoryDB[]> {
 // GET CATEGORY BY SLUG
 export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en'): Promise<CategoryDB | null> {
   try {
-    const category = await prisma.category.findFirst({
-      where: {
-        translations: {
-          some: {
-            slug: slug,
-          },
-        },
-      },
-      include: {
-        translations: true,
-      },
-    });
+    const { data: categories, error } = await supabase
+      .from('Category')
+      .select('*, translations:CategoryTranslation(*)')
+      .eq('translations.slug', slug);
 
-    if (!category) return null;
+    if (error || !categories || categories.length === 0) return null;
 
-    return transformToShopCategory(category, lang);
+    return transformToShopCategory(categories[0], lang);
   } catch (error) {
     console.error('Error fetching category by slug:', error);
     return null;
@@ -76,14 +64,13 @@ export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en')
 // GET CATEGORY BY ID
 export async function getCategoryById(id: string): Promise<CategoryDB | null> {
   try {
-    const category = await prisma.category.findUnique({
-      where: { id },
-      include: {
-        translations: true,
-      },
-    });
+    const { data: category, error } = await supabase
+      .from('Category')
+      .select('*, translations:CategoryTranslation(*)')
+      .eq('id', id)
+      .single();
 
-    if (!category) return null;
+    if (error || !category) return null;
 
     return transformToShopCategory(category);
   } catch (error) {
@@ -107,50 +94,55 @@ export async function createCategory(input: {
   }[];
 }): Promise<{ success: boolean; category?: CategoryDB; error?: string }> {
   try {
-    const category = await prisma.category.create({
-      data: {
-        image: input.image || null,
-        translations: {
-          create: input.translations.map((t) => ({
-            language: t.language,
-            name: t.name,
-            slug: t.slug,
-            metaTitle: t.metaTitle || null,
-            metaDesc: t.metaDesc || null,
-            keywords: t.keywords || null,
-            ogImage: t.ogImage || null,
-            canonical: t.canonical || null,
-          })),
-        },
-      },
-      include: {
-        translations: true,
-      },
-    });
+    const { data: category, error: categoryError } = await supabase
+      .from('Category')
+      .insert({ image: input.image || null })
+      .select()
+      .single();
+
+    if (categoryError) throw categoryError;
+
+    if (input.translations && input.translations.length > 0) {
+      const { error: transError } = await supabase
+        .from('CategoryTranslation')
+        .insert(input.translations.map(t => ({
+          categoryId: category.id,
+          language: t.language,
+          name: t.name,
+          slug: t.slug,
+          metaTitle: t.metaTitle || null,
+          metaDesc: t.metaDesc || null,
+          keywords: t.keywords || null,
+          ogImage: t.ogImage || null,
+          canonical: t.canonical || null,
+        })));
+      if (transError) throw transError;
+    }
+
+    const completeCategory = await getCategoryById(category.id);
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/categories');
 
-    return { success: true, category: transformToShopCategory(category) };
-  } catch (error: unknown) {
+    return { success: true, category: completeCategory || undefined };
+  } catch (error: any) {
     console.error('Error creating category:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Failed to create category' };
+    return { success: false, error: error.message || 'Failed to create category' };
   }
 }
 
 // DELETE CATEGORY
 export async function deleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
   try {
-    await prisma.category.delete({
-      where: { id },
-    });
+    const { error } = await supabase.from('Category').delete().eq('id', id);
+    if (error) throw error;
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/categories');
 
     return { success: true };
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error('Error deleting category:', error);
-    return { success: false, error: error instanceof Error ? error.message : 'Failed to delete category' };
+    return { success: false, error: error.message || 'Failed to delete category' };
   }
 }

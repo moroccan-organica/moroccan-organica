@@ -135,7 +135,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                         className={`absolute top-full pt-2 z-50 animate-in fade-in slide-in-from-top-1 duration-200 ${isRTL ? 'right-0' : 'left-0'}`}
                                     >
                                         <div className="bg-secondary border border-border/20 rounded-lg shadow-xl min-w-[240px] max-h-[400px] overflow-y-auto py-1 scrollbar-thin scrollbar-thumb-primary/20 scrollbar-track-transparent">
-                                            {link.dropdownItems?.map((item) => (
+                                            {link.dropdownItems?.map((item, index) => (
                                                 <Link
                                                     key={`${item.href}-${item.name}`}
                                                     href={item.href}
@@ -192,7 +192,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                                     }`}
                                             >
                                                 <div className={`flex flex-col gap-1 py-2 ${isRTL ? 'pr-4' : 'pl-4'}`}>
-                                                    {link.dropdownItems?.map((item) => (
+                                                    {link.dropdownItems?.map((item, index) => (
                                                         <Link
                                                             key={`${item.href}-${item.name}`}
                                                             href={item.href}
@@ -202,6 +202,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                                             {item.name}
                                                         </Link>
                                                     ))}
+
                                                 </div>
                                             </div>
                                         </div>

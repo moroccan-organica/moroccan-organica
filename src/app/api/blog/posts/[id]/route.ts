@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,7 +17,7 @@ function generateSlug(title: string): string {
 function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T {
   if (!jsonString) return fallback;
   try {
-    return JSON.parse(jsonString) as T;
+    return typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString as T;
   } catch (error) {
     console.warn('Failed to parse JSON:', error);
     return fallback;
@@ -32,15 +32,13 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const post = await prisma.blogPost.findUnique({
-      where: { id },
-      include: {
-        author: { select: { id: true, name: true, image: true } },
-        category: true,
-      },
-    });
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .eq('id', id)
+      .single();
 
-    if (!post) {
+    if (error || !post) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
@@ -58,9 +56,9 @@ export async function GET(
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt?.toISOString() || '',
-      created_at: post.createdAt.toISOString(),
-      updated_at: post.updatedAt.toISOString(),
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
       meta_title: post.metaTitle || '',
@@ -100,8 +98,13 @@ export async function PUT(
     const body = await request.json();
     const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
 
-    const existingPost = await prisma.blogPost.findUnique({ where: { id } });
-    if (!existingPost) {
+    const { data: existingPost, error: fetchError } = await supabase
+      .from('BlogPost')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !existingPost) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
@@ -113,7 +116,16 @@ export async function PUT(
       if (newSlug !== existingPost.slug) {
         let counter = 1;
         let uniqueSlug = newSlug;
-        while (await prisma.blogPost.findFirst({ where: { slug: uniqueSlug, id: { not: id } } })) {
+        while (true) {
+          const { data: otherPost } = await supabase
+            .from('BlogPost')
+            .select('id')
+            .eq('slug', uniqueSlug)
+            .neq('id', id)
+            .single();
+
+          if (!otherPost) break;
+
           uniqueSlug = `${newSlug}-${counter}`;
           counter++;
         }
@@ -134,61 +146,62 @@ export async function PUT(
     if (status !== undefined) {
       updateData.status = status;
       if (status === 'published' && existingPost.status !== 'published') {
-        updateData.publishedAt = new Date();
+        updateData.publishedAt = new Date().toISOString();
       }
     }
 
-    const post = await prisma.blogPost.update({
-      where: { id },
-      data: updateData,
-      include: {
-        author: { select: { id: true, name: true, image: true } },
-        category: true,
-        media: true,
-      },
-    });
+    const { data: post, error: updateError } = await supabase
+      .from('BlogPost')
+      .update(updateData)
+      .eq('id', id)
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(*)')
+      .single();
+
+    if (updateError) throw updateError;
 
     // Update BlogMedia if featured image URL changed
     if (featuredImageUrl !== undefined && featuredImageUrl &&
       !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
       // Check if media already exists for this post
-      const existingMedia = await prisma.blogMedia.findFirst({
-        where: {
-          postId: id,
-          mediaType: 'image',
-        },
-      });
+      const { data: existingMedia } = await supabase
+        .from('BlogMedia')
+        .select('id')
+        .eq('postId', id)
+        .eq('mediaType', 'image')
+        .limit(1)
+        .single();
 
       if (existingMedia) {
         // Update existing media URL
-        await prisma.blogMedia.update({
-          where: { id: existingMedia.id },
-          data: { url: featuredImageUrl },
-        });
+        await supabase
+          .from('BlogMedia')
+          .update({ url: featuredImageUrl })
+          .eq('id', existingMedia.id);
       } else {
         // Check if media exists but not linked
-        const unlinkedMedia = await prisma.blogMedia.findFirst({
-          where: {
-            url: featuredImageUrl,
-            postId: null,
-          },
-        });
+        const { data: unlinkedMedia } = await supabase
+          .from('BlogMedia')
+          .select('id')
+          .eq('url', featuredImageUrl)
+          .is('postId', null)
+          .limit(1)
+          .single();
 
         if (unlinkedMedia) {
           // Link existing media to post
-          await prisma.blogMedia.update({
-            where: { id: unlinkedMedia.id },
-            data: { postId: id },
-          });
+          await supabase
+            .from('BlogMedia')
+            .update({ postId: id })
+            .eq('id', unlinkedMedia.id);
         } else {
           // Create new media entry
-          await prisma.blogMedia.create({
-            data: {
+          await supabase
+            .from('BlogMedia')
+            .insert({
               postId: id,
               mediaType: 'image',
               url: featuredImageUrl,
-            },
-          });
+            });
         }
       }
     }
@@ -217,7 +230,12 @@ export async function DELETE(
 
     const { id } = await params;
 
-    await prisma.blogPost.delete({ where: { id } });
+    const { error } = await supabase
+      .from('BlogPost')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,7 +17,7 @@ function generateSlug(title: string): string {
 function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T {
   if (!jsonString) return fallback;
   try {
-    return JSON.parse(jsonString) as T;
+    return typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString as T;
   } catch (error) {
     console.warn('Failed to parse JSON:', error);
     return fallback;
@@ -34,41 +34,30 @@ export async function GET(request: NextRequest) {
     const pageSize = parseInt(searchParams.get('pageSize') || '10');
     const search = searchParams.get('search');
 
-    const where: Record<string, unknown> = {};
+    let query = supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)', { count: 'exact' });
 
     if (status && status !== 'all') {
-      where.status = status;
+      query = query.eq('status', status);
     }
 
     if (categoryId) {
-      where.categoryId = categoryId;
+      query = query.eq('categoryId', categoryId);
     }
 
     if (search) {
-      const searchLower = search.toLowerCase();
-      where.OR = [
-        { title: { contains: searchLower } },
-        { excerpt: { contains: searchLower } },
-      ];
+      const searchPattern = `%${search.toLowerCase()}%`;
+      query = query.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
     }
 
-    const [posts, total] = await Promise.all([
-      prisma.blogPost.findMany({
-        where,
-        include: {
-          author: {
-            select: { id: true, name: true, image: true },
-          },
-          category: true,
-        },
-        orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      prisma.blogPost.count({ where }),
-    ]);
+    const { data: posts, count: total, error } = await query
+      .order('createdAt', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
 
-    const formattedPosts = posts.map((post) => ({
+    if (error) throw error;
+
+    const formattedPosts = (posts || []).map((post: any) => ({
       id: post.id,
       title: post.title,
       title_ar: post.titleAr || '',
@@ -82,9 +71,9 @@ export async function GET(request: NextRequest) {
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt?.toISOString() || '',
-      created_at: post.createdAt.toISOString(),
-      updated_at: post.updatedAt.toISOString(),
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
       author: post.author ? {
@@ -105,8 +94,8 @@ export async function GET(request: NextRequest) {
       pagination: {
         page,
         pageSize,
-        total,
-        totalPages: Math.ceil(total / pageSize),
+        total: total || 0,
+        totalPages: Math.ceil((total || 0) / pageSize),
       },
     });
   } catch (error) {
@@ -135,13 +124,23 @@ export async function POST(request: NextRequest) {
     // Ensure unique slug
     let counter = 1;
     let uniqueSlug = slug;
-    while (await prisma.blogPost.findUnique({ where: { slug: uniqueSlug } })) {
+
+    while (true) {
+      const { data: existing } = await supabase
+        .from('BlogPost')
+        .select('id')
+        .eq('slug', uniqueSlug)
+        .single();
+
+      if (!existing) break;
+
       uniqueSlug = `${slug}-${counter}`;
       counter++;
     }
 
-    const post = await prisma.blogPost.create({
-      data: {
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .insert({
         title,
         titleAr: titleAr || null,
         slug: uniqueSlug,
@@ -154,43 +153,42 @@ export async function POST(request: NextRequest) {
         featuredImageUrl: featuredImageUrl || null,
         status: status || 'draft',
         authorId: session.user.id,
-        publishedAt: status === 'published' ? new Date() : null,
+        publishedAt: status === 'published' ? new Date().toISOString() : null,
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
         readTimeMinutes: Math.max(1, Math.ceil((content?.content?.length || 0) / 200)),
-      },
-      include: {
-        author: { select: { id: true, name: true, image: true } },
-        category: true,
-        media: true,
-      },
-    });
+      })
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(*)')
+      .single();
+
+    if (error) throw error;
 
     // If featured image URL is provided, link it to the post in BlogMedia
     if (featuredImageUrl && !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
       // Check if media already exists (from upload API)
-      const existingMedia = await prisma.blogMedia.findFirst({
-        where: {
-          url: featuredImageUrl,
-          postId: null, // Not linked yet
-        },
-      });
+      const { data: existingMedia } = await supabase
+        .from('BlogMedia')
+        .select('id')
+        .eq('url', featuredImageUrl)
+        .is('postId', null)
+        .limit(1)
+        .single();
 
       if (existingMedia) {
         // Link existing media to post
-        await prisma.blogMedia.update({
-          where: { id: existingMedia.id },
-          data: { postId: post.id },
-        });
+        await supabase
+          .from('BlogMedia')
+          .update({ postId: post.id })
+          .eq('id', existingMedia.id);
       } else {
         // Create new media entry
-        await prisma.blogMedia.create({
-          data: {
+        await supabase
+          .from('BlogMedia')
+          .insert({
             postId: post.id,
             mediaType: 'image',
             url: featuredImageUrl,
-          },
-        });
+          });
       }
     }
 

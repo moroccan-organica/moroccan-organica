@@ -1,6 +1,6 @@
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import bcrypt from 'bcryptjs';
 
 export const authOptions: NextAuthOptions = {
@@ -16,11 +16,13 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Invalid credentials');
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                });
+                const { data: user, error } = await supabase
+                    .from('User')
+                    .select('*')
+                    .eq('email', credentials.email)
+                    .single();
 
-                if (!user || !user.password) {
+                if (error || !user || !user.password) {
                     throw new Error('Invalid credentials');
                 }
 

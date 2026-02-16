@@ -1,16 +1,42 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { revalidatePath } from 'next/cache';
 import type { BlogPostFull, BlogCategory } from '@/types/blog';
+
+// ============================================
+// HELPERS
+// ============================================
+
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+}
 
 function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T {
   if (!jsonString) return fallback;
   try {
-    return JSON.parse(jsonString) as T;
+    return typeof jsonString === 'string' ? JSON.parse(jsonString) : jsonString as T;
   } catch (error) {
     console.warn('Failed to parse JSON:', error);
     return fallback;
   }
+}
+
+async function checkAdmin() {
+  const session = await getServerSession(authOptions);
+  if (!session || session.user.role !== 'ADMIN') {
+    throw new Error('Unauthorized');
+  }
+  return session;
 }
 
 // ============================================
@@ -22,10 +48,11 @@ export interface GetPostsOptions {
   pageSize?: number;
   categoryId?: string;
   search?: string;
+  status?: string;
 }
 
 export interface PaginatedPostsResponse {
-  posts: BlogPostFull[];
+  data: BlogPostFull[];
   pagination: {
     page: number;
     pageSize: number;
@@ -35,47 +62,38 @@ export interface PaginatedPostsResponse {
 }
 
 /**
- * Get all published blog posts (for client-facing pages)
+ * Get blog posts with filters (can be used for admin or public)
  */
-export async function getPublishedPosts(
+export async function getBlogPosts(
   options: GetPostsOptions = {}
 ): Promise<PaginatedPostsResponse> {
-  const { page = 1, pageSize = 10, categoryId, search } = options;
+  const { page = 1, pageSize = 10, categoryId, search, status } = options;
 
   try {
-    const where: Record<string, unknown> = {
-      status: 'published',
-    };
+    let query = supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)', { count: 'exact' });
+
+    if (status && status !== 'all') {
+      query = query.eq('status', status);
+    }
 
     if (categoryId) {
-      where.categoryId = categoryId;
+      query = query.eq('categoryId', categoryId);
     }
 
     if (search) {
-      const searchLower = search.toLowerCase();
-      where.OR = [
-        { title: { contains: searchLower } },
-        { excerpt: { contains: searchLower } },
-      ];
+      const searchPattern = `%${search.toLowerCase()}%`;
+      query = query.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
     }
 
-    const [posts, total] = await Promise.all([
-      prisma.blogPost.findMany({
-        where,
-        include: {
-          author: {
-            select: { id: true, name: true, image: true },
-          },
-          category: true,
-        },
-        orderBy: { publishedAt: 'desc' },
-        skip: (page - 1) * pageSize,
-        take: pageSize,
-      }),
-      prisma.blogPost.count({ where }),
-    ]);
+    const { data: posts, count: total, error } = await query
+      .order('createdAt', { ascending: false })
+      .range((page - 1) * pageSize, page * pageSize - 1);
 
-    const formattedPosts: BlogPostFull[] = posts.map((post) => ({
+    if (error) throw error;
+
+    const formattedPosts: BlogPostFull[] = (posts || []).map((post: any) => ({
       id: post.id,
       title: post.title,
       title_ar: post.titleAr || '',
@@ -89,68 +107,59 @@ export async function getPublishedPosts(
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt?.toISOString() || '',
-      created_at: post.createdAt.toISOString(),
-      updated_at: post.updatedAt.toISOString(),
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
       author: post.author
         ? {
-            id: post.author.id,
-            name: post.author.name || 'Unknown',
-            avatar_url: post.author.image || '',
-          }
+          id: post.author.id,
+          name: post.author.name || 'Unknown',
+          avatar_url: post.author.image || '',
+        }
         : undefined,
       category: post.category
         ? {
-            id: post.category.id,
-            name: post.category.name,
-            slug: post.category.slug,
-            color: post.category.color || '#606C38',
-            icon: post.category.icon || '',
-          }
+          id: post.category.id,
+          name: post.category.name,
+          slug: post.category.slug,
+          color: post.category.color || '#606C38',
+          icon: post.category.icon || '',
+        }
         : undefined,
     }));
 
     return {
-      posts: formattedPosts,
+      data: formattedPosts,
       pagination: {
         page,
         pageSize,
-        total,
-        totalPages: Math.ceil(total / pageSize),
+        total: total || 0,
+        totalPages: Math.ceil((total || 0) / pageSize),
       },
     };
   } catch (error) {
-    console.error('Error fetching published posts:', error);
+    console.error('Error fetching blog posts:', error);
     return {
-      posts: [],
+      data: [],
       pagination: { page: 1, pageSize, total: 0, totalPages: 0 },
     };
   }
 }
 
 /**
- * Get a single published blog post by slug
+ * Get a single blog post by ID
  */
-export async function getPublishedPostBySlug(
-  slug: string
-): Promise<BlogPostFull | null> {
+export async function getBlogPostById(id: string): Promise<BlogPostFull | null> {
   try {
-    const post = await prisma.blogPost.findFirst({
-      where: {
-        slug,
-        status: 'published',
-      },
-      include: {
-        author: {
-          select: { id: true, name: true, image: true },
-        },
-        category: true,
-      },
-    });
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .eq('id', id)
+      .single();
 
-    if (!post) return null;
+    if (error || !post) return null;
 
     return {
       id: post.id,
@@ -166,26 +175,82 @@ export async function getPublishedPostBySlug(
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt?.toISOString() || '',
-      created_at: post.createdAt.toISOString(),
-      updated_at: post.updatedAt.toISOString(),
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
       author: post.author
         ? {
-            id: post.author.id,
-            name: post.author.name || 'Unknown',
-            avatar_url: post.author.image || '',
-          }
+          id: post.author.id,
+          name: post.author.name || 'Unknown',
+          avatar_url: post.author.image || '',
+        }
         : undefined,
       category: post.category
         ? {
-            id: post.category.id,
-            name: post.category.name,
-            slug: post.category.slug,
-            color: post.category.color || '#606C38',
-            icon: post.category.icon || '',
-          }
+          id: post.category.id,
+          name: post.category.name,
+          slug: post.category.slug,
+          color: post.category.color || '#606C38',
+          icon: post.category.icon || '',
+        }
+        : undefined,
+    };
+  } catch (error) {
+    console.error('Error fetching post by ID:', error);
+    return null;
+  }
+}
+
+/**
+ * Get a single published blog post by slug
+ */
+export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull | null> {
+  try {
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .eq('slug', slug)
+      .eq('status', 'published')
+      .single();
+
+    if (error || !post) return null;
+
+    return {
+      id: post.id,
+      title: post.title,
+      title_ar: post.titleAr || '',
+      slug: post.slug,
+      excerpt: post.excerpt || '',
+      excerpt_ar: post.excerptAr || '',
+      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
+      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
+      featured_image_url: post.featuredImageUrl || '',
+      author_id: post.authorId,
+      category_id: post.categoryId || '',
+      tags: safeJsonParse(post.tags, []),
+      status: post.status as 'draft' | 'published' | 'review',
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
+      view_count: post.viewCount,
+      read_time_minutes: post.readTimeMinutes,
+      author: post.author
+        ? {
+          id: post.author.id,
+          name: post.author.name || 'Unknown',
+          avatar_url: post.author.image || '',
+        }
+        : undefined,
+      category: post.category
+        ? {
+          id: post.category.id,
+          name: post.category.name,
+          slug: post.category.slug,
+          color: post.category.color || '#606C38',
+          icon: post.category.icon || '',
+        }
         : undefined,
     };
   } catch (error) {
@@ -195,25 +260,237 @@ export async function getPublishedPostBySlug(
 }
 
 /**
- * Get all blog categories
+ * Create a new blog post (ADMIN ONLY)
+ */
+export async function createBlogPost(input: any) {
+  const session = await checkAdmin();
+
+  try {
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = input;
+
+    const slug = generateSlug(title);
+    let counter = 1;
+    let uniqueSlug = slug;
+
+    while (true) {
+      const { data: existing } = await supabase
+        .from('BlogPost')
+        .select('id')
+        .eq('slug', uniqueSlug)
+        .maybeSingle();
+
+      if (!existing) break;
+      uniqueSlug = `${slug}-${counter}`;
+      counter++;
+    }
+
+    const { data: post, error } = await supabase
+      .from('BlogPost')
+      .insert({
+        title,
+        titleAr: titleAr || null,
+        slug: uniqueSlug,
+        content: JSON.stringify(content || { type: 'doc', content: [] }),
+        contentAr: contentAr ? JSON.stringify(contentAr) : null,
+        excerpt: excerpt || '',
+        excerptAr: excerptAr || null,
+        categoryId: categoryId || null,
+        tags: JSON.stringify(tags || []),
+        featuredImageUrl: featuredImageUrl || null,
+        status: status || 'draft',
+        authorId: session.user.id,
+        publishedAt: status === 'published' ? new Date().toISOString() : null,
+        metaTitle: metaTitle || null,
+        metaDescription: metaDescription || null,
+        readTimeMinutes: Math.max(1, Math.ceil((JSON.stringify(content || {}).length) / 1000)),
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    // Handle Media linking logic
+    if (featuredImageUrl && !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
+      const { data: existingMedia } = await supabase
+        .from('BlogMedia')
+        .select('id')
+        .eq('url', featuredImageUrl)
+        .is('postId', null)
+        .maybeSingle();
+
+      if (existingMedia) {
+        await supabase.from('BlogMedia').update({ postId: post.id }).eq('id', existingMedia.id);
+      } else {
+        await supabase.from('BlogMedia').insert({ postId: post.id, mediaType: 'image', url: featuredImageUrl });
+      }
+    }
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true, id: post.id, slug: post.slug };
+  } catch (error: any) {
+    console.error('Error creating post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Update a blog post (ADMIN ONLY)
+ */
+export async function updateBlogPost(postId: string, input: any) {
+  await checkAdmin();
+
+  try {
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = input;
+
+    const updateData: any = {
+      title,
+      titleAr: titleAr || null,
+      content: JSON.stringify(content || { type: 'doc', content: [] }),
+      contentAr: contentAr ? JSON.stringify(contentAr) : null,
+      excerpt: excerpt || '',
+      excerptAr: excerptAr || null,
+      categoryId: categoryId || null,
+      tags: JSON.stringify(tags || []),
+      featuredImageUrl: featuredImageUrl || null,
+      status: status || 'draft',
+      metaTitle: metaTitle || null,
+      metaDescription: metaDescription || null,
+      readTimeMinutes: Math.max(1, Math.ceil((JSON.stringify(content || {}).length) / 1000)),
+    };
+
+    if (status === 'published') {
+      updateData.publishedAt = new Date().toISOString();
+    }
+
+    const { error } = await supabase
+      .from('BlogPost')
+      .update(updateData)
+      .eq('id', postId);
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    revalidatePath(`/[lang]/blog/${postId}`);
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error updating post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Delete a blog post (ADMIN ONLY)
+ */
+export async function deleteBlogPost(postId: string) {
+  await checkAdmin();
+
+  try {
+    const { error } = await supabase.from('BlogPost').delete().eq('id', postId);
+    if (error) throw error;
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error deleting post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Publish a blog post (ADMIN ONLY)
+ */
+export async function publishBlogPost(postId: string) {
+  await checkAdmin();
+
+  try {
+    const { error } = await supabase
+      .from('BlogPost')
+      .update({
+        status: 'published',
+        publishedAt: new Date().toISOString()
+      })
+      .eq('id', postId);
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error publishing post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Archive a blog post (ADMIN ONLY)
+ */
+export async function archiveBlogPost(postId: string) {
+  await checkAdmin();
+
+  try {
+    const { error } = await supabase
+      .from('BlogPost')
+      .update({ status: 'archived' })
+      .eq('id', postId);
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error archiving post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Unarchive a blog post (ADMIN ONLY)
+ */
+export async function unarchiveBlogPost(postId: string) {
+  await checkAdmin();
+
+  try {
+    const { error } = await supabase
+      .from('BlogPost')
+      .update({ status: 'draft' })
+      .eq('id', postId);
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/blog');
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error unarchiving post:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Get all blog categories (with optional counts)
  */
 export async function getBlogCategories(): Promise<BlogCategory[]> {
   try {
-    const categories = await prisma.blogCategory.findMany({
-      orderBy: { sortOrder: 'asc' },
-      include: {
-        _count: { select: { posts: { where: { status: 'published' } } } },
-      },
-    });
+    const { data: categories, error } = await supabase
+      .from('BlogCategory')
+      .select('*, posts:BlogPost(count)')
+      .order('sortOrder', { ascending: true });
 
-    return categories.map((cat) => ({
+    if (error) throw error;
+
+    return (categories || []).map((cat: any) => ({
       id: cat.id,
       name: cat.name,
       slug: cat.slug,
       description: cat.description || '',
       color: cat.color || '#606C38',
       icon: cat.icon || '',
-      postCount: cat._count.posts,
+      postCount: cat.posts?.[0]?.count || 0,
     }));
   } catch (error) {
     console.error('Error fetching categories:', error);
@@ -222,50 +499,101 @@ export async function getBlogCategories(): Promise<BlogCategory[]> {
 }
 
 /**
- * Increment view count for a blog post
+ * Create a blog category (ADMIN ONLY)
+ */
+export async function createBlogCategory(input: any) {
+  await checkAdmin();
+
+  try {
+    const { name, description, color, icon } = input;
+    const slug = generateSlug(name);
+
+    const { data, error } = await supabase
+      .from('BlogCategory')
+      .insert({
+        name,
+        description: description || null,
+        color: color || '#606C38',
+        icon: icon || null,
+        slug,
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true, data };
+  } catch (error: any) {
+    console.error('Error creating category:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Delete a blog category (ADMIN ONLY)
+ */
+export async function deleteBlogCategory(categoryId: string) {
+  await checkAdmin();
+
+  try {
+    // Check for associated posts first
+    const { count, error: countError } = await supabase
+      .from('BlogPost')
+      .select('*', { count: 'exact', head: true })
+      .eq('categoryId', categoryId);
+
+    if (countError) throw countError;
+
+    if (count && count > 0) {
+      return { success: false, error: 'Cannot delete category with associated posts' };
+    }
+
+    const { error } = await supabase.from('BlogCategory').delete().eq('id', categoryId);
+    if (error) throw error;
+
+    revalidatePath('/[lang]/admin/blog');
+    return { success: true };
+  } catch (error: any) {
+    console.error('Error deleting category:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+/**
+ * Increment view count
  */
 export async function incrementPostViewCount(postId: string): Promise<void> {
   try {
-    await prisma.blogPost.update({
-      where: { id: postId },
-      data: { viewCount: { increment: 1 } },
-    });
+    const { data: post } = await supabase.from('BlogPost').select('viewCount').eq('id', postId).single();
+    if (post) {
+      await supabase.from('BlogPost').update({ viewCount: (post.viewCount || 0) + 1 }).eq('id', postId);
+    }
   } catch (error) {
     console.error('Error incrementing view count:', error);
   }
 }
 
 /**
- * Get related posts (same category, excluding current post)
+ * Get related posts
  */
-export async function getRelatedPosts(
-  postId: string,
-  categoryId: string | null,
-  limit: number = 3
-): Promise<BlogPostFull[]> {
+export async function getRelatedPosts(postId: string, categoryId: string | null, limit: number = 3): Promise<BlogPostFull[]> {
   try {
-    const where: Record<string, unknown> = {
-      status: 'published',
-      id: { not: postId },
-    };
+    let query = supabase
+      .from('BlogPost')
+      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .eq('status', 'published')
+      .neq('id', postId);
 
-    if (categoryId) {
-      where.categoryId = categoryId;
-    }
+    if (categoryId) query = query.eq('categoryId', categoryId);
 
-    const posts = await prisma.blogPost.findMany({
-      where,
-      include: {
-        author: {
-          select: { id: true, name: true, image: true },
-        },
-        category: true,
-      },
-      orderBy: { publishedAt: 'desc' },
-      take: limit,
-    });
+    const { data: posts, error } = await query
+      .order('publishedAt', { ascending: false })
+      .limit(limit);
 
-    return posts.map((post) => ({
+    if (error) throw error;
+
+    return (posts || []).map((post: any) => ({
       id: post.id,
       title: post.title,
       title_ar: post.titleAr || '',
@@ -279,27 +607,23 @@ export async function getRelatedPosts(
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
       status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt?.toISOString() || '',
-      created_at: post.createdAt.toISOString(),
-      updated_at: post.updatedAt.toISOString(),
+      published_at: post.publishedAt || '',
+      created_at: post.createdAt,
+      updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
-      author: post.author
-        ? {
-            id: post.author.id,
-            name: post.author.name || 'Unknown',
-            avatar_url: post.author.image || '',
-          }
-        : undefined,
-      category: post.category
-        ? {
-            id: post.category.id,
-            name: post.category.name,
-            slug: post.category.slug,
-            color: post.category.color || '#606C38',
-            icon: post.category.icon || '',
-          }
-        : undefined,
+      author: post.author ? {
+        id: post.author.id,
+        name: post.author.name || 'Unknown',
+        avatar_url: post.author.image || '',
+      } : undefined,
+      category: post.category ? {
+        id: post.category.id,
+        name: post.category.name,
+        slug: post.category.slug,
+        color: post.category.color || '#606C38',
+        icon: post.category.icon || '',
+      } : undefined,
     }));
   } catch (error) {
     console.error('Error fetching related posts:', error);

@@ -1,7 +1,6 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import { supabase } from '@/lib/supabase';
 
 export interface DashboardStats {
     totalProducts: number;
@@ -18,7 +17,7 @@ export interface RecentOrder {
     customerName: string;
     totalAmount: number;
     status: string;
-    createdAt: Date;
+    createdAt: string;
 }
 
 export interface TopProduct {
@@ -35,103 +34,80 @@ export interface TopProduct {
  */
 export async function getDashboardStats(): Promise<DashboardStats> {
     try {
-        // Get current month date range
         const now = new Date();
-        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-        const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
+        const startOfLastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1).toISOString();
+        const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999).toISOString();
 
         // Total products
-        const totalProducts = await prisma.product.count({
-            where: { isAvailable: true },
-        });
+        const { count: totalProducts, error: pError } = await supabase
+            .from('Product')
+            .select('*', { count: 'exact', head: true })
+            .eq('isAvailable', true);
 
-        // Products from last month
-        const lastMonthProducts = await prisma.product.count({
-            where: {
-                isAvailable: true,
-                createdAt: {
-                    lt: startOfMonth,
-                },
-            },
-        });
+        if (pError) throw pError;
 
-        // Calculate products change
-        const productsChange = lastMonthProducts > 0
-            ? ((totalProducts - lastMonthProducts) / lastMonthProducts) * 100
+        // Products created before this month
+        const { count: lastMonthProducts, error: lpError } = await supabase
+            .from('Product')
+            .select('*', { count: 'exact', head: true })
+            .eq('isAvailable', true)
+            .lt('createdAt', startOfMonth);
+
+        if (lpError) throw lpError;
+
+        const productsChange = (lastMonthProducts || 0) > 0
+            ? (((totalProducts || 0) - (lastMonthProducts || 0)) / (lastMonthProducts || 0)) * 100
             : 0;
 
         // Total orders this month
-        const totalOrders = await prisma.order.count({
-            where: {
-                createdAt: {
-                    gte: startOfMonth,
-                },
-            },
-        });
+        const { count: totalOrders, error: oError } = await supabase
+            .from('Order')
+            .select('*', { count: 'exact', head: true })
+            .gte('createdAt', startOfMonth);
 
-        // Orders from last month
-        const lastMonthOrders = await prisma.order.count({
-            where: {
-                createdAt: {
-                    gte: startOfLastMonth,
-                    lte: endOfLastMonth,
-                },
-            },
-        });
+        if (oError) throw oError;
 
-        // Calculate orders change
-        const ordersChange = lastMonthOrders > 0
-            ? ((totalOrders - lastMonthOrders) / lastMonthOrders) * 100
+        const { count: lastMonthOrders, error: loError } = await supabase
+            .from('Order')
+            .select('*', { count: 'exact', head: true })
+            .gte('createdAt', startOfLastMonth)
+            .lte('createdAt', endOfLastMonth);
+
+        if (loError) throw loError;
+
+        const ordersChange = (lastMonthOrders || 0) > 0
+            ? (((totalOrders || 0) - (lastMonthOrders || 0)) / (lastMonthOrders || 0)) * 100
             : 0;
 
         // Revenue this month
-        const revenueResult = await prisma.order.aggregate({
-            where: {
-                createdAt: {
-                    gte: startOfMonth,
-                },
-                status: {
-                    in: ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED'],
-                },
-            },
-            _sum: {
-                totalAmount: true,
-            },
-        });
+        const { data: revenueData, error: rError } = await supabase
+            .from('Order')
+            .select('totalAmount')
+            .gte('createdAt', startOfMonth)
+            .in('status', ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED']);
 
-        const revenue = revenueResult._sum.totalAmount
-            ? parseFloat(revenueResult._sum.totalAmount.toString())
-            : 0;
+        if (rError) throw rError;
+        const revenue = (revenueData || []).reduce((acc, curr) => acc + Number(curr.totalAmount), 0);
 
-        // Revenue from last month
-        const lastMonthRevenueResult = await prisma.order.aggregate({
-            where: {
-                createdAt: {
-                    gte: startOfLastMonth,
-                    lte: endOfLastMonth,
-                },
-                status: {
-                    in: ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED'],
-                },
-            },
-            _sum: {
-                totalAmount: true,
-            },
-        });
+        // Revenue last month
+        const { data: lastMonthRevenueData, error: lrError } = await supabase
+            .from('Order')
+            .select('totalAmount')
+            .gte('createdAt', startOfLastMonth)
+            .lte('createdAt', endOfLastMonth)
+            .in('status', ['PENDING', 'PROCESSING', 'SHIPPED', 'DELIVERED']);
 
-        const lastMonthRevenue = lastMonthRevenueResult._sum.totalAmount
-            ? parseFloat(lastMonthRevenueResult._sum.totalAmount.toString())
-            : 0;
+        if (lrError) throw lrError;
+        const lastMonthRevenue = (lastMonthRevenueData || []).reduce((acc, curr) => acc + Number(curr.totalAmount), 0);
 
-        // Calculate revenue change
         const revenueChange = lastMonthRevenue > 0
             ? ((revenue - lastMonthRevenue) / lastMonthRevenue) * 100
             : 0;
 
         return {
-            totalProducts,
-            totalOrders,
+            totalProducts: totalProducts || 0,
+            totalOrders: totalOrders || 0,
             revenue,
             revenueChange: Math.round(revenueChange * 10) / 10,
             ordersChange: Math.round(ordersChange * 10) / 10,
@@ -155,21 +131,19 @@ export async function getDashboardStats(): Promise<DashboardStats> {
  */
 export async function getRecentOrders(limit: number = 5): Promise<RecentOrder[]> {
     try {
-        const orders = await prisma.order.findMany({
-            take: limit,
-            orderBy: {
-                createdAt: 'desc',
-            },
-            include: {
-                customer: true,
-            },
-        });
+        const { data: orders, error } = await supabase
+            .from('Order')
+            .select('*, customer:Customer(*)')
+            .order('createdAt', { ascending: false })
+            .limit(limit);
 
-        return orders.map((order) => ({
+        if (error) throw error;
+
+        return (orders || []).map((order: any) => ({
             id: order.id,
             reference: order.reference,
-            customerName: `${order.customer.firstName} ${order.customer.lastName}`,
-            totalAmount: parseFloat(order.totalAmount.toString()),
+            customerName: order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'Unknown',
+            totalAmount: Number(order.totalAmount),
             status: order.status,
             createdAt: order.createdAt,
         }));
@@ -184,59 +158,57 @@ export async function getRecentOrders(limit: number = 5): Promise<RecentOrder[]>
  */
 export async function getTopProducts(limit: number = 4): Promise<TopProduct[]> {
     try {
-        // Get order items grouped by variant with count
-        const topVariants = await prisma.orderItem.groupBy({
-            by: ['variantId'],
-            _count: {
-                variantId: true,
-            },
-            orderBy: {
-                _count: {
-                    variantId: 'desc',
-                },
-            },
-            take: limit,
+        // Fetch order items and variants to count manually since we don't have groupBy in Supabase client easily
+        const { data: orderItems, error: itemsError } = await supabase
+            .from('OrderItem')
+            .select(`
+                variantId,
+                variant:ProductVariant(
+                    price,
+                    product:Product(
+                        id,
+                        translations:ProductTranslation(*),
+                        images:ProductImage(*),
+                        category:Category(
+                            translations:CategoryTranslation(*)
+                        )
+                    )
+                )
+            `);
+
+        if (itemsError) throw itemsError;
+
+        // Group and count in memory
+        const counts: Record<string, { count: number; data: any }> = {};
+        (orderItems || []).forEach((item: any) => {
+            if (!item.variantId || !item.variant?.product) return;
+            if (!counts[item.variant.product.id]) {
+                counts[item.variant.product.id] = { count: 0, data: item.variant };
+            }
+            counts[item.variant.product.id].count += 1;
         });
 
-        // Fetch full product details for these variants
-        const products = await Promise.all(
-            topVariants.map(async (item) => {
-                const variant = await prisma.productVariant.findUnique({
-                    where: { id: item.variantId },
-                    include: {
-                        product: {
-                            include: {
-                                translations: true,
-                                images: true,
-                                category: {
-                                    include: {
-                                        translations: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                });
+        const sorted = Object.entries(counts)
+            .sort((a, b) => b[1].count - a[1].count)
+            .slice(0, limit);
 
-                if (!variant || !variant.product) return null;
+        const results = sorted.map(([productId, info]) => {
+            const product = info.data.product;
+            const translation = product.translations.find((t: any) => t.language === 'en') || product.translations[0];
+            const categoryTranslation = product.category?.translations?.find((t: any) => t.language === 'en') || product.category?.translations?.[0];
+            const primaryImage = product.images.find((img: any) => img.isPrimary) || product.images[0];
 
-                const product = variant.product;
-                const translation = product.translations.find((t) => t.language === 'en') || product.translations[0];
-                const categoryTranslation = product.category.translations.find((t) => t.language === 'en') || product.category.translations[0];
-                const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
+            return {
+                id: productId,
+                name: translation?.name || 'Unknown Product',
+                category: categoryTranslation?.name || 'Uncategorized',
+                image: primaryImage?.url || '/images/placeholder.svg',
+                price: Number(info.data.price),
+                orderCount: info.count,
+            };
+        });
 
-                return {
-                    id: product.id,
-                    name: translation?.name || 'Unknown Product',
-                    category: categoryTranslation?.name || 'Uncategorized',
-                    image: primaryImage?.url || '/placeholder.jpg',
-                    price: parseFloat(variant.price.toString()),
-                    orderCount: item._count.variantId,
-                };
-            })
-        );
-
-        return products.filter((p): p is TopProduct => p !== null);
+        return results;
     } catch (error) {
         console.error('Error fetching top products:', error);
         return [];

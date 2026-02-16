@@ -4,7 +4,7 @@ import { join } from 'path';
 import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 
 const UPLOAD_DIR = join(process.cwd(), 'public', 'images', 'blog');
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -63,8 +63,9 @@ export async function POST(request: NextRequest) {
     const publicUrl = `/images/blog/${filename}`;
 
     // Save to BlogMedia table
-    const blogMedia = await prisma.blogMedia.create({
-      data: {
+    const { data: blogMedia, error } = await supabase
+      .from('BlogMedia')
+      .insert({
         postId: postId || null,
         mediaType: 'image',
         url: publicUrl,
@@ -72,8 +73,11 @@ export async function POST(request: NextRequest) {
         fileSizeBytes: file.size,
         mimeType: file.type,
         altText: originalName.replace(/\.[^/.]+$/, ''), // filename without extension
-      },
-    });
+      })
+      .select()
+      .single();
+
+    if (error) throw error;
 
     return NextResponse.json({
       success: true,
@@ -89,7 +93,7 @@ export async function POST(request: NextRequest) {
         caption: blogMedia.caption,
         file_size_bytes: blogMedia.fileSizeBytes,
         mime_type: blogMedia.mimeType,
-        created_at: blogMedia.createdAt.toISOString(),
+        created_at: blogMedia.createdAt,
       },
     });
   } catch (error) {

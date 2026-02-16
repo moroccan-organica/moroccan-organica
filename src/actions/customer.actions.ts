@@ -1,24 +1,31 @@
-import { NextRequest, NextResponse } from 'next/server';
+'use server';
+
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
 
-export async function GET(request: NextRequest) {
+async function checkAdmin() {
+    const session = await getServerSession(authOptions);
+    if (!session || session.user.role !== 'ADMIN') {
+        throw new Error('Unauthorized');
+    }
+    return session;
+}
+
+export interface GetCustomersOptions {
+    page?: number;
+    limit?: number;
+    search?: string;
+    startDate?: string;
+    endDate?: string;
+}
+
+export async function getCustomers(options: GetCustomersOptions = {}) {
+    await checkAdmin();
+
+    const { page = 1, limit = 20, search = '', startDate, endDate } = options;
+
     try {
-        const session = await getServerSession(authOptions);
-
-        if (!session) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const { searchParams } = new URL(request.url);
-        const page = parseInt(searchParams.get('page') || '1');
-        const limit = parseInt(searchParams.get('limit') || '20');
-        const search = searchParams.get('search') || '';
-
-        const startDate = searchParams.get('startDate');
-        const endDate = searchParams.get('endDate');
-
         let query = supabase
             .from('Customer')
             .select('*, orders:Order(count), addresses:Address(*)', { count: 'exact' });
@@ -42,7 +49,6 @@ export async function GET(request: NextRequest) {
 
         if (error) throw error;
 
-        // Reformat customers to match expected structure if needed (Prisma _count -> Supabase alias)
         const formattedCustomers = (customers || []).map((c: any) => ({
             ...c,
             _count: {
@@ -50,7 +56,7 @@ export async function GET(request: NextRequest) {
             }
         }));
 
-        return NextResponse.json({
+        return {
             customers: formattedCustomers,
             pagination: {
                 total: total || 0,
@@ -58,12 +64,9 @@ export async function GET(request: NextRequest) {
                 limit,
                 totalPages: Math.ceil((total || 0) / limit),
             },
-        });
+        };
     } catch (error) {
         console.error('Error fetching customers:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch customers' },
-            { status: 500 }
-        );
+        throw new Error('Failed to fetch customers');
     }
 }

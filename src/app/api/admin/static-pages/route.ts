@@ -1,10 +1,8 @@
-
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { StaticPageInput } from '@/types/static-page';
-import { LanguageCode } from '@prisma/client';
 
 export async function GET() {
     try {
@@ -13,14 +11,15 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const pages = await prisma.staticPage.findMany({
-            include: {
-                translations: true
-            },
-            orderBy: {
-                systemName: 'asc'
-            }
-        });
+        const { data: pages, error } = await supabase
+            .from('StaticPage')
+            .select(`
+                *,
+                translations:StaticPageTranslation(*)
+            `)
+            .order('systemName', { ascending: true });
+
+        if (error) throw error;
 
         return NextResponse.json(pages);
     } catch (error) {
@@ -44,37 +43,55 @@ export async function POST(req: Request) {
         }
 
         // Check unique systemName
-        const existing = await prisma.staticPage.findUnique({
-            where: { systemName }
-        });
+        const { data: existing } = await supabase
+            .from('StaticPage')
+            .select('id')
+            .eq('systemName', systemName)
+            .single();
 
         if (existing) {
             return NextResponse.json({ error: 'Page with this System Name already exists' }, { status: 400 });
         }
 
-        const newPage = await prisma.staticPage.create({
-            data: {
-                systemName,
-                translations: {
-                    create: translations.map(t => ({
-                        language: t.language as LanguageCode,
-                        slug: t.slug,
-                        h1: t.h1,
-                        description: t.description,
-                        metaTitle: t.metaTitle,
-                        metaDesc: t.metaDesc,
-                        keywords: t.keywords,
-                        ogImage: t.ogImage,
-                        canonical: t.canonical
-                    }))
-                }
-            },
-            include: {
-                translations: true
-            }
-        });
+        // Create the page
+        const { data: newPage, error: pageError } = await supabase
+            .from('StaticPage')
+            .insert({ systemName })
+            .select()
+            .single();
 
-        return NextResponse.json(newPage, { status: 201 });
+        if (pageError) throw pageError;
+
+        // Create translations
+        if (translations && translations.length > 0) {
+            const { error: transError } = await supabase
+                .from('StaticPageTranslation')
+                .insert(translations.map(t => ({
+                    staticPageId: newPage.id,
+                    language: t.language,
+                    slug: t.slug,
+                    h1: t.h1,
+                    description: t.description,
+                    metaTitle: t.metaTitle,
+                    metaDesc: t.metaDesc,
+                    keywords: t.keywords,
+                    ogImage: t.ogImage,
+                    canonical: t.canonical
+                })));
+
+            if (transError) throw transError;
+        }
+
+        // Fetch the complete page with translations
+        const { data: completePage, error: fetchError } = await supabase
+            .from('StaticPage')
+            .select('*, translations:StaticPageTranslation(*)')
+            .eq('id', newPage.id)
+            .single();
+
+        if (fetchError) throw fetchError;
+
+        return NextResponse.json(completePage, { status: 201 });
     } catch (error) {
         console.error('Error creating static page:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

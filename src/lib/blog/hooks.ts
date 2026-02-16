@@ -2,6 +2,7 @@
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { BlogPostFull, BlogCategory } from "@/types/blog";
+import * as actions from "./actions";
 
 // Query keys
 export const blogQueryKeys = {
@@ -62,18 +63,13 @@ interface CategoryInput {
 export function useBlogPosts(filters?: PostFilters) {
   return useQuery({
     queryKey: blogQueryKeys.myPosts(filters),
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      if (filters?.status) params.set("status", filters.status);
-      if (filters?.categoryId) params.set("categoryId", filters.categoryId);
-      if (filters?.search) params.set("search", filters.search);
-      if (filters?.page) params.set("page", String(filters.page));
-      if (filters?.pageSize) params.set("pageSize", String(filters.pageSize));
-
-      const res = await fetch(`/api/blog/posts?${params.toString()}`);
-      if (!res.ok) throw new Error("Failed to fetch posts");
-      return res.json() as Promise<PaginatedResponse<BlogPostFull>>;
-    },
+    queryFn: () => actions.getBlogPosts({
+      page: filters?.page,
+      pageSize: filters?.pageSize,
+      categoryId: filters?.categoryId,
+      search: filters?.search,
+      status: filters?.status,
+    }),
   });
 }
 
@@ -82,9 +78,7 @@ export function useBlogPost(postId: string | null) {
     queryKey: blogQueryKeys.post(postId || ""),
     queryFn: async () => {
       if (!postId) return null;
-      const res = await fetch(`/api/blog/posts/${postId}`);
-      if (!res.ok) throw new Error("Failed to fetch post");
-      return res.json() as Promise<BlogPostFull>;
+      return actions.getBlogPostById(postId);
     },
     enabled: !!postId,
   });
@@ -95,16 +89,11 @@ export function useCreateBlogPost() {
 
   return useMutation({
     mutationFn: async (input: PostInput) => {
-      const res = await fetch("/api/blog/posts", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to create post");
+      const result = await actions.createBlogPost(input);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to create post");
       }
-      return res.json();
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.posts() });
@@ -117,16 +106,11 @@ export function useUpdateBlogPost() {
 
   return useMutation({
     mutationFn: async ({ postId, input }: { postId: string; input: Partial<PostInput> }) => {
-      const res = await fetch(`/api/blog/posts/${postId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to update post");
+      const result = await actions.updateBlogPost(postId, input);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to update post");
       }
-      return res.json();
+      return result;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.posts() });
@@ -140,8 +124,10 @@ export function useDeleteBlogPost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      const res = await fetch(`/api/blog/posts/${postId}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete post");
+      const result = await actions.deleteBlogPost(postId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to delete post");
+      }
       return postId;
     },
     onSuccess: () => {
@@ -155,9 +141,11 @@ export function usePublishBlogPost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      const res = await fetch(`/api/blog/posts/${postId}/publish`, { method: "POST" });
-      if (!res.ok) throw new Error("Failed to publish post");
-      return res.json();
+      const result = await actions.publishBlogPost(postId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to publish post");
+      }
+      return result;
     },
     onSuccess: (_, postId) => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.posts() });
@@ -171,9 +159,11 @@ export function useArchiveBlogPost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      const res = await fetch(`/api/blog/posts/${postId}/archive`, { method: "POST" });
-      if (!res.ok) throw new Error("Failed to archive post");
-      return res.json();
+      const result = await actions.archiveBlogPost(postId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to archive post");
+      }
+      return result;
     },
     onSuccess: (_, postId) => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.posts() });
@@ -187,9 +177,11 @@ export function useUnarchiveBlogPost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      const res = await fetch(`/api/blog/posts/${postId}/archive`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to unarchive post");
-      return res.json();
+      const result = await actions.unarchiveBlogPost(postId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to unarchive post");
+      }
+      return result;
     },
     onSuccess: (_, postId) => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.posts() });
@@ -205,11 +197,7 @@ export function useUnarchiveBlogPost() {
 export function useBlogCategories() {
   return useQuery({
     queryKey: blogQueryKeys.categories(),
-    queryFn: async () => {
-      const res = await fetch("/api/blog/categories");
-      if (!res.ok) throw new Error("Failed to fetch categories");
-      return res.json() as Promise<BlogCategory[]>;
-    },
+    queryFn: () => actions.getBlogCategories(),
     staleTime: 10 * 60 * 1000,
   });
 }
@@ -219,16 +207,11 @@ export function useCreateBlogCategory() {
 
   return useMutation({
     mutationFn: async (input: CategoryInput) => {
-      const res = await fetch("/api/blog/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
-      });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to create category");
+      const result = await actions.createBlogCategory(input);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to create category");
       }
-      return res.json();
+      return result.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: blogQueryKeys.categories() });
@@ -241,10 +224,9 @@ export function useDeleteBlogCategory() {
 
   return useMutation({
     mutationFn: async (categoryId: string) => {
-      const res = await fetch(`/api/blog/categories/${categoryId}`, { method: "DELETE" });
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || "Failed to delete category");
+      const result = await actions.deleteBlogCategory(categoryId);
+      if (!result.success) {
+        throw new Error(result.error || "Failed to delete category");
       }
       return categoryId;
     },
