@@ -4,7 +4,7 @@ export const contactPageData = {
         label: "Get in Touch",
         title: "Contact Us",
         description: "Ready to partner with Morocco's leading organic products supplier? We'd love to hear from you.",
-        bgImage: "/images/about/bulk-ingredients.jpg"
+        bgImage: "/images/contact/image header.png"
     },
     info: {
         title: "Contact Information",

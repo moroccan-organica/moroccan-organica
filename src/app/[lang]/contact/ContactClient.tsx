@@ -2,7 +2,7 @@
 
 import { motion, MotionProps } from "framer-motion";
 import { Mail, Phone, MapPin, Clock, Send, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, ComponentType } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,20 +38,50 @@ interface ContactPageData {
     };
 }
 
-interface ContactClientProps {
-    data: ContactPageData;
-    dict: any;
-    lang: string;
+interface ContactFormFields {
+    fullName?: string;
+    fullNamePlaceholder?: string;
+    email?: string;
+    emailPlaceholder?: string;
+    phone?: string;
+    phonePlaceholder?: string;
+    productType?: string;
+    productTypes?: Record<string, string>;
+    quantity?: string;
+    quantityPlaceholder?: string;
+    destination?: string;
+    destinationPlaceholder?: string;
+    message?: string;
+    messagePlaceholder?: string;
+    submit?: string;
+    sending?: string;
 }
 
-const iconMap: Record<string, any> = {
+interface ContactDictionary {
+    hero?: Partial<ContactPageData['hero']>;
+    info?: Partial<ContactPageData['info']>;
+    form?: Partial<ContactPageData['form']>;
+    benefits?: Partial<ContactPageData['benefits']>;
+    formFields?: ContactFormFields;
+    success?: Partial<{ title: string; message: string; button: string }>;
+    map?: Partial<{ city: string; address: string }>;
+}
+
+interface ContactClientProps {
+    data: ContactPageData;
+    dict: ContactDictionary;
+}
+
+type IconComponent = ComponentType<{ className?: string }>;
+
+const iconMap: Record<string, IconComponent> = {
     email: Mail,
     phone: Phone,
     address: MapPin,
     hours: Clock,
 };
 
-export default function ContactClient({ data, dict, lang }: ContactClientProps) {
+export default function ContactClient({ data, dict }: ContactClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -132,12 +162,14 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
     };
 
     // Merge data with translations if available
+    const formFields: ContactFormFields = dict.formFields ?? {};
+
     const content = {
         hero: { ...data.hero, ...dict.hero },
         info: { ...data.info, ...dict.info },
         form: { ...data.form, ...dict.form },
         benefits: { ...data.benefits, ...dict.benefits },
-        formFields: dict.formFields || {},
+        formFields,
         success: dict.success || {},
         map: dict.map || {}
     };
@@ -145,7 +177,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="relative min-h-[50vh] flex items-center justify-center overflow-hidden">
+            <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0">
                     <Image
                         src={content.hero.bgImage || "/images/contact/bulk-ingredients.jpg"}
@@ -154,7 +186,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                         className="object-cover object-center"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/90 to-secondary/80" />
+                    <div className="absolute inset-0 bg-linear-to-r from-secondary/70 via-secondary/60 to-secondary/40" />
                 </div>
 
                 <div className="container-main relative z-10 py-20 md:py-28">
