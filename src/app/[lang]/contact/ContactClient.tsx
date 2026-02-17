@@ -70,6 +70,7 @@ interface ContactDictionary {
 interface ContactClientProps {
     data: ContactPageData;
     dict: ContactDictionary;
+    lang: string;
 }
 
 type IconComponent = ComponentType<{ className?: string }>;
@@ -81,7 +82,7 @@ const iconMap: Record<string, IconComponent> = {
     hours: Clock,
 };
 
-export default function ContactClient({ data, dict }: ContactClientProps) {
+export default function ContactClient({ data, dict, lang }: ContactClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
