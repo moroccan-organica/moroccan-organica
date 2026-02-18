@@ -6,11 +6,12 @@ import { AdminHeader } from '@/components/admin/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Plus, 
-  Search, 
-  Grid3X3, 
-  List, 
+import { Switch } from '@/components/ui/switch';
+import {
+  Plus,
+  Search,
+  Grid3X3,
+  List,
   Pencil,
   Trash2,
   Eye,
@@ -28,7 +29,10 @@ import {
   PaginationLink,
 } from '@/components/ui/pagination';
 import { ShopProductDB, CategoryDB } from '@/types/product';
-import { deleteProduct as deleteProductAction } from '@/actions/product.actions';
+import {
+  deleteProduct as deleteProductAction,
+  toggleProductStatus
+} from '@/actions/product.actions';
 import { ProductFormModalDB } from '@/components/admin/ProductFormModalDB';
 
 interface ProductsPageClientProps {
@@ -37,15 +41,15 @@ interface ProductsPageClientProps {
   totalProducts: number;
 }
 
-export function ProductsPageClient({ 
-  initialProducts, 
+export function ProductsPageClient({
+  initialProducts,
   categories,
-  totalProducts 
+  totalProducts
 }: ProductsPageClientProps) {
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
   const router = useRouter();
-  
+
   const [products, setProducts] = useState(initialProducts);
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,16 +58,28 @@ export function ProductsPageClient({
   const [editingProduct, setEditingProduct] = useState<ShopProductDB | null>(null);
   const [page, setPage] = useState(1);
   const [isPending, startTransition] = useTransition();
-  const pageSize = 8;
+  const [pageSize, setPageSize] = useState(8);
+
 
   const filteredProducts = useMemo(() => {
+    const term = searchTerm.toLowerCase().trim();
+    if (!term && !selectedCategory) return products;
+
     return products.filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                          product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesSearch = !term ||
+        product.name.toLowerCase().includes(term) ||
+        product.description.toLowerCase().includes(term) ||
+        product.nameAr.toLowerCase().includes(term) ||
+        product.descriptionAr.toLowerCase().includes(term) ||
+        product.nameFr.toLowerCase().includes(term) ||
+        product.descriptionFr.toLowerCase().includes(term) ||
+        product.sku.toLowerCase().includes(term);
+
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
       return matchesSearch && matchesCategory;
     });
   }, [products, searchTerm, selectedCategory]);
+
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -87,6 +103,18 @@ export function ProductsPageClient({
           alert(result.error || 'Failed to delete product');
         }
       });
+    }
+  };
+
+  const handleToggle = async (productId: string, field: 'isAvailable' | 'isFeatured' | 'isTopSale', value: boolean) => {
+    // Optimistic update
+    setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: value } : p));
+
+    const result = await toggleProductStatus(productId, field, value);
+    if (!result.success) {
+      // Revert if failed
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, [field]: !value } : p));
+      alert(result.error || 'Failed to update status');
     }
   };
 
@@ -188,8 +216,13 @@ export function ProductsPageClient({
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Volume</th>
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Active</th>
+
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Featured</th>
+                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Top Sale</th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -197,7 +230,7 @@ export function ProductsPageClient({
                   <tr key={product.id} className="hover:bg-slate-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="relative h-12 w-12 rounded-lg overflow-hidden bg-slate-100">
+                        <div className="relative h-14 w-14 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-100">
                           <SafeImage
                             src={product.image || '/images/placeholder.svg'}
                             alt={product.name}
@@ -205,16 +238,20 @@ export function ProductsPageClient({
                             className="object-cover"
                           />
                         </div>
-                        <div>
-                          <p className="font-medium text-slate-900">{product.name}</p>
-                          <p className="text-sm text-slate-500 line-clamp-1">{product.description}</p>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium text-slate-900 truncate">{product.name}</p>
+                            <span className="text-[10px] font-mono bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded leading-none">{product.sku}</span>
+                          </div>
+                          <p className="text-sm text-slate-500 line-clamp-2">{product.description}</p>
                         </div>
+
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <Badge 
+                      <Badge
                         variant="secondary"
-                        style={{ 
+                        style={{
                           backgroundColor: `${getCategoryColor(product.category)}20`,
                           color: getCategoryColor(product.category)
                         }}
@@ -226,11 +263,33 @@ export function ProductsPageClient({
                     <td className="px-6 py-4">
                       <span className="font-semibold text-[#606C38]">${product.price}</span>
                     </td>
-                    <td className="px-6 py-4">
-                      <Badge className={product.isAvailable ? "bg-green-100 text-green-700 hover:bg-green-100" : "bg-red-100 text-red-700 hover:bg-red-100"}>
-                        {product.isAvailable ? 'Active' : 'Inactive'}
-                      </Badge>
+                    <td className="px-6 py-4 text-center">
+                      <span className={cn(
+                        "font-medium",
+                        product.stock <= 5 ? "text-red-600" : "text-slate-600"
+                      )}>
+                        {product.stock}
+                      </span>
                     </td>
+                    <td className="px-4 py-4 text-center">
+                      <Switch
+                        checked={product.isAvailable}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isAvailable', val)}
+                      />
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <Switch
+                        checked={product.isFeatured}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isFeatured', val)}
+                      />
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <Switch
+                        checked={product.isTopSale}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isTopSale', val)}
+                      />
+                    </td>
+
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-2">
                         <button
@@ -307,10 +366,10 @@ export function ProductsPageClient({
                   </div>
                 </div>
                 <div className="p-4">
-                  <Badge 
+                  <Badge
                     variant="secondary"
                     className="mb-2"
-                    style={{ 
+                    style={{
                       backgroundColor: `${getCategoryColor(product.category)}20`,
                       color: getCategoryColor(product.category)
                     }}
@@ -319,24 +378,81 @@ export function ProductsPageClient({
                   </Badge>
                   <h3 className="font-semibold text-slate-900 mb-1">{product.name}</h3>
                   <p className="text-sm text-slate-500 line-clamp-2 mb-3">{product.description}</p>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-2">
                     <span className="text-lg font-bold text-[#606C38]">${product.price}</span>
                     <span className="text-sm text-slate-400">{product.volume}</span>
                   </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[10px] uppercase font-bold text-slate-400">Inventory</span>
+                    <span className={cn(
+                      "text-xs font-medium",
+                      product.stock <= 5 ? "text-red-500" : "text-slate-500"
+                    )}>
+                      {product.stock} units
+                    </span>
+                  </div>
+
+
+                  <div className="pt-4 border-t border-slate-50 grid grid-cols-3 gap-1">
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-[10px] uppercase font-bold text-slate-400">Available</span>
+                      <Switch
+                        className="scale-75"
+                        checked={product.isAvailable}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isAvailable', val)}
+                      />
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-[10px] uppercase font-bold text-slate-400">Featured</span>
+                      <Switch
+                        className="scale-75"
+                        checked={product.isFeatured}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isFeatured', val)}
+                      />
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                      <span className="text-[10px] uppercase font-bold text-slate-400">Top Sale</span>
+                      <Switch
+                        className="scale-75"
+                        checked={product.isTopSale}
+                        onCheckedChange={(val) => handleToggle(product.id, 'isTopSale', val)}
+                      />
+                    </div>
+                  </div>
                 </div>
+
               </div>
             ))}
           </div>
         )}
 
         {/* Pagination & Summary */}
-        <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-3 text-sm text-slate-500">
-          <p>
-            Showing {filteredProducts.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
-            {filteredProducts.length === 0 ? '' : `-${Math.min(currentPage * pageSize, filteredProducts.length)}`}
-            {' '}of {filteredProducts.length} filtered (total {totalProducts})
-          </p>
-          <Pagination>
+        <div className="mt-6 flex flex-col md:flex-row md:items-center md:justify-between gap-6 py-4 border-t border-slate-100">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-slate-500 whitespace-nowrap">Items per page:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => {
+                  setPageSize(Number(e.target.value));
+                  setPage(1);
+                }}
+                className="h-9 px-2 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38]"
+              >
+                {[8, 12, 24, 48, 100].map(size => (
+                  <option key={size} value={size}>{size}</option>
+                ))}
+              </select>
+            </div>
+            <p className="text-sm text-slate-500">
+              Showing {filteredProducts.length === 0 ? 0 : (currentPage - 1) * pageSize + 1}
+              {filteredProducts.length === 0 ? '' : `-${Math.min(currentPage * pageSize, filteredProducts.length)}`}
+              {' '}of {filteredProducts.length} filtered
+            </p>
+          </div>
+
+          <Pagination className="justify-center md:justify-end">
+
             <PaginationContent>
               <PaginationItem>
                 <PaginationPrevious

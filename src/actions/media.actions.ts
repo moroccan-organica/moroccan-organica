@@ -1,15 +1,46 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import { existsSync } from 'fs';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 
-// No strict auth check - follows product.actions.ts pattern
-// The admin pages are already protected by middleware/layout
+// Supabase Storage Buckets
+const PRODUCT_BUCKET = 'products';
+const BLOG_BUCKET = 'blog';
+
+/**
+ * Helper to delete a file from Supabase Storage using its public URL
+ */
+export async function deleteFileFromStorage(url: string) {
+    if (!url || (!url.includes('supabase.co') && !url.includes('storage.supabase.com'))) return;
+
+    try {
+        const bucket = url.includes(`/public/${BLOG_BUCKET}/`) ? BLOG_BUCKET :
+            url.includes(`/public/${PRODUCT_BUCKET}/`) ? PRODUCT_BUCKET : null;
+
+        if (!bucket) return;
+
+        // Extract filename from URL
+        // Format: .../public/bucket/filename
+        const parts = url.split(`/public/${bucket}/`);
+        if (parts.length < 2) return;
+
+        const filepath = parts[1];
+
+        const { error } = await supabaseAdmin.storage
+            .from(bucket)
+            .remove([filepath]);
+
+        if (error) {
+            console.error(`Error deleting file from storage (${bucket}):`, error);
+        }
+    } catch (err) {
+        console.error('Failed to parse storage URL for deletion:', err);
+    }
+}
+
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
 
 interface BlogMediaRow {
     id: string;
@@ -34,7 +65,7 @@ function getErrorMessage(error: unknown): string {
 }
 
 /**
- * Upload a blog image (Server Action)
+ * Upload a blog image to Supabase Storage
  */
 export async function uploadBlogImage(formData: FormData) {
     try {
@@ -51,23 +82,30 @@ export async function uploadBlogImage(formData: FormData) {
             throw new Error('File size exceeds 5MB limit');
         }
 
-        const uploadDir = join(process.cwd(), 'public', 'images', 'blog');
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
-        }
-
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 9);
         const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const ext = originalName.split('.').pop() || 'jpg';
         const filename = `${timestamp}-${randomStr}.${ext}`;
-        const filepath = join(uploadDir, filename);
+        const filepath = `${filename}`; // Storage path inside bucket
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        await writeFile(filepath, buffer);
 
-        const publicUrl = `/images/blog/${filename}`;
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+            .from(BLOG_BUCKET)
+            .upload(filepath, buffer, {
+                contentType: file.type,
+                upsert: true
+            });
+
+        if (uploadError) throw uploadError;
+
+        // Get Public URL
+        const { data: { publicUrl } } = supabaseAdmin.storage
+            .from(BLOG_BUCKET)
+            .getPublicUrl(filepath);
 
         const { data: blogMedia, error } = await supabase
             .from('BlogMedia')
@@ -146,6 +184,20 @@ export async function getBlogMedia(filters: { postId?: string; mediaType?: strin
  */
 export async function deleteBlogMedia(id: string) {
     try {
+        // First get the media to know the storage path
+        const { data: media, error: getError } = await supabase
+            .from('BlogMedia')
+            .select('storagePath')
+            .eq('id', id)
+            .single();
+
+        if (!getError && media?.storagePath) {
+            // Try to delete from storage as well
+            await supabaseAdmin.storage
+                .from(BLOG_BUCKET)
+                .remove([media.storagePath]);
+        }
+
         const { error } = await supabase.from('BlogMedia').delete().eq('id', id);
         if (error) throw error;
         return { success: true };
@@ -156,16 +208,19 @@ export async function deleteBlogMedia(id: string) {
 }
 
 /**
- * Upload a product image (Server Action)
+ * Upload a product image to Supabase Storage
  */
 export async function uploadProductImage(formData: FormData) {
     try {
         const file = formData.get('file') as File | null;
         if (!file) throw new Error('No file provided');
 
-        const uploadDir = join(process.cwd(), 'public', 'images', 'products');
-        if (!existsSync(uploadDir)) {
-            await mkdir(uploadDir, { recursive: true });
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            throw new Error('Invalid file type');
+        }
+
+        if (file.size > MAX_FILE_SIZE) {
+            throw new Error('File size exceeds 5MB limit');
         }
 
         const timestamp = Date.now();
@@ -173,15 +228,29 @@ export async function uploadProductImage(formData: FormData) {
         const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const ext = originalName.split('.').pop() || 'jpg';
         const filename = `${timestamp}-${randomStr}.${ext}`;
-        const filepath = join(uploadDir, filename);
+        const filepath = `${filename}`;
 
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        await writeFile(filepath, buffer);
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+            .from(PRODUCT_BUCKET)
+            .upload(filepath, buffer, {
+                contentType: file.type,
+                upsert: true
+            });
+
+        if (uploadError) throw uploadError;
+
+        // Get Public URL
+        const { data: { publicUrl } } = supabaseAdmin.storage
+            .from(PRODUCT_BUCKET)
+            .getPublicUrl(filepath);
 
         return {
             success: true,
-            url: `/images/products/${filename}`
+            url: publicUrl
         };
     } catch (error: unknown) {
         console.error('Product upload error:', error);

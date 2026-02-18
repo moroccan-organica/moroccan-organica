@@ -188,7 +188,8 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     const localizedName = isRTL ? product.nameAr : product.name;
     const localizedDescription = isRTL ? product.descriptionAr : product.description;
 
-    const galleryImages = product.gallery?.length ? product.gallery : [product.image];
+    const galleryImages = [product.image, ...product.gallery].filter(Boolean);
+
 
     return (
         <main dir={isRTL ? "rtl" : "ltr"} className="container-main py-16 md:py-24 space-y-16">

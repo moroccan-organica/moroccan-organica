@@ -2,12 +2,14 @@
 
 import { supabase } from '@/lib/supabase';
 import { revalidatePath } from 'next/cache';
+import { deleteFileFromStorage } from '@/actions/media.actions';
 import {
   ShopProductDB,
   CreateProductInput,
   UpdateProductInput,
   LanguageCode
 } from '@/types/product';
+
 
 // Helper to transform DB product to shop format
 function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'): ShopProductDB {
@@ -40,7 +42,10 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
       ? primaryImage.url
       : validImages[0]?.url)
     : '/images/placeholder.svg';
-  const gallery = validImages.map((img: any) => img.url);
+  const gallery = validImages
+    .filter((img: any) => img.url !== mainImage)
+    .map((img: any) => img.url);
+
 
   const variants = product.variants || [];
   const firstVariant = variants[0];
@@ -144,28 +149,27 @@ export async function getProducts(options?: {
 // GET SINGLE PRODUCT BY SLUG
 export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
   try {
-    const { data: products, error } = await supabase
-      .from('Product')
-      .select(`
-        *,
-        category:Category(*, translations:CategoryTranslation(*)),
-        translations:ProductTranslation(*),
-        images:ProductImage(*),
-        variants:ProductVariant(*)
-      `)
-      .eq('translations.slug', slug);
+    // 1. Find the product ID that has this slug in any language
+    const { data: translation, error } = await supabase
+      .from('ProductTranslation')
+      .select('productId')
+      .eq('slug', slug)
+      .maybeSingle();
 
-    if (error || !products || products.length === 0) return null;
+    if (error || !translation) return null;
 
-    return transformToShopProduct(products[0], lang);
+    // 2. Fetch the full product by ID with the requested language
+    return getProductById(translation.productId, lang);
   } catch (error) {
     console.error('Error fetching product by slug:', error);
     return null;
   }
 }
 
+
+
 // GET SINGLE PRODUCT BY ID
-export async function getProductById(id: string): Promise<ShopProductDB | null> {
+export async function getProductById(id: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
   try {
     const { data: product, error } = await supabase
       .from('Product')
@@ -181,12 +185,13 @@ export async function getProductById(id: string): Promise<ShopProductDB | null> 
 
     if (error || !product) return null;
 
-    return transformToShopProduct(product);
+    return transformToShopProduct(product, lang);
   } catch (error) {
     console.error('Error fetching product by id:', error);
     return null;
   }
 }
+
 
 // CREATE PRODUCT
 export async function createProduct(input: CreateProductInput): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
@@ -328,7 +333,19 @@ export async function updateProduct(
 
     // Update images
     if (input.images) {
+      // Get existing images to compare
+      const { data: oldImages } = await supabase.from('ProductImage').select('url').eq('productId', id);
+      const oldUrls = oldImages?.map(img => img.url) || [];
+
       const validImages = input.images.filter(img => !img.url.startsWith('data:') && !img.url.startsWith('blob:'));
+      const newUrls = validImages.map(img => img.url);
+
+      // Delete images from storage that are being removed
+      const removedUrls = oldUrls.filter(url => !newUrls.includes(url));
+      for (const url of removedUrls) {
+        await deleteFileFromStorage(url);
+      }
+
       await supabase.from('ProductImage').delete().eq('productId', id);
       if (validImages.length > 0) {
         await supabase.from('ProductImage').insert(validImages.map((img, index) => ({
@@ -366,8 +383,21 @@ export async function updateProduct(
 // DELETE PRODUCT
 export async function deleteProduct(id: string): Promise<{ success: boolean; error?: string }> {
   try {
+    // Get image URLs before deleting the product
+    const { data: images } = await supabase
+      .from('ProductImage')
+      .select('url')
+      .eq('productId', id);
+
     const { error } = await supabase.from('Product').delete().eq('id', id);
     if (error) throw error;
+
+    // Delete images from storage
+    if (images && images.length > 0) {
+      for (const img of images) {
+        await deleteFileFromStorage(img.url);
+      }
+    }
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/products');
@@ -376,6 +406,29 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
   } catch (error: any) {
     console.error('Error deleting product:', error);
     return { success: false, error: error.message || 'Failed to delete product' };
+  }
+}
+// TOGGLE PRODUCT STATUS
+export async function toggleProductStatus(
+  id: string,
+  field: 'isAvailable' | 'isFeatured' | 'isTopSale',
+  value: boolean
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const { error } = await supabase
+      .from('Product')
+      .update({ [field]: value })
+      .eq('id', id);
+
+    if (error) throw error;
+
+    revalidatePath('/[lang]/shop');
+    revalidatePath('/[lang]/admin/products');
+
+    return { success: true };
+  } catch (error: any) {
+    console.error(`Error toggling product ${field}:`, error);
+    return { success: false, error: error.message || `Failed to update ${field}` };
   }
 }
 
