@@ -4,6 +4,7 @@ import React from 'react';
 import { Bell, Search, User } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useSession } from 'next-auth/react';
 
 interface AdminHeaderProps {
   title: string;
@@ -11,6 +12,10 @@ interface AdminHeaderProps {
 }
 
 export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
+  const { data: session } = useSession();
+  const userName = session?.user?.name || 'Admin';
+  const userEmail = session?.user?.email || 'admin@organica.ma';
+
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4">
       <div>
@@ -40,8 +45,8 @@ export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
             <User className="h-5 w-5 text-white" />
           </div>
           <div className="hidden md:block">
-            <p className="text-sm font-medium text-slate-900">Admin</p>
-            <p className="text-xs text-slate-500">admin@organica.ma</p>
+            <p className="text-sm font-medium text-slate-900">{userName}</p>
+            <p className="text-xs text-slate-500">{userEmail}</p>
           </div>
         </div>
       </div>

@@ -186,7 +186,7 @@ CREATE TABLE "BlogPost" (
     "content" TEXT NOT NULL,
     "contentAr" TEXT,
     "featuredImageUrl" TEXT,
-    "authorId" TEXT NOT NULL REFERENCES "User"("id"),
+    "authorId" TEXT REFERENCES "User"("id") ON DELETE SET NULL,
     "categoryId" TEXT REFERENCES "BlogCategory"("id") ON DELETE SET NULL,
     "tags" TEXT,
     "status" TEXT NOT NULL DEFAULT 'draft',

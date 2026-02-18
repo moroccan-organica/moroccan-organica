@@ -10,6 +10,7 @@ import { BlogPostMeta } from "@/components/blog/BlogPostMeta";
 import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
+import { getValidImageUrl } from '@/lib/utils';
 
 export default function BlogPostPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
     const { lang, slug } = React.use(params);
@@ -17,6 +18,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
     const [post, setPost] = useState<BlogPostFull | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
+    const [imgSrc, setImgSrc] = useState('/images/placeholder.svg');
 
     useEffect(() => {
         getDictionary(lang, 'blog').then(setDict);
@@ -29,6 +31,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                 const fetchedPost = await getPublishedPostBySlug(slug);
                 if (fetchedPost) {
                     setPost(fetchedPost);
+                    setImgSrc(getValidImageUrl(fetchedPost.featured_image_url));
                     await incrementPostViewCount(fetchedPost.id);
                 } else {
                     setNotFound(true);
@@ -55,7 +58,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
         return (
             <main className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
                 <h1 className="text-2xl font-bold text-slate-900">Post not found</h1>
-                <Link 
+                <Link
                     href={`/${lang}/blog`}
                     className="text-[#606C38] hover:underline flex items-center gap-2"
                 >
@@ -69,8 +72,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
     if (!dict) return null;
 
     const defaultImage = '/images/placeholder.svg';
-    const featuredImage = post.featured_image_url || defaultImage;
-    
+
     // Select content based on language
     const isArabic = lang === 'ar';
     const title = isArabic && post.title_ar ? post.title_ar : post.title;
@@ -80,18 +82,19 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
         <main className="min-h-screen bg-white">
             {/* Post Header */}
             <div className="relative h-[70vh] min-h-[500px] w-full">
-                <Image 
-                    src={featuredImage} 
+                <Image
+                    src={imgSrc}
                     alt={title}
                     fill
                     className="object-cover"
                     priority
+                    onError={() => setImgSrc(defaultImage)}
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex items-end pb-20">
                     <div className="container mx-auto px-4">
                         <div className={`max-w-4xl ${isArabic ? 'text-right mr-auto ml-0' : ''}`}>
-                            <Link 
+                            <Link
                                 href={`/${lang}/blog`}
                                 className={`inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ${isArabic ? 'flex-row-reverse' : ''}`}
                             >
@@ -101,8 +104,8 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                             <h1 className="text-4xl md:text-7xl font-playfair font-bold text-white mb-8 leading-tight" dir={isArabic ? 'rtl' : 'ltr'}>
                                 {title}
                             </h1>
-                            
-                            <BlogPostMeta 
+
+                            <BlogPostMeta
                                 author={post.author}
                                 publishedAt={post.published_at}
                                 createdAt={post.created_at}
@@ -133,9 +136,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
 
                     {/* Main Content */}
                     <article className={`max-w-3xl w-full ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
-                        <BlogPostContent 
-                            content={content} 
-                            contentUnavailableText={dict.contentUnavailable as string} 
+                        <BlogPostContent
+                            content={content}
+                            contentUnavailableText={dict.contentUnavailable as string}
                         />
 
                         {/* Post Tags */}
@@ -143,7 +146,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                             <div className="mt-20 pt-10 border-t border-slate-100">
                                 <div className="flex flex-wrap gap-3">
                                     {post.tags.map(tag => (
-                                        <span 
+                                        <span
                                             key={tag}
                                             className="px-4 py-1.5 bg-slate-50 text-[#606C38] text-sm font-medium rounded-full border border-slate-100"
                                         >

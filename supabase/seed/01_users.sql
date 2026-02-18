@@ -6,4 +6,4 @@ VALUES (
     'admin@moroccan-organica.com', 
     '$2a$12$R9h/cIPz0gi.URQHeNV5UedCPxKqbGZOKs9n5B6bNhXfKv.zP.WxC', 
     'ADMIN'
-) ON CONFLICT ("email") DO NOTHING;
+) ON CONFLICT ("id") DO UPDATE SET "email" = EXCLUDED."email", "name" = EXCLUDED."name", "role" = EXCLUDED."role";

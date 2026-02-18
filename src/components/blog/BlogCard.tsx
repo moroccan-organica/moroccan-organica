@@ -6,6 +6,8 @@ import { Clock, ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { BlogPostFull } from '@/types/blog';
 
+import { getValidImageUrl } from '@/lib/utils';
+
 interface BlogCardProps {
   post: BlogPostFull;
   lang: string;
@@ -19,14 +21,14 @@ interface BlogCardProps {
 const DEFAULT_IMAGE = '/images/placeholder.svg';
 
 export function BlogCard({ post, lang, translations }: BlogCardProps) {
+  const [imgSrc, setImgSrc] = React.useState(getValidImageUrl(post.featured_image_url));
   const categoryColor = post.category?.color || '#606C38';
-  
-  // Filter out blob URLs (they're temporary and won't work after page reload)
-  let featuredImage = post.featured_image_url || DEFAULT_IMAGE;
-  if (featuredImage.startsWith('blob:')) {
-    featuredImage = DEFAULT_IMAGE;
-  }
-  
+
+  // Update imgSrc if post changes
+  React.useEffect(() => {
+    setImgSrc(getValidImageUrl(post.featured_image_url));
+  }, [post.featured_image_url]);
+
   // Select content based on language
   const isArabic = lang === 'ar';
   const title = isArabic && post.title_ar ? post.title_ar : post.title;
@@ -36,14 +38,15 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
       <Link href={`/${lang}/blog/${post.slug}`} className="relative h-64 overflow-hidden">
         <Image
-          src={featuredImage}
+          src={imgSrc}
           alt={title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"
+          onError={() => setImgSrc(DEFAULT_IMAGE)}
         />
         {post.category && (
           <div className={`absolute top-4 ${isArabic ? 'right-4' : 'left-4'}`}>
-            <Badge 
+            <Badge
               className="bg-white/90 text-slate-900 hover:bg-white border-none"
               style={{ borderLeft: isArabic ? 'none' : `4px solid ${categoryColor}`, borderRight: isArabic ? `4px solid ${categoryColor}` : 'none' }}
             >
@@ -77,8 +80,8 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
           <div className="flex items-center gap-2">
             {post.author?.avatar_url && (
               <div className="relative w-8 h-8">
-                <Image 
-                  src={post.author.avatar_url} 
+                <Image
+                  src={post.author.avatar_url}
                   alt={post.author.name}
                   fill
                   className="rounded-full object-cover"
@@ -90,7 +93,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
             </span>
           </div>
 
-          <Link 
+          <Link
             href={`/${lang}/blog/${post.slug}`}
             className="text-[#BC6C25] text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
           >
