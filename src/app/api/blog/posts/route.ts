@@ -43,6 +43,17 @@ interface SupabasePostRow {
   updatedAt: string;
   author?: { id: string; name: string; image?: string };
   category?: { id: string; name: string; slug: string; color?: string };
+  media?: { url: string; mediaType: string }[];
+}
+
+function resolveFeaturedImageUrl(post: SupabasePostRow): string {
+  const url = post.featuredImageUrl || '';
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/uploads/') && post.media?.length) {
+    const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
+    if (imageMedia) return imageMedia.url;
+  }
+  return url;
 }
 
 // GET /api/blog/posts - List all posts
@@ -57,7 +68,7 @@ export async function GET(request: NextRequest) {
 
     let query = supabase
       .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)', { count: 'exact' });
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
 
     if (status && status !== 'all') {
       query = query.eq('status', status);
@@ -87,7 +98,7 @@ export async function GET(request: NextRequest) {
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),

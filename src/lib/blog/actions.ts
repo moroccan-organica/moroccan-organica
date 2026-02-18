@@ -70,6 +70,7 @@ interface SupabasePostRow {
   updatedAt: string;
   author?: { id: string; name: string; image?: string };
   category?: { id: string; name: string; slug: string; color?: string; icon?: string };
+  media?: { url: string; mediaType: string }[];
 }
 
 interface SupabaseCategoryRow {
@@ -114,6 +115,22 @@ function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T
     console.warn('Failed to parse JSON:', error);
     return fallback;
   }
+}
+
+/**
+ * Resolve the best featured image URL.
+ * If featuredImageUrl is a broken /uploads/ path, try to use BlogMedia URL instead.
+ */
+function resolveFeaturedImageUrl(post: SupabasePostRow): string {
+  const url = post.featuredImageUrl || '';
+  // If URL is a valid Supabase Storage URL or external URL, use it directly
+  if (url.startsWith('http')) return url;
+  // If URL is an old /uploads/ path, try to find a valid URL from BlogMedia
+  if (url.startsWith('/uploads/') && post.media?.length) {
+    const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
+    if (imageMedia) return imageMedia.url;
+  }
+  return url;
 }
 
 // No strict auth check - follows product.actions.ts pattern
@@ -165,7 +182,7 @@ export async function getBlogPosts(
   try {
     let query = supabase
       .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)', { count: 'exact' });
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
 
     if (status && status !== 'all') {
       query = query.eq('status', status);
@@ -195,7 +212,7 @@ export async function getBlogPosts(
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId || '',
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
@@ -264,7 +281,7 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
   try {
     const { data: post, error } = await supabase
       .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
       .eq('id', id)
       .single();
 
@@ -279,7 +296,7 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),
@@ -319,7 +336,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
   try {
     const { data: post, error } = await supabase
       .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
       .eq('slug', slug)
       .eq('status', 'published')
       .single();
@@ -335,7 +352,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),

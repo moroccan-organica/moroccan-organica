@@ -1,15 +1,24 @@
 import { withAuth } from 'next-auth/middleware';
+import type { NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
 const locales = ['en', 'ar'];
 const defaultLocale = 'en';
 
 // Define the middleware function
-async function middleware(req: NextRequest & { nextauth: { token: any } }) {
+async function middleware(req: NextRequestWithAuth) {
     const { pathname } = req.nextUrl;
     const token = req.nextauth.token;
     const isAuth = !!token;
+
+    const localePrefixedAuthApi = locales.find(
+        (locale) => pathname === `/${locale}/api/auth` || pathname.startsWith(`/${locale}/api/auth/`)
+    );
+
+    if (localePrefixedAuthApi) {
+        const rewrittenPath = pathname.replace(`/${localePrefixedAuthApi}`, '');
+        return NextResponse.rewrite(new URL(`${rewrittenPath}${req.nextUrl.search}`, req.url));
+    }
 
     // 1. Locale redirection logic
     const pathnameIsMissingLocale = locales.every(
@@ -59,7 +68,7 @@ async function middleware(req: NextRequest & { nextauth: { token: any } }) {
 }
 
 // Export the middleware wrapped with auth
-export default withAuth(middleware as any, {
+export default withAuth(middleware, {
     callbacks: {
         authorized: () => true,
     },

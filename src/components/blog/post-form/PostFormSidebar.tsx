@@ -34,6 +34,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { BlogCategory } from '@/types/blog';
 import Image from 'next/image';
+import { getValidImageUrl } from '@/lib/utils';
 
 interface PostFormSidebarProps {
   t: any;
@@ -164,7 +165,7 @@ export function PostFormSidebar({
           {featuredImagePreview ? (
             <div className="group relative aspect-video overflow-hidden rounded-xl border border-slate-100 bg-slate-50">
               <Image
-                src={featuredImagePreview}
+                src={getValidImageUrl(featuredImagePreview)}
                 alt="Featured"
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"

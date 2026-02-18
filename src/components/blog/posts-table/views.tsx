@@ -5,6 +5,7 @@ import { CardContent } from '@/components/ui/card';
 import type { BlogCategory, BlogPost } from '@/types/blog';
 import { StatusBadge } from './StatusBadge';
 import { PostActionsMenu } from './PostActionsMenu';
+import { getValidImageUrl } from '@/lib/utils';
 
 export function PostsTableView(props: {
   posts: BlogPost[];
@@ -104,9 +105,10 @@ export function PostsGridView(props: {
           >
             <div className="aspect-video relative overflow-hidden">
               <img
-                src={post.featured_image_url}
+                src={getValidImageUrl(post.featured_image_url)}
                 alt={post.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                onError={(e) => { (e.target as HTMLImageElement).src = '/images/placeholder.svg'; }}
               />
               <div className="absolute top-3 left-3">
                 <StatusBadge status={post.status} t={t} />

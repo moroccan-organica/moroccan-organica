@@ -24,6 +24,16 @@ function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T
   }
 }
 
+function resolveFeaturedImageUrl(post: { featuredImageUrl?: string; media?: { url: string; mediaType: string }[] }): string {
+  const url = post.featuredImageUrl || '';
+  if (url.startsWith('http')) return url;
+  if (url.startsWith('/uploads/') && post.media?.length) {
+    const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
+    if (imageMedia) return imageMedia.url;
+  }
+  return url;
+}
+
 // GET /api/blog/posts/[id] - Get a single post
 export async function GET(
   request: NextRequest,
@@ -34,7 +44,7 @@ export async function GET(
 
     const { data: post, error } = await supabase
       .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)')
+      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
       .eq('id', id)
       .single();
 
@@ -51,7 +61,7 @@ export async function GET(
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),

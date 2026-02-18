@@ -26,7 +26,7 @@ export function Providers({ children, lang }: { children: React.ReactNode, lang?
 
     return (
         <QueryClientProvider client={queryClient}>
-            <SessionProvider>
+            <SessionProvider basePath="/api/auth">
                 <CartProvider>{children}</CartProvider>
             </SessionProvider>
         </QueryClientProvider>
