@@ -47,13 +47,16 @@ interface SupabasePostRow {
 }
 
 function resolveFeaturedImageUrl(post: SupabasePostRow): string {
-  const url = post.featuredImageUrl || '';
-  if (url.startsWith('http')) return url;
-  if (url.startsWith('/uploads/') && post.media?.length) {
+  // Prefer the stored featuredImageUrl if it's a full URL
+  if (post.featuredImageUrl?.startsWith('http')) return post.featuredImageUrl;
+
+  // Fall back to first linked BlogMedia with a valid URL
+  if (post.media?.length) {
     const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
     if (imageMedia) return imageMedia.url;
   }
-  return url;
+
+  return '';
 }
 
 // GET /api/blog/posts - List all posts

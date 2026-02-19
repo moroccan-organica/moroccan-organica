@@ -16,7 +16,9 @@ import {
   Trash2,
   Eye,
   Filter,
-  Loader2
+  Loader2,
+  X,
+  SlidersHorizontal
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useParams, useRouter } from 'next/navigation';
@@ -54,31 +56,53 @@ export function ProductsPageClient({
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [filterAvailable, setFilterAvailable] = useState<boolean | null>(null);
+  const [filterFeatured, setFilterFeatured] = useState<boolean | null>(null);
+  const [filterTopSale, setFilterTopSale] = useState<boolean | null>(null);
+  const [filterStock, setFilterStock] = useState<'all' | 'low' | 'out'>('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ShopProductDB | null>(null);
   const [page, setPage] = useState(1);
   const [isPending, startTransition] = useTransition();
   const [pageSize, setPageSize] = useState(8);
 
+  const hasActiveFilters = selectedCategory || filterAvailable !== null || filterFeatured !== null || filterTopSale !== null || filterStock !== 'all';
+
+  const clearAllFilters = () => {
+    setSearchTerm('');
+    setSelectedCategory(null);
+    setFilterAvailable(null);
+    setFilterFeatured(null);
+    setFilterTopSale(null);
+    setFilterStock('all');
+    setPage(1);
+  };
+
 
   const filteredProducts = useMemo(() => {
     const term = searchTerm.toLowerCase().trim();
-    if (!term && !selectedCategory) return products;
-
     return products.filter(product => {
       const matchesSearch = !term ||
-        product.name.toLowerCase().includes(term) ||
-        product.description.toLowerCase().includes(term) ||
-        product.nameAr.toLowerCase().includes(term) ||
-        product.descriptionAr.toLowerCase().includes(term) ||
-        product.nameFr.toLowerCase().includes(term) ||
-        product.descriptionFr.toLowerCase().includes(term) ||
-        product.sku.toLowerCase().includes(term);
+        (product.name || '').toLowerCase().includes(term) ||
+        (product.description || '').toLowerCase().includes(term) ||
+        (product.nameAr || '').toLowerCase().includes(term) ||
+        (product.descriptionAr || '').toLowerCase().includes(term) ||
+        (product.nameFr || '').toLowerCase().includes(term) ||
+        (product.descriptionFr || '').toLowerCase().includes(term) ||
+        (product.sku || '').toLowerCase().includes(term);
 
       const matchesCategory = !selectedCategory || product.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const matchesAvailable = filterAvailable === null || product.isAvailable === filterAvailable;
+      const matchesFeatured = filterFeatured === null || product.isFeatured === filterFeatured;
+      const matchesTopSale = filterTopSale === null || product.isTopSale === filterTopSale;
+      const matchesStock =
+        filterStock === 'all' ? true :
+          filterStock === 'out' ? product.stock === 0 :
+            filterStock === 'low' ? product.stock > 0 && product.stock <= 5 : true;
+
+      return matchesSearch && matchesCategory && matchesAvailable && matchesFeatured && matchesTopSale && matchesStock;
     });
-  }, [products, searchTerm, selectedCategory]);
+  }, [products, searchTerm, selectedCategory, filterAvailable, filterFeatured, filterTopSale, filterStock]);
 
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
@@ -149,60 +173,157 @@ export function ProductsPageClient({
 
       <div className="p-6">
         {/* Toolbar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <div className="flex items-center gap-3 flex-1">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-              <Input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-white"
-              />
+        <div className="flex flex-col gap-4 mb-6">
+          {/* Row 1: Search + Category + View + Add */}
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex items-center gap-3 flex-1">
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => { setSearchTerm(e.target.value); setPage(1); }}
+                  className="pl-10 bg-white"
+                />
+              </div>
+
+              <select
+                value={selectedCategory || ''}
+                onChange={(e) => { setSelectedCategory(e.target.value || null); setPage(1); }}
+                className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38]"
+              >
+                <option value="">All Categories</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
             </div>
 
-            <select
-              value={selectedCategory || ''}
-              onChange={(e) => setSelectedCategory(e.target.value || null)}
-              className="h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38]"
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.name}>{cat.name}</option>
-              ))}
-            </select>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden">
+                <button
+                  onClick={() => setViewMode('table')}
+                  className={cn(
+                    'p-2 transition-colors',
+                    viewMode === 'table' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+                  )}
+                >
+                  <List className="h-4 w-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={cn(
+                    'p-2 transition-colors',
+                    viewMode === 'grid' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
+                  )}
+                >
+                  <Grid3X3 className="h-4 w-4" />
+                </button>
+              </div>
+
+              <Button
+                onClick={handleAddNew}
+                className="bg-[#606C38] hover:bg-[#4a5429] text-white"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
+            </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden">
-              <button
-                onClick={() => setViewMode('table')}
-                className={cn(
-                  'p-2 transition-colors',
-                  viewMode === 'table' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-                )}
-              >
-                <List className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => setViewMode('grid')}
-                className={cn(
-                  'p-2 transition-colors',
-                  viewMode === 'grid' ? 'bg-[#606C38] text-white' : 'bg-white text-slate-600 hover:bg-slate-50'
-                )}
-              >
-                <Grid3X3 className="h-4 w-4" />
-              </button>
-            </div>
+          {/* Row 2: Status filter chips */}
+          <div className="flex flex-wrap items-center gap-2">
+            <SlidersHorizontal className="h-4 w-4 text-slate-400 shrink-0" />
 
-            <Button
-              onClick={handleAddNew}
-              className="bg-[#606C38] hover:bg-[#4a5429] text-white"
+            {/* Available */}
+            <button
+              onClick={() => { setFilterAvailable(filterAvailable === true ? null : true); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterAvailable === true
+                  ? 'bg-emerald-600 text-white border-emerald-600'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-emerald-400 hover:text-emerald-600'
+              )}
             >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
+              ✓ Active
+            </button>
+            <button
+              onClick={() => { setFilterAvailable(filterAvailable === false ? null : false); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterAvailable === false
+                  ? 'bg-slate-700 text-white border-slate-700'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-500 hover:text-slate-700'
+              )}
+            >
+              ✕ Inactive
+            </button>
+
+            <div className="w-px h-4 bg-slate-200" />
+
+            {/* Featured */}
+            <button
+              onClick={() => { setFilterFeatured(filterFeatured === true ? null : true); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterFeatured === true
+                  ? 'bg-amber-500 text-white border-amber-500'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-amber-400 hover:text-amber-600'
+              )}
+            >
+              ★ Featured
+            </button>
+
+            {/* Top Sale */}
+            <button
+              onClick={() => { setFilterTopSale(filterTopSale === true ? null : true); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterTopSale === true
+                  ? 'bg-orange-500 text-white border-orange-500'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-orange-400 hover:text-orange-600'
+              )}
+            >
+              🔥 Top Sale
+            </button>
+
+            <div className="w-px h-4 bg-slate-200" />
+
+            {/* Stock status */}
+            <button
+              onClick={() => { setFilterStock(filterStock === 'low' ? 'all' : 'low'); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterStock === 'low'
+                  ? 'bg-yellow-500 text-white border-yellow-500'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-yellow-400 hover:text-yellow-600'
+              )}
+            >
+              ⚠ Low Stock
+            </button>
+            <button
+              onClick={() => { setFilterStock(filterStock === 'out' ? 'all' : 'out'); setPage(1); }}
+              className={cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium border transition-colors',
+                filterStock === 'out'
+                  ? 'bg-red-500 text-white border-red-500'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-red-400 hover:text-red-500'
+              )}
+            >
+              ✕ Out of Stock
+            </button>
+
+            {/* Clear All */}
+            {hasActiveFilters && (
+              <button
+                onClick={clearAllFilters}
+                className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors border border-slate-200"
+              >
+                <X className="h-3 w-3" />
+                Clear All
+              </button>
+            )}
           </div>
         </div>
 

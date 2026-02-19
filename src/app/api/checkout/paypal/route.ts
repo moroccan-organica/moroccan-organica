@@ -13,7 +13,8 @@ import { createOrder } from "@/actions/order.actions";
  */
 
 // Initialize PayPal Configuration from Environment Variables
-const paypalClientId = process.env.PAYPAL_CLIENT_ID || "ASHlp4YnXU8iZ1q6czZhX8Xc1k2HsHooFqbTUk1VsCFUAanzz-J-mX6Y5pB0M53_oBap69CarTdEXSUM";
+const paypalClientId = process.env.PAYPAL_CLIENT_ID!;
+if (!paypalClientId) throw new Error("PAYPAL_CLIENT_ID is not set");
 const paypalClientSecret = process.env.PAYPAL_CLIENT_SECRET || "";
 const paypalMode = (process.env.PAYPAL_MODE || "sandbox") as "live" | "sandbox";
 

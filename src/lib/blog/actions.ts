@@ -118,19 +118,20 @@ function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T
 }
 
 /**
- * Resolve the best featured image URL.
- * If featuredImageUrl is a broken /uploads/ path, try to use BlogMedia URL instead.
+ * Resolve the featured image URL from Supabase Storage.
+ * Only full http URLs are valid — old local paths are ignored.
  */
 function resolveFeaturedImageUrl(post: SupabasePostRow): string {
-  const url = post.featuredImageUrl || '';
-  // If URL is a valid Supabase Storage URL or external URL, use it directly
-  if (url.startsWith('http')) return url;
-  // If URL is an old /uploads/ path, try to find a valid URL from BlogMedia
-  if (url.startsWith('/uploads/') && post.media?.length) {
+  // Prefer the stored featuredImageUrl if it's a full URL
+  if (post.featuredImageUrl?.startsWith('http')) return post.featuredImageUrl;
+
+  // Fall back to first linked BlogMedia with a valid URL
+  if (post.media?.length) {
     const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
     if (imageMedia) return imageMedia.url;
   }
-  return url;
+
+  return '';
 }
 
 // No strict auth check - follows product.actions.ts pattern
@@ -713,7 +714,7 @@ export async function getRelatedPosts(postId: string, categoryId: string | null,
       excerpt_ar: post.excerptAr || '',
       content: safeJsonParse(post.content, { type: 'doc', content: [] }),
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
-      featured_image_url: post.featuredImageUrl || '',
+      featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId || '',
       category_id: post.categoryId || '',
       tags: safeJsonParse(post.tags, []),

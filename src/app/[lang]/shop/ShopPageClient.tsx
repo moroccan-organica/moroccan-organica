@@ -41,19 +41,25 @@ export function ShopPageClient({
     }, [calculatedMaxPrice]);
 
     const filteredProducts = useMemo(() => {
+        const term = searchTerm.toLowerCase().trim();
         return initialProducts.filter(product => {
-            const localizedName = lang === 'ar' ? product.nameAr : product.name;
-            const localizedDesc = lang === 'ar' ? product.descriptionAr : product.description;
-            const matchesSearch = !searchTerm ||
-                localizedName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                localizedDesc.toLowerCase().includes(searchTerm.toLowerCase());
+            // Smart search: check all languages and SKU
+            const matchesSearch = !term ||
+                (product.name || '').toLowerCase().includes(term) ||
+                (product.description || '').toLowerCase().includes(term) ||
+                (product.nameAr || '').toLowerCase().includes(term) ||
+                (product.descriptionAr || '').toLowerCase().includes(term) ||
+                (product.nameFr || '').toLowerCase().includes(term) ||
+                (product.descriptionFr || '').toLowerCase().includes(term) ||
+                (product.sku || '').toLowerCase().includes(term);
+
             const matchesCategory = !selectedCategory || product.id === selectedCategory ||
                 categories.find(c => c.id === selectedCategory)?.name === product.category;
             const productPrice = product.price || 0;
             const matchesPrice = productPrice >= minPrice && productPrice <= maxPrice;
             return matchesSearch && matchesCategory && matchesPrice;
         });
-    }, [initialProducts, searchTerm, selectedCategory, minPrice, maxPrice, lang, categories]);
+    }, [initialProducts, searchTerm, selectedCategory, minPrice, maxPrice, categories]);
 
     const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
 
