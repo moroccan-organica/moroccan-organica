@@ -4,13 +4,14 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { getDictionary } from "@/lib/dictionaries";
-import { getPublishedPostBySlug, incrementPostViewCount } from "@/lib/blog/actions";
+import { getPublishedPostBySlug, incrementPostViewCount, getPublishedPosts } from "@/lib/blog/actions";
 import { BlogPostContent } from "@/components/blog/BlogPostContent";
 import { BlogPostMeta } from "@/components/blog/BlogPostMeta";
 import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
 import { getValidImageUrl } from '@/lib/utils';
+import { BlogCard } from '@/components/blog/BlogCard';
 
 export default function BlogPostPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
     const { lang, slug } = React.use(params);
@@ -19,6 +20,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
     const [isLoading, setIsLoading] = useState(true);
     const [notFound, setNotFound] = useState(false);
     const [imgSrc, setImgSrc] = useState('/images/placeholder.svg');
+    const [relatedPosts, setRelatedPosts] = useState<BlogPostFull[]>([]);
 
     useEffect(() => {
         getDictionary(lang, 'blog').then(setDict);
@@ -45,6 +47,24 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
         }
         fetchPost();
     }, [slug]);
+
+    useEffect(() => {
+        async function fetchRelated() {
+            if (!post) return;
+            try {
+                const { posts } = await getPublishedPosts({
+                    page: 1,
+                    pageSize: 4,
+                    categoryId: post.category_id,
+                });
+                const filtered = posts.filter((p: BlogPostFull) => p.id !== post.id).slice(0, 3);
+                setRelatedPosts(filtered);
+            } catch (error) {
+                console.error('Error fetching related posts:', error);
+            }
+        }
+        fetchRelated();
+    }, [post]);
 
     if (isLoading) {
         return (
@@ -162,6 +182,36 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                     <div className="hidden xl:block w-64" />
                 </div>
             </div>
+
+            {relatedPosts.length > 0 && (
+                <div className="bg-slate-50/60 border-t border-slate-100">
+                    <div className="container mx-auto px-4 py-16">
+                        <div className={`flex items-center justify-between mb-8 ${isArabic ? 'flex-row-reverse' : ''}`}>
+                            <h2 className="text-2xl md:text-3xl font-playfair font-bold text-slate-900" dir={isArabic ? 'rtl' : 'ltr'}>
+                                {(dict.relatedPosts as string) || 'Related Posts'}
+                            </h2>
+                            <Link href={`/${lang}/blog`} className="text-[#BC6C25] font-semibold text-sm hover:underline">
+                                {dict.backToBlog as string}
+                            </Link>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                            {relatedPosts.map((related) => (
+                                <BlogCard
+                                    key={related.id}
+                                    post={related}
+                                    lang={lang}
+                                    translations={{
+                                        readMore: dict.readMore as string,
+                                        by: dict.by as string,
+                                        minRead: dict.minRead as string,
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </main>
     );
 }

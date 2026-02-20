@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { getDictionary } from '@/lib/dictionaries';
 import { AdminHeader } from '@/components/admin/AdminHeader';
 import { PostsTable } from '@/components/blog/PostsTable';
@@ -64,6 +64,7 @@ interface AdminBlogTranslations {
 
 export default function BlogAdminPage() {
   const params = useParams();
+  const router = useRouter();
   const lang = (params?.lang as string) || 'en';
   const [dict, setDict] = useState<Record<string, unknown> | null>(null);
 
@@ -105,6 +106,10 @@ export default function BlogAdminPage() {
     setEditingPost(null);
     setCurrentView('editor');
   }, []);
+
+  const handleViewPost = useCallback((post: BlogPost) => {
+    router.push(`/${lang}/blog/${post.slug}`);
+  }, [lang, router]);
 
   const handleEditPost = useCallback((post: BlogPost) => {
     setEditingPost(post);
@@ -248,6 +253,7 @@ export default function BlogAdminPage() {
                       posts={posts.slice(0, 5)}
                       categories={categories}
                       onEdit={handleEditPost}
+                      onView={handleViewPost}
                       onCreatePost={handleCreatePost}
                       onAction={handlePostAction}
                       onRefresh={handleRefresh}
@@ -273,6 +279,7 @@ export default function BlogAdminPage() {
                   posts={posts}
                   categories={categories}
                   onEdit={handleEditPost}
+                  onView={handleViewPost}
                   onCreatePost={handleCreatePost}
                   onAction={handlePostAction}
                   onRefresh={handleRefresh}
