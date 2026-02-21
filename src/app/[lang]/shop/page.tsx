@@ -70,6 +70,9 @@ export default async function ShopPage({ params }: { params: Params }) {
             description: p.description,
             descriptionAr: p.descriptionAr,
             descriptionFr: p.description,
+            details: '',
+            detailsAr: '',
+            detailsFr: '',
             notes: p.notes,
             price: p.price,
             stock: p.stockQuantity || 100,
@@ -79,6 +82,9 @@ export default async function ShopPage({ params }: { params: Params }) {
             placement: 'shop' as const,
             sku: p.id,
             variants: [],
+            metaTitle: '',
+            metaDesc: '',
+            keywords: '',
         }));
 
         categories = shopCategories.map(c => ({
