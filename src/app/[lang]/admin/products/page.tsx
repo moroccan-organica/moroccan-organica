@@ -8,25 +8,25 @@ type Params = Promise<{ lang: string }>;
 
 export default async function ProductsPage({ params }: { params: Params }) {
     await params;
-    
+
     // Fetch from database with fallback to static data
     let products: ShopProductDB[] = [];
     let categories: CategoryDB[] = [];
     let totalProducts = 0;
-    
+
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts(),
+            getProducts({ placement: 'shop' }),
             getCategories(),
         ]);
-        
+
         products = productsResult.products;
         totalProducts = productsResult.total;
         categories = categoriesResult;
     } catch (error) {
         console.error('Error fetching from database, using static data:', error);
     }
-    
+
     // Fallback to static data if DB returns nothing
     if (products.length === 0) {
         products = shopProducts.map(p => ({
@@ -50,10 +50,11 @@ export default async function ProductsPage({ params }: { params: Params }) {
             isAvailable: true,
             isFeatured: p.badge === 'bestseller',
             isTopSale: false,
+            placement: 'shop' as const,
             sku: p.id,
             variants: [],
         }));
-        
+
         categories = shopCategories.map(c => ({
             id: c.id,
             image: null,
@@ -64,12 +65,12 @@ export default async function ProductsPage({ params }: { params: Params }) {
             slugAr: c.slug,
             slugFr: c.slug,
         }));
-        
+
         totalProducts = products.length;
     }
 
     return (
-        <ProductsPageClient 
+        <ProductsPageClient
             initialProducts={products}
             categories={categories}
             totalProducts={totalProducts}

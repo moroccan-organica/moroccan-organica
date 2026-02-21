@@ -83,6 +83,11 @@ export default function ProductsClient({ pageData, topProducts, dict, lang }: Pr
                                     description={product.description}
                                     badge={product.badge}
                                     badgeVariant="organic"
+                                    slug={product.slug}
+                                    id={product.id}
+                                    price={product.price}
+                                    volume={product.volume}
+                                    showAddToCart={false}
                                 />
                             </motion.div>
                         ))}

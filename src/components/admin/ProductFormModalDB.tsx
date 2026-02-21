@@ -6,10 +6,12 @@ import { X, Upload, Plus, Trash2, Loader2, Star, ImagePlus } from 'lucide-react'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { ShopProductDB, CategoryDB, CreateProductInput, UpdateProductInput } from '@/types/product';
+import { ShopProductDB, CategoryDB, CreateProductInput, UpdateProductInput, ProductPlacement } from '@/types/product';
 import { createProduct, updateProduct } from '@/actions/product.actions';
 import { uploadProductImage } from '@/actions/media.actions';
 import { cn } from '@/lib/utils';
+import { SimpleTiptapEditor } from './SimpleTiptapEditor';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface ProductFormModalDBProps {
   isOpen: boolean;
@@ -17,9 +19,10 @@ interface ProductFormModalDBProps {
   product: ShopProductDB | null;
   categories: CategoryDB[];
   onSave?: (product: ShopProductDB) => void;
+  defaultPlacement?: ProductPlacement;
 }
 
-const getInitialFormData = (product: ShopProductDB | null, categories: CategoryDB[]) => {
+const getInitialFormData = (product: ShopProductDB | null, categories: CategoryDB[], defaultPlacement: ProductPlacement = 'shop') => {
   const category = categories.find(c => c.name === product?.category);
 
   // Create unified image list
@@ -53,13 +56,26 @@ const getInitialFormData = (product: ShopProductDB | null, categories: CategoryD
     isAvailable: product?.isAvailable ?? true,
     isFeatured: product?.isFeatured ?? false,
     isTopSale: product?.isTopSale ?? false,
+    placement: (product?.placement || defaultPlacement) as ProductPlacement,
     sku: product?.sku || '',
+    metaTitle: product?.metaTitle || '',
+    metaTitleAr: product?.metaTitleAr || '',
+    metaTitleFr: product?.metaTitleFr || '',
+    metaDesc: product?.metaDesc || '',
+    metaDescAr: product?.metaDescAr || '',
+    metaDescFr: product?.metaDescFr || '',
+    keywords: product?.keywords || '',
+    keywordsAr: product?.keywordsAr || '',
+    keywordsFr: product?.keywordsFr || '',
+    details: product?.details || '',
+    detailsAr: product?.detailsAr || '',
+    detailsFr: product?.detailsFr || '',
   };
 };
 
 
-export function ProductFormModalDB({ isOpen, onClose, product, categories, onSave }: ProductFormModalDBProps) {
-  const initialData = useMemo(() => getInitialFormData(product, categories), [product, categories]);
+export function ProductFormModalDB({ isOpen, onClose, product, categories, onSave, defaultPlacement = 'shop' }: ProductFormModalDBProps) {
+  const initialData = useMemo(() => getInitialFormData(product, categories, defaultPlacement), [product, categories, defaultPlacement]);
   const [formData, setFormData] = useState(initialData);
   const [newNote, setNewNote] = useState('');
   const [isPending, startTransition] = useTransition();
@@ -68,12 +84,12 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
 
   React.useEffect(() => {
     if (isOpen) {
-      const data = getInitialFormData(product, categories);
+      const data = getInitialFormData(product, categories, defaultPlacement);
       setFormData(data);
       setNewNote('');
       setError(null);
     }
-  }, [isOpen, product, categories]);
+  }, [isOpen, product, categories, defaultPlacement]);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,32 +100,46 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       try {
         if (product) {
           // Update existing product
+          const isShop = formData.placement === 'shop';
           const updateInput: UpdateProductInput = {
             categoryId: formData.categoryId,
-            basePrice: formData.price,
+            basePrice: isShop ? formData.price : 0,
             sku: formData.sku,
-            stock: formData.stock,
+            stock: isShop ? formData.stock : 0,
             isAvailable: formData.isAvailable,
             isFeatured: formData.isFeatured,
             isTopSale: formData.isTopSale,
+            placement: formData.placement,
             translations: [
               {
                 language: 'en',
                 name: formData.name,
                 description: formData.description,
+                details: formData.details,
                 slug: formData.slug,
+                metaTitle: formData.metaTitle || undefined,
+                metaDesc: formData.metaDesc || undefined,
+                keywords: formData.keywords || undefined,
               },
               {
                 language: 'ar',
                 name: formData.nameAr,
                 description: formData.descriptionAr,
+                details: formData.detailsAr,
                 slug: formData.slug + '-ar',
+                metaTitle: formData.metaTitleAr || undefined,
+                metaDesc: formData.metaDescAr || undefined,
+                keywords: formData.keywordsAr || undefined,
               },
               {
                 language: 'fr',
                 name: formData.nameFr,
                 description: formData.descriptionFr,
+                details: formData.detailsFr,
                 slug: formData.slug + '-fr',
+                metaTitle: formData.metaTitleFr || undefined,
+                metaDesc: formData.metaDescFr || undefined,
+                keywords: formData.keywordsFr || undefined,
               },
             ],
             images: formData.images.map(img => ({
@@ -117,7 +147,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               isPrimary: img.isPrimary
             })),
 
-            variants: formData.volume ? [
+            variants: isShop && formData.volume ? [
               {
                 sku: formData.sku + '-default',
                 sizeName: formData.volume,
@@ -135,32 +165,46 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
           }
         } else {
           // Create new product
+          const isShop = formData.placement === 'shop';
           const createInput: CreateProductInput = {
             categoryId: formData.categoryId,
-            basePrice: formData.price,
+            basePrice: isShop ? formData.price : 0,
             sku: formData.sku || `SKU-${Date.now()}`,
-            stock: formData.stock,
+            stock: isShop ? formData.stock : 0,
             isAvailable: formData.isAvailable,
             isFeatured: formData.isFeatured,
             isTopSale: formData.isTopSale,
+            placement: formData.placement,
             translations: [
               {
                 language: 'en',
                 name: formData.name,
                 description: formData.description,
+                details: formData.details,
                 slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
+                metaTitle: formData.metaTitle || undefined,
+                metaDesc: formData.metaDesc || undefined,
+                keywords: formData.keywords || undefined,
               },
               {
                 language: 'ar',
                 name: formData.nameAr || formData.name,
                 description: formData.descriptionAr || formData.description,
+                details: formData.detailsAr || formData.details,
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-ar',
+                metaTitle: formData.metaTitleAr || undefined,
+                metaDesc: formData.metaDescAr || undefined,
+                keywords: formData.keywordsAr || undefined,
               },
               {
                 language: 'fr',
                 name: formData.nameFr || formData.name,
                 description: formData.descriptionFr || formData.description,
+                details: formData.detailsFr || formData.details,
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-fr',
+                metaTitle: formData.metaTitleFr || undefined,
+                metaDesc: formData.metaDescFr || undefined,
+                keywords: formData.keywordsFr || undefined,
               },
             ],
             images: formData.images.map(img => ({
@@ -168,7 +212,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               isPrimary: img.isPrimary
             })),
 
-            variants: formData.volume ? [
+            variants: isShop && formData.volume ? [
               {
                 sku: (formData.sku || `SKU-${Date.now()}`) + '-default',
                 sizeName: formData.volume,
@@ -310,116 +354,48 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               </div>
             )}
 
-            {/* General Product Information */}
-            <fieldset className="border-2 border-[#606C38] rounded-xl p-5 bg-white">
-              <legend className="text-lg font-bold text-[#606C38] px-2">General Product Information</legend>
+            {/* 1. Global Administrative & Global Info */}
+            <fieldset className="border-2 border-[#606C38] rounded-xl p-6 bg-white shadow-sm">
+              <legend className="text-lg font-bold text-[#606C38] px-3 bg-white ml-2 rounded-full border border-[#606C38] text-sm uppercase tracking-wide">
+                Settings & Logistics
+              </legend>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Product Name (English)
-                  </label>
-                  <Input
-                    value={formData.name}
-                    onChange={(e) => {
-                      setFormData(prev => ({
-                        ...prev,
-                        name: e.target.value,
-                        slug: generateSlug(e.target.value)
-                      }));
-                    }}
-                    placeholder="e.g., Moroccan Argan Oil"
-                    required
-                  />
-                </div>
-                <div className="text-right">
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    اسم المنتج (Arabic)
-                  </label>
-                  <Input
-                    value={formData.nameAr}
-                    onChange={(e) => setFormData(prev => ({ ...prev, nameAr: e.target.value }))}
-                    placeholder="زيت الأركان المغربي"
-                    dir="rtl"
-                  />
+              {/* Placement Selector */}
+              <div className="mb-6">
+                <label className="block text-sm font-bold text-slate-700 mb-2">
+                  Product Type / Placement
+                </label>
+                <div className="flex rounded-lg border border-slate-200 overflow-hidden shadow-inner">
+                  {([
+                    { value: 'shop', label: '🛒 Shop', desc: 'Catalog' },
+                    { value: 'topsale', label: '🔥 Top Sale', desc: 'Best Seller' },
+                    { value: 'featured', label: '⭐ Featured', desc: 'Promoted' },
+                  ] as { value: ProductPlacement; label: string; desc: string }[]).map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setFormData(prev => ({ ...prev, placement: opt.value }))}
+                      className={cn(
+                        'flex-1 flex flex-col items-center py-2.5 px-2 text-xs font-semibold transition-all border-r last:border-r-0 border-slate-200',
+                        formData.placement === opt.value
+                          ? 'bg-[#606C38] text-white'
+                          : 'bg-white text-slate-600 hover:bg-slate-50'
+                      )}
+                    >
+                      <span>{opt.label}</span>
+                      <span className={cn('text-[9px] font-normal mt-0.5 opacity-70')}>{opt.desc}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Description (English)
-                  </label>
-                  <textarea
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    placeholder="Product description..."
-                    className="w-full h-24 px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38] resize-none"
-                    required
-                  />
-                </div>
-                <div className="text-right">
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    الوصف (Arabic)
-                  </label>
-                  <textarea
-                    value={formData.descriptionAr}
-                    onChange={(e) => setFormData(prev => ({ ...prev, descriptionAr: e.target.value }))}
-                    placeholder="وصف المنتج..."
-                    className="w-full h-24 px-4 py-3 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38] resize-none"
-                    dir="rtl"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Price (USD)
-                  </label>
-                  <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    value={formData.price}
-                    onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                    placeholder="0.00"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Stock
-                  </label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
-                    placeholder="0"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    SKU
-                  </label>
-                  <Input
-                    value={formData.sku}
-                    onChange={(e) => setFormData(prev => ({ ...prev, sku: e.target.value }))}
-                    placeholder="e.g., ARG-001"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Category
-                  </label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Category</label>
                   <select
                     value={formData.categoryId}
                     onChange={(e) => setFormData(prev => ({ ...prev, categoryId: e.target.value }))}
-                    className="w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#606C38]"
+                    className="w-full h-10 px-4 rounded-lg border border-slate-200 bg-white text-sm focus:ring-2 focus:ring-[#606C38] outline-none"
                     required
                   >
                     <option value="">Select category</option>
@@ -428,65 +404,245 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                     ))}
                   </select>
                 </div>
+
+                {formData.placement === 'shop' && (
+                  <>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Price (USD)</label>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={formData.price}
+                        onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
+                        placeholder="0.00"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700 mb-2">Stock Inventory</label>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={formData.stock}
+                        onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
+                        placeholder="0"
+                      />
+                    </div>
+                  </>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-50">
+                {formData.placement === 'shop' && (
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Volume/Size</label>
+                    <Input
+                      value={formData.volume}
+                      onChange={(e) => setFormData(prev => ({ ...prev, volume: e.target.value }))}
+                      placeholder="e.g., 5 L"
+                    />
+                  </div>
+                )}
                 <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Volume/Size
-                  </label>
-                  <Input
-                    value={formData.volume}
-                    onChange={(e) => setFormData(prev => ({ ...prev, volume: e.target.value }))}
-                    placeholder="e.g., 5 L - 1.32 GAL"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-slate-700 mb-2">
-                    Badge
-                  </label>
+                  <label className="block text-sm font-bold text-slate-700 mb-2">Visual Badge</label>
                   <Input
                     value={formData.badge}
                     onChange={(e) => setFormData(prev => ({ ...prev, badge: e.target.value }))}
-                    placeholder="e.g., bestseller"
+                    placeholder="e.g., New"
                   />
                 </div>
               </div>
 
-              {/* Checkboxes */}
-              <div className="flex flex-wrap gap-8 mt-4">
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="isAvailable"
-                    checked={formData.isAvailable}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isAvailable: checked }))}
-                  />
-                  <label htmlFor="isAvailable" className="text-sm font-medium text-slate-700 cursor-pointer">
-                    Available
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="isFeatured"
-                    checked={formData.isFeatured}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isFeatured: checked }))}
-                  />
-                  <label htmlFor="isFeatured" className="text-sm font-medium text-slate-700 cursor-pointer">
-                    Featured
-                  </label>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <Switch
-                    id="isTopSale"
-                    checked={formData.isTopSale}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isTopSale: checked }))}
-                  />
-                  <label htmlFor="isTopSale" className="text-sm font-medium text-slate-700 cursor-pointer">
-                    Top Sale
-                  </label>
-                </div>
+              <div className="mt-6 flex items-center gap-4 py-3 px-4 bg-slate-50 rounded-lg border border-slate-100">
+                <Switch
+                  id="isAvailable"
+                  checked={formData.isAvailable}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, isAvailable: checked }))}
+                />
+                <label htmlFor="isAvailable" className="text-sm font-bold text-slate-700 cursor-pointer">
+                  Product is Available for Purchase
+                </label>
               </div>
-
             </fieldset>
+
+            {/* 2. Unified Content Tabs */}
+            <div className="relative">
+              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 border-t border-slate-200" />
+              <div className="relative flex justify-center">
+                <span className="bg-[#f8f9fa] px-4 text-xs font-black uppercase text-slate-400 tracking-widest">
+                  Localized Product Content
+                </span>
+              </div>
+            </div>
+
+            <Tabs defaultValue="en" className="w-full">
+              <TabsList className="grid w-full grid-cols-3 mb-6 bg-white border border-slate-200 p-1 h-14 rounded-xl shadow-sm">
+                <TabsTrigger value="en" className="text-sm font-bold data-[state=active]:bg-[#606C38] data-[state=active]:text-white transition-all rounded-lg">
+                  🇬🇧 English
+                </TabsTrigger>
+                <TabsTrigger value="ar" className="text-sm font-bold data-[state=active]:bg-[#606C38] data-[state=active]:text-white transition-all rounded-lg">
+                  🇲🇦 Arabic / العربية
+                </TabsTrigger>
+                <TabsTrigger value="fr" className="text-sm font-bold data-[state=active]:bg-[#606C38] data-[state=active]:text-white transition-all rounded-lg">
+                  🇫🇷 French / Français
+                </TabsTrigger>
+              </TabsList>
+
+              {/* English Content */}
+              <TabsContent value="en" className="space-y-6">
+                <fieldset className="border-2 border-[#606C38] rounded-xl p-6 bg-white space-y-6 shadow-sm">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Product Name</label>
+                    <Input
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value, slug: generateSlug(e.target.value) }))}
+                      placeholder="Display name in English"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Short Preview Description</label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      className="w-full h-20 px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-[#606C38] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Rich-Text Content & Story</label>
+                    <SimpleTiptapEditor
+                      content={formData.details}
+                      onChange={(html) => setFormData(prev => ({ ...prev, details: html }))}
+                    />
+                  </div>
+                  <div className="pt-6 border-t border-slate-100 space-y-4">
+                    <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider">SEO Metadata (English)</h4>
+                    <div className="grid gap-4">
+                      <Input
+                        value={formData.metaTitle}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaTitle: e.target.value }))}
+                        placeholder="SEO Meta Title"
+                      />
+                      <textarea
+                        value={formData.metaDesc}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaDesc: e.target.value }))}
+                        placeholder="SEO Meta Description"
+                        className="w-full h-16 px-4 py-2 rounded-lg border border-slate-200 text-xs outline-none"
+                      />
+                      <Input
+                        value={formData.keywords}
+                        onChange={(e) => setFormData(prev => ({ ...prev, keywords: e.target.value }))}
+                        placeholder="Keywords (e.g. argan, organic, morocco)"
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </TabsContent>
+
+              {/* Arabic Content */}
+              <TabsContent value="ar" className="space-y-6">
+                <fieldset className="border-2 border-[#606C38] rounded-xl p-6 bg-white space-y-6 shadow-sm" dir="rtl">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2 text-right">اسم المنتج</label>
+                    <Input
+                      value={formData.nameAr}
+                      onChange={(e) => setFormData(prev => ({ ...prev, nameAr: e.target.value }))}
+                      placeholder="الاسم باللغة العربية"
+                      className="text-right"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2 text-right">وصف قصير</label>
+                    <textarea
+                      value={formData.descriptionAr}
+                      onChange={(e) => setFormData(prev => ({ ...prev, descriptionAr: e.target.value }))}
+                      className="w-full h-20 px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-[#606C38] outline-none text-right"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2 text-right">محتوى غني وقصة المنتج</label>
+                    <SimpleTiptapEditor
+                      content={formData.detailsAr}
+                      onChange={(html) => setFormData(prev => ({ ...prev, detailsAr: html }))}
+                      dir="rtl"
+                    />
+                  </div>
+                  <div className="pt-6 border-t border-slate-100 space-y-4">
+                    <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider text-right">بيانات تحسين محركات البحث SEO (العربية)</h4>
+                    <div className="grid gap-4">
+                      <Input
+                        value={formData.metaTitleAr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaTitleAr: e.target.value }))}
+                        placeholder="عنوان SEO"
+                        className="text-right"
+                      />
+                      <textarea
+                        value={formData.metaDescAr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaDescAr: e.target.value }))}
+                        placeholder="وصف SEO"
+                        className="w-full h-16 px-4 py-2 rounded-lg border border-slate-200 text-xs outline-none text-right"
+                      />
+                      <Input
+                        value={formData.keywordsAr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, keywordsAr: e.target.value }))}
+                        placeholder="الكلمات المفتاحية"
+                        className="text-right"
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </TabsContent>
+
+              {/* French Content */}
+              <TabsContent value="fr" className="space-y-6">
+                <fieldset className="border-2 border-[#606C38] rounded-xl p-6 bg-white space-y-6 shadow-sm">
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Nom du produit</label>
+                    <Input
+                      value={formData.nameFr}
+                      onChange={(e) => setFormData(prev => ({ ...prev, nameFr: e.target.value }))}
+                      placeholder="Nom en français"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Description courte</label>
+                    <textarea
+                      value={formData.descriptionFr}
+                      onChange={(e) => setFormData(prev => ({ ...prev, descriptionFr: e.target.value }))}
+                      className="w-full h-20 px-4 py-3 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-[#606C38] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">Contenu riche et histoire du produit</label>
+                    <SimpleTiptapEditor
+                      content={formData.detailsFr}
+                      onChange={(html) => setFormData(prev => ({ ...prev, detailsFr: html }))}
+                    />
+                  </div>
+                  <div className="pt-6 border-t border-slate-100 space-y-4">
+                    <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider">Métadonnées SEO (Français)</h4>
+                    <div className="grid gap-4">
+                      <Input
+                        value={formData.metaTitleFr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaTitleFr: e.target.value }))}
+                        placeholder="Titre SEO Meta"
+                      />
+                      <textarea
+                        value={formData.metaDescFr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, metaDescFr: e.target.value }))}
+                        placeholder="Description SEO Meta"
+                        className="w-full h-16 px-4 py-2 rounded-lg border border-slate-200 text-xs outline-none"
+                      />
+                      <Input
+                        value={formData.keywordsFr}
+                        onChange={(e) => setFormData(prev => ({ ...prev, keywordsFr: e.target.value }))}
+                        placeholder="Mots-clés"
+                      />
+                    </div>
+                  </div>
+                </fieldset>
+              </TabsContent>
+            </Tabs>
 
             {/* Media Gallery */}
             <fieldset className="border-2 border-[#606C38] rounded-xl p-6 bg-white shadow-sm">
@@ -596,7 +752,6 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 ))}
               </div>
             </fieldset>
-
           </div>
 
           {/* Footer */}

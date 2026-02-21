@@ -43,7 +43,7 @@ export default async function ShopPage({ params }: { params: Params }) {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ isAvailable: true }),
+            getProducts({ isAvailable: true, placement: 'shop' }),
             getCategories(),
         ]);
 
@@ -76,6 +76,7 @@ export default async function ShopPage({ params }: { params: Params }) {
             isAvailable: true,
             isFeatured: p.badge === 'bestseller',
             isTopSale: false,
+            placement: 'shop' as const,
             sku: p.id,
             variants: [],
         }));

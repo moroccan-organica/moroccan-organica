@@ -1,6 +1,9 @@
 // Language codes matching Prisma schema
 export type LanguageCode = 'en' | 'ar' | 'fr';
 
+// Product placement enum — controls which admin section the product belongs to
+export type ProductPlacement = 'shop' | 'topsale' | 'featured';
+
 // Type for product with translations (what we get from DB)
 export interface ProductWithTranslations {
   id: string;
@@ -27,6 +30,7 @@ export interface ProductWithTranslations {
     language: LanguageCode;
     name: string;
     description: string | null;
+    details: string | null;
     slug: string;
     metaTitle: string | null;
     metaDesc: string | null;
@@ -65,12 +69,16 @@ export interface ShopProductDB {
   description: string;
   descriptionAr: string;
   descriptionFr: string;
+  details: string;
+  detailsAr: string;
+  detailsFr: string;
   notes: string[];
   price: number;
   stock: number;
   isAvailable: boolean;
   isFeatured: boolean;
   isTopSale: boolean;
+  placement: ProductPlacement;
   sku: string;
   variants: {
     id: string;
@@ -80,8 +88,14 @@ export interface ShopProductDB {
     stock: number;
   }[];
   metaTitle?: string;
+  metaTitleAr?: string;
+  metaTitleFr?: string;
   metaDesc?: string;
+  metaDescAr?: string;
+  metaDescFr?: string;
   keywords?: string;
+  keywordsAr?: string;
+  keywordsFr?: string;
   ogImage?: string;
   canonical?: string;
 }
@@ -95,10 +109,12 @@ export interface CreateProductInput {
   isAvailable?: boolean;
   isFeatured?: boolean;
   isTopSale?: boolean;
+  placement?: ProductPlacement;
   translations: {
     language: LanguageCode;
     name: string;
     description?: string;
+    details?: string;
     slug: string;
     metaTitle?: string;
     metaDesc?: string;
@@ -127,10 +143,12 @@ export interface UpdateProductInput {
   isAvailable?: boolean;
   isFeatured?: boolean;
   isTopSale?: boolean;
+  placement?: ProductPlacement;
   translations?: {
     language: LanguageCode;
     name: string;
     description?: string;
+    details?: string;
     slug: string;
     metaTitle?: string;
     metaDesc?: string;

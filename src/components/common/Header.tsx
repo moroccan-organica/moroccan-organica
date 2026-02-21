@@ -44,7 +44,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     };
 
     const productDropdownItems = topProducts.length > 0
-        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/shop/${p.slug}` }))
+        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/products/${p.slug}` }))
         : [
             { name: t('products.essentialOils'), href: `/${lang}/products` },
             { name: t('products.vegetableOils'), href: `/${lang}/products` },

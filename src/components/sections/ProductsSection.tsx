@@ -77,7 +77,7 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
               className="animate-fade-in"
               style={{ animationDelay: `${0.1 * (index + 1)}s` }}
             >
-              <ProductCard {...product} addToCartText={content.ctaButton} />
+              <ProductCard {...product} addToCartText={content.ctaButton} showAddToCart={false} />
             </div>
           ))}
         </div>

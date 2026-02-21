@@ -16,7 +16,9 @@ import {
   FileText,
   Search,
   BookOpen,
-  Users
+  Users,
+  Flame,
+  Star
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
@@ -35,6 +37,9 @@ const navItems: NavItem[] = [
     path: '/admin/products',
     icon: Package,
     children: [
+      { label: 'Shop Products', path: '/admin/products', icon: Package },
+      { label: 'Top Sale', path: '/admin/products/topsale', icon: Flame },
+      { label: 'Featured', path: '/admin/products/featured', icon: Star },
       { label: 'Add Product', path: '/admin/products?add=true', icon: Plus },
       { label: 'Categories', path: '/admin/categories', icon: Tags },
     ],

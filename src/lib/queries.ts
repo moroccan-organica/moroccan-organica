@@ -101,12 +101,12 @@ export async function getFeaturedProducts(lang: string) {
                 translations:ProductTranslation(*),
                 images:ProductImage(*)
             `)
-            .eq('isFeatured', true)
+            .eq('placement', 'featured')
             .eq('isAvailable', true)
             .eq('category.translations.language', lang)
             .eq('translations.language', lang)
-            .eq('images.isPrimary', true)
-            .limit(10);
+            .order('createdAt', { ascending: false })
+            .limit(7);
 
         if (error || !products) return [];
 
@@ -140,10 +140,10 @@ export async function getTopSaleProducts(lang: string) {
                 images:ProductImage(*),
                 variants:ProductVariant(*)
             `)
-            .eq('isTopSale', true)
+            .eq('placement', 'topsale')
             .eq('isAvailable', true)
-            .eq('images.isPrimary', true)
-            .limit(6);
+            .order('createdAt', { ascending: false })
+            .limit(9);
 
         if (error || !products) return [];
 

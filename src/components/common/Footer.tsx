@@ -91,8 +91,12 @@ const XIcon = (props: LucideProps) => (
     </svg>
 );
 
-const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) => {
+const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { footer?: FooterContent }, lang: string, topProducts?: { title: string; slug: string }[] }) => {
     const content = (dict as { footer?: FooterContent }).footer ?? (dict as FooterContent);
+
+    const productLinks = topProducts.length > 0
+        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/products/${p.slug}` }))
+        : content.links.products.items;
 
     const socialLinks = [
         { icon: FacebookIcon, href: "https://www.facebook.com/moroccanorganica/", label: "Facebook" },
@@ -149,17 +153,17 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                 </div>
 
                 {/* Main Content Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 mb-10 text-center sm:text-left">
                     {/* About Us */}
-                    <div className="lg:col-span-3">
+                    <div className="sm:col-span-2 lg:col-span-3">
                         <h3 className="text-white font-serif text-base font-bold mb-4 uppercase tracking-wider relative inline-block">
                             {content.about.title}
-                            <span className="absolute -bottom-2 left-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
-                        <p className="text-xs leading-relaxed mb-4 italic text-white/80">
+                        <p className="text-xs leading-relaxed mb-4 italic text-white/80 max-w-md mx-auto sm:mx-0">
                             {content.about.description}
                         </p>
-                        <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4 hover:bg-white transition-all duration-500 group/contact shadow-lg">
+                        <div className="p-4 bg-white/10 rounded-xl border border-white/10 space-y-4 hover:bg-white transition-all duration-500 group/contact shadow-lg text-left max-w-sm mx-auto sm:mx-0">
                             <div className="flex items-center gap-3">
                                 <div className="w-8 h-8 rounded-full bg-white/10 group-hover/contact:bg-[#b87717]/10 flex items-center justify-center transition-colors">
                                     <MessageCircle className="w-4 h-4 text-white group-hover/contact:text-[#b87717] transition-colors" />
@@ -196,12 +200,12 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                     <div className="lg:col-span-2">
                         <h3 className="text-white font-serif text-base font-bold mb-4 uppercase tracking-wider relative inline-block">
                             {content.links.blog.title}
-                            <span className="absolute -bottom-2 left-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
                         <ul className="space-y-2">
                             {content.links.blog.items.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-2 group italic">
+                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>
@@ -214,12 +218,12 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                     <div className="lg:col-span-2">
                         <h3 className="text-white font-serif text-base font-bold mb-4 uppercase tracking-wider relative inline-block">
                             {content.links.policy.title}
-                            <span className="absolute -bottom-2 left-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
                         <ul className="space-y-2">
                             {content.links.policy.items.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-2 group italic">
+                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>
@@ -232,12 +236,12 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                     <div className="lg:col-span-3">
                         <h3 className="text-white font-serif text-base font-bold mb-4 uppercase tracking-wider relative inline-block">
                             {content.links.products.title}
-                            <span className="absolute -bottom-2 left-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
                         <ul className="space-y-2 mb-6">
-                            {content.links.products.items.map((item: LinkItem, i: number) => (
+                            {productLinks.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center gap-2 group italic line-clamp-1">
+                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic line-clamp-1">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>
@@ -250,7 +254,7 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                             <h3 className="text-white font-serif text-[10px] font-bold mb-3 uppercase tracking-wider">
                                 {content.partners.transport}
                             </h3>
-                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 hover:bg-white transition-all duration-500 group/partner max-w-[180px]">
+                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 hover:bg-white transition-all duration-500 group/partner max-w-[180px] mx-auto sm:mx-0">
                                 <Image
                                     src="/images/footer/transport-partner.png"
                                     alt="Transport Partners"
@@ -263,13 +267,13 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                     </div>
 
                     {/* Payment & App */}
-                    <div className="lg:col-span-2">
+                    <div className="sm:col-span-2 lg:col-span-2">
                         <h3 className="text-white font-serif text-base font-bold mb-4 uppercase tracking-wider relative inline-block">
                             {content.partners.payment}
-                            <span className="absolute -bottom-2 left-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
+                            <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
-                        <div className="space-y-4">
-                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 space-y-2 hover:bg-white transition-all duration-500 group/payment">
+                        <div className="flex flex-col sm:flex-row lg:flex-col gap-4 items-center sm:items-start justify-center sm:justify-start">
+                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 space-y-2 hover:bg-white transition-all duration-500 group/payment w-full max-w-[200px]">
                                 <Image
                                     src="/images/footer/payment.png"
                                     alt="Payment Methods"
@@ -286,12 +290,12 @@ const Footer = ({ dict }: { dict: FooterContent | { footer?: FooterContent } }) 
                                 />
                             </div>
 
-                            <Link href="https://play.google.com/store/apps/details?id=com.moroccanorganica.argan.oil" target="_blank" className="block transform hover:scale-105 transition-all">
+                            <Link href="https://play.google.com/store/apps/details?id=com.moroccanorganica.argan.oil" target="_blank" className="block transform hover:scale-105 transition-all w-full max-w-[150px]">
                                 <Image
                                     src="/images/footer/google-play.png"
                                     alt="Get it on Google Play"
-                                    width={130}
-                                    height={40}
+                                    width={150}
+                                    height={45}
                                     className="w-full h-auto object-contain"
                                 />
                             </Link>

@@ -2,6 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import Image, { StaticImageData } from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { useCart } from "@/components/shop/CartContext";
 import type { ShopProduct } from "@/data/shop-products";
 
@@ -20,6 +22,7 @@ interface ProductCardProps {
   nameAr?: string;
   descriptionAr?: string;
   addToCartText?: string;
+  showAddToCart?: boolean;
 }
 
 const ProductCard = ({
@@ -36,8 +39,11 @@ const ProductCard = ({
   name,
   nameAr,
   descriptionAr,
-  addToCartText
+  addToCartText,
+  showAddToCart = true
 }: ProductCardProps) => {
+  const params = useParams();
+  const lang = params?.lang || 'en';
   const { addItem } = useCart();
   const badgeStyles = {
     organic: "bg-primary text-primary-foreground",
@@ -68,13 +74,25 @@ const ProductCard = ({
     <div className="group flex flex-col h-full bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       {/* Image - 4:3 Aspect Ratio */}
       <div className="relative overflow-hidden aspect-[4/3] w-full">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
+        {slug ? (
+          <Link href={`/${lang}/products/${slug}`} className="absolute inset-0 z-0">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+          </Link>
+        ) : (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        )}
         <div className="absolute top-4 left-4">
           <span className={`px-3 py-1 text-xs font-semibold rounded-full ${badgeStyles[badgeVariant]}`}>
             {badge}
@@ -82,21 +100,29 @@ const ProductCard = ({
         </div>
 
         {/* Add to Cart - appears on hover with slide up */}
-        <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out p-4">
-          <Button
-            className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground cursor-pointer"
-            onClick={handleAddToCart}
-            disabled={!id || price === undefined}
-          >
-            {addToCartText || "Add to Cart"}
-            {price !== undefined && <span className="ml-2">(${price})</span>}
-          </Button>
-        </div>
+        {showAddToCart && (
+          <div className="absolute bottom-0 left-0 right-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out p-4">
+            <Button
+              className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground cursor-pointer"
+              onClick={handleAddToCart}
+              disabled={!id || price === undefined}
+            >
+              {addToCartText || "Add to Cart"}
+              {price !== undefined && <span className="ml-2">(${price})</span>}
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-grow">
-        <h3 className="heading-card text-foreground mb-2">{title}</h3>
+      <div className="p-6 flex flex-col flex-grow relative z-10 bg-card">
+        {slug ? (
+          <Link href={`/${lang}/products/${slug}`}>
+            <h3 className="heading-card text-foreground mb-2 hover:text-primary transition-colors">{title}</h3>
+          </Link>
+        ) : (
+          <h3 className="heading-card text-foreground mb-2">{title}</h3>
+        )}
         <p className="text-body-sm text-muted-foreground line-clamp-3 flex-grow">
           {description}
         </p>

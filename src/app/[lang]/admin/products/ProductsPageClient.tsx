@@ -52,7 +52,10 @@ export function ProductsPageClient({
   const lang = (params?.lang as string) || 'en';
   const router = useRouter();
 
-  const [products, setProducts] = useState(initialProducts);
+  // Ensure only "shop" products are available
+  const placementProducts = initialProducts.filter(p => p.placement === 'shop');
+  const [products, setProducts] = useState(placementProducts);
+
   const [viewMode, setViewMode] = useState<'grid' | 'table'>('table');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
@@ -153,10 +156,14 @@ export function ProductsPageClient({
   };
 
   const handleProductSaved = (savedProduct: ShopProductDB) => {
-    if (editingProduct) {
-      setProducts(prev => prev.map(p => p.id === savedProduct.id ? savedProduct : p));
+    if (savedProduct.placement === 'shop') {
+      if (editingProduct) {
+        setProducts(prev => prev.map(p => p.id === savedProduct.id ? savedProduct : p));
+      } else {
+        setProducts(prev => [savedProduct, ...prev]);
+      }
     } else {
-      setProducts(prev => [savedProduct, ...prev]);
+      setProducts(prev => prev.filter(p => p.id !== savedProduct.id));
     }
     closeModal();
     router.refresh();
@@ -339,9 +346,6 @@ export function ProductsPageClient({
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
                   <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
                   <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Active</th>
-
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Featured</th>
-                  <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Top Sale</th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
 
                 </tr>
@@ -396,18 +400,6 @@ export function ProductsPageClient({
                       <Switch
                         checked={product.isAvailable}
                         onCheckedChange={(val) => handleToggle(product.id, 'isAvailable', val)}
-                      />
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <Switch
-                        checked={product.isFeatured}
-                        onCheckedChange={(val) => handleToggle(product.id, 'isFeatured', val)}
-                      />
-                    </td>
-                    <td className="px-4 py-4 text-center">
-                      <Switch
-                        checked={product.isTopSale}
-                        onCheckedChange={(val) => handleToggle(product.id, 'isTopSale', val)}
                       />
                     </td>
 
@@ -471,8 +463,16 @@ export function ProductsPageClient({
                   <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                     <div className="flex gap-1">
                       <button
+                        onClick={() => window.open(`/${lang}/shop/${product.slug}`, '_blank')}
+                        className="p-2 bg-white rounded-lg shadow hover:bg-slate-50 transition-colors"
+                        title="View"
+                      >
+                        <Eye className="h-4 w-4 text-slate-600" />
+                      </button>
+                      <button
                         onClick={() => handleEdit(product)}
                         className="p-2 bg-white rounded-lg shadow hover:bg-blue-50 transition-colors"
+                        title="Edit"
                       >
                         <Pencil className="h-4 w-4 text-blue-600" />
                       </button>
@@ -480,8 +480,9 @@ export function ProductsPageClient({
                         onClick={() => handleDelete(product.id)}
                         disabled={isPending}
                         className="p-2 bg-white rounded-lg shadow hover:bg-red-50 transition-colors disabled:opacity-50"
+                        title="Delete"
                       >
-                        <Trash2 className="h-4 w-4 text-red-600" />
+                        {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4 text-red-600" />}
                       </button>
                     </div>
                   </div>
@@ -514,31 +515,13 @@ export function ProductsPageClient({
                   </div>
 
 
-                  <div className="pt-4 border-t border-slate-50 grid grid-cols-3 gap-1">
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Available</span>
-                      <Switch
-                        className="scale-75"
-                        checked={product.isAvailable}
-                        onCheckedChange={(val) => handleToggle(product.id, 'isAvailable', val)}
-                      />
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Featured</span>
-                      <Switch
-                        className="scale-75"
-                        checked={product.isFeatured}
-                        onCheckedChange={(val) => handleToggle(product.id, 'isFeatured', val)}
-                      />
-                    </div>
-                    <div className="flex flex-col items-center gap-1">
-                      <span className="text-[10px] uppercase font-bold text-slate-400">Top Sale</span>
-                      <Switch
-                        className="scale-75"
-                        checked={product.isTopSale}
-                        onCheckedChange={(val) => handleToggle(product.id, 'isTopSale', val)}
-                      />
-                    </div>
+                  <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
+                    <span className="text-[10px] uppercase font-bold text-slate-400">Available</span>
+                    <Switch
+                      className="scale-75"
+                      checked={product.isAvailable}
+                      onCheckedChange={(val) => handleToggle(product.id, 'isAvailable', val)}
+                    />
                   </div>
                 </div>
 
@@ -612,6 +595,7 @@ export function ProductsPageClient({
         product={editingProduct}
         categories={categories}
         onSave={handleProductSaved}
+        defaultPlacement="shop"
       />
     </div>
   );

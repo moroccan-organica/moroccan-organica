@@ -7,7 +7,8 @@ import {
   ShopProductDB,
   CreateProductInput,
   UpdateProductInput,
-  LanguageCode
+  LanguageCode,
+  ProductPlacement
 } from '@/types/product';
 
 
@@ -65,12 +66,16 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
     description: translation?.description || '',
     descriptionAr: arTranslation?.description || translation?.description || '',
     descriptionFr: frTranslation?.description || translation?.description || '',
+    details: translation?.details || '',
+    detailsAr: arTranslation?.details || translation?.details || '',
+    detailsFr: frTranslation?.details || translation?.details || '',
     notes: [],
     price: Number(product.basePrice),
     stock: product.stock,
     isAvailable: product.isAvailable,
     isFeatured: product.isFeatured,
     isTopSale: product.isTopSale,
+    placement: (product.placement as ProductPlacement) || 'shop',
     sku: product.sku,
     variants: variants.map((v: any) => ({
       id: v.id,
@@ -80,8 +85,14 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
       stock: v.stock,
     })),
     metaTitle: translation?.metaTitle || undefined,
+    metaTitleAr: arTranslation?.metaTitle || translation?.metaTitle || undefined,
+    metaTitleFr: frTranslation?.metaTitle || translation?.metaTitle || undefined,
     metaDesc: translation?.metaDesc || undefined,
+    metaDescAr: arTranslation?.metaDesc || translation?.metaDesc || undefined,
+    metaDescFr: frTranslation?.metaDesc || translation?.metaDesc || undefined,
     keywords: translation?.keywords || undefined,
+    keywordsAr: arTranslation?.keywords || translation?.keywords || undefined,
+    keywordsFr: frTranslation?.keywords || translation?.keywords || undefined,
     ogImage: translation?.ogImage || undefined,
     canonical: translation?.canonical || undefined,
   };
@@ -93,11 +104,12 @@ export async function getProducts(options?: {
   search?: string;
   isAvailable?: boolean;
   isFeatured?: boolean;
+  placement?: ProductPlacement;
   page?: number;
   limit?: number;
 }): Promise<{ products: ShopProductDB[]; total: number }> {
   try {
-    const { categoryId, search, isAvailable, isFeatured, page = 1, limit = 50 } = options || {};
+    const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50 } = options || {};
 
     let query = supabase
       .from('Product')
@@ -119,6 +131,10 @@ export async function getProducts(options?: {
 
     if (typeof isFeatured === 'boolean') {
       query = query.eq('isFeatured', isFeatured);
+    }
+
+    if (placement) {
+      query = query.eq('placement', placement);
     }
 
     if (search) {
@@ -220,6 +236,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
         isAvailable: input.isAvailable ?? true,
         isFeatured: input.isFeatured ?? false,
         isTopSale: input.isTopSale ?? false,
+        placement: input.placement || 'shop',
       })
       .select()
       .single();
@@ -235,6 +252,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
           language: t.language,
           name: t.name,
           description: t.description || null,
+          details: t.details || null,
           slug: t.slug,
           metaTitle: t.metaTitle || null,
           metaDesc: t.metaDesc || null,
@@ -279,6 +297,8 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/products');
+    revalidatePath('/[lang]/admin/products/topsale');
+    revalidatePath('/[lang]/admin/products/featured');
 
     return { success: true, product: completeProduct || undefined };
   } catch (error: any) {
@@ -304,6 +324,7 @@ export async function updateProduct(
         isAvailable: input.isAvailable,
         isFeatured: input.isFeatured,
         isTopSale: input.isTopSale,
+        ...(input.placement !== undefined && { placement: input.placement }),
       })
       .eq('id', id);
 
@@ -321,6 +342,7 @@ export async function updateProduct(
           language: t.language,
           name: t.name,
           description: t.description || null,
+          details: t.details || null,
           slug: t.slug,
           metaTitle: t.metaTitle || null,
           metaDesc: t.metaDesc || null,
@@ -372,6 +394,8 @@ export async function updateProduct(
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/products');
+    revalidatePath('/[lang]/admin/products/topsale');
+    revalidatePath('/[lang]/admin/products/featured');
 
     return { success: true, product: updated || undefined };
   } catch (error: any) {
@@ -401,6 +425,8 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
 
     revalidatePath('/[lang]/shop');
     revalidatePath('/[lang]/admin/products');
+    revalidatePath('/[lang]/admin/products/topsale');
+    revalidatePath('/[lang]/admin/products/featured');
 
     return { success: true };
   } catch (error: any) {
@@ -451,6 +477,7 @@ export async function getRelatedProducts(
       .eq('categoryId', categoryId)
       .neq('id', productId)
       .eq('isAvailable', true)
+      .order('createdAt', { ascending: false })
       .limit(limit);
 
     if (error) throw error;
@@ -476,6 +503,7 @@ export async function getFeaturedProducts(limit: number = 8): Promise<ShopProduc
       `)
       .eq('isAvailable', true)
       .eq('isFeatured', true)
+      .order('createdAt', { ascending: false })
       .limit(limit);
 
     if (error) throw error;

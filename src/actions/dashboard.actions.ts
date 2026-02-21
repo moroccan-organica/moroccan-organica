@@ -43,7 +43,8 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         const { count: totalProducts, error: pError } = await supabase
             .from('Product')
             .select('*', { count: 'exact', head: true })
-            .eq('isAvailable', true);
+            .eq('isAvailable', true)
+            .eq('placement', 'shop');
 
         if (pError) throw pError;
 
@@ -52,6 +53,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
             .from('Product')
             .select('*', { count: 'exact', head: true })
             .eq('isAvailable', true)
+            .eq('placement', 'shop')
             .lt('createdAt', startOfMonth);
 
         if (lpError) throw lpError;
@@ -167,6 +169,7 @@ export async function getTopProducts(limit: number = 4): Promise<TopProduct[]> {
                     price,
                     product:Product(
                         id,
+                        placement,
                         translations:ProductTranslation(*),
                         images:ProductImage(*),
                         category:Category(
@@ -182,6 +185,7 @@ export async function getTopProducts(limit: number = 4): Promise<TopProduct[]> {
         const counts: Record<string, { count: number; data: any }> = {};
         (orderItems || []).forEach((item: any) => {
             if (!item.variantId || !item.variant?.product) return;
+            if (item.variant.product.placement !== 'shop') return;
             if (!counts[item.variant.product.id]) {
                 counts[item.variant.product.id] = { count: 0, data: item.variant };
             }

@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 
 import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data/shop-products";
 import { getProductBySlug, getRelatedProducts, getProducts } from "@/actions/product.actions";
@@ -114,6 +114,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 isAvailable: true,
                 isFeatured: staticProduct.badge === 'bestseller',
                 isTopSale: false,
+                placement: 'shop' as const,
                 sku: staticProduct.id,
                 variants: [],
             };
@@ -143,6 +144,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     isAvailable: true,
                     isFeatured: p.badge === 'bestseller',
                     isTopSale: false,
+                    placement: 'shop' as const,
                     sku: p.id,
                     variants: [],
                 }));
@@ -164,11 +166,15 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         // If no related products found, get any 3 available products (excluding current)
         if (product && relatedProducts.length === 0) {
             const currentProduct = product;
-            const allProductsResult = await getProducts({ isAvailable: true, limit: 10 });
+            const allProductsResult = await getProducts({ isAvailable: true, placement: 'shop', limit: 10 });
             relatedProducts = allProductsResult.products
                 .filter(p => p.id !== currentProduct.id)
                 .slice(0, 3);
         }
+    }
+
+    if (product && (product.placement === 'featured' || product.placement === 'topsale')) {
+        redirect(`/${lang}/products/${slug}`);
     }
 
     if (!product) {
@@ -319,7 +325,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                             {priceFormatter.format(item.price)}
                                         </p>
                                         <Link
-                                            href={`/${lang}/shop/${item.slug}`}
+                                            href={item.placement === 'shop' ? `/${lang}/shop/${item.slug}` : `/${lang}/products/${item.slug}`}
                                             className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:text-emerald-900"
                                         >
                                             {t.viewDetails}

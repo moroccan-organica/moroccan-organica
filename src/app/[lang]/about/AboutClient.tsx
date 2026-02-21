@@ -170,10 +170,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                             {content.hero.title}
                         </h1>
-                        <p className="text-xl md:text-2xl text-primary font-medium mb-8">
-                            {content.hero.subtitle}
-                        </p>
-                        <p className="text-lg md:text-xl text-white/80 max-w-3xl mx-auto leading-relaxed">
+                        <p className="text-xl md:text-2xl text-primary font-medium mb-8 max-w-3xl mx-auto leading-relaxed">
                             {content.hero.description}
                         </p>
                     </motion.div>
@@ -377,8 +374,8 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                                     key={item.title}
                                     layout
                                     className={`group rounded-2xl bg-background border transition-all duration-300 overflow-hidden cursor-pointer ${isOpen
-                                            ? "border-primary shadow-lg ring-1 ring-primary/20"
-                                            : "border-border hover:border-primary/50 hover:shadow-md"
+                                        ? "border-primary shadow-lg ring-1 ring-primary/20"
+                                        : "border-border hover:border-primary/50 hover:shadow-md"
                                         }`}
                                     onMouseEnter={() => setOpenPromise(item.title)}
                                     onMouseLeave={() => setOpenPromise(null)}

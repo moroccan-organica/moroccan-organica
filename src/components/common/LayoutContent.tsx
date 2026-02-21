@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
 import WhatsAppButton from './WhatsAppButton';
+import { MarketingModal } from './MarketingModal';
 
 interface LayoutContentProps {
   children: React.ReactNode;
@@ -24,8 +25,9 @@ export function LayoutContent({ children, dict, lang, topProducts = [] }: Layout
     <>
       <Header dict={dict} lang={lang} topProducts={topProducts} />
       {children}
-      <Footer dict={dict} />
+      <Footer dict={dict} lang={lang} topProducts={topProducts} />
       <WhatsAppButton />
+      <MarketingModal lang={lang} />
     </>
   );
 }
