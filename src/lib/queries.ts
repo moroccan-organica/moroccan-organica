@@ -182,6 +182,57 @@ export async function getTopSaleProducts(lang: string) {
     }
 }
 
+export async function getCatalogueProducts(lang: string) {
+    try {
+        const { data: products, error } = await supabase
+            .from('Product')
+            .select(`
+                *,
+                category:Category(*, translations:CategoryTranslation(*)),
+                translations:ProductTranslation(*),
+                images:ProductImage(*),
+                variants:ProductVariant(*)
+            `)
+            .eq('placement', 'catalogue')
+            .eq('isAvailable', true)
+            .order('createdAt', { ascending: false });
+
+        if (error || !products) return [];
+
+        return products.map((p: any) => {
+            const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
+            const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
+            const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
+
+            const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
+
+            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
+            const variant = p.variants?.[0];
+
+            return {
+                id: p.id,
+                title: trans.name || "Untitled Product",
+                description: trans.description || "",
+                badge: "Catalogue",
+                image: image,
+                slug: transEn.slug || p.id,
+                category: catTrans.name || "Category",
+                price: variant ? Number(variant.price) : Number(p.basePrice),
+                volume: variant ? variant.sizeName : "Standard",
+                name: transEn.name || trans.name || "Product",
+                nameAr: transAr.name || trans.name || "Product",
+                descriptionEn: transEn.description || "",
+                descriptionAr: transAr.description || "",
+                gallery: p.images?.map((img: any) => img.url) || [image],
+                notes: [],
+            };
+        });
+    } catch (error) {
+        console.error("Error fetching catalogue products:", error);
+        return [];
+    }
+}
+
 export async function getAllCategories(lang: string) {
     try {
         const { data: categories, error } = await supabase

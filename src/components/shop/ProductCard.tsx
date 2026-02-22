@@ -23,6 +23,7 @@ interface ProductCardProps {
   descriptionAr?: string;
   addToCartText?: string;
   showAddToCart?: boolean;
+  basePath?: string;
 }
 
 const ProductCard = ({
@@ -40,7 +41,8 @@ const ProductCard = ({
   nameAr,
   descriptionAr,
   addToCartText,
-  showAddToCart = true
+  showAddToCart = true,
+  basePath = "products"
 }: ProductCardProps) => {
   const params = useParams();
   const lang = params?.lang || 'en';
@@ -75,7 +77,7 @@ const ProductCard = ({
       {/* Image - 4:3 Aspect Ratio */}
       <div className="relative overflow-hidden aspect-[4/3] w-full">
         {slug ? (
-          <Link href={`/${lang}/products/${slug}`} className="absolute inset-0 z-0">
+          <Link href={`/${lang}/${basePath}/${slug}`} className="absolute inset-0 z-0">
             <Image
               src={image}
               alt={title}
@@ -117,7 +119,7 @@ const ProductCard = ({
       {/* Content */}
       <div className="p-6 flex flex-col flex-grow relative z-10 bg-card">
         {slug ? (
-          <Link href={`/${lang}/products/${slug}`}>
+          <Link href={`/${lang}/${basePath}/${slug}`}>
             <h3 className="heading-card text-foreground mb-2 hover:text-primary transition-colors">{title}</h3>
           </Link>
         ) : (

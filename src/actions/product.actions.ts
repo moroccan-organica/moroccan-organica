@@ -299,6 +299,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     revalidatePath('/[lang]/admin/products');
     revalidatePath('/[lang]/admin/products/topsale');
     revalidatePath('/[lang]/admin/products/featured');
+    revalidatePath('/[lang]/admin/products/organica');
 
     return { success: true, product: completeProduct || undefined };
   } catch (error: any) {
@@ -396,6 +397,7 @@ export async function updateProduct(
     revalidatePath('/[lang]/admin/products');
     revalidatePath('/[lang]/admin/products/topsale');
     revalidatePath('/[lang]/admin/products/featured');
+    revalidatePath('/[lang]/admin/products/organica');
 
     return { success: true, product: updated || undefined };
   } catch (error: any) {
@@ -427,6 +429,7 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
     revalidatePath('/[lang]/admin/products');
     revalidatePath('/[lang]/admin/products/topsale');
     revalidatePath('/[lang]/admin/products/featured');
+    revalidatePath('/[lang]/admin/products/organica');
 
     return { success: true };
   } catch (error: any) {

@@ -41,7 +41,7 @@ interface PlacementProductsPageClientProps {
     initialProducts: ShopProductDB[];
     categories: CategoryDB[];
     totalProducts: number;
-    placement: 'topsale' | 'featured';
+    placement: 'topsale' | 'featured' | 'catalogue';
 }
 
 const PLACEMENT_CONFIG = {
@@ -56,6 +56,12 @@ const PLACEMENT_CONFIG = {
         subtitle: 'Manage your highlighted & featured products',
         badge: { label: '⭐ Featured', bg: 'bg-amber-100', text: 'text-amber-700', border: 'border-amber-200' },
         accentColor: '#f59e0b',
+    },
+    catalogue: {
+        title: 'Organica Products',
+        subtitle: 'Manage your full Organica products',
+        badge: { label: '📖 Organica', bg: 'bg-emerald-100', text: 'text-emerald-700', border: 'border-emerald-200' },
+        accentColor: '#10b981',
     },
 } as const;
 

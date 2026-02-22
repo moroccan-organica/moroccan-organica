@@ -102,6 +102,7 @@ CREATE TABLE "Product" (
     "isAvailable" BOOLEAN NOT NULL DEFAULT true,
     "isFeatured" BOOLEAN NOT NULL DEFAULT false,
     "isTopSale" BOOLEAN NOT NULL DEFAULT false,
+    "placement" "ProductPlacement" NOT NULL DEFAULT 'shop',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
