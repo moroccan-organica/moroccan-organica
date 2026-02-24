@@ -277,7 +277,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                     </motion.div>
 
                     <div className="relative max-w-4xl mx-auto">
-                        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-linear-to-b from-bronze/40 via-bronze to-bronze/40 -translate-x-1/2" />
+                        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-1 bg-linear-to-b from-bronze/50 via-bronze to-bronze/50 -translate-x-1/2" />
 
                         <div className="space-y-6 md:space-y-0">
                             {content.journey.timeline.map((item: TimelineItem, index: number) => (
