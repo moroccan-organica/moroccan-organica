@@ -648,22 +648,22 @@ export const benefitsData: BenefitPost[] = [
     },
     {
         slug: "tabrima-powder-benefits",
-        title: "Benefits of Moroccan Tabrima Powder",
-        title_ar: "فوائد مسحوق التبريمة المغربي",
+        title: "Benefits of Moroccan Tbrima Powder",
+        title_ar: "فوائد مسحوق التبرمة المغربي",
         image: "/images/benefits/tabrima-powder.jpg",
-        excerpt: "Moroccan Tabrima powder is a traditional skincare product used for centuries in Morocco for skin and hair care, known for its natural mineral content.",
-        excerpt_ar: "التبريمة المغربية هي منتج تقليدي للعناية بالبشرة استُخدم لقرون في المغرب، معروفة بمحتواها الغني بالمعادن الطبيعية.",
+        excerpt: "Moroccan Tbrima powder is a traditional skincare product used for centuries in Morocco for skin and hair care, known for its natural mineral content.",
+        excerpt_ar: "التبرمة المغربية هي منتج تقليدي للعناية بالبشرة استُخدم لقرون في المغرب، معروفة بمحتواها الغني بالمعادن الطبيعية.",
         content: `
-        <h3>What is Moroccan Tabrima Powder?</h3>
-        <p>Moroccan Tabrima powder is a traditional skincare product used in Morocco. It is one of the natural remedies that Moroccans have used for centuries. Tabrima powder is obtained from the Tabrima plant, which grows in Morocco and is considered one of the most important ingredients in traditional medicine.</p>
+        <h3>What is Moroccan Tbrima Powder?</h3>
+        <p>Moroccan Tbrima powder is a traditional skincare product used in Morocco. It is one of the natural remedies that Moroccans have used for centuries. Tbrima powder is obtained from the Tbrima plant, which grows in Morocco and is considered one of the most important ingredients in traditional medicine.</p>
 
-        <h3>How is Moroccan Tabrima Powder Extracted?</h3>
-        <p>Moroccan Tabrima powder is a fine powder extracted from the Tabrima plant, which is known for its natural mineral content, such as magnesium, potassium, and iron. The powder is extracted from the plant's leaves and dried before being ground into a fine powder, which is used in many skincare products.</p>
+        <h3>How is Moroccan Tbrima Powder Extracted?</h3>
+        <p>Moroccan Tbrima powder is a fine powder extracted from the Tbrima plant, which is known for its natural mineral content, such as magnesium, potassium, and iron. The powder is extracted from the plant's leaves and dried before being ground into a fine powder, which is used in many skincare products.</p>
 
-        <h3>Benefits of Moroccan Tabrima Powder:</h3>
+        <h3>Benefits of Moroccan Tbrima Powder:</h3>
         <h4>1. Skin Benefits</h4>
         <ul>
-        <li><strong>Skin Lightening:</strong> Tabrima powder helps lighten and even out skin tone, and it also reduces pigmentation and dark spots.</li>
+        <li><strong>Skin Lightening:</strong> Tbrima powder helps lighten and even out skin tone, and it also reduces pigmentation and dark spots.</li>
         <li><strong>Skin Moisturizing:</strong> The powder deeply moisturizes the skin, making it suitable for dry or wrinkle-prone skin.</li>
         <li><strong>Acne Treatment:</strong> It contains antibacterial properties, making it effective in treating acne and reducing skin inflammation.</li>
         <li><strong>Skin Exfoliation:</strong> It can be used as a natural exfoliant to remove dead skin cells and cleanse the skin of impurities.</li>
@@ -671,15 +671,15 @@ export const benefitsData: BenefitPost[] = [
 
         <h4>2. Hair Benefits</h4>
         <ul>
-        <li><strong>Hair Strengthening:</strong> Tabrima powder is believed to help strengthen hair and prevent hair loss thanks to its nourishing properties.</li>
+        <li><strong>Hair Strengthening:</strong> Tbrima powder is believed to help strengthen hair and prevent hair loss thanks to its nourishing properties.</li>
         <li><strong>Hair Growth Stimulation:</strong> It helps stimulate blood circulation in the scalp, promoting natural hair growth.</li>
         <li><strong>Dandruff Treatment:</strong> It can be used as a natural treatment for dandruff and to cleanse the scalp.</li>
         </ul>
 
-        <h3>How to Use Moroccan Tabrima Powder:</h3>
+        <h3>How to Use Moroccan Tbrima Powder:</h3>
         <h4>1. Skin Use:</h4>
         <ul>
-        <li><strong>Skin Mask:</strong> Mix Tabrima powder with rose water or argan oil to make a paste. Apply the paste to your face for 15-20 minutes, then rinse with lukewarm water.</li>
+        <li><strong>Skin Mask:</strong> Mix Tbrima powder with rose water or argan oil to make a paste. Apply the paste to your face for 15-20 minutes, then rinse with lukewarm water.</li>
         <li><strong>Natural Exfoliant:</strong> Mix the powder with warm water or lemon juice for an effective skin scrub.</li>
         </ul>
 
@@ -689,15 +689,15 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>Hair Mask:</strong> Use it with argan oil to nourish your hair and give it a natural shine.</li>
         </ul>
 
-        <h3>How to Choose Good Moroccan Tabrima Powder?</h3>
+        <h3>How to Choose Good Moroccan Tbrima Powder?</h3>
         <ul>
         <li>Make sure the powder is 100% natural and untreated with any chemicals.</li>
-        <li> Look for organic Tabrima powder that is extracted from natural sources.</li>
+        <li> Look for organic Tbrima powder that is extracted from natural sources.</li>
         </ul>
 
-        <h3>Best Places to Buy Moroccan Tabrima Powder</h3>
+        <h3>Best Places to Buy Moroccan Tbrima Powder</h3>
         <ul>
-        <li><strong>Organica Group SARL:</strong> Offers organic Moroccan Tabrima powder extracted from the best sources in Morocco.</li>
+        <li><strong>Organica Group SARL:</strong> Offers organic Moroccan Tbrima powder extracted from the best sources in Morocco.</li>
         <li>Online stores specializing in natural products and skincare.</li>
         </ul>
         `,
