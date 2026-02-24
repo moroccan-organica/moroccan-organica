@@ -45,6 +45,7 @@ const ProductCard = ({
   const params = useParams();
   const lang = params?.lang || 'en';
   const { addItem } = useCart();
+  const imageSrc = typeof image === "string" ? image : (image as StaticImageData).src;
   const badgeStyles = {
     organic: "bg-primary text-primary-foreground",
     bulk: "bg-accent text-accent-foreground",
@@ -58,7 +59,7 @@ const ProductCard = ({
       id,
       slug: slug || "",
       category: category || "General",
-      image: typeof image === 'string' ? image : (image as any).src || "",
+        image: imageSrc,
       volume: volume || "Standard",
       name: name || title,
       nameAr: nameAr || title,
@@ -73,11 +74,11 @@ const ProductCard = ({
   return (
     <div className="group flex flex-col h-full bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       {/* Image - 4:3 Aspect Ratio */}
-      <div className="relative overflow-hidden aspect-[4/3] w-full">
+      <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-muted">
         {slug ? (
           <Link href={`/${lang}/products/${slug}`} className="absolute inset-0 z-0">
             <Image
-              src={image}
+              src={imageSrc}
               alt={title}
               fill
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -86,7 +87,7 @@ const ProductCard = ({
           </Link>
         ) : (
           <Image
-            src={image}
+            src={imageSrc}
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -115,7 +116,7 @@ const ProductCard = ({
       </div>
 
       {/* Content */}
-      <div className="p-6 flex flex-col flex-grow relative z-10 bg-card">
+      <div className="p-6 flex flex-col grow relative z-10 bg-card">
         {slug ? (
           <Link href={`/${lang}/products/${slug}`}>
             <h3 className="heading-card text-foreground mb-2 hover:text-primary transition-colors">{title}</h3>
@@ -123,7 +124,7 @@ const ProductCard = ({
         ) : (
           <h3 className="heading-card text-foreground mb-2">{title}</h3>
         )}
-        <p className="text-body-sm text-muted-foreground line-clamp-3 flex-grow">
+        <p className="text-body-sm text-muted-foreground line-clamp-3 grow">
           {description}
         </p>
       </div>

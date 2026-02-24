@@ -121,8 +121,6 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                                             lang={lang}
                                             translations={{
                                                 readMore: dict.readMore as string,
-                                                by: dict.by as string,
-                                                minRead: dict.minRead as string
                                             }}
                                         />
                                     ))}

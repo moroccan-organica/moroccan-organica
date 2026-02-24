@@ -6,7 +6,6 @@ import Image from 'next/image';
 import { getDictionary } from "@/lib/dictionaries";
 import { getPublishedPostBySlug, incrementPostViewCount, getPublishedPosts } from "@/lib/blog/actions";
 import { BlogPostContent } from "@/components/blog/BlogPostContent";
-import { BlogPostMeta } from "@/components/blog/BlogPostMeta";
 import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
@@ -113,7 +112,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex items-end pb-20">
                     <div className="container mx-auto px-4">
-                        <div className={`max-w-4xl ${isArabic ? 'text-right mr-auto ml-0' : ''}`}>
+                        <div className="max-w-4xl mx-auto text-center">
                             <Link
                                 href={`/${lang}/blog`}
                                 className={`inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ${isArabic ? 'flex-row-reverse' : ''}`}
@@ -121,29 +120,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                                 <ArrowLeft className={`h-4 w-4 ${isArabic ? 'rotate-180' : ''}`} />
                                 {dict.backToBlog as string}
                             </Link>
-                            <h1 className="text-4xl md:text-7xl font-playfair font-bold text-white mb-8 leading-tight" dir={isArabic ? 'rtl' : 'ltr'}>
+                            <h1 className="text-4xl md:text-7xl font-playfair font-bold text-white mb-8 leading-tight text-center" dir={isArabic ? 'rtl' : 'ltr'}>
                                 {title}
                             </h1>
-
-                            <BlogPostMeta
-                                author={post.author}
-                                publishedAt={post.published_at}
-                                createdAt={post.created_at}
-                                readTimeMinutes={post.read_time_minutes}
-                                onShare={() => {
-                                    if (navigator.share) {
-                                        navigator.share({
-                                            title: post.title,
-                                            url: window.location.href
-                                        });
-                                    }
-                                }}
-                                translations={{
-                                    author: dict.by as string,
-                                    share: dict.share as string,
-                                    readTime: dict.minRead as string
-                                }}
-                            />
                         </div>
                     </div>
                 </div>
@@ -203,8 +182,6 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                                     lang={lang}
                                     translations={{
                                         readMore: dict.readMore as string,
-                                        by: dict.by as string,
-                                        minRead: dict.minRead as string,
                                     }}
                                 />
                             ))}
