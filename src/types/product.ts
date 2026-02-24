@@ -2,7 +2,7 @@
 export type LanguageCode = 'en' | 'ar' | 'fr';
 
 // Product placement enum — controls which admin section the product belongs to
-export type ProductPlacement = 'shop' | 'topsale' | 'featured';
+export type ProductPlacement = 'shop' | 'topsale' | 'featured' | 'catalogue';
 
 // Type for product with translations (what we get from DB)
 export interface ProductWithTranslations {

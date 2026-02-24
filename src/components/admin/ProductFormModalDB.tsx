@@ -367,9 +367,10 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 </label>
                 <div className="flex rounded-lg border border-slate-200 overflow-hidden shadow-inner">
                   {([
-                    { value: 'shop', label: '🛒 Shop', desc: 'Catalog' },
+                    { value: 'shop', label: '🛒 Shop', desc: 'Main Store' },
                     { value: 'topsale', label: '🔥 Top Sale', desc: 'Best Seller' },
-                    { value: 'featured', label: '⭐ Featured', desc: 'Promoted' },
+                    { value: 'featured', label: '⭐ Featured', desc: 'Hero Slide' },
+                    { value: 'catalogue', label: '📖 Organica', desc: 'Full Collection' },
                   ] as { value: ProductPlacement; label: string; desc: string }[]).map((opt) => (
                     <button
                       key={opt.value}

@@ -15,10 +15,15 @@ import {
     FileText,
     Image as ImageIcon,
     Share2,
-    Loader2
+    Loader2,
+    Upload,
+    Trash2,
+    ExternalLink
 } from 'lucide-react';
 import { useSEOSettings, useUpdateSEOSettings } from '@/lib/seo/hooks';
 import { LanguageCode, GlobalSettings, LocalizedSettings } from '@/types/seo';
+import { uploadProductImage } from '@/actions/media.actions';
+import { SafeImage } from '@/components/ui/safe-image';
 
 const DEFAULT_LOCALIZED: LocalizedSettings = {
     siteName: 'Moroccan Organica',
@@ -33,6 +38,8 @@ export function SEOPageClient() {
     // Hooks
     const { data: settings, isLoading } = useSEOSettings();
     const updateSettings = useUpdateSEOSettings();
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const [isUploading, setIsUploading] = useState(false);
 
     // Local state for editing
     const [globalSettings, setGlobalSettings] = useState<GlobalSettings>({
@@ -105,6 +112,29 @@ export function SEOPageClient() {
                 [field]: value
             }
         }));
+    };
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const result = await uploadProductImage(formData);
+            if (result.success && result.url) {
+                updateGlobal('ogImage', result.url);
+            } else {
+                alert('Failed to upload image: ' + result.error);
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('An error occurred while uploading the image');
+        } finally {
+            setIsUploading(false);
+            if (fileInputRef.current) fileInputRef.current.value = '';
+        }
     };
 
     if (isLoading) {
@@ -221,21 +251,88 @@ export function SEOPageClient() {
                             </CardHeader>
                             <CardContent className="space-y-4">
                                 <div>
-                                    <Label htmlFor="ogImage">Default Social Image URL (OG Image)</Label>
-                                    <div className="flex gap-2">
-                                        <Input
-                                            id="ogImage"
-                                            value={globalSettings.ogImage}
-                                            onChange={(e) => updateGlobal('ogImage', e.target.value)}
-                                            placeholder="https://.../image.jpg"
+                                    <Label htmlFor="ogImage">Default Social Image (OG Image)</Label>
+                                    <div className="mt-2 space-y-4">
+                                        {globalSettings.ogImage ? (
+                                            <div className="relative w-full aspect-[1.91/1] max-w-[400px] rounded-lg overflow-hidden border border-slate-200 group">
+                                                <SafeImage
+                                                    src={globalSettings.ogImage}
+                                                    alt="OG Image Preview"
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        onClick={() => updateGlobal('ogImage', '')}
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="secondary"
+                                                        size="sm"
+                                                        asChild
+                                                        className="h-8 w-8 p-0"
+                                                    >
+                                                        <a href={globalSettings.ogImage} target="_blank" rel="noopener noreferrer">
+                                                            <ExternalLink className="h-4 w-4" />
+                                                        </a>
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div
+                                                onClick={() => fileInputRef.current?.click()}
+                                                className="w-full aspect-[1.91/1] max-w-[400px] rounded-lg border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-[#606C38] hover:bg-slate-50 transition-all"
+                                            >
+                                                {isUploading ? (
+                                                    <Loader2 className="h-8 w-8 animate-spin text-slate-400" />
+                                                ) : (
+                                                    <>
+                                                        <Upload className="h-8 w-8 text-slate-400" />
+                                                        <span className="text-sm text-slate-500 font-medium">Click to upload social image</span>
+                                                        <span className="text-xs text-slate-400">1200x630px recommended</span>
+                                                    </>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        <div className="flex gap-2">
+                                            <Input
+                                                id="ogImage"
+                                                value={globalSettings.ogImage}
+                                                onChange={(e) => updateGlobal('ogImage', e.target.value)}
+                                                placeholder="Or enter absolute URL: https://.../image.jpg"
+                                            />
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() => fileInputRef.current?.click()}
+                                                disabled={isUploading}
+                                                title="Upload Image"
+                                            >
+                                                {isUploading ? (
+                                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                                ) : (
+                                                    <Upload className="h-4 w-4" />
+                                                )}
+                                            </Button>
+                                        </div>
+
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleImageUpload}
+                                            accept="image/*"
+                                            className="hidden"
                                         />
-                                        <Button variant="outline" size="icon">
-                                            <ImageIcon className="h-4 w-4" />
-                                        </Button>
+
+                                        <p className="text-xs text-slate-500">
+                                            This image will be shown when your website link is shared on social media (Facebook, Twitter, WhatsApp, etc).
+                                        </p>
                                     </div>
-                                    <p className="text-xs text-slate-500 mt-1">
-                                        Absolute URL recommended. 1200x630 pixels.
-                                    </p>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -62,6 +62,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     const navLinks = [
         { name: t('nav.home'), href: `/${lang}/`, isRoute: true, title: "Home page" },
         { name: t('nav.products'), href: `/${lang}/products`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
+        { name: t('nav.catalogue'), href: `/${lang}/organica`, isRoute: true, title: "Full Product Catalogue" },
         { name: t('nav.about'), href: `/${lang}/about`, isRoute: true, title: "About our company" },
         { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },

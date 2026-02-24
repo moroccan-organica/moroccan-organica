@@ -38,6 +38,7 @@ const navItems: NavItem[] = [
     icon: Package,
     children: [
       { label: 'Shop Products', path: '/admin/products', icon: Package },
+      { label: 'Organica', path: '/admin/products/organica', icon: BookOpen },
       { label: 'Top Sale', path: '/admin/products/topsale', icon: Flame },
       { label: 'Featured', path: '/admin/products/featured', icon: Star },
       { label: 'Add Product', path: '/admin/products?add=true', icon: Plus },
