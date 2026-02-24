@@ -54,17 +54,17 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
   });
 
   return (
-    <section id="products" className="section-padding bg-muted pt-8 md:pt-10">
+    <section id="products" className="section-padding bg-muted pt-4 md:pt-6">
       <div className="container-main">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-12 md:mb-14">
-          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+        <div className="text-center max-w-4xl mx-auto mb-12 md:mb-14">
+          <span className="inline-block text-primary font-semibold text-lg md:text-xl uppercase tracking-wider mb-3">
             {content.badge}
           </span>
           <h2 className="heading-section text-foreground mb-4">
             {content.title} <span className="text-primary">{content.highlight}</span>
           </h2>
-          <p className="text-body text-muted-foreground">
+          <p className="text-lg md:text-xl leading-8 text-muted-foreground">
             {content.description}
           </p>
         </div>

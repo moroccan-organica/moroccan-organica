@@ -13,7 +13,7 @@
         "type": "email",
         "title": "Email Us",
         "details": "inquiry@moroccanorganica.com",
-        "subtext": "We'll respond within 24 hours"
+        "subtext": "We'll respond within 12 hours"
       },
       {
         "type": "phone",
@@ -24,8 +24,8 @@
       {
         "type": "address",
         "title": "Visit Us",
-        "details": "Marrakesh, Morocco",
-        "subtext": "Sidi Ghanem Industrial Zone"
+        "details": "Agadir, Morocco",
+        "subtext": "Industrial Zone"
       },
       {
         "type": "hours",
@@ -38,16 +38,16 @@
   "form": {
     "label": "Send a Message",
     "title": "Let's Start a Conversation",
-    "description": "Fill out the form below and our team will get back to you within 24 hours with a personalized response."
+    "description": "Fill out the form below and our team will get back to you within 12 hours with a personalized response."
   },
   "benefits": {
-    "title": "Why Partner With Us?",
+    "title": "Why Partner With MoroccanOrganica?",
     "items": [
-      "Direct from Moroccan cooperatives",
-      "Competitive wholesale pricing",
-      "Custom private label solutions",
-      "Full export documentation",
-      "Worldwide shipping available"
+      "Direct factory production with full traceability",
+      "Bulk supply capacity with stable pricing",
+      "Private label & custom formulation services",
+      "Complete export documentation (COA, MSDS, certifications)",
+      "Fast and secure international shipping"
     ]
   },
   "formFields": {
@@ -74,7 +74,7 @@
   },
   "success": {
     "title": "Message Sent!",
-    "message": "Thank you for your inquiry. We'll get back to you within 24 hours.",
+    "message": "Thank you for your inquiry. We'll get back to you within 12 hours.",
     "button": "Send Another Message"
   },
   "map": {

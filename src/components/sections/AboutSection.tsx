@@ -24,7 +24,7 @@ const AboutSection = ({ data }: AboutSectionProps) => {
   const content = data;
 
   return (
-    <section id="about" className="section-padding bg-background">
+    <section id="about" className="section-padding bg-background pt-6 md:pt-8">
       <div className="container-main">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Image Side */}
@@ -71,7 +71,7 @@ const AboutSection = ({ data }: AboutSectionProps) => {
             <ul className="space-y-4 mb-8">
               {content.features.map((feature: string, index: number) => (
                 <li key={index} className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
+                  <CheckCircle className="w-5 h-5 text-primary mt-0.5 shrink-0" />
                   <span className="text-foreground">{feature}</span>
                 </li>
               ))}

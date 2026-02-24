@@ -8,15 +8,14 @@ import {
     Sparkles,
     Droplets,
     Shield,
-    Package,
-    Paintbrush,
-    Rocket,
+    ClipboardList,
+    Palette,
+    Cog,
     AlertTriangle,
     ArrowRight,
     Users,
     Award,
-    DollarSign,
-    LucideIcon
+    DollarSign
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -101,7 +100,7 @@ interface PrivateLabelClientProps {
 
 const statIcons = [Users, Award, DollarSign];
 const featureIcons = [Leaf, Sparkles, Droplets, Shield];
-const processIcons = [Package, Paintbrush, Rocket];
+const processIcons = [ClipboardList, Palette, Cog];
 
 export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelClientProps) {
     const fadeInUp: MotionProps = {
@@ -152,7 +151,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                         className="object-cover object-center"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/90 to-secondary/80" />
+                    <div className="absolute inset-0 bg-linear-to-r from-secondary/60 via-secondary/40 to-secondary/25" />
                 </div>
 
                 <div className="container-main relative z-10 py-20 md:py-32">
@@ -209,11 +208,11 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
             </section>
 
             {/* Product Intro with Images */}
-            <section className="section-padding bg-background">
+            <section className="py-12 md:py-16 bg-background">
                 <div className="container-main">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Text Content */}
-                        <motion.div {...fadeInUp}>
+                        <motion.div className="text-center max-w-3xl mx-auto" {...fadeInUp}>
                             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                                 {content.intro.label}
                             </span>
@@ -228,101 +227,100 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                             </p>
                         </motion.div>
 
-                        {/* Product Images Grid */}
+                        {/* Product Image */}
                         <motion.div
-                            className="grid grid-cols-2 gap-4"
+                            className="relative h-[360px] rounded-2xl overflow-hidden shadow-xl"
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <div className="space-y-4">
-                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-lg">
-                                    <Image src={content.intro.images[0]} alt="Argan Oil" fill className="object-cover hover:scale-105 transition-transform duration-500" />
-                                </div>
-                                <div className="relative h-32 rounded-2xl overflow-hidden shadow-lg">
-                                    <Image src={content.intro.images[1]} alt="Manufacturing" fill className="object-cover hover:scale-105 transition-transform duration-500" />
-                                </div>
-                            </div>
-                            <div className="space-y-4 pt-8">
-                                <div className="relative h-32 rounded-2xl overflow-hidden shadow-lg">
-                                    <Image src={content.intro.images[2]} alt="Products" fill className="object-cover hover:scale-105 transition-transform duration-500" />
-                                </div>
-                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-lg">
-                                    <Image src={content.intro.images[3]} alt="Factory" fill className="object-cover hover:scale-105 transition-transform duration-500" />
-                                </div>
-                            </div>
+                            <Image src={content.intro.images[0]} alt="Private Label Products" fill className="object-cover" />
                         </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Section C2: Product Gallery */}
+            <section className="py-12 md:py-16 bg-background">
+                <div className="container-main">
+                    <motion.div className="text-center mb-10" {...fadeInUp}>
+                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+                            {content.expertise.label}
+                        </span>
+                        <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+                            {content.expertise.title}
+                        </h3>
+                    </motion.div>
+
+                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
+                        {content.expertise.sideImages.map((image, idx) => (
+                            <motion.div
+                                key={image + idx}
+                                className="relative rounded-2xl overflow-hidden shadow-xl bg-card break-inside-avoid"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.05, duration: 0.45 }}
+                            >
+                                <div className="relative w-full" style={{ height: idx % 2 === 0 ? "280px" : "360px" }}>
+                                    <Image src={image} alt="Private label gallery" fill className="object-cover" />
+                                </div>
+                            </motion.div>
+                        ))}
                     </div>
                 </div>
             </section>
 
             {/* Section C: Why Choose Us */}
-            <section className="section-padding bg-muted/30">
+            <section className="py-12 md:py-16 bg-muted/30">
                 <div className="container-main">
-                    <div className="grid lg:grid-cols-5 gap-12 items-start">
-                        {/* Feature Cards - 3 columns */}
-                        <div className="lg:col-span-3">
-                            <motion.div className="mb-10" {...fadeInUp}>
-                                <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                                    {content.expertise.label}
-                                </span>
-                                <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
-                                    {content.expertise.title}
-                                </h2>
-                            </motion.div>
+                    <motion.div className="mb-10 text-center" {...fadeInUp}>
+                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
+                            {content.expertise.label}
+                        </span>
+                        <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
+                            {content.expertise.title}
+                        </h2>
+                    </motion.div>
 
-                            <div className="grid sm:grid-cols-2 gap-6">
-                                {content.expertise.features.map((feature, index) => {
-                                    const Icon = featureIcons[index % featureIcons.length];
-                                    return (
-                                        <motion.div
-                                            key={feature.title}
-                                            className="bg-card rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300 border border-border"
-                                            initial={{ opacity: 0, y: 30 }}
-                                            whileInView={{ opacity: 1, y: 0 }}
-                                            viewport={{ once: true }}
-                                            transition={{ delay: index * 0.1, duration: 0.5 }}
-                                        >
-                                            <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-                                                <Icon className="w-6 h-6 text-primary" />
-                                            </div>
-                                            <h3 className="font-serif text-lg font-bold text-foreground mb-2">
-                                                {feature.title}
-                                            </h3>
-                                            <p className="text-muted-foreground text-sm leading-relaxed">
-                                                {feature.description}
-                                            </p>
-                                        </motion.div>
-                                    );
-                                })}
-                            </div>
-                        </div>
-
-                        {/* Side Images */}
-                        <motion.div
-                            className="lg:col-span-2"
-                            initial={{ opacity: 0, x: 30 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.6 }}
-                        >
-                            <div className="sticky top-24 space-y-4">
-                                <div className="relative h-64 rounded-2xl overflow-hidden shadow-xl">
-                                    <Image src={content.expertise.sideImages[0]} alt="Warehouse" fill className="object-cover" />
-                                </div>
-                                <div className="relative h-48 rounded-2xl overflow-hidden shadow-xl">
-                                    <Image src={content.expertise.sideImages[1]} alt="Lab" fill className="object-cover" />
-                                </div>
-                            </div>
-                        </motion.div>
+                    <div className="grid sm:grid-cols-2 gap-8">
+                        {content.expertise.features.map((feature, index) => {
+                            const Icon = featureIcons[index % featureIcons.length];
+                            return (
+                                <motion.div
+                                    key={feature.title}
+                                    className="bg-card rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 border border-border"
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1, duration: 0.5 }}
+                                >
+                                    <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-5">
+                                        <Icon className="w-7 h-7 text-primary" />
+                                    </div>
+                                    <h3 className="font-serif text-xl font-bold text-foreground mb-3">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="text-muted-foreground text-base leading-relaxed">
+                                        {feature.description}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
 
             {/* Advantages Checklist with Image */}
-            <section className="section-padding bg-background">
+            <section className="py-12 md:py-16 bg-background">
                 <div className="container-main">
+                    <motion.div className="text-center mb-10" {...fadeInUp}>
+                        <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+                            {content.advantages.title}
+                        </h3>
+                    </motion.div>
+
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
                         {/* Image Side */}
                         <motion.div
@@ -349,23 +347,20 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
 
                         {/* Checklist Side */}
                         <motion.div className="lg:order-2" {...fadeInUp}>
-                            <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-8">
-                                {content.advantages.title}
-                            </h3>
-                            <div className="space-y-4">
+                            <div className="grid sm:grid-cols-2 gap-5 md:gap-6">
                                 {content.advantages.list.map((advantage, index) => (
                                     <motion.div
                                         key={advantage}
-                                        className="flex items-center gap-4 bg-card rounded-xl p-4 border border-border"
+                                        className="flex items-center gap-4 bg-card rounded-xl p-5 md:p-6 border border-border h-full shadow-sm"
                                         initial={{ opacity: 0, x: 20 }}
                                         whileInView={{ opacity: 1, x: 0 }}
                                         viewport={{ once: true }}
                                         transition={{ delay: index * 0.05, duration: 0.4 }}
                                     >
-                                        <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                            <CheckCircle className="w-5 h-5 text-primary" />
+                                        <div className="shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 bg-primary/10 text-primary">
+                                            <CheckCircle className="w-6 h-6" />
                                         </div>
-                                        <span className="text-foreground font-medium">{advantage}</span>
+                                        <span className="text-foreground text-base md:text-lg font-medium leading-snug">{advantage}</span>
                                     </motion.div>
                                 ))}
                             </div>
@@ -375,12 +370,9 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
             </section>
 
             {/* Section D: How It Works */}
-            <section className="section-padding bg-muted/30">
+            <section className="py-12 md:py-16 bg-muted/30">
                 <div className="container-main">
                     <motion.div className="text-center mb-16" {...fadeInUp}>
-                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                            {content.process.label}
-                        </span>
                         <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
                             {content.process.title}
                         </h2>
@@ -388,7 +380,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
 
                     <div className="grid md:grid-cols-3 gap-8 relative">
                         {/* Connection Line */}
-                        <div className="hidden md:block absolute top-10 left-1/4 right-1/4 h-0.5 bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
+                        <div className="hidden md:block absolute top-10 left-1/4 right-1/4 h-0.5 bg-linear-to-r from-transparent via-primary/20 to-transparent" />
 
                         {content.process.steps.map((step, index) => {
                             const Icon = processIcons[index % processIcons.length];
@@ -404,7 +396,6 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                                     <div className="relative z-10 w-20 h-20 rounded-full bg-primary flex items-center justify-center mx-auto mb-6 shadow-lg">
                                         <Icon className="w-8 h-8 text-white" />
                                     </div>
-                                    <span className="text-primary font-bold text-sm uppercase tracking-wider">Step {step.step}</span>
                                     <h3 className="font-serif text-2xl font-bold text-foreground mt-2 mb-3">
                                         {step.title}
                                     </h3>
@@ -419,10 +410,10 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
             </section>
 
             {/* Section E: Conditions & MOQs */}
-            <section className="section-padding bg-card">
+            <section className="py-12 md:py-16 bg-card">
                 <div className="container-main">
                     <div className="grid lg:grid-cols-2 gap-12 items-center">
-                        <motion.div {...fadeInUp}>
+                        <motion.div className="text-center" {...fadeInUp}>
                             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                                 {content.terms.label}
                             </span>
@@ -430,7 +421,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                                 {content.terms.title}
                             </h2>
 
-                            <div className="bg-background rounded-2xl border border-border overflow-hidden shadow-sm">
+                            <div className="bg-background rounded-2xl border border-border overflow-hidden shadow-sm mx-auto">
                                 <div className="grid grid-cols-3 bg-primary text-white p-4 font-semibold text-sm">
                                     <span>Category</span>
                                     <span className="text-center">MOQ</span>
@@ -454,19 +445,19 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
 
                         {/* Side Images */}
                         <motion.div
-                            className="grid grid-cols-2 gap-4"
+                            className="grid grid-cols-2 gap-5"
                             initial={{ opacity: 0, x: 30 }}
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            <div className="relative h-48 col-span-2 rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-56 col-span-2 rounded-2xl overflow-hidden shadow-lg">
                                 <Image src={content.terms.sideImages[0]} alt="Terms" fill className="object-cover" />
                             </div>
-                            <div className="relative h-32 rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-40 rounded-2xl overflow-hidden shadow-lg">
                                 <Image src={content.terms.sideImages[1]} alt="Terms" fill className="object-cover" />
                             </div>
-                            <div className="relative h-32 rounded-2xl overflow-hidden shadow-lg">
+                            <div className="relative h-40 rounded-2xl overflow-hidden shadow-lg">
                                 <Image src={content.terms.sideImages[2]} alt="Terms" fill className="object-cover" />
                             </div>
                         </motion.div>
@@ -485,7 +476,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                         transition={{ duration: 0.5 }}
                     >
                         <div className="flex gap-4">
-                            <div className="flex-shrink-0">
+                            <div className="shrink-0">
                                 <AlertTriangle className="w-8 h-8 text-amber-600" />
                             </div>
                             <div>
@@ -502,7 +493,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
             </section>
 
             {/* Section G: Final CTA */}
-            <section className="relative py-24 md:py-32 overflow-hidden">
+            <section className="relative py-16 md:py-20 overflow-hidden">
                 <div className="absolute inset-0">
                     <Image
                         src={content.hero.bgImage}
@@ -510,7 +501,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                         fill
                         className="object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/90 to-secondary/85" />
+                    <div className="absolute inset-0 bg-linear-to-r from-secondary/60 via-secondary/45 to-secondary/30" />
                 </div>
 
                 <div className="container-main relative z-10">

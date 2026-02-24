@@ -29,9 +29,19 @@ const copy = {
     }
 } as const;
 
+type LangKey = keyof typeof copy;
+
 export function MarketingModal({ lang }: MarketingModalProps) {
     const [isOpen, setIsOpen] = useState(false);
-    const t = (copy as any)[lang] || copy.en;
+    const t = copy[(lang as LangKey)] || copy.en;
+
+    const openWhatsApp = () => {
+        const phoneNumber = "212648273228";
+        const message = "Hello! I'm interested in your products.";
+        const url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+        window.open(url, "_blank");
+        setIsOpen(false);
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -47,11 +57,11 @@ export function MarketingModal({ lang }: MarketingModalProps) {
 
     return (
         <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+            className="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
             onClick={handleClose}
         >
             <div
-                className="relative bg-white max-w-lg w-full rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+                className="relative bg-white max-w-xl w-full rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
@@ -69,15 +79,15 @@ export function MarketingModal({ lang }: MarketingModalProps) {
                 </div>
 
                 {/* Hero Image Section */}
-                <div className="relative h-64 w-full">
+                <div className="relative h-80 w-full">
                     <Image
-                        src="https://images.unsplash.com/photo-1608248597279-f99d160bfcbc?q=80&w=1000&auto=format&fit=crop"
+                        src="/images/slider/popup_organica.jpg"
                         alt="Cosmetic product"
                         fill
                         className="object-cover"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end justify-center p-6 text-center">
+                    <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end justify-center p-6 text-center">
                         <p className="text-white font-semibold text-lg md:text-xl font-serif italic">
                             {t.heroText}
                         </p>
@@ -91,8 +101,8 @@ export function MarketingModal({ lang }: MarketingModalProps) {
                     </p>
 
                     <button
-                        onClick={handleClose}
-                        className="btn-accent w-full py-4 px-8 rounded-full font-bold transition-all text-white shadow-lg"
+                        onClick={openWhatsApp}
+                        className="w-full py-4 px-8 rounded-full font-bold transition-all text-white shadow-lg bg-primary hover:bg-primary/90"
                     >
                         {t.cta}
                     </button>

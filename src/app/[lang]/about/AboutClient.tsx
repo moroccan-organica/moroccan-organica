@@ -94,10 +94,6 @@ const defaultIcons = [Leaf, Handshake, Heart];
 export default function AboutClient({ data, dict, lang }: AboutClientProps) {
     const [openPromise, setOpenPromise] = useState<string | null>(null);
 
-    const togglePromise = (title: string) => {
-        setOpenPromise(openPromise === title ? null : title);
-    };
-
     const fadeInUp: MotionProps = {
         initial: { opacity: 0, y: 40 },
         whileInView: { opacity: 1, y: 0 },
@@ -157,7 +153,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         className="object-cover object-center"
                         priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/85 to-secondary/70" />
+                    <div className="absolute inset-0 bg-linear-to-r from-secondary/55 via-secondary/35 to-secondary/15" />
                 </div>
 
                 <div className="container-main relative z-10 py-20 md:py-32">
@@ -170,15 +166,24 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                             {content.hero.title}
                         </h1>
-                        <p className="text-xl md:text-2xl text-primary font-medium mb-8 max-w-3xl mx-auto leading-relaxed">
-                            {content.hero.description}
-                        </p>
                     </motion.div>
                 </div>
             </section>
 
+            {/* Section A2: Wholesale Statement */}
+            <section className="bg-white">
+                <div className="container-main py-3 md:py-4 text-center">
+                    <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-primary uppercase tracking-wide mb-3">
+                        Wholesale of organic cosmetics products
+                    </h2>
+                    <p className="max-w-5xl mx-auto text-base md:text-xl text-muted-foreground leading-relaxed">
+                        Our company provides different moroccan organic products, and services including private label for its worldwide customers we deals with international countries all over the world, in Europe, Asia, America, Australia and Africa.
+                    </p>
+                </div>
+            </section>
+
             {/* Section B: Who We Are */}
-            <section className="section-padding bg-card">
+            <section className="section-padding bg-card pt-10 md:pt-12">
                 <div className="container-main">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <motion.div {...fadeInUp}>
@@ -272,7 +277,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                     </motion.div>
 
                     <div className="relative max-w-4xl mx-auto">
-                        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-bronze/40 via-bronze to-bronze/40 -translate-x-1/2" />
+                        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 w-0.5 bg-linear-to-b from-bronze/40 via-bronze to-bronze/40 -translate-x-1/2" />
 
                         <div className="space-y-6 md:space-y-0">
                             {content.journey.timeline.map((item: TimelineItem, index: number) => (
@@ -287,7 +292,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                                 >
                                     <div className={`md:w-1/2 ${index % 2 === 0 ? "md:pr-16 md:text-right" : "md:pl-16"}`}>
                                         <div className="bg-card rounded-xl p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-border">
-                                            <span className="text-bronze font-bold text-3xl font-serif">{item.year}</span>
+                                            <span className="text-primary font-bold text-3xl font-serif">{item.year}</span>
                                             <h3 className="font-serif text-lg font-semibold text-foreground mt-2">{item.title}</h3>
                                             <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
                                         </div>
@@ -358,9 +363,6 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             <section className="section-padding bg-card">
                 <div className="container-main">
                     <motion.div className="text-center mb-16" {...fadeInUp}>
-                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                            {content.promise.label}
-                        </span>
                         <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
                             {content.promise.title}
                         </h2>
@@ -385,7 +387,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                                     transition={{ delay: index * 0.1, duration: 0.4 }}
                                 >
                                     <div className="p-6 flex items-start gap-4">
-                                        <div className={`flex-shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${isOpen ? "bg-primary text-white" : "bg-primary/10 text-primary group-hover:bg-primary/20"
+                                        <div className={`shrink-0 w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${isOpen ? "bg-primary text-white" : "bg-primary/10 text-primary group-hover:bg-primary/20"
                                             }`}>
                                             <Check className="w-6 h-6" />
                                         </div>
@@ -451,7 +453,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         fill
                         className="object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/90 to-secondary/80" />
+                    <div className="absolute inset-0 bg-linear-to-r from-secondary/95 via-secondary/90 to-secondary/80" />
                 </div>
 
                 <div className="container-main relative z-10">

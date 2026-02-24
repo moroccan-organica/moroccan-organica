@@ -18,19 +18,17 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
   const content = data;
 
   return (
-    <section id="trust" className="section-padding bg-background pt-2 md:pt-4">
+    <section id="trust" className="section-padding bg-background pt-1 md:pt-3 pb-6 md:pb-8">
       <div className="container-main">
-        {/* Manufacturing Scale Images */}
-        <div className="text-center mb-12">
-          <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-            {content.badge}
-          </span>
-          <h2 className="heading-section text-foreground">
-            {content.title} <span className="text-primary">{content.highlight}</span>
+        {/* Manufacturing Scale Images - header intentionally hidden */}
+        <div className="sr-only">
+          <span>{content.badge}</span>
+          <h2>
+            {content.title} {content.highlight}
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-16">
+        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-8 md:mb-10">
           <div className="relative rounded-2xl overflow-hidden shadow-card animate-fade-in-left">
             <Image
               src={content.warehouse.image}
@@ -40,13 +38,9 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
               className="w-full h-64 md:h-80 object-cover"
             />
             <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6">
-              <h3 className="font-serif text-xl font-semibold text-primary-foreground mb-1">
-                {content.warehouse.title}
-              </h3>
-              <p className="text-sm text-primary-foreground/80">
-                {content.warehouse.desc}
-              </p>
+            <div className="sr-only">
+              <h3>{content.warehouse.title}</h3>
+              <p>{content.warehouse.desc}</p>
             </div>
           </div>
 
@@ -59,13 +53,9 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
               className="w-full h-64 md:h-80 object-cover"
             />
             <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6">
-              <h3 className="font-serif text-xl font-semibold text-primary-foreground mb-1">
-                {content.bulk.title}
-              </h3>
-              <p className="text-sm text-primary-foreground/80">
-                {content.bulk.desc}
-              </p>
+            <div className="sr-only">
+              <h3>{content.bulk.title}</h3>
+              <p>{content.bulk.desc}</p>
             </div>
           </div>
         </div>

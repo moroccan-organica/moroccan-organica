@@ -17,10 +17,7 @@ export const privateLabelData = {
         description1: "Moroccan organic beauty products are among the best options for standing out in the market. If you're looking for high-quality, skin- and hair-friendly products that draw their power from the Moroccan environment, our products are the ideal choice.",
         description2: "We offer you the opportunity to launch your own private label of natural Moroccan beauty products, distinguished by their effective formulas and 100% organic ingredients, making them suitable for all skin and hair types.",
         images: [
-            "/images/private-label-argan.jpg",
-            "/images/privet_label12.jpg",
-            "/images/private-label-argan.jpg",
-            "/images/privet_label12.jpg"
+            "/images/private-label-argan.jpg"
         ]
     },
     expertise: {
@@ -45,8 +42,12 @@ export const privateLabelData = {
             }
         ],
         sideImages: [
-            "/images/privet_label.jpg",
-            "/images/privet_label12.jpg"
+            "/images/slider/slider.jpeg",
+            "/images/privet_label12.jpg",
+            "/images/slider/ims1.jpg",
+            "/images/slider/ims2.jpg",
+            "/images/slider/img3.jpeg",
+            "/images/slider/img4.jpeg"
         ]
     },
     advantages: {

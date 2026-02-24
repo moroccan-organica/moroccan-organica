@@ -51,7 +51,7 @@ const SocialProofSection = ({ data }: SocialProofSectionProps) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background relative overflow-hidden pt-2 md:pt-4">
+    <section className="section-padding bg-background relative overflow-hidden pt-0 md:pt-2">
       {/* Decorative Background Elements */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/3 pointer-events-none" />
@@ -88,16 +88,16 @@ const SocialProofSection = ({ data }: SocialProofSectionProps) => {
         </div>
 
         <div
-          className="max-w-4xl mx-auto relative group px-6 sm:px-16"
+          className="max-w-5xl mx-auto relative group px-6 sm:px-16"
           onMouseEnter={() => setIsAutoPlaying(false)}
           onMouseLeave={() => setIsAutoPlaying(true)}
         >
           {/* Main Slider Container */}
-          <div className="relative bg-card rounded-[2.5rem] shadow-card border border-border/50 p-4 sm:p-12 overflow-hidden">
+          <div className="relative bg-card rounded-[2.5rem] shadow-card border border-border/50 p-6 sm:p-14 overflow-hidden">
             {/* Glossy Overlay effect */}
             <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-transparent via-primary/20 to-transparent" />
 
-            <div className="relative aspect-3/1 sm:aspect-[4.5/1] w-full transform transition-all duration-700">
+            <div className="relative aspect-[2.5/1] sm:aspect-[3.5/1] w-full min-h-[320px] sm:min-h-[360px] transform transition-all duration-700">
               <Image
                 src={reviewImages[currentIndex]}
                 alt={`Customer review snapshot ${currentIndex + 1}`}
