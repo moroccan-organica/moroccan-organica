@@ -70,7 +70,6 @@ interface ContactDictionary {
 interface ContactClientProps {
     data: ContactPageData;
     dict: ContactDictionary;
-    lang: string;
 }
 
 type IconComponent = ComponentType<{ className?: string }>;
@@ -82,7 +81,7 @@ const iconMap: Record<string, IconComponent> = {
     hours: Clock,
 };
 
-export default function ContactClient({ data, dict, lang }: ContactClientProps) {
+export default function ContactClient({ data, dict }: ContactClientProps) {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -178,7 +177,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
     return (
         <div className="min-h-screen bg-background">
             {/* Hero Section */}
-            <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+            <section className="relative min-h-[55vh] flex items-center justify-center overflow-hidden">
                 <div className="absolute inset-0">
                     <Image
                         src={content.hero.bgImage || "/images/contact/bulk-ingredients.jpg"}
@@ -190,7 +189,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                     <div className="absolute inset-0 bg-linear-to-r from-secondary/70 via-secondary/60 to-secondary/40" />
                 </div>
 
-                <div className="container-main relative z-10 py-20 md:py-28">
+                <div className="container-main relative z-10 py-16 md:py-22">
                     <motion.div
                         className="text-center max-w-3xl mx-auto"
                         initial={{ opacity: 0, y: 30 }}
@@ -211,7 +210,7 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
             </section>
 
             {/* Contact Info Cards */}
-            <section className="py-16 bg-muted/50">
+            <section className="py-12 md:py-14 bg-muted/50">
                 <div className="container-main">
                     <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {content.info.items.map((info: ContactInfoItem, index: number) => {
@@ -237,13 +236,23 @@ export default function ContactClient({ data, dict, lang }: ContactClientProps) 
                             );
                         })}
                     </div>
+
                 </div>
             </section>
 
             {/* Contact Form Section */}
-            <section className="section-padding bg-background">
+            <section className="py-12 md:py-14 bg-background">
                 <div className="container-main">
-                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+                    <div className="text-center mb-6 md:mb-8">
+                        <h2 className="text-3xl md:text-4xl font-black text-primary tracking-wide">
+                            GET IN TOUCH
+                        </h2>
+                        <p className="mt-3 text-base md:text-lg text-muted-foreground">
+                            wholesale suppliers of organic cosmetic products | Organica Group
+                        </p>
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
                         {/* Form */}
                         <motion.div {...fadeInUp}>
                             <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">

@@ -12,7 +12,7 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background pt-0 md:pt-1">
+    <section className="section-padding bg-background pt-0 md:pt-1 pb-6 md:pb-8">
       <div className="container-main">
         {/* Header */}
         <div className="text-center mb-8 md:mb-10">
@@ -23,9 +23,7 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
           <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground mb-3">
             {data.title}
           </h2>
-          <p className="text-muted-foreground max-w-xl mx-auto">
-            {data.description}
-          </p>
+          {/* Description hidden per request */}
         </div>
 
         {/* Instagram Grid (LightWidget) */}
@@ -43,7 +41,7 @@ const InstagramSection = ({ data }: { data?: InstagramData }) => {
         </div>
 
         {/* Follow Button */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-10 md:mt-12">
           <a
             href="https://www.instagram.com/moroccanorganic/"
             target="_blank"

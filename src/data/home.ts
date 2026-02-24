@@ -64,8 +64,8 @@ export const homePageData = {
     },
     about: {
         badge: "About Us",
-        title: "Why do you buy From",
-        highlight: "Organica Group?",
+        title: "WHY DO YOU BUY FROM",
+        highlight: "ORGANICA GROUP?",
         description: `<p class="mb-4">If you are looking for a <b>trusted partner to source organic beauty and cosmetic products</b>, Organica Group is your reliable choice. We offer a comprehensive range of organic cosmetics and body care products, designed to support health and beauty needs from head to toe. Our portfolio allows brands, professionals, and individuals to find tailored organic solutions that match their specific market expectations.</p>
         <p class="mb-4">When it comes to products such as argan oil, the market often presents two extremes: high-quality products at very high prices or low-quality products at low prices. At Organica Group, we believe that true value lies in combining quality with cost efficiency. This principle is the foundation of our sourcing and production strategy.</p>
         <p>Thanks to our extensive experience in sourcing high-quality organic raw materials, we are able to deliver <b>certified organic beauty and cosmetic products</b> at competitive and sustainable prices. Our approach strengthens long-term partnerships by maintaining transparent, ethical, and reliable relationships.</p>`,
@@ -312,7 +312,7 @@ export const homePageData = {
         },
         stats: [
             {
-                value: "25+",
+                value: "10+",
                 label: "Years Experience"
             },
             {
@@ -328,6 +328,22 @@ export const homePageData = {
                 label: "Client Satisfaction"
             }
         ]
+    },
+    professionalCta: {
+        title: "YOU ARE A PROFESSIONAL IN THE COSMETIC SECTOR ?",
+        button: "ENTER NOW!",
+        href: "/contact",
+        background: "/images/contact/bulk-ingredients.jpg"
+    },
+    vision: {
+        title: "MOROCCAN ORGANICA VISION",
+        paragraphs: [
+            "<strong>Argan oil from Morocco</strong> is a premium organic plant oil, produced using cold-pressed extraction from Argania Spinosa Kernel Oil, sourced from sustainably managed argan forests. Our production process respects both nature and tradition, ensuring purity, traceability, and long-term sustainability.",
+            "Often referred to as “liquid gold,” Moroccan argan oil is renowned in the <strong>beauty and cosmetics industry</strong> for its exceptional properties. Rich in natural antioxidants, vitamins A and E, and essential fatty acids, organic argan oil is widely recognized for its hydrating, anti-aging, anti-oxidant, and anti-inflammatory benefits. It is a key ingredient in modern <strong>organic beauty and cosmetic formulations</strong>.",
+            "Thanks to its versatility, organic Moroccan argan oil is extensively used in cosmetic and beauty products such as scrubs, soaps, body creams, massage oils, lip care, hair treatments, and nail care solutions. Its natural composition makes it an essential component of daily <strong>organic skincare and cosmetic</strong> routines, suitable for hair, face, body, and nails.",
+            "Our mission as a Moroccan argan oil wholesale and organic cosmetics supplier is to share this authentic beauty heritage with our global partners. We are committed to providing certified organic argan oil, produced through responsible and sustainable methods, while meeting international quality standards and certifications. Through transparency, expertise, and sustainability, Moroccan Organica aims to deliver 100% authentic, certified Moroccan organic beauty ingredients to brands worldwide."
+        ],
+        image: "/images/slider/moroccan-organica-cooperative (1).webp"
     },
     rfq: {
         title: "Get Wholesale Pricing",

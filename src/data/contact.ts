@@ -4,7 +4,7 @@ export const contactPageData = {
         label: "Get in Touch",
         title: "Contact Us",
         description: "Ready to partner with Morocco's leading organic products supplier? We'd love to hear from you.",
-        bgImage: "/images/contact/image header.png"
+        bgImage: "/images/contact/moroccan organica_contact.png"
     },
     info: {
         title: "Contact Information",
@@ -13,7 +13,7 @@ export const contactPageData = {
                 type: "email",
                 title: "Email Us",
                 details: "inquiry@moroccanorganica.com",
-                subtext: "We'll respond within 24 hours"
+                subtext: "We'll respond within 12 hours"
             },
             {
                 type: "phone",
@@ -25,7 +25,7 @@ export const contactPageData = {
                 type: "address",
                 title: "Visit Us",
                 details: "Agadir, Morocco",
-                subtext: "Industrial Zone, Ait Melloul"
+                subtext: "Industrial Zone"
             },
             {
                 type: "hours",
@@ -38,16 +38,16 @@ export const contactPageData = {
     form: {
         label: "Send a Message",
         title: "Let's Start a Conversation",
-        description: "Fill out the form below and our team will get back to you within 24 hours with a personalized response."
+        description: "Fill out the form below and our team will get back to you within 12 hours with a personalized response."
     },
     benefits: {
-        title: "Why Partner With Us?",
+        title: "Why Partner With MoroccanOrganica?",
         items: [
-            "Direct from Moroccan cooperatives",
-            "Competitive wholesale pricing",
-            "Custom private label solutions",
-            "Full export documentation",
-            "Worldwide shipping available"
+            "Direct factory production with full traceability",
+            "Bulk supply capacity with stable pricing",
+            "Private label & custom formulation services",
+            "Complete export documentation (COA, MSDS, certifications)",
+            "Fast and secure international shipping"
         ]
     }
 };

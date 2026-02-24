@@ -27,11 +27,11 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
   if (!data) return null;
 
   return (
-    <section className="section-padding bg-background pt-4 md:pt-6">
+    <section className="section-padding bg-background pt-0 md:pt-2">
       <div className="container mx-auto px-4">
         {/* UN Today Logo */}
         <div className="text-center">
-          <div className="relative inline-block w-96 h-36">
+          <div className="relative inline-block w-full max-w-4xl h-52 md:h-64">
             <Image
               src="/images/untoday-logo.webp"
               alt="UN Today"
@@ -82,15 +82,15 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
           </div>
 
           {/* CTA Footer */}
-          <footer className="mt-12 pt-8 border-t border-border text-center">
+          <footer className="mt-4 pt-3 border-t border-border text-center">
             <a
               href="https://untoday.org/argan-oil-and-the-importance-of-the-argan-tree-to-morocco/"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-primary font-semibold hover:underline text-lg"
+              className="inline-flex items-center gap-3 text-primary font-semibold text-3xl md:text-4xl underline underline-offset-8 decoration-4"
             >
               {data.cta}
-              <span className="text-xl">→</span>
+              <span className="text-2xl md:text-3xl">→</span>
             </a>
           </footer>
         </article>

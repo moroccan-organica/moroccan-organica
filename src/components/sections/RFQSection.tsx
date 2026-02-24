@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -299,29 +298,7 @@ const RFQSection = ({ data, aboutData }: { data: RFQContent; aboutData: AboutCon
           </div>
         </div>
 
-        {/* Why Choose Us Section (placeholder) */}
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
-          <div className="animate-fade-in-right -mt-2" />
-
-          {/* Warehouse Image */}
-          <div className="relative animate-fade-in-left -mt-24">
-            <div className="relative rounded-2xl overflow-hidden shadow-card">
-              <Image
-                src={data.image}
-                alt="Warehouse logistics"
-                width={800}
-                height={400}
-                className="w-full h-64 object-cover"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-secondary/90 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4">
-                <p className="text-primary-foreground font-semibold">
-                  {data.readyDispatch || "Ready for Dispatch — Your Order Ships Within 48 Hours"}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Removed image block per request */}
       </div>
     </section>
   );

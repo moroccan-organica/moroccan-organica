@@ -5,6 +5,8 @@ import PrivateLabelSection from "@/components/sections/PrivateLabelSection";
 import PressFeatureSection from "@/components/sections/PressFeatureSection";
 import SocialProofSection from "@/components/sections/SocialProofSection";
 import TrustSection from "@/components/sections/TrustSection";
+import ProfessionalCTASection from "@/components/sections/ProfessionalCTASection";
+import VisionSection from "@/components/sections/VisionSection";
 import InstagramSection from "@/components/sections/InstagramSection";
 import RFQSection from "@/components/sections/RFQSection";
 import { homePageData } from "@/data/home";
@@ -64,8 +66,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     })
   };
 
-  const aboutData = { ...homePageData.about, ...dict.about };
-
   const categoriesData = {
     ...homePageData.categories,
     ...dict.categories,
@@ -104,6 +104,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const socialProofData = dict.socialProof;
   const pressFeatureData = dict.pressFeature;
   const privateLabelData = dict.privateLabel;
+  const professionalCtaData = { ...homePageData.professionalCta, ...dict.professionalCta };
+  const visionData = { ...homePageData.vision, ...dict.vision };
 
   return (
     <main className="min-h-screen">
@@ -117,6 +119,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <TrustSection data={trustData} />
       <InstagramSection data={dict.instagram} />
       <RFQSection data={rfqData} aboutData={dict.about} />
+      <ProfessionalCTASection data={professionalCtaData} />
+      <VisionSection data={visionData} />
     </main>
   );
 }

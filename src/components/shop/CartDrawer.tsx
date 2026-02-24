@@ -36,15 +36,20 @@ const CartDrawer = ({ isRTL = false, lang = "en" }: CartDrawerProps) => {
 
     useEffect(() => {
         // Détecter quand un produit est ajouté (totalItems augmente)
-        if (totalItems > prevTotalItemsRef.current) {
-            setIsAnimating(true);
-            // Réinitialiser l'animation après 600ms
-            const timer = setTimeout(() => {
-                setIsAnimating(false);
-            }, 600);
-            return () => clearTimeout(timer);
-        }
+        const increased = totalItems > prevTotalItemsRef.current;
         prevTotalItemsRef.current = totalItems;
+        if (!increased) return;
+
+        // Planify animation to avoid synchronous state updates inside effect
+        const frame = requestAnimationFrame(() => setIsAnimating(true));
+        const timer = setTimeout(() => {
+            setIsAnimating(false);
+        }, 600);
+
+        return () => {
+            cancelAnimationFrame(frame);
+            clearTimeout(timer);
+        };
     }, [totalItems]);
 
     return (
@@ -68,7 +73,7 @@ const CartDrawer = ({ isRTL = false, lang = "en" }: CartDrawerProps) => {
             </SheetTrigger>
             <SheetContent
                 side={isRTL ? "left" : "right"}
-                className="w-full sm:max-w-md bg-background border-border z-[100]"
+                className="w-full sm:max-w-md bg-background border-border z-100"
             >
                 <SheetHeader>
                     <SheetTitle className="flex items-center gap-2">

@@ -56,8 +56,8 @@
     },
     "about": {
         "badge": "About Us",
-        "title": "Why do you buy From",
-        "highlight": "Organica Group?",
+        "title": "WHY DO YOU BUY FROM",
+        "highlight": "ORGANICA GROUP?",
         "description": "<p class=\"mb-4\">If you are looking for a <b>trusted partner to source organic beauty and cosmetic products</b>, Organica Group is your reliable choice. We offer a comprehensive range of organic cosmetics and body care products, designed to support health and beauty needs from head to toe. Our portfolio allows brands, professionals, and individuals to find tailored organic solutions that match their specific market expectations.</p><p class=\"mb-4\">When it comes to products such as argan oil, the market often presents two extremes: high-quality products at very high prices or low-quality products at low prices. At Organica Group, we believe that true value lies in combining quality with cost efficiency. This principle is the foundation of our sourcing and production strategy.</p><p>Thanks to our extensive experience in sourcing high-quality organic raw materials, we are able to deliver <b>certified organic beauty and cosmetic products</b> at competitive and sustainable prices. Our approach strengthens long-term partnerships by maintaining transparent, ethical, and reliable relationships.</p>",
         "points": [
             "100% Organic certified cosmetics",
@@ -110,7 +110,7 @@
         "badge": "Our Product Range",
         "title": "TOP SELLING",
         "highlight": "PRODUCTS",
-        "description": "Discover our curated selection of certified organic ingredients, sourced directly from Moroccan artisan cooperatives and farms.",
+        "description": "We specialize in authentic Moroccan beauty — We are a Moroccan company offering premium bulk Argan oil, crafted with tradition and care. 100% pure, organic, and ethically sourced — with private label services, export support, and competitive pricing.",
         "cta": "Request Full Product Catalog",
         "subtitle": "Directly from the source in Morocco",
         "viewAll": "View All Products",
@@ -267,7 +267,12 @@
         "handle": "@moroccanorganic",
         "title": "Follow Our Journey",
         "description": "Behind the scenes of sustainable sourcing, from field to shipment",
-        "cta": "Follow on Instagram"
+        "cta": "FOLLOW ON INSTAGRAM"
+    },
+    "professionalCta": {
+        "title": "YOU ARE A PROFESSIONAL IN THE COSMETIC SECTOR ?",
+        "button": "ENTER NOW!",
+        "href": "/contact"
     },
     "privateLabel": {
         "badge": "Our Services",

@@ -25,14 +25,11 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
     if (!data) return null;
 
     return (
-        <section className="bg-muted/20 pt-2 md:pt-6 lg:pt-10 pb-6 md:pb-10 lg:pb-12">
+        <section className="bg-muted/20 pt-0 md:pt-4 lg:pt-6 pb-6 md:pb-10 lg:pb-12">
             <div className="container-main">
                 {/* Top Section: Discover Services */}
                 <div className="text-center max-w-5xl mx-auto mb-14 animate-fade-in-up">
-                    <span className="inline-block text-primary font-semibold text-base md:text-lg uppercase tracking-wider mb-3">
-                        {data.badge}
-                    </span>
-                    <h2 className="heading-section text-foreground mb-8">
+                    <h2 className="heading-section text-foreground text-4xl md:text-5xl lg:text-6xl mb-8">
                         {data.discoverTitle} <span className="text-primary">{data.discoverHighlight}</span> {data.discoverSuffix}
                     </h2>
                     <div className="mx-auto space-y-4 text-lg md:text-xl leading-8 text-muted-foreground/90">
@@ -54,7 +51,7 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
 
                 {/* Bottom Section: Add Your Own Brand */}
                 <div className="text-center mb-10">
-                    <h2 className="heading-section text-foreground text-3xl md:text-4xl lg:text-[40px] leading-tight">
+                    <h2 className="heading-section uppercase text-foreground text-3xl md:text-4xl lg:text-[40px] leading-tight">
                         {data.brandTitle} <span className="text-primary">{data.brandHighlight}</span>
                     </h2>
                 </div>

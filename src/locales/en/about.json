@@ -29,43 +29,48 @@
     ]
   },
   "journey": {
-    "label": "Our Journey",
-    "title": "A Legacy of Growth",
+    "label": "OUR JOURNEY",
+    "title": "A Legacy of Growth & Excellence",
     "timeline": [
       {
         "year": "2015",
-        "title": "Feasibility Study",
-        "description": "Market research and business planning"
+        "title": "Vision & Strategic Planning",
+        "description": "Comprehensive market research and feasibility studies to build a strong foundation for a global Moroccan cosmetic brand."
       },
       {
         "year": "2016",
-        "title": "We Start Our Business",
-        "description": "Official company establishment"
+        "title": "Official Launch",
+        "description": "Establishment of our company and the beginning of production with a clear mission: deliver premium Moroccan organic products worldwide."
       },
       {
         "year": "2017",
-        "title": "The Stage of Existence",
-        "description": "Building our foundation"
+        "title": "Building Strong Foundations",
+        "description": "Investment in production facilities, quality control systems, and supplier partnerships across Morocco."
       },
       {
         "year": "2018",
-        "title": "Expanding Our Network",
-        "description": "Growing regional partnerships"
+        "title": "Expansion of Product Range",
+        "description": "Introduction of bulk argan oil, prickly pear seed oil, black soap, rhassoul clay, and private label services."
       },
       {
         "year": "2019",
-        "title": "Project Growth",
-        "description": "Scaling production capacity"
-      },
-      {
-        "year": "2020",
-        "title": "Network Expansion",
-        "description": "New international markets"
+        "title": "International Export Growth",
+        "description": "Expansion into global markets with increased export capacity and wholesale partnerships."
       },
       {
         "year": "2021",
-        "title": "We Serve Worldwide",
-        "description": "Global logistics and distribution"
+        "title": "Quality & Certification Development",
+        "description": "Strengthening compliance with international standards and implementing advanced quality control procedures."
+      },
+      {
+        "year": "2023",
+        "title": "Private Label & Manufacturing Scale-Up",
+        "description": "Expansion of custom manufacturing, packaging solutions, and brand development services for international clients."
+      },
+      {
+        "year": "2025",
+        "title": "Industrial Growth & Global Presence",
+        "description": "Scaling production capacity to meet worldwide demand while maintaining strict quality and sustainability standards."
       }
     ]
   },
@@ -75,8 +80,8 @@
     "description": "Our products are manufactured by cooperatives in the south-west of Morocco, with techniques and knowledge passed down through generations. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world."
   },
   "cooperatives": {
-    "title": "Produced by cooperatives",
-    "description": "Our products manufactured by cooperatives of the south-west of Morocco, with techniques and knowledge in this field. All our cosmetics and culinary products are exported directly from cooperatives to our customers all over the world.",
+    "title": "Produced by Our Factory",
+    "description": "Our products are manufactured in our certified production facility located in Morocco, using advanced processing techniques combined with traditional expertise in argan oil and natural cosmetics production. All our cosmetic and culinary products are produced under strict quality control standards and exported directly from our factory to customers worldwide. We ensure full traceability, hygiene compliance, and international certification requirements (ECOCERT / USDA Organic US NOP, COA, SPEC.ISO 22716 GMP, MSDS compliance) for every batch.",
     "fairTitle": "Fair Trade Principles",
     "fairPrinciples": [
       "Quality: 100% organic cosmetics",
@@ -103,6 +108,10 @@
       {
         "title": "Sustainable and Ethical",
         "description": "We work directly with local communities in Morocco to ensure ethical sourcing and sustainable production practices."
+      },
+      {
+        "title": "Certified Quality & Private Label Solutions",
+        "description": "We manufacture under strict quality control compliant with international cosmetic and export standards, and offer flexible private label, custom packaging, and branding services from bulk supply to finished products."
       }
     ]
   },
