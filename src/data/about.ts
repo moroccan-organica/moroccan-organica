@@ -6,6 +6,10 @@ export const aboutPageData = {
         description: "Our company provides different Moroccan organic products and services, including private label solutions for our worldwide customers. We deal with international countries all over the world — in Europe, Asia, America, Australia, and Africa.",
         bgImage: "/images/about_organica.jpg"
     },
+    wholesale: {
+        title: "WHOLESALE OF ORGANIC COSMETICS PRODUCTS",
+        description: "Our company provides different Moroccan organic products, and services including private label for its worldwide customers we deals with international countries all over the world, in Europe, Asia, America, Australia and Africa."
+    },
     whoWeAre: {
         label: "Who We Are",
         title: "Organica Group SARL",

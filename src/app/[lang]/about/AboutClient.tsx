@@ -75,6 +75,10 @@ interface AboutPageData {
         cta: string;
         bgImage: string;
     };
+    wholesale: {
+        title: string;
+        description: string;
+    };
 }
 
 interface AboutClientProps {
@@ -112,6 +116,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
         promise: { ...data.promise, ...dict.promise },
         offer: { ...data.offer, ...dict.offer },
         partnership: { ...data.partnership, ...dict.partnership },
+        wholesale: { ...data.wholesale, ...dict.wholesale },
     };
 
     const renderWithHighlights = (text: string) => {
@@ -156,7 +161,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                     <div className="absolute inset-0 bg-linear-to-r from-secondary/55 via-secondary/35 to-secondary/15" />
                 </div>
 
-                <div className="container-main relative z-10 py-20 md:py-32">
+                <div className="container-main relative z-10 py-14 md:py-20">
                     <motion.div
                         className="text-center max-w-4xl mx-auto"
                         initial={{ opacity: 0, y: 30 }}
@@ -174,16 +179,16 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             <section className="bg-white">
                 <div className="container-main py-3 md:py-4 text-center">
                     <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-primary uppercase tracking-wide mb-3">
-                        Wholesale of organic cosmetics products
+                        {content.wholesale.title}
                     </h2>
                     <p className="max-w-5xl mx-auto text-base md:text-xl text-muted-foreground leading-relaxed">
-                        Our company provides different moroccan organic products, and services including private label for its worldwide customers we deals with international countries all over the world, in Europe, Asia, America, Australia and Africa.
+                        {content.wholesale.description}
                     </p>
                 </div>
             </section>
 
             {/* Section B: Who We Are */}
-            <section className="section-padding bg-card pt-10 md:pt-12">
+            <section className="py-10 md:py-14 lg:py-16 bg-card pt-6 md:pt-8">
                 <div className="container-main">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <motion.div {...fadeInUp}>
@@ -222,9 +227,9 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             </section>
 
             {/* Section C: Our Principles */}
-            <section className="section-padding bg-background">
+            <section className="py-10 md:py-14 lg:py-16 bg-background">
                 <div className="container-main">
-                    <motion.div className="text-center mb-16" {...fadeInUp}>
+                    <motion.div className="text-center mb-12" {...fadeInUp}>
                         <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                             {content.values.label}
                         </span>
@@ -265,9 +270,9 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             </section>
 
             {/* Section D: Timeline */}
-            <section className="section-padding bg-muted/30">
+            <section className="py-10 md:py-14 lg:py-16 bg-muted/30">
                 <div className="container-main">
-                    <motion.div className="text-center mb-16" {...fadeInUp}>
+                    <motion.div className="text-center mb-12" {...fadeInUp}>
                         <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
                             {content.journey.label}
                         </span>
@@ -360,9 +365,9 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             </section>
 
             {/* Section F: Why Choose Us */}
-            <section className="section-padding bg-card">
+            <section className="py-10 md:py-14 lg:py-16 bg-card">
                 <div className="container-main">
-                    <motion.div className="text-center mb-16" {...fadeInUp}>
+                    <motion.div className="text-center mb-12" {...fadeInUp}>
                         <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">
                             {content.promise.title}
                         </h2>
@@ -428,7 +433,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             </section>
 
             {/* Section G: Our Products */}
-            <section className="py-20 md:py-24 bg-background">
+            <section className="py-12 md:py-16 bg-background">
                 <div className="container-main">
                     <motion.div className="max-w-4xl mx-auto text-center" {...fadeInUp}>
                         <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
@@ -445,7 +450,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
             </section>
 
             {/* Section H: Wholesale CTA */}
-            <section className="relative py-24 md:py-32 overflow-hidden">
+            <section className="relative py-14 md:py-18 overflow-hidden">
                 <div className="absolute inset-0">
                     <Image
                         src={content.partnership.bgImage || "/images/about/warehouse.jpg"}

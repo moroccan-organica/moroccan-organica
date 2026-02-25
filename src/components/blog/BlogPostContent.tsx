@@ -47,34 +47,32 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       if (node.type === 'text') {
         let textNode: React.ReactNode = node.text || '';
 
-        // Apply marks in the correct order (link should be outermost, then bold/italic)
-        if (node.marks && Array.isArray(node.marks)) {
-          // Sort marks: link first (outermost), then bold/italic
-          const sortedMarks = [...node.marks].sort((a, b) => {
-            if (a.type === 'link') return 1; // Link should be applied last (outermost)
-            if (b.type === 'link') return -1;
-            return 0;
-          });
+        const marks = Array.isArray(node.marks) ? node.marks : [];
+        const linkMark = marks.find((mark) => mark.type === 'link' && mark.attrs?.href);
+        const otherMarks = marks.filter((mark) => mark.type !== 'link');
 
-          sortedMarks.forEach((mark) => {
-            if (mark.type === 'bold') {
-              textNode = <strong key={`strong-${key}`}>{textNode}</strong>;
-            } else if (mark.type === 'italic') {
-              textNode = <em key={`em-${key}`}>{textNode}</em>;
-            } else if (mark.type === 'link' && mark.attrs?.href) {
-              textNode = (
-                <a
-                  key={`link-${key}`}
-                  href={mark.attrs.href}
-                  className="text-[#BC6C25] hover:underline"
-                  target={mark.attrs.target || '_self'}
-                  rel={mark.attrs.target === '_blank' ? 'noopener noreferrer' : undefined}
-                >
-                  {textNode}
-                </a>
-              );
-            }
-          });
+        otherMarks.forEach((mark) => {
+          if (mark.type === 'bold') {
+            textNode = <strong key={`strong-${key}`}>{textNode}</strong>;
+          } else if (mark.type === 'italic') {
+            textNode = <em key={`em-${key}`}>{textNode}</em>;
+          }
+        });
+
+        if (linkMark && linkMark.attrs?.href) {
+          const href = linkMark.attrs.href;
+          const target = linkMark.attrs.target || '_self';
+          textNode = (
+            <a
+              key={`link-${key}`}
+              href={href}
+              className="text-[#BC6C25] underline decoration-1 hover:decoration-2"
+              target={target}
+              rel={target === '_blank' ? 'noopener noreferrer' : undefined}
+            >
+              {textNode}
+            </a>
+          );
         }
 
         return <React.Fragment key={key}>{textNode}</React.Fragment>;
@@ -87,13 +85,15 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       // Handle nested inline nodes (like link with bold inside)
       if (node.type === 'link' && node.attrs?.href) {
         const linkContent = node.content ? renderInlineContent(node.content, Number(key)) : [];
+        const href = node.attrs.href as string;
+        const target = (node.attrs.target as string) || '_self';
         return (
           <a
             key={`link-node-${key}`}
-            href={node.attrs.href}
-            className="text-[#BC6C25] hover:underline"
-            target={node.attrs.target || '_self'}
-            rel={node.attrs.target === '_blank' ? 'noopener noreferrer' : undefined}
+            href={href}
+            className="text-[#BC6C25] underline decoration-1 hover:decoration-2"
+            target={target}
+            rel={target === '_blank' ? 'noopener noreferrer' : undefined}
           >
             {linkContent}
           </a>
@@ -158,13 +158,13 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
       const style = node.attrs.style as string | undefined;
 
       // Parse inline styles
-      const parsedStyle: React.CSSProperties = { maxWidth: '100%', height: 'auto' };
+      const parsedStyle: React.CSSProperties & Record<string, string | number | undefined> = { maxWidth: '100%', height: 'auto' };
       if (style) {
         style.split(';').forEach(rule => {
           const [key, value] = rule.split(':').map(s => s.trim());
           if (key && value) {
             const camelKey = key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
-            (parsedStyle as any)[camelKey] = value;
+            parsedStyle[camelKey] = value;
           }
         });
       }

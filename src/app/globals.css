@@ -434,12 +434,12 @@
   .rich-text-content a {
     color: #BC6C25;
     font-weight: 500;
-    text-decoration: none;
+    text-decoration: underline;
     transition: all 0.2s;
   }
 
   .rich-text-content a:hover {
-    text-decoration: underline;
+    text-decoration-thickness: 2px;
   }
 }
 

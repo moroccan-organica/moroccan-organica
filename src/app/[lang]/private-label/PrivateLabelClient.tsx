@@ -244,15 +244,6 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
             {/* Section C2: Product Gallery */}
             <section className="py-12 md:py-16 bg-background">
                 <div className="container-main">
-                    <motion.div className="text-center mb-10" {...fadeInUp}>
-                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                            {content.expertise.label}
-                        </span>
-                        <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
-                            {content.expertise.title}
-                        </h3>
-                    </motion.div>
-
                     <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
                         {content.expertise.sideImages.map((image, idx) => (
                             <motion.div
@@ -267,6 +258,48 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                                     <Image src={image} alt="Private label gallery" fill className="object-cover" />
                                 </div>
                             </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Section C2.5: Performance Bars */}
+            <section className="py-10 md:py-14 bg-muted/20">
+                <div className="container-main max-w-5xl">
+                    <motion.div className="text-center mb-6 md:mb-8" {...fadeInUp}>
+                        <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-2">
+                            Performance Snapshot
+                        </span>
+                        <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
+                            What Our Partners Value
+                        </h3>
+                    </motion.div>
+                    <div className="space-y-4">
+                        {[{
+                            label: "Projects Done",
+                            value: 80,
+                            color: "bg-emerald-500"
+                        }, {
+                            label: "Clients Satisfaction",
+                            value: 99,
+                            color: "bg-sky-500"
+                        }, {
+                            label: "Lowest Charges",
+                            value: 48,
+                            color: "bg-amber-500"
+                        }].map((bar) => (
+                            <div key={bar.label} className="bg-white rounded-xl border border-border shadow-sm p-3 md:p-4">
+                                <div className="flex items-center justify-between text-xs md:text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
+                                    <span>{bar.label}</span>
+                                    <span className="text-foreground">{bar.value}%</span>
+                                </div>
+                                <div className="h-4 md:h-5 w-full rounded-full bg-muted overflow-hidden">
+                                    <div
+                                        className={`${bar.color} h-full rounded-full transition-all duration-700`}
+                                        style={{ width: `${bar.value}%` }}
+                                    />
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>

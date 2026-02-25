@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 interface VisionData {
   title: string;
@@ -36,30 +39,46 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
           </div>
         </div>
 
-        <div className="mt-12 w-full rounded-2xl bg-white/95 py-6 md:py-8 px-4 md:px-6 shadow-sm overflow-hidden">
-          <div className="max-w-5xl mx-auto flex flex-nowrap items-center justify-between gap-3 md:gap-5 lg:gap-6">
-            {[
-              "/images/slider/1.webp",
-              "/images/slider/2.webp",
-              "/images/slider/3.webp",
-              "/images/slider/4.webp",
-              "/images/slider/5.webp",
-              "/images/slider/6.webp",
-            ].map((logoSrc, idx) => (
-              <div
-                key={logoSrc}
-                className="relative h-24 w-32 md:h-24 md:w-36 lg:h-28 lg:w-40 shrink-0"
-              >
-                <Image
-                  src={logoSrc}
-                  alt={`Certification logo ${idx + 1}`}
-                  fill
-                  className="object-contain"
-                  sizes="(min-width: 1024px) 128px, 24vw"
-                />
-              </div>
-            ))}
+        <div className="mt-12 w-full rounded-2xl bg-white/95 py-6 md:py-8 px-0 md:px-2 shadow-sm overflow-hidden relative">
+          <div className="w-full">
+            <motion.div
+              className="flex flex-nowrap items-center gap-4 sm:gap-5 min-w-max"
+              animate={{ x: ["0%", "-50%"] }}
+              transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
+            >
+              {[
+                "/images/slider/1.webp",
+                "/images/slider/2.webp",
+                "/images/slider/3.webp",
+                "/images/slider/4.webp",
+                "/images/slider/5.webp",
+                "/images/slider/6.webp",
+                // duplicate for seamless loop
+                "/images/slider/1.webp",
+                "/images/slider/2.webp",
+                "/images/slider/3.webp",
+                "/images/slider/4.webp",
+                "/images/slider/5.webp",
+                "/images/slider/6.webp",
+              ].map((logoSrc, idx) => (
+                <div
+                  key={`${logoSrc}-${idx}`}
+                  className="relative h-14 w-20 sm:h-16 sm:w-24 md:h-20 md:w-28 lg:h-24 lg:w-32 shrink-0"
+                >
+                  <Image
+                    src={logoSrc}
+                    alt={`Certification logo ${idx + 1}`}
+                    fill
+                    className="object-contain"
+                    sizes="(min-width: 1024px) 128px, 80vw"
+                  />
+                </div>
+              ))}
+            </motion.div>
           </div>
+          {/* Edge fade to hide cut-off */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-linear-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-12 bg-linear-to-l from-white to-transparent" />
         </div>
       </div>
     </section>
