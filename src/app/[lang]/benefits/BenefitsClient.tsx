@@ -34,6 +34,7 @@ export function BenefitsClient({ lang, heroTitle, heroSubtitle, searchPlaceholde
                 searchPlaceholder={searchPlaceholder}
                 searchValue={searchQuery}
                 onSearchChange={setSearchQuery}
+                lang={lang}
             />
 
             <div className="container mx-auto px-4 py-12">

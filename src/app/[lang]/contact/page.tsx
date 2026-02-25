@@ -44,7 +44,6 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
         <ContactClient
             data={contactPageData}
             dict={dict}
-            lang={lang}
         />
     );
 }
