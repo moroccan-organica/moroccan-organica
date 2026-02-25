@@ -18,7 +18,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
-    
+
     const [dict, setDict] = useState<Record<string, unknown> | null>(null);
     const [posts, setPosts] = useState<BlogPostFull[]>([]);
     const [categories, setCategories] = useState<BlogCategory[]>([]);
@@ -77,19 +77,21 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
 
     return (
         <main className="min-h-screen bg-slate-50/50">
-            <BlogHero 
+            <BlogHero
                 title={dict.title as string}
                 subtitle={dict.subtitle as string}
                 searchPlaceholder={dict.searchPlaceholder as string}
                 searchValue={searchTerm}
                 onSearchChange={handleSearchChange}
+                banner={dict.banner as any}
+                lang={lang}
             />
 
             <div className="container mx-auto px-4 py-12">
                 <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
                     {/* Sidebar */}
                     <div className="w-full lg:w-1/4 xl:w-1/5 lg:pr-4 xl:pr-6">
-                        <FilterSidebar 
+                        <FilterSidebar
                             categories={categories}
                             selectedCategory={selectedCategory}
                             onCategoryChange={handleCategoryChange}
@@ -115,9 +117,9 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                             <>
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
                                     {posts.map((post) => (
-                                        <BlogCard 
-                                            key={post.id} 
-                                            post={post} 
+                                        <BlogCard
+                                            key={post.id}
+                                            post={post}
                                             lang={lang}
                                             translations={{
                                                 readMore: dict.readMore as string,
@@ -127,7 +129,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                                 </div>
                                 {totalPages > 1 && (
                                     <div className="flex justify-center pt-10">
-                                        <BlogPagination 
+                                        <BlogPagination
                                             currentPage={currentPage}
                                             totalPages={totalPages}
                                             onPageChange={setCurrentPage}
@@ -136,7 +138,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
                                 )}
                             </>
                         ) : (
-                            <BlogEmptyState 
+                            <BlogEmptyState
                                 title={dict.noResults as string}
                                 description={dict.subtitle as string}
                                 showClearButton={!!selectedCategory || !!searchTerm}

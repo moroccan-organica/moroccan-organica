@@ -88,18 +88,18 @@ export function PostFormSidebar({
         <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
           <CardTitle className="flex items-center gap-2 text-sm font-bold text-slate-900">
             <Settings className="h-4 w-4 text-[#606C38]" />
-            Article Settings
+            {t.settings || 'Article Settings'}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           {/* Category */}
           <div className="space-y-2">
             <Label htmlFor="category" className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Category
+              {t.category || 'Category'}
             </Label>
             <Select value={categoryId} onValueChange={onChangeCategoryId}>
               <SelectTrigger id="category" className="rounded-xl border-slate-100 h-11">
-                <SelectValue placeholder="Select a category" />
+                <SelectValue placeholder={t.selectCategory || "Select a category"} />
               </SelectTrigger>
               <SelectContent className="rounded-xl">
                 {categories.map((cat) => (
@@ -116,14 +116,14 @@ export function PostFormSidebar({
           {/* Tags */}
           <div className="space-y-3">
             <Label className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Tags
+              {t.tags || 'Tags'}
             </Label>
             <div className="flex gap-2">
               <Input
                 value={tagInput}
                 onChange={(e) => onChangeTagInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), onAddTag())}
-                placeholder="Add a tag..."
+                placeholder={t.addTag || "Add a tag..."}
                 className="h-10 rounded-xl border-slate-100"
               />
               <Button
@@ -158,7 +158,7 @@ export function PostFormSidebar({
         <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
           <CardTitle className="flex items-center gap-2 text-sm font-bold text-slate-900">
             <ImageIcon className="h-4 w-4 text-[#606C38]" />
-            Featured Image
+            {t.featuredImage || 'Featured Image'}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
@@ -201,7 +201,7 @@ export function PostFormSidebar({
                 <Plus className="h-6 w-6 text-slate-400 group-hover:text-inherit" />
               </div>
               <span className="text-xs font-bold uppercase tracking-wider text-slate-400 group-hover:text-[#606C38]">
-                Upload Cover
+                {t.uploadCover || 'Upload Cover'}
               </span>
             </button>
           )}
@@ -213,7 +213,7 @@ export function PostFormSidebar({
             onChange={onFeaturedImageChange}
           />
           <p className="mt-3 text-center text-[10px] font-medium text-slate-400 leading-relaxed uppercase tracking-tight">
-            Recommended size: 1200x630px. Max 5MB.
+            {t.recommendedSize || 'Recommended size: 1200x630px. Max 5MB.'}
           </p>
         </CardContent>
       </Card>
@@ -223,13 +223,13 @@ export function PostFormSidebar({
         <CardHeader className="bg-slate-50/50 border-b border-slate-100 px-6 py-4">
           <CardTitle className="flex items-center gap-2 text-sm font-bold text-slate-900">
             <Globe className="h-4 w-4 text-[#606C38]" />
-            SEO Optimization
+            {t.seo || "SEO Optimization"}
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6 space-y-6">
           <div className="space-y-2">
             <Label htmlFor="metaTitle" className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              SEO Title
+              {t.seoTitle || "SEO Title"}
             </Label>
             <Input
               id="metaTitle"
@@ -241,13 +241,13 @@ export function PostFormSidebar({
           </div>
           <div className="space-y-2">
             <Label htmlFor="metaDescription" className="text-xs font-bold uppercase tracking-wider text-slate-400">
-              Meta Description
+              {t.metaDescription || "Meta Description"}
             </Label>
             <textarea
               id="metaDescription"
               value={metaDescription}
               onChange={(e) => onChangeMetaDescription(e.target.value)}
-              placeholder="Brief summary for search engines..."
+              placeholder={t.metaPlaceholder || "Brief summary for search engines..."}
               className="flex min-h-[100px] w-full rounded-xl border border-slate-100 bg-white px-3 py-2 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#606C38] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none"
             />
           </div>

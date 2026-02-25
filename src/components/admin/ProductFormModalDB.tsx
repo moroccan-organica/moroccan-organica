@@ -2,12 +2,12 @@
 
 import React, { useState, useMemo, useRef, useTransition } from 'react';
 import { SafeImage } from '@/components/ui/safe-image';
-import { X, Upload, Plus, Trash2, Loader2, Star, ImagePlus } from 'lucide-react';
+import { X, Upload, Plus, Trash2, Loader2, Star, ImagePlus, Wand2, Check, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { ShopProductDB, CategoryDB, CreateProductInput, UpdateProductInput, ProductPlacement } from '@/types/product';
-import { createProduct, updateProduct } from '@/actions/product.actions';
+import { createProduct, updateProduct, isSlugUnique } from '@/actions/product.actions';
 import { uploadProductImage } from '@/actions/media.actions';
 import { cn } from '@/lib/utils';
 import { SimpleTiptapEditor } from './SimpleTiptapEditor';
@@ -80,6 +80,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
   const [newNote, setNewNote] = useState('');
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const [slugStatus, setSlugStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   React.useEffect(() => {
@@ -88,12 +89,27 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       setFormData(data);
       setNewNote('');
       setError(null);
+      setSlugStatus(product ? 'valid' : 'idle');
     }
   }, [isOpen, product, categories, defaultPlacement]);
+
+  const handleSlugCheck = async (slug: string) => {
+    if (!slug || slug.length < 3) {
+      setSlugStatus('idle');
+      return;
+    }
+    setSlugStatus('checking');
+    const isUnique = await isSlugUnique(slug, product?.id);
+    setSlugStatus(isUnique ? 'valid' : 'invalid');
+  };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (slugStatus === 'invalid') {
+      setError('The product slug is already in use. Please choose a unique slug.');
+      return;
+    }
     setError(null);
 
     startTransition(async () => {
@@ -497,9 +513,52 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                     <label className="block text-sm font-bold text-slate-700 mb-2">Product Name</label>
                     <Input
                       value={formData.name}
-                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value, slug: generateSlug(e.target.value) }))}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                       placeholder="Display name in English"
                     />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-slate-700 mb-2">URL Slug (URL identifier)</label>
+                    <div className="flex gap-2">
+                      <div className="relative flex-1">
+                        <Input
+                          value={formData.slug}
+                          onChange={(e) => {
+                            const val = e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+                            setFormData(prev => ({ ...prev, slug: val }));
+                            handleSlugCheck(val);
+                          }}
+                          placeholder="product-unique-identifier"
+                          className={cn(
+                            "pr-10",
+                            slugStatus === 'valid' && "border-green-500 focus:ring-green-500",
+                            slugStatus === 'invalid' && "border-red-500 focus:ring-red-500"
+                          )}
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          {slugStatus === 'checking' && <Loader2 className="h-4 w-4 animate-spin text-slate-400" />}
+                          {slugStatus === 'valid' && <Check className="h-4 w-4 text-green-500" />}
+                          {slugStatus === 'invalid' && <AlertCircle className="h-4 w-4 text-red-500" />}
+                        </div>
+                      </div>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => {
+                          const newSlug = generateSlug(formData.name);
+                          setFormData(prev => ({ ...prev, slug: newSlug }));
+                          handleSlugCheck(newSlug);
+                        }}
+                        className="shrink-0 border-[#606C38] text-[#606C38] hover:bg-[#606C38] hover:text-white"
+                        title="Generate from name"
+                      >
+                        <Wand2 className="h-4 w-4 mr-2" />
+                        Generate
+                      </Button>
+                    </div>
+                    {slugStatus === 'invalid' && (
+                      <p className="mt-1 text-xs text-red-500 font-medium italic">This slug is already taken. Please try another one.</p>
+                    )}
                   </div>
                   <div>
                     <label className="block text-sm font-bold text-slate-700 mb-2">Short Preview Description</label>

@@ -42,7 +42,7 @@ const ProductCard = ({
   descriptionAr,
   addToCartText,
   showAddToCart = true,
-  basePath = "products"
+  basePath = "organica"
 }: ProductCardProps) => {
   const params = useParams();
   const lang = params?.lang || 'en';
@@ -61,7 +61,7 @@ const ProductCard = ({
       id,
       slug: slug || "",
       category: category || "General",
-        image: imageSrc,
+      image: imageSrc,
       volume: volume || "Standard",
       name: name || title,
       nameAr: nameAr || title,

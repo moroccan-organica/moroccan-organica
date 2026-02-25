@@ -182,6 +182,29 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
   }
 }
 
+/**
+ * Check if a slug is already taken by another product
+ */
+export async function isSlugUnique(slug: string, excludeProductId?: string): Promise<boolean> {
+  try {
+    let query = supabase
+      .from('ProductTranslation')
+      .select('productId')
+      .eq('slug', slug);
+
+    if (excludeProductId) {
+      query = query.filter('productId', 'neq', excludeProductId);
+    }
+
+    const { data, error } = await query.maybeSingle();
+    if (error) throw error;
+    return !data;
+  } catch (error) {
+    console.error('Error checking slug uniqueness:', error);
+    return false;
+  }
+}
+
 
 
 // GET SINGLE PRODUCT BY ID

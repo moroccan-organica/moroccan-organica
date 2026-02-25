@@ -1,5 +1,5 @@
 import { getDictionary } from "@/lib/dictionaries";
-import { getStaticPageBySystemName, getGlobalSeoSettings, getCatalogueProducts } from "@/lib/queries";
+import { getStaticPageBySystemName, getGlobalSeoSettings, getCatalogueProducts, getTopSaleProducts } from "@/lib/queries";
 import { Metadata } from "next";
 import CatalogueClient from "./CatalogueClient";
 
@@ -32,11 +32,13 @@ export default async function CataloguePage({ params }: { params: Promise<{ lang
     const dict = await getDictionary(lang, 'products');
     const page = await getStaticPageBySystemName('PRODUCTS', lang);
     const products = await getCatalogueProducts(lang);
+    const topProducts = await getTopSaleProducts(lang);
 
     return (
         <CatalogueClient
             pageData={page}
             products={products}
+            topProducts={topProducts}
             dict={dict}
             lang={lang}
         />

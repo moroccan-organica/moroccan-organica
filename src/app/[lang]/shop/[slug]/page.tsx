@@ -180,7 +180,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     }
 
     if (product && (product.placement === 'featured' || product.placement === 'topsale')) {
-        redirect(`/${lang}/products/${slug}`);
+        redirect(`/${lang}/organica/${slug}`);
     }
 
     if (!product) {
@@ -199,6 +199,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
     const localizedName = isRTL ? product.nameAr : product.name;
     const localizedDescription = isRTL ? product.descriptionAr : product.description;
+    const localizedDetails = isRTL ? product.detailsAr : (lang === 'fr' ? product.detailsFr : product.details);
 
     const galleryImages = [product.image, ...product.gallery].filter(Boolean);
 
@@ -284,12 +285,10 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
             <section className="space-y-6">
                 <h2 className="heading-display text-3xl text-emerald-950">{t.descriptionTitle}</h2>
-                <p className="text-lg leading-relaxed text-muted-foreground">
-                    {localizedDescription}{" "}
-                    {isRTL
-                        ? "يتم اختيار كل دفعة بعناية من التعاونيات المغربية وتعبئتها في مختبرات معتمدة لضمان النقاء والأصالة."
-                        : "Each batch is cold-filtered in certified Moroccan labs and prepared on demand, ensuring traceability and premium freshness for your brand."}
-                </p>
+                <div
+                    className="prose prose-emerald max-w-none text-lg leading-relaxed text-muted-foreground"
+                    dangerouslySetInnerHTML={{ __html: localizedDetails || localizedDescription }}
+                />
             </section>
 
             <section className="space-y-6">
@@ -331,7 +330,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                             {priceFormatter.format(item.price)}
                                         </p>
                                         <Link
-                                            href={item.placement === 'shop' ? `/${lang}/shop/${item.slug}` : `/${lang}/products/${item.slug}`}
+                                            href={item.placement === 'shop' ? `/${lang}/shop/${item.slug}` : `/${lang}/organica/${item.slug}`}
                                             className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:text-emerald-900"
                                         >
                                             {t.viewDetails}

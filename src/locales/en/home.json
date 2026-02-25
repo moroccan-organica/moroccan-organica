@@ -82,7 +82,7 @@
     "categories": {
         "badge": "Wholesale",
         "title": "Trusted Moroccan beauty ingredient supplier",
-        "subtitle": "Directly from the source in Morocco",
+        "description": "We specialize in authentic Moroccan beauty — We are a Moroccan company offering premium bulk Argan oil, crafted with tradition and care. 100% pure, organic, and ethically sourced — with private label services, export support, and competitive pricing.",
         "items": [
             {
                 "title": "ARGAN OILS CERTIFIED ORGANIC",
@@ -272,7 +272,7 @@
     "professionalCta": {
         "title": "YOU ARE A PROFESSIONAL IN THE COSMETIC SECTOR ?",
         "button": "ENTER NOW!",
-        "href": "/contact"
+        "href": "/organica"
     },
     "privateLabel": {
         "badge": "Our Services",

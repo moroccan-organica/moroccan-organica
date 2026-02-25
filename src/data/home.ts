@@ -99,6 +99,7 @@ export const homePageData = {
     categories: {
         badge: "Wholesale",
         title: "Trusted Moroccan Beauty Ingredient Supplier",
+        description: "We specialize in authentic Moroccan beauty — We are a Moroccan company offering premium bulk Argan oil, crafted with tradition and care. 100% pure, organic, and ethically sourced — with private label services, export support, and competitive pricing.",
         items: [
             {
                 title: "Aker Fassi Powder",
@@ -332,7 +333,7 @@ export const homePageData = {
     professionalCta: {
         title: "YOU ARE A PROFESSIONAL IN THE COSMETIC SECTOR ?",
         button: "ENTER NOW!",
-        href: "/contact",
+        href: "/organica",
         background: "/images/contact/bulk-ingredients.jpg"
     },
     vision: {

@@ -19,6 +19,7 @@ interface BlogPostInput {
   tags?: string[];
   featuredImageUrl?: string;
   status?: string;
+  slug?: string;
   metaTitle?: string;
   metaDescription?: string;
 }
@@ -44,6 +45,7 @@ interface BlogPostUpdateData {
   metaTitle: string | null;
   metaDescription: string | null;
   readTimeMinutes: number;
+  slug?: string;
   publishedAt?: string;
 }
 
@@ -386,28 +388,58 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
   }
 }
 
+// ============================================
+// ADMIN ACTIONS
+// ============================================
+
+/**
+ * Check if a blog post slug is unique
+ */
+export async function isBlogPostSlugUnique(slug: string, excludePostId?: string): Promise<boolean> {
+  try {
+    let query = supabase
+      .from('BlogPost')
+      .select('id')
+      .eq('slug', slug);
+
+    if (excludePostId) {
+      query = query.neq('id', excludePostId);
+    }
+
+    const { data, error } = await query.maybeSingle();
+    if (error) throw error;
+    return !data;
+  } catch (error) {
+    console.error('Error checking blog slug uniqueness:', error);
+    return false;
+  }
+}
+
 /**
  * Create a new blog post (ADMIN ONLY)
  */
 export async function createBlogPost(input: BlogPostInput) {
   try {
     const authorId = await getDefaultAuthorId();
-    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = input;
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
 
-    const slug = generateSlug(title);
-    let counter = 1;
-    let uniqueSlug = slug;
+    let uniqueSlug = manualSlug || generateSlug(title);
 
-    while (true) {
-      const { data: existing } = await supabase
-        .from('BlogPost')
-        .select('id')
-        .eq('slug', uniqueSlug)
-        .maybeSingle();
+    // If no manual slug provided, ensure the auto-generated one is unique
+    if (!manualSlug) {
+      let counter = 1;
+      const baseSlug = uniqueSlug;
+      while (true) {
+        const { data: existing } = await supabase
+          .from('BlogPost')
+          .select('id')
+          .eq('slug', uniqueSlug)
+          .maybeSingle();
 
-      if (!existing) break;
-      uniqueSlug = `${slug}-${counter}`;
-      counter++;
+        if (!existing) break;
+        uniqueSlug = `${baseSlug}-${counter}`;
+        counter++;
+      }
     }
 
     const { data: post, error } = await supabase
@@ -471,7 +503,7 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
       .eq('id', postId)
       .maybeSingle();
 
-    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = input;
+    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
 
     const updateData: BlogPostUpdateData = {
       title,
@@ -487,6 +519,7 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
       metaTitle: metaTitle || null,
       metaDescription: metaDescription || null,
       readTimeMinutes: Math.max(1, Math.ceil((JSON.stringify(content || {}).length) / 1000)),
+      slug: manualSlug || undefined,
     };
 
     if (status === 'published') {

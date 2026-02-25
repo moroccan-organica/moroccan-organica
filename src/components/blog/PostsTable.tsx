@@ -94,7 +94,7 @@ export function PostsTable({
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const [displayMode, setDisplayMode] = useState<'table' | 'grid'>('table');
   const [currentPage, setCurrentPage] = useState(1);
-  const PAGE_SIZE = 6;
+  const [pageSize, setPageSize] = useState(10);
   const COMPACT_PAGE_SIZE = 5;
 
   const categoryById = useMemo(() => {
@@ -168,14 +168,14 @@ export function PostsTable({
     setPrevFilterKey(filterKey);
   }
 
-  const pageSize = viewMode === 'compact' ? COMPACT_PAGE_SIZE : PAGE_SIZE;
-  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const currentPageSize = viewMode === 'compact' ? COMPACT_PAGE_SIZE : pageSize;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / currentPageSize));
 
   const paginatedPosts = useMemo(() => {
     return viewMode === 'compact'
       ? filtered.slice(0, COMPACT_PAGE_SIZE)
-      : filtered.slice((currentPage - 1) * pageSize, currentPage * pageSize);
-  }, [COMPACT_PAGE_SIZE, currentPage, filtered, pageSize, viewMode]);
+      : filtered.slice((currentPage - 1) * currentPageSize, currentPage * currentPageSize);
+  }, [COMPACT_PAGE_SIZE, currentPage, filtered, currentPageSize, viewMode]);
 
   const pageRange = useMemo(() => {
     const maxVisible = 5;
@@ -431,6 +431,12 @@ export function PostsTable({
                 <PaginationFooter
                   currentPage={currentPage}
                   totalPages={totalPages}
+                  totalItems={filtered.length}
+                  pageSize={pageSize}
+                  onPageSizeChange={(size) => {
+                    setPageSize(size);
+                    setCurrentPage(1);
+                  }}
                   pageRange={pageRange}
                   onPageChange={(page) => setCurrentPage(page)}
                 />

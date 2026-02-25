@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Bell, Search, User } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Bell, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
 
@@ -24,14 +23,6 @@ export function AdminHeader({ title, subtitle }: AdminHeaderProps) {
       </div>
 
       <div className="flex items-center gap-3">
-        <div className="relative hidden md:block">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-          <Input
-            type="text"
-            placeholder="Search..."
-            className="w-64 pl-10 bg-slate-50 border-slate-200 focus:bg-white"
-          />
-        </div>
 
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-5 w-5 text-slate-600" />

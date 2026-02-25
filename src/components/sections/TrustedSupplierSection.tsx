@@ -20,6 +20,7 @@ interface CategoryItem {
 interface TrustedSupplierContent {
   badge: string;
   title: string;
+  description?: string;
   items: CategoryItem[];
 }
 
@@ -43,31 +44,39 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
   };
 
   return (
-    <section className="pt-6 md:pt-10 pb-12 md:pb-16 bg-background overflow-hidden">
+    <section className="pt-6 md:pt-10 pb-12 md:pb-16 bg-background overflow-hidden border-t border-primary/5">
       <div className="container mx-auto px-4">
-        {/* Header with Navigation */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 md:mb-16">
+        {/* Header - Centered */}
+        <div className="flex flex-col items-center text-center mx-auto mb-12 md:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="flex flex-col items-center w-full"
           >
-            <span className="text-sm uppercase tracking-[0.3em] text-primary/60 mb-3 block">
+            <span className="text-sm uppercase tracking-[0.3em] text-primary/60 mb-4 block">
               {content.badge}
             </span>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light text-primary tracking-tight">
+            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-light text-primary tracking-tight mb-6 whitespace-nowrap">
               {content.title}
             </h2>
+            {content.description && (
+              <p className="text-muted-foreground text-lg md:text-xl max-w-3xl leading-relaxed mx-auto">
+                {content.description}
+              </p>
+            )}
           </motion.div>
 
-          {/* Custom Navigation Buttons */}
+          {/* Custom Navigation Buttons - Now below title/desc or kept separate if needed, 
+              but typically better integrated. Let's place them below the description for mobile, 
+              or keep them floating. Let's keep them accessible. */}
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex gap-3 mt-8 md:mt-0"
+            className="flex gap-4 mt-8"
           >
             <button
               onClick={() => swiperInstance?.slidePrev()}
@@ -78,7 +87,7 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
                 }`}
               aria-label="Previous slide"
             >
-              <ArrowLeft className="w-5 h-5 text-primary transition-colors" />
+              <ArrowLeft className="w-5 h-5 text-primary transition-colors group-hover:text-white" />
             </button>
             <button
               onClick={() => swiperInstance?.slideNext()}
@@ -89,7 +98,7 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
                 }`}
               aria-label="Next slide"
             >
-              <ArrowRight className="w-5 h-5 text-primary transition-colors" />
+              <ArrowRight className="w-5 h-5 text-primary transition-colors group-hover:text-white" />
             </button>
           </motion.div>
         </div>

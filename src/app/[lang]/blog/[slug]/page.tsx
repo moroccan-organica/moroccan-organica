@@ -123,6 +123,14 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                             <h1 className="text-4xl md:text-7xl font-playfair font-bold text-white mb-8 leading-tight text-center" dir={isArabic ? 'rtl' : 'ltr'}>
                                 {title}
                             </h1>
+                            <div className="flex justify-center mt-4">
+                                <Link
+                                    href={`/${lang}/organica`}
+                                    className="bg-[#F9E28B] text-[#114232] font-bold py-3 px-8 rounded-xl text-lg hover:scale-105 transition-all duration-300 uppercase tracking-wide shadow-xl"
+                                >
+                                    {(dict.banner as any)?.button || "Shop Now"}
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -189,6 +197,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                     </div>
                 </div>
             )}
+
         </main>
     );
 }

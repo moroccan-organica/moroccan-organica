@@ -106,7 +106,7 @@ export async function getFeaturedProducts(lang: string) {
             .eq('category.translations.language', lang)
             .eq('translations.language', lang)
             .order('createdAt', { ascending: false })
-            .limit(7);
+            .limit(30);
 
         if (error || !products) return [];
 

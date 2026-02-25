@@ -8,21 +8,21 @@ import { PostsTable } from '@/components/blog/PostsTable';
 import { PostForm } from '@/components/blog/PostForm';
 import { StatsOverview } from '@/components/blog/StatsOverview';
 import { QuickActionsGrid } from '@/components/blog/QuickActions';
-import { 
-  useBlogPosts, 
-  useBlogCategories, 
+import {
+  useBlogPosts,
+  useBlogCategories,
   useCreateBlogPost,
   useUpdateBlogPost,
   usePublishBlogPost,
   useArchiveBlogPost,
-  useCreateBlogCategory, 
+  useCreateBlogCategory,
   useDeleteBlogCategory,
 } from '@/lib/blog/hooks';
 import type { BlogPost, BlogCategory } from '@/types/blog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LayoutDashboard, FileText, FolderOpen, Plus, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -85,7 +85,7 @@ export default function BlogAdminPage() {
   // Hooks
   const { data: postsData, refetch: refetchPosts, isLoading: postsLoading } = useBlogPosts({ pageSize: 100 });
   const { data: categoriesData = [], isLoading: categoriesLoading } = useBlogCategories();
-  
+
   const createPost = useCreateBlogPost();
   const updatePost = useUpdateBlogPost();
   const publishPost = usePublishBlogPost();
@@ -143,7 +143,7 @@ export default function BlogAdminPage() {
     } else {
       await createPost.mutateAsync(postInput);
     }
-    
+
     setCurrentView('posts');
     setEditingPost(null);
     await refetchPosts();
@@ -156,13 +156,13 @@ export default function BlogAdminPage() {
 
   const handleCreateCategory = useCallback(async () => {
     if (!newCategoryName.trim()) return;
-    
+
     await createCategory.mutateAsync({
       name: newCategoryName,
       description: newCategoryDescription,
       color: newCategoryColor,
     });
-    
+
     setCategoryDialogOpen(false);
     setNewCategoryName('');
     setNewCategoryDescription('');
@@ -193,6 +193,7 @@ export default function BlogAdminPage() {
           onSave={handleSavePost}
           onCancel={handleCancelEdit}
           isLoading={createPost.isPending || updatePost.isPending}
+          translations={t.form}
         />
       </div>
     );
@@ -205,8 +206,8 @@ export default function BlogAdminPage() {
       <AdminHeader title={t.title || ''} subtitle={t.subtitle} />
 
       <div className="p-6">
-        <Tabs 
-          value={currentView} 
+        <Tabs
+          value={currentView}
           onValueChange={(v) => setCurrentView(v as ViewType)}
           className="w-full"
         >
@@ -244,7 +245,7 @@ export default function BlogAdminPage() {
               <TabsContent value="dashboard" className="mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <div className="lg:col-span-2 space-y-6">
-                    <StatsOverview 
+                    <StatsOverview
                       posts={posts}
                       isLoading={postsLoading}
                       translations={t.stats}
@@ -325,7 +326,7 @@ export default function BlogAdminPage() {
                             <td className="px-6 py-4 font-medium text-slate-900">{category.name}</td>
                             <td className="px-6 py-4 text-sm text-slate-500">{category.description || '-'}</td>
                             <td className="px-6 py-4">
-                              <div 
+                              <div
                                 className="h-6 w-6 rounded-full border border-slate-200"
                                 style={{ backgroundColor: category.color || '#606C38' }}
                               />

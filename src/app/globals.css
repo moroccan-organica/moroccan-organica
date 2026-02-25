@@ -447,6 +447,7 @@
 html[dir="rtl"] {
   direction: rtl;
 }
+
 /* RTL Specifics for Modern Typography */
 html[dir="rtl"] .rich-text-content {
   text-align: right;
@@ -470,6 +471,6 @@ html[dir="rtl"] .rich-text-content blockquote {
 }
 
 html[dir="rtl"] .rich-text-content h3::before {
-    margin-left: 0.75rem;
-    margin-right: 0;
+  margin-left: 0.75rem;
+  margin-right: 0;
 }
