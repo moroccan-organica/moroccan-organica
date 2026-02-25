@@ -61,12 +61,12 @@ export function MarketingModal({ lang }: MarketingModalProps) {
             onClick={handleClose}
         >
             <div
-                className="relative bg-white max-w-xl w-full rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+                className="relative bg-white max-w-md w-full rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="bg-primary py-4 px-6 relative flex items-center justify-center">
-                    <h2 className="text-white font-bold text-lg font-serif">
+                <div className="bg-primary py-3 px-4 relative flex items-center justify-center">
+                    <h2 className="text-white font-bold text-base md:text-lg font-serif">
                         {t.title}
                     </h2>
                     <button
@@ -79,7 +79,7 @@ export function MarketingModal({ lang }: MarketingModalProps) {
                 </div>
 
                 {/* Hero Image Section */}
-                <div className="relative h-80 w-full">
+                <div className="relative h-64 md:h-80 w-full">
                     <Image
                         src="/images/slider/popup_organica.jpg"
                         alt="Cosmetic product"
@@ -88,21 +88,21 @@ export function MarketingModal({ lang }: MarketingModalProps) {
                         priority
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent flex items-end justify-center p-6 text-center">
-                        <p className="text-white font-semibold text-lg md:text-xl font-serif italic">
+                        <p className="text-white font-semibold text-base md:text-xl font-serif italic">
                             {t.heroText}
                         </p>
                     </div>
                 </div>
 
                 {/* Body Content */}
-                <div className="p-8 space-y-8 flex flex-col items-center text-center">
-                    <p className="text-muted-foreground leading-relaxed text-base font-sans mt-2">
+                <div className="p-6 md:p-8 space-y-6 flex flex-col items-center text-center">
+                    <p className="text-muted-foreground leading-relaxed text-sm md:text-base font-sans mt-1">
                         {t.bodyText}
                     </p>
 
                     <button
                         onClick={openWhatsApp}
-                        className="w-full py-4 px-8 rounded-full font-bold transition-all text-white shadow-lg bg-primary hover:bg-primary/90"
+                        className="w-full py-3 md:py-4 px-6 md:px-8 rounded-full font-bold transition-all text-white shadow-lg bg-primary hover:bg-primary/90 text-sm md:text-base"
                     >
                         {t.cta}
                     </button>

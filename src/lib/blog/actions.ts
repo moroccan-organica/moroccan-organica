@@ -465,6 +465,12 @@ export async function createBlogPost(input: BlogPostInput) {
  */
 export async function updateBlogPost(postId: string, input: Partial<BlogPostInput>) {
   try {
+    const { data: existing } = await supabase
+      .from('BlogPost')
+      .select('slug')
+      .eq('id', postId)
+      .maybeSingle();
+
     const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = input;
 
     const updateData: BlogPostUpdateData = {
@@ -496,7 +502,9 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
-    revalidatePath(`/[lang]/blog/${postId}`);
+    if (existing?.slug) {
+      revalidatePath(`/[lang]/blog/${existing.slug}`);
+    }
     return { success: true };
   } catch (error: unknown) {
     console.error('Error updating post:', error);

@@ -43,6 +43,7 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [codeHtml, setCodeHtml] = useState('');
   const [linkDialogOpen, setLinkDialogOpen] = useState(false);
+  const lastSelectionRef = useRef<{ from: number; to: number } | null>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
   const editor = useEditor({
@@ -168,19 +169,32 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
   };
 
   const handleLink = useCallback(() => {
+    if (editor) {
+      const { from, to } = editor.state.selection;
+      lastSelectionRef.current = { from, to };
+    }
     setLinkDialogOpen(true);
-  }, []);
+  }, [editor]);
 
   const handleLinkInsert = useCallback((url: string, text?: string) => {
     if (!editor) return;
-    const chain = editor.chain().focus();
-    const { from, to } = editor.state.selection;
-    if (from !== to && !text) {
-      chain.extendMarkRange('link').setLink({ href: url }).run();
+
+    const chain = editor.chain();
+    const selection = lastSelectionRef.current;
+    const hasSelection = selection && selection.from !== selection.to;
+
+    if (selection) {
+      chain.setTextSelection(selection);
+    }
+
+    if (hasSelection && !text) {
+      chain.focus().extendMarkRange('link').setLink({ href: url }).run();
     } else {
       const linkText = text || url;
-      chain.insertContent(`<a href="${url}">${linkText}</a>`).run();
+      chain.focus().insertContent(`<a href="${url}">${linkText}</a>`).run();
     }
+
+    lastSelectionRef.current = null;
   }, [editor]);
 
   return (
