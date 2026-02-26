@@ -8,18 +8,29 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const page = await getStaticPageBySystemName('ORGANICA', lang);
     const globalSeo = await getGlobalSeoSettings(lang);
 
-    const defaultTitle = lang === 'en' ? "Wholesale suppliers | Organic Essential Oils" :
-        (page?.translation?.metaTitle || "Organic Essential Oils Wholesale Suppliers | MoroccanOrganica");
+    const meta = {
+        en: {
+            title: "Wholesale suppliers | Organic Essential Oils",
+            description: "Made safe for skin in a plant-oil base.100% naturally derived. bergamot oil,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil",
+            keywords: "wholesale essential oils,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil"
+        },
+        ar: {
+            title: "زيوت عطرية اصلية بالجملة",
+            description: "الزيوت العطرية هي مركبات طبيعية مستخلصة من نباتات مختلفة، وتتميز بروائح ومذاقات مركزة مثل ، زيت البرغموت ، زيت اللافندر ، زيت الأوكالبتوس ، زيت الباتشولي ، زيت اليوسفي ، زيت النعناع ، زيت الفانيليا",
+            keywords: "زيوت عطرية, زيت عطري, الزيوت العطرية, زيوت عطرية بالجملة, زيوت عطرية خام, زيوت عطريه خام, زيوت عطرية للجسم,  زيوت عطريه خام"
+        },
+        fr: {
+            title: "Fournisseurs en gros | Huiles essentielles biologiques",
+            description: "Conçu pour être sans danger pour la peau dans une base d'huile végétale. Dérivé à 100% naturellement. huile de bergamote, huile de lavande fleurs, huile d'eucalyptus, huile de patchouli, huile de mandarine, huile de menthe poivrée, huile d'absolue de vanille",
+            keywords: "huiles essentielles en gros, huile de lavande fleurs, huile d'eucalyptus, huile de patchouli, huile de mandarine, huile de menthe poivrée, huile d'absolue de vanille"
+        }
+    };
 
-    const defaultDesc = lang === 'en' ? "Made safe for skin in a plant-oil base.100% naturally derived. bergamot oil,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil" :
-        (page?.translation?.metaDesc || "Explore our premium organic Moroccan essential oils for wholesale, 100% pure and natural.");
+    const currentMeta = meta[lang as keyof typeof meta] || meta.en;
 
-    const defaultKeywords = lang === 'en' ? "wholesale essential oils,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil" :
-        (page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "");
-
-    const title = page?.translation?.metaTitle || defaultTitle;
-    const description = page?.translation?.metaDesc || defaultDesc;
-    const keywords = page?.translation?.keywords || defaultKeywords;
+    const title = page?.translation?.metaTitle || currentMeta.title;
+    const description = page?.translation?.metaDesc || currentMeta.description;
+    const keywords = page?.translation?.keywords || currentMeta.keywords;
 
     return {
         title: title,

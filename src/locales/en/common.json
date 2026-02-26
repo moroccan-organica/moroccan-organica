@@ -68,19 +68,19 @@
                 "items": [
                     {
                         "name": "Privacy Policy",
-                        "href": "/privacy-policy"
+                        "href": "/en/organica/privacy-policy"
                     },
                     {
                         "name": "Delivery Information",
-                        "href": "/delivery-information"
+                        "href": "/en/organica/delivery-information"
                     },
                     {
                         "name": "Terms & Conditions",
-                        "href": "/terms-conditions"
+                        "href": "/en/organica/terms-conditions"
                     },
                     {
                         "name": "How to Order/Pay",
-                        "href": "/how-to-order-pay"
+                        "href": "/en/organica/how-to-order-pay"
                     },
                     {
                         "name": "Quality Control",

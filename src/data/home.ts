@@ -333,7 +333,7 @@ export const homePageData = {
     professionalCta: {
         title: "YOU ARE A PROFESSIONAL IN THE COSMETIC SECTOR ?",
         button: "ENTER NOW!",
-        href: "/organica",
+        href: "/organica/argan-oil-of-morocco",
         background: "/images/contact/bulk-ingredients.jpg"
     },
     vision: {

@@ -5,6 +5,7 @@ import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import { Leaf, Handshake, Heart, Check, ArrowRight, LucideIcon, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import CertificationSlider from "@/components/common/CertificationSlider";
 
 interface Principle {
     title: string;
@@ -487,6 +488,8 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                     </motion.div>
                 </div>
             </section>
+
+            <CertificationSlider />
         </div>
     );
 }
