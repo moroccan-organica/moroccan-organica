@@ -27,7 +27,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
+            url: `https://www.moroccanorganica.com/${lang}/wholesale-of-moroccan-skincare`,
         },
+        alternates: {
+            canonical: `https://www.moroccanorganica.com/${lang}/wholesale-of-moroccan-skincare`,
+        }
     };
 }
 

@@ -257,10 +257,10 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                             <div className="p-2 bg-white/10 rounded-lg border border-white/10 hover:bg-white transition-all duration-500 group/partner max-w-[180px] mx-auto sm:mx-0">
                                 <Image
                                     src="/images/footer/transport-partner.png"
-                                    alt="Transport Partners"
-                                    width={180}
+                                    alt="transport-partner"
+                                    width={200}
                                     height={40}
-                                    className="w-full h-auto object-contain opacity-90 group-hover/partner:opacity-100 transition-opacity"
+                                    className="h-10 w-auto object-contain"
                                 />
                             </div>
                         </div>
@@ -276,27 +276,27 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                             <div className="p-2 bg-white/10 rounded-lg border border-white/10 space-y-2 hover:bg-white transition-all duration-500 group/payment w-full max-w-[200px]">
                                 <Image
                                     src="/images/footer/payment.png"
-                                    alt="Payment Methods"
-                                    width={150}
+                                    alt="paypal"
+                                    width={240}
                                     height={40}
-                                    className="w-full h-auto object-contain opacity-90 group-hover/payment:opacity-100 transition-opacity"
+                                    className="h-10 w-auto object-contain"
                                 />
                                 <Image
                                     src="/images/footer/62a382de6209494ec2b17086.webp"
-                                    alt="Stripe"
-                                    width={120}
-                                    height={30}
-                                    className="w-3/4 mx-auto h-auto object-contain opacity-90 group-hover/payment:opacity-100 transition-opacity"
+                                    alt="stripe"
+                                    width={60}
+                                    height={40}
+                                    className="h-10 w-auto object-contain"
                                 />
                             </div>
 
                             <Link href="https://play.google.com/store/apps/details?id=com.moroccanorganica.argan.oil" target="_blank" className="block transform hover:scale-105 transition-all w-full max-w-[150px]">
                                 <Image
                                     src="/images/footer/google-play.png"
-                                    alt="Get it on Google Play"
-                                    width={150}
-                                    height={45}
-                                    className="w-full h-auto object-contain"
+                                    alt="google play"
+                                    width={140}
+                                    height={40}
+                                    className="h-10 w-auto object-contain"
                                 />
                             </Link>
                         </div>

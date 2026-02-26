@@ -27,9 +27,9 @@ const ProfessionalCTASection = ({ data }: { data?: ProfessionalCTAData }) => {
       </div>
 
       <div className="relative z-10 container-main">
-        <h3 className="text-xl md:text-2xl font-semibold tracking-wide uppercase mb-4">
+        <p className="text-xl md:text-2xl font-semibold tracking-wide uppercase mb-4">
           {data.title}
-        </h3>
+        </p>
         <Link
           href={data.href || "#contact"}
           className="inline-flex items-center justify-center px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-md shadow-md transition-colors"

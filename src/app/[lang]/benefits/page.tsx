@@ -22,9 +22,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title,
             description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
+            url: `https://www.moroccanorganica.com/${lang}/benefits`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || undefined,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/benefits`,
         }
     };
 }

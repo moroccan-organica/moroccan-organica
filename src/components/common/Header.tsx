@@ -62,7 +62,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     const navLinks = [
         { name: t('nav.home'), href: `/${lang}/`, isRoute: true, title: "Home page" },
         { name: t('nav.products'), href: `/${lang}/wholesale-of-moroccan-skincare`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
-        { name: t('nav.about'), href: `/${lang}/about`, isRoute: true, title: "About our company" },
+        { name: t('nav.about'), href: `/${lang}/organica/about-organica-group-sarl`, isRoute: true, title: t('nav.aboutTitle') || "About our company" },
         { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },
         { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },

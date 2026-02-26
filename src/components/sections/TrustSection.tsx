@@ -23,9 +23,9 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
         {/* Manufacturing Scale Images - header intentionally hidden */}
         <div className="sr-only">
           <span>{content.badge}</span>
-          <h2>
+          <p>
             {content.title} {content.highlight}
-          </h2>
+          </p>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 lg:gap-8 mb-8 md:mb-10">
@@ -39,7 +39,7 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
             />
             <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
             <div className="sr-only">
-              <h3>{content.warehouse.title}</h3>
+              <p>{content.warehouse.title}</p>
               <p>{content.warehouse.desc}</p>
             </div>
           </div>
@@ -54,7 +54,7 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
             />
             <div className="absolute inset-0 bg-linear-to-t from-secondary/80 to-transparent" />
             <div className="sr-only">
-              <h3>{content.bulk.title}</h3>
+              <p>{content.bulk.title}</p>
               <p>{content.bulk.desc}</p>
             </div>
           </div>

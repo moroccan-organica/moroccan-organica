@@ -75,9 +75,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: product.metaTitle || name,
             description: product.metaDesc || description?.substring(0, 160),
             images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
+            url: `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
         },
         alternates: {
-            canonical: product.canonical || undefined,
+            canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
         }
     };
 }

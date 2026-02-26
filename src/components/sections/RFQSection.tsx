@@ -124,14 +124,14 @@ const RFQSection = ({ data, aboutData }: { data: RFQContent; aboutData: AboutCon
           {/* Left: Quote Form */}
           <div>
             <div className="bg-card rounded-2xl p-8 shadow-card sticky top-8">
-              <h3 className="text-xl font-semibold text-foreground mb-6">{data.form?.title || "Get Quick Quote"}</h3>
+              <p className="text-xl font-semibold text-foreground mb-6">{data.form?.title || "Get Quick Quote"}</p>
 
               {isSuccess ? (
                 <div className="bg-primary/10 border border-primary/20 rounded-xl p-6 text-center animate-in fade-in zoom-in duration-300">
                   <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center mx-auto mb-3">
                     <PackageCheck className="w-6 h-6 text-white" />
                   </div>
-                  <h3 className="text-lg font-bold text-foreground mb-2">{data.successTitle || "Quote Request Sent!"}</h3>
+                  <p className="text-lg font-bold text-foreground mb-2">{data.successTitle || "Quote Request Sent!"}</p>
                   <p className="text-sm text-muted-foreground mb-4">{data.successMessage || "We'll get back to you with a quote within 24 hours."}</p>
                   <Button
                     onClick={() => setIsSuccess(false)}
@@ -271,25 +271,25 @@ const RFQSection = ({ data, aboutData }: { data: RFQContent; aboutData: AboutCon
             {/* Stats */}
             <div className="grid grid-cols-3 gap-6">
               <div className="text-center">
-                <h4 className="text-3xl font-bold text-primary mb-1">
+                <p className="text-3xl font-bold text-primary mb-1">
                   {aboutData.stats?.customers?.value || "+180"}
-                </h4>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {aboutData.stats?.customers?.label || "Happy Customer."}
                 </p>
               </div>
               <div className="text-center">
-                <h4 className="text-3xl font-bold text-primary mb-1">
+                <p className="text-3xl font-bold text-primary mb-1">
                   {aboutData.stats?.orders?.value || "+375"}
-                </h4>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {aboutData.stats?.orders?.label || "Order Done."}
                 </p>
               </div>
               <div className="text-center">
-                <h4 className="text-3xl font-bold text-primary mb-1">
+                <p className="text-3xl font-bold text-primary mb-1">
                   {aboutData.stats?.labels?.value || "+462"}
-                </h4>
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {aboutData.stats?.labels?.label || "Private Label."}
                 </p>

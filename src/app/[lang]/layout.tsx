@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const keywords = globalSeo?.translation?.defaultKeywords || "argan oil, morocco, organic, beauty, wholesale";
 
   return {
+    metadataBase: new URL('https://www.moroccanorganica.com'),
     title: {
       default: siteName,
       template: `%s${titleSuffix}`,
@@ -48,6 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       title: siteName,
       description: defaultDesc,
       images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
+      url: `https://www.moroccanorganica.com/${lang}`,
     },
     twitter: {
       card: 'summary_large_image',

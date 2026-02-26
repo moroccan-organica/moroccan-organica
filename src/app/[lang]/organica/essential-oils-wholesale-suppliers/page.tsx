@@ -8,14 +8,14 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const page = await getStaticPageBySystemName('ORGANICA', lang);
     const globalSeo = await getGlobalSeoSettings(lang);
 
-    const defaultTitle = lang === 'en' ? "Wholesale suppliers | Organic Essential Oils" : 
-                       (page?.translation?.metaTitle || "Organic Essential Oils Wholesale Suppliers | MoroccanOrganica");
-    
+    const defaultTitle = lang === 'en' ? "Wholesale suppliers | Organic Essential Oils" :
+        (page?.translation?.metaTitle || "Organic Essential Oils Wholesale Suppliers | MoroccanOrganica");
+
     const defaultDesc = lang === 'en' ? "Made safe for skin in a plant-oil base.100% naturally derived. bergamot oil,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil" :
-                      (page?.translation?.metaDesc || "Explore our premium organic Moroccan essential oils for wholesale, 100% pure and natural.");
-    
+        (page?.translation?.metaDesc || "Explore our premium organic Moroccan essential oils for wholesale, 100% pure and natural.");
+
     const defaultKeywords = lang === 'en' ? "wholesale essential oils,lavender fleurs oil,eucalyptus oil,patchouli oil,tangerine oil,peppermint oil,vanilla absolute oil" :
-                          (page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "");
+        (page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "");
 
     const title = page?.translation?.metaTitle || defaultTitle;
     const description = page?.translation?.metaDesc || defaultDesc;
@@ -29,9 +29,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
+            url: `https://www.moroccanorganica.com/${lang}/organica/essential-oils-wholesale-suppliers`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || undefined,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/organica/essential-oils-wholesale-suppliers`,
         }
     };
 }
