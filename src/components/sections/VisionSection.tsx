@@ -18,9 +18,9 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-start">
           {/* Text Content */}
           <div className="space-y-4 text-muted-foreground leading-7 md:leading-8">
-            <h3 className="text-2xl md:text-3xl font-bold uppercase tracking-wide text-primary">
+            <p className="text-2xl md:text-3xl font-bold uppercase tracking-wide text-primary">
               {data.title}
-            </h3>
+            </p>
             {data.paragraphs?.map((para, idx) => (
               <p key={idx} dangerouslySetInnerHTML={{ __html: para }} />
             ))}
@@ -67,7 +67,15 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
                 >
                   <Image
                     src={logoSrc}
-                    alt={`Certification logo ${idx + 1}`}
+                    alt={
+                      logoSrc.includes("1.webp") ? "moroccan organic USDA certified" :
+                        logoSrc.includes("2.webp") ? "moroccan organic AB certified" :
+                          logoSrc.includes("3.webp") ? "moroccan organic FDA certified" :
+                            logoSrc.includes("4.webp") ? "moroccan organic Chamber of Commerce and Industry and Trade Marrakech certified" :
+                              logoSrc.includes("5.webp") ? "moroccan organic EACCE certified" :
+                                logoSrc.includes("6.webp") ? "moroccan organic certified" :
+                                  `Certification logo ${idx + 1}`
+                    }
                     fill
                     className="object-contain"
                     sizes="(min-width: 1024px) 128px, 80vw"

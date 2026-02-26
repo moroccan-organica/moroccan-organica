@@ -5,6 +5,8 @@ import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
 import { LayoutContent } from "@/components/common/LayoutContent";
 import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,6 +36,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const keywords = globalSeo?.translation?.defaultKeywords || "argan oil, morocco, organic, beauty, wholesale";
 
   return {
+    metadataBase: new URL('https://www.moroccanorganica.com'),
     title: {
       default: siteName,
       template: `%s${titleSuffix}`,
@@ -46,6 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       title: siteName,
       description: defaultDesc,
       images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
+      url: `https://www.moroccanorganica.com/${lang}`,
     },
     twitter: {
       card: 'summary_large_image',
@@ -87,6 +91,8 @@ export default async function RootLayout({
             {children}
           </LayoutContent>
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

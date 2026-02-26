@@ -32,9 +32,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       description: description,
       images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
       type: 'website',
+      url: `https://www.moroccanorganica.com/${lang}`,
     },
     alternates: {
-      canonical: page?.translation?.canonical || undefined,
+      canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}`,
     }
   }
 }

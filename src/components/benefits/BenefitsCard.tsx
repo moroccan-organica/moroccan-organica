@@ -31,12 +31,12 @@ export function BenefitsCard({ post, lang, translations }: BenefitsCardProps) {
 
             {/* Content */}
             <div className="flex flex-col flex-1 p-6">
-                <h3
+                <p
                     className="text-xl font-bold font-playfair text-slate-900 mb-3 line-clamp-2 group-hover:text-[#606C38] transition-colors"
                     dir={isArabic ? 'rtl' : 'ltr'}
                 >
                     {title}
-                </h3>
+                </p>
 
                 <p
                     className="text-slate-600 mb-6 line-clamp-3 text-sm flex-1 leading-relaxed"
@@ -51,6 +51,7 @@ export function BenefitsCard({ post, lang, translations }: BenefitsCardProps) {
                         className={`inline-flex items-center gap-2 text-[#606C38] font-medium hover:text-[#BC6C25] transition-colors ${isArabic ? 'flex-row-reverse' : ''}`}
                     >
                         {translations.readMore}
+                        <span className="sr-only">: {title}</span>
                         <ArrowRight className={`w-4 h-4 transition-transform duration-300 ${isArabic ? 'rotate-180 group-hover:-translate-x-1' : 'group-hover:translate-x-1'}`} />
                     </Link>
                 </div>

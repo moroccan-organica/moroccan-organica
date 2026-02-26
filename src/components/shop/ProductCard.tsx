@@ -121,10 +121,10 @@ const ProductCard = ({
       <div className="p-6 flex flex-col grow relative z-10 bg-card">
         {slug ? (
           <Link href={`/${lang}/${basePath}/${slug}`}>
-            <h3 className="heading-card text-foreground mb-2 hover:text-primary transition-colors">{title}</h3>
+            <p className="heading-card text-foreground font-bold mb-2 hover:text-primary transition-colors">{title}</p>
           </Link>
         ) : (
-          <h3 className="heading-card text-foreground mb-2">{title}</h3>
+          <p className="heading-card text-foreground font-bold mb-2">{title}</p>
         )}
         <p className="text-body-sm text-muted-foreground line-clamp-3 grow">
           {description}

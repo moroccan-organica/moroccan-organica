@@ -73,9 +73,9 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
       <div className={`flex flex-col flex-1 p-6 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
 
         <Link href={`/${lang}/blog/${post.slug}`}>
-          <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-[#BC6C25] transition-colors line-clamp-2 min-h-[56px]">
+          <p className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-[#BC6C25] transition-colors line-clamp-2 min-h-[56px]">
             {title}
-          </h3>
+          </p>
         </Link>
 
         <p className="text-slate-600 text-sm line-clamp-2 mb-6 min-h-[44px]">
@@ -88,6 +88,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
             className="text-[#BC6C25] text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
           >
             {translations.readMore}
+            <span className="sr-only">: {title}</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

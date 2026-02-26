@@ -25,6 +25,7 @@ interface ProductsContent {
   highlight: string;
   description: string;
   cta: string;
+  subtitle?: string;
   ctaButton?: string;
   items: ProductItem[];
 }
@@ -61,12 +62,19 @@ const ProductsSection = ({ data }: { data: ProductsContent }) => {
           <span className="inline-block text-primary font-semibold text-lg md:text-xl uppercase tracking-wider mb-3">
             {content.badge}
           </span>
-          <h2 className="heading-section text-foreground mb-4">
-            {content.title} <span className="text-primary">{content.highlight}</span>
-          </h2>
-          <p className="text-lg md:text-xl leading-8 text-muted-foreground">
-            {content.description}
+          <p className="heading-section text-foreground mb-4">
+            {data.title} <span className="text-primary italic font-serif">{data.highlight}</span>
           </p>
+          {content.subtitle && (
+            <p className="text-xl md:text-2xl font-serif text-primary italic">
+              {content.subtitle}
+            </p>
+          )}
+          {content.description && (
+            <p className="text-lg md:text-xl leading-8 text-muted-foreground">
+              {content.description}
+            </p>
+          )}
         </div>
 
         {/* Product Grid - 3 columns */}

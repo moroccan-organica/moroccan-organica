@@ -46,10 +46,10 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     const productDropdownItems = topProducts.length > 0
         ? topProducts.map(p => ({ name: p.title, href: `/${lang}/organica/${p.slug}` }))
         : [
-            { name: t('products.essentialOils'), href: `/${lang}/organica` },
-            { name: t('products.vegetableOils'), href: `/${lang}/organica` },
-            { name: t('products.driedPlants'), href: `/${lang}/organica` },
-            { name: t('products.wellness'), href: `/${lang}/organica` },
+            { name: t('products.essentialOils'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
+            { name: t('products.vegetableOils'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
+            { name: t('products.driedPlants'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
+            { name: t('products.wellness'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
         ];
 
     const benefitsDropdownItems = [
@@ -61,8 +61,8 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
 
     const navLinks = [
         { name: t('nav.home'), href: `/${lang}/`, isRoute: true, title: "Home page" },
-        { name: t('nav.products'), href: `/${lang}/organica`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
-        { name: t('nav.about'), href: `/${lang}/about`, isRoute: true, title: "About our company" },
+        { name: t('nav.products'), href: `/${lang}/wholesale-of-moroccan-skincare`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
+        { name: t('nav.about'), href: `/${lang}/organica/about-organica-group-sarl`, isRoute: true, title: t('nav.aboutTitle') || "About our company" },
         { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },
         { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },

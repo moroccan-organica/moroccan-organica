@@ -13,6 +13,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const description = page?.translation?.metaDesc || page?.translation?.description?.substring(0, 160) || "Learn about our heritage and commitment to authentic organic Moroccan products.";
     const keywords = page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "";
 
+    const slug = "about-organica-group-sarl";
+
     return {
         title: title,
         description: description,
@@ -21,14 +23,15 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
+            url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || undefined,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
         }
     };
 }
 
-export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
+export default async function AboutOrganicaPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
     const dict = await getDictionary(lang, 'about');
     const page = await getStaticPageBySystemName('ABOUT_US', lang);

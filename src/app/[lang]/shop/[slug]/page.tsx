@@ -75,9 +75,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: product.metaTitle || name,
             description: product.metaDesc || description?.substring(0, 160),
             images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
+            url: `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
         },
         alternates: {
-            canonical: product.canonical || undefined,
+            canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
         }
     };
 }
@@ -108,6 +109,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 description: staticProduct.description,
                 descriptionAr: staticProduct.descriptionAr,
                 descriptionFr: staticProduct.description,
+                h1: staticProduct.name,
+                h1Ar: staticProduct.nameAr,
+                h1Fr: staticProduct.name,
                 details: '',
                 detailsAr: '',
                 detailsFr: '',
@@ -120,6 +124,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 placement: 'shop' as const,
                 sku: staticProduct.id,
                 variants: [],
+                metaTitle: '',
+                metaDesc: '',
+                keywords: '',
             };
 
             // Get related from static
@@ -141,6 +148,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     description: p.description,
                     descriptionAr: p.descriptionAr,
                     descriptionFr: p.description,
+                    h1: p.name,
+                    h1Ar: p.nameAr,
+                    h1Fr: p.name,
                     details: '',
                     detailsAr: '',
                     detailsFr: '',
@@ -153,6 +163,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     placement: 'shop' as const,
                     sku: p.id,
                     variants: [],
+                    metaTitle: '',
+                    metaDesc: '',
+                    keywords: '',
                 }));
         }
     } else {
@@ -198,6 +211,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     });
 
     const localizedName = isRTL ? product.nameAr : product.name;
+    const localizedH1 = isRTL ? product.h1Ar : (lang === 'fr' ? product.h1Fr : product.h1);
     const localizedDescription = isRTL ? product.descriptionAr : product.description;
     const localizedDetails = isRTL ? product.detailsAr : (lang === 'fr' ? product.detailsFr : product.details);
 
@@ -226,8 +240,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                 {t.badgeFeatured}
                             </span>
                         )}
-                        <h1 className="mt-4 text-4xl font-semibold text-emerald-950">{localizedName}</h1>
-                        <p className="mt-3 text-lg text-muted-foreground">{localizedDescription}</p>
+                        <h1 className="mt-4 text-4xl font-semibold text-emerald-950 leading-tight uppercase tracking-tight">
+                            {localizedH1 || localizedName}
+                        </h1>
                     </div>
 
                     <div className="grid gap-4 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-6 text-sm text-emerald-900 sm:grid-cols-2">

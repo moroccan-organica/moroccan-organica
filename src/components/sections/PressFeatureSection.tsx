@@ -34,7 +34,7 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
           <div className="relative inline-block w-full max-w-4xl h-52 md:h-64">
             <Image
               src="/images/untoday-logo.webp"
-              alt="UN Today"
+              alt="UN Today - Argan oil and the importance of the Argan tree to Morocco"
               fill
               className="object-contain"
             />
@@ -47,9 +47,9 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
             <p className="text-sm text-muted-foreground uppercase tracking-wide mb-3">
               {data.date}
             </p>
-            <h3 className="font-serif text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
+            <p className="font-serif text-3xl md:text-4xl font-bold text-foreground leading-tight mb-4">
               {data.title}
-            </h3>
+            </p>
             <p className="text-muted-foreground italic">
               {data.subtitle}
             </p>
@@ -63,19 +63,19 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
 
             {data.benefits.map((benefit, index) => (
               <div key={index}>
-                <h4 className="text-primary font-semibold text-xl mb-3 mt-8">{benefit.title}</h4>
+                <p className="text-primary font-semibold text-xl mb-3 mt-8">{benefit.title}</p>
                 <p className="mb-6">{benefit.description}</p>
               </div>
             ))}
 
-            <h3 className="text-foreground font-bold text-2xl mb-4 mt-10">{data.importanceTitle}</h3>
+            <p className="text-foreground font-bold text-2xl mb-4 mt-10">{data.importanceTitle}</p>
             <p className="mb-6">
               {data.importanceIntro}
             </p>
 
             {data.importancePoints.map((point, index) => (
               <div key={index}>
-                <h4 className="text-primary font-semibold text-xl mb-3 mt-8">{point.title}</h4>
+                <p className="text-primary font-semibold text-xl mb-3 mt-8">{point.title}</p>
                 <p className="mb-6">{point.description}</p>
               </div>
             ))}

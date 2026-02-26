@@ -29,9 +29,9 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
             <div className="container-main">
                 {/* Top Section: Discover Services */}
                 <div className="text-center max-w-5xl mx-auto mb-14 animate-fade-in-up">
-                    <h2 className="heading-section text-foreground text-4xl md:text-5xl lg:text-6xl mb-8">
+                    <p className="heading-section text-foreground text-4xl md:text-5xl lg:text-6xl mb-8">
                         {data.discoverTitle} <span className="text-primary">{data.discoverHighlight}</span> {data.discoverSuffix}
-                    </h2>
+                    </p>
                     <div className="mx-auto space-y-4 text-lg md:text-xl leading-8 text-muted-foreground/90">
                         <p>
                             {data.discoverText1}
@@ -51,9 +51,9 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
 
                 {/* Bottom Section: Add Your Own Brand */}
                 <div className="text-center mb-10">
-                    <h2 className="heading-section uppercase text-foreground text-3xl md:text-4xl lg:text-[40px] leading-tight">
+                    <p className="heading-section uppercase text-foreground text-3xl md:text-4xl lg:text-[40px] leading-tight">
                         {data.brandTitle} <span className="text-primary">{data.brandHighlight}</span>
-                    </h2>
+                    </p>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-10 lg:gap-14 items-start">

@@ -82,7 +82,7 @@ export function MarketingModal({ lang }: MarketingModalProps) {
                 <div className="relative h-64 md:h-80 w-full">
                     <Image
                         src="/images/slider/popup_organica.jpg"
-                        alt="Cosmetic product"
+                        alt="Moroccan Organica Cosmetic Products"
                         fill
                         className="object-cover"
                         priority

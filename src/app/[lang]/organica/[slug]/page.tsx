@@ -80,9 +80,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: product.metaTitle || name,
             description: product.metaDesc || description?.substring(0, 160),
             images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
+            url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
         },
         alternates: {
-            canonical: product.canonical || undefined,
+            canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
         }
     };
 }
@@ -128,6 +129,7 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
     const t = copy[isRTL ? "ar" : "en"];
 
     const localizedName = isRTL ? product.nameAr : product.name;
+    const localizedH1 = isRTL ? product.h1Ar : (lang === 'fr' ? product.h1Fr : product.h1);
     const localizedDescription = isRTL ? product.descriptionAr : product.description;
     const localizedDetails = isRTL ? product.detailsAr : (lang === 'fr' ? product.detailsFr : product.details);
 
@@ -136,10 +138,15 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
     return (
         <main dir={isRTL ? "rtl" : "ltr"} className="pb-12 md:pb-20 bg-[#fefcf8]">
             <InnerHero
-                title={localizedName || ""}
-                description={localizedDescription || ""}
+                title={localizedDescription || localizedName || ""}
+                description=""
                 badge={product.category}
                 backgroundImage={product.image || "/images/slider/slide_2.webp"}
+                titleTag="h2"
+                breadcrumbs={[
+                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },
+                    { label: localizedName || "", href: `/${lang}/organica/${slug}` }
+                ]}
             />
 
             <div className="container-main mt-12 md:mt-16">
@@ -154,36 +161,23 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
                     {/* Right Content Area */}
                     <article className="space-y-10 order-1 lg:order-2">
                         {/* Main Product Display */}
-                        <div className="space-y-8">
+                        <div className="space-y-2">
                             <div className="rounded-3xl overflow-hidden shadow-2xl shadow-emerald-950/5 border border-emerald-50 bg-white">
                                 <ProductImageGallery images={galleryImages} alt={localizedName} />
                             </div>
 
-                            <div className="space-y-6">
-                                <div className="space-y-2">
-                                    <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#606C38] block mb-2">
-                                        {product.category} | {t.certificationValue.split(' · ')[0]}
-                                    </span>
-                                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#606C38] leading-tight uppercase tracking-tight">
-                                        {localizedName}
-                                    </h2>
-                                    <div className="h-1.5 w-24 bg-[#606C38]/20 rounded-full" />
-                                </div>
-
-                                <div className="prose prose-emerald max-w-none">
-                                    <p className="text-lg leading-relaxed text-slate-700 font-medium whitespace-pre-wrap">
-                                        {localizedDescription}
-                                    </p>
-                                </div>
+                            <div className="space-y-2">
+                                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#606C38] leading-tight uppercase tracking-tight">
+                                    {localizedH1 || localizedName}
+                                </h1>
                             </div>
                         </div>
 
                         {/* Detailed Story / Technical Info */}
                         {(localizedDetails || (product.notes && product.notes.length > 0)) && (
-                            <div className="space-y-12 pt-10 border-t border-emerald-100">
+                            <div className="space-y-2 pt-2 border-t border-emerald-100">
                                 {localizedDetails && (
                                     <section className="space-y-6">
-                                        <h2 className="heading-display text-2xl text-emerald-950">{t.descriptionTitle}</h2>
                                         <div
                                             className="prose prose-emerald max-w-none text-slate-700 leading-relaxed"
                                             dangerouslySetInnerHTML={{ __html: localizedDetails }}
@@ -205,28 +199,6 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
                                     </section>
                                 )}
                             </div>
-                        )}
-
-                        {/* Related Products */}
-                        {relatedProducts.length > 0 && (
-                            <section className="pt-16 border-t border-emerald-100">
-                                <h3 className="heading-display text-2xl text-emerald-950 mb-8">{t.relatedTitle}</h3>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    {relatedProducts.map((rp) => (
-                                        <Link key={rp.id} href={`/${lang}/organica/${rp.slug}`} className="group space-y-3">
-                                            <div className="relative aspect-square rounded-2xl overflow-hidden border border-emerald-50 shadow-sm">
-                                                <Image
-                                                    src={rp.image || '/images/placeholder.svg'}
-                                                    alt={rp.name}
-                                                    fill
-                                                    className="object-cover group-hover:scale-110 transition-transform duration-500"
-                                                />
-                                            </div>
-                                            <h4 className="font-bold text-emerald-900 group-hover:text-emerald-600 transition-colors">{isRTL ? rp.nameAr : rp.name}</h4>
-                                        </Link>
-                                    ))}
-                                </div>
-                            </section>
                         )}
                     </article>
                 </div>

@@ -26,9 +26,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
+            url: `https://www.moroccanorganica.com/${lang}/shop`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || undefined,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/shop`,
         }
     };
 }
@@ -70,6 +71,9 @@ export default async function ShopPage({ params }: { params: Params }) {
             description: p.description,
             descriptionAr: p.descriptionAr,
             descriptionFr: p.description,
+            h1: p.name,
+            h1Ar: p.nameAr,
+            h1Fr: p.name,
             details: '',
             detailsAr: '',
             detailsFr: '',

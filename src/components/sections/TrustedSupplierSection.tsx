@@ -58,9 +58,9 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
             <span className="text-sm uppercase tracking-[0.3em] text-primary/60 mb-4 block">
               {content.badge}
             </span>
-            <h2 className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-light text-primary tracking-tight mb-6 whitespace-nowrap">
+            <p className="font-serif text-2xl sm:text-3xl md:text-5xl lg:text-6xl font-light text-primary tracking-tight mb-6 whitespace-nowrap">
               {content.title}
-            </h2>
+            </p>
             {content.description && (
               <p className="text-muted-foreground text-lg md:text-xl max-w-3xl leading-relaxed mx-auto">
                 {content.description}
@@ -225,9 +225,9 @@ const CategoryCard = ({ category, index }: CategoryCardProps) => {
               </span>
 
               {/* Title */}
-              <h3 className="font-serif text-lg md:text-xl text-primary leading-tight line-clamp-1">
+              <p className="font-serif text-lg md:text-xl text-primary font-semibold leading-tight line-clamp-1">
                 {category.title}
-              </h3>
+              </p>
             </div>
 
             {/* Hover Arrow */}
