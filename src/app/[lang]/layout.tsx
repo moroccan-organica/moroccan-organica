@@ -5,6 +5,8 @@ import { Providers } from "@/app/providers";
 import { getDictionary } from '@/lib/dictionaries';
 import { LayoutContent } from "@/components/common/LayoutContent";
 import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -87,6 +89,8 @@ export default async function RootLayout({
             {children}
           </LayoutContent>
         </Providers>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

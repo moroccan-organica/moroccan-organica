@@ -123,6 +123,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 placement: 'shop' as const,
                 sku: staticProduct.id,
                 variants: [],
+                metaTitle: '',
+                metaDesc: '',
+                keywords: '',
             };
 
             // Get related from static
@@ -159,6 +162,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     placement: 'shop' as const,
                     sku: p.id,
                     variants: [],
+                    metaTitle: '',
+                    metaDesc: '',
+                    keywords: '',
                 }));
         }
     } else {
