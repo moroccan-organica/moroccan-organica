@@ -95,7 +95,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
     const content = (dict as { footer?: FooterContent }).footer ?? (dict as FooterContent);
 
     const productLinks = topProducts.length > 0
-        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/organica/${p.slug}` }))
+        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/wholesale-of-moroccan-skincare/${p.slug}` }))
         : content.links.products.items;
 
     const socialLinks = [

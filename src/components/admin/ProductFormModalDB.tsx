@@ -42,6 +42,9 @@ const getInitialFormData = (product: ShopProductDB | null, categories: CategoryD
     name: product?.name || '',
     nameAr: product?.nameAr || '',
     nameFr: product?.nameFr || '',
+    h1: product?.h1 || '',
+    h1Ar: product?.h1Ar || '',
+    h1Fr: product?.h1Fr || '',
     slug: product?.slug || '',
     categoryId: category?.id || '',
     description: product?.description || '',
@@ -130,6 +133,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'en',
                 name: formData.name,
+                h1: formData.h1,
                 description: formData.description,
                 details: formData.details,
                 slug: formData.slug,
@@ -140,6 +144,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'ar',
                 name: formData.nameAr,
+                h1: formData.h1Ar,
                 description: formData.descriptionAr,
                 details: formData.detailsAr,
                 slug: formData.slug + '-ar',
@@ -150,6 +155,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'fr',
                 name: formData.nameFr,
+                h1: formData.h1Fr,
                 description: formData.descriptionFr,
                 details: formData.detailsFr,
                 slug: formData.slug + '-fr',
@@ -195,6 +201,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'en',
                 name: formData.name,
+                h1: formData.h1,
                 description: formData.description,
                 details: formData.details,
                 slug: formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-'),
@@ -205,6 +212,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'ar',
                 name: formData.nameAr || formData.name,
+                h1: formData.h1Ar || formData.h1,
                 description: formData.descriptionAr || formData.description,
                 details: formData.detailsAr || formData.details,
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-ar',
@@ -215,6 +223,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               {
                 language: 'fr',
                 name: formData.nameFr || formData.name,
+                h1: formData.h1Fr || formData.h1,
                 description: formData.descriptionFr || formData.description,
                 details: formData.detailsFr || formData.details,
                 slug: (formData.slug || formData.name.toLowerCase().replace(/\s+/g, '-')) + '-fr',
@@ -578,6 +587,23 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                   <div className="pt-6 border-t border-slate-100 space-y-4">
                     <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider">SEO Metadata (English)</h4>
                     <div className="grid gap-4">
+                      <div className="flex gap-2">
+                        <Input
+                          value={formData.h1}
+                          onChange={(e) => setFormData(prev => ({ ...prev, h1: e.target.value }))}
+                          placeholder="Main Heading (H1)"
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setFormData(prev => ({ ...prev, h1: prev.name }))}
+                          className="shrink-0 border-[#606C38] text-[#606C38] hover:bg-[#606C38] hover:text-white"
+                          title="Copy from Name"
+                        >
+                          <Wand2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input
                         value={formData.metaTitle}
                         onChange={(e) => setFormData(prev => ({ ...prev, metaTitle: e.target.value }))}
@@ -630,6 +656,23 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                   <div className="pt-6 border-t border-slate-100 space-y-4">
                     <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider text-right">بيانات تحسين محركات البحث SEO (العربية)</h4>
                     <div className="grid gap-4">
+                      <div className="flex gap-2">
+                        <Input
+                          value={formData.h1Ar}
+                          onChange={(e) => setFormData(prev => ({ ...prev, h1Ar: e.target.value }))}
+                          placeholder="(H1) العنوان الرئيسي"
+                          className="flex-1 text-right"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setFormData(prev => ({ ...prev, h1Ar: prev.nameAr }))}
+                          className="shrink-0 border-[#606C38] text-[#606C38] hover:bg-[#606C38] hover:text-white"
+                          title="نسخ من الاسم"
+                        >
+                          <Wand2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input
                         value={formData.metaTitleAr}
                         onChange={(e) => setFormData(prev => ({ ...prev, metaTitleAr: e.target.value }))}
@@ -682,6 +725,23 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                   <div className="pt-6 border-t border-slate-100 space-y-4">
                     <h4 className="text-xs font-black uppercase text-[#D4A373] tracking-wider">Métadonnées SEO (Français)</h4>
                     <div className="grid gap-4">
+                      <div className="flex gap-2">
+                        <Input
+                          value={formData.h1Fr}
+                          onChange={(e) => setFormData(prev => ({ ...prev, h1Fr: e.target.value }))}
+                          placeholder="Titre Principal (H1)"
+                          className="flex-1"
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => setFormData(prev => ({ ...prev, h1Fr: prev.nameFr }))}
+                          className="shrink-0 border-[#606C38] text-[#606C38] hover:bg-[#606C38] hover:text-white"
+                          title="Copier du Nom"
+                        >
+                          <Wand2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                       <Input
                         value={formData.metaTitleFr}
                         onChange={(e) => setFormData(prev => ({ ...prev, metaTitleFr: e.target.value }))}

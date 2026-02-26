@@ -19,7 +19,9 @@ import {
     Heading1,
     Heading2,
     Undo,
-    Redo
+    Redo,
+    Code,
+    Eye
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -59,6 +61,9 @@ const MenuButton = ({
 );
 
 export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr' }: SimpleTiptapEditorProps) {
+    const [mode, setMode] = React.useState<'visual' | 'code'>('visual');
+    const [codeContent, setCodeContent] = React.useState(content);
+
     const editor = useEditor({
         extensions: [
             StarterKit,
@@ -72,7 +77,9 @@ export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr'
         ],
         content: content,
         onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
+            const html = editor.getHTML();
+            setCodeContent(html);
+            onChange(html);
         },
         immediatelyRender: false,
     });
@@ -80,8 +87,22 @@ export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr'
     React.useEffect(() => {
         if (editor && content !== editor.getHTML()) {
             editor.commands.setContent(content);
+            setCodeContent(content);
         }
     }, [content, editor]);
+
+    const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const value = e.target.value;
+        setCodeContent(value);
+        onChange(value);
+    };
+
+    const toggleMode = (newMode: 'visual' | 'code') => {
+        if (newMode === 'visual' && editor) {
+            editor.commands.setContent(codeContent);
+        }
+        setMode(newMode);
+    };
 
     if (!editor) {
         return null;
@@ -203,10 +224,49 @@ export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr'
                 >
                     <Redo className="h-4 w-4" />
                 </MenuButton>
+
+                <div className="flex bg-slate-100 rounded-md p-0.5 ml-2">
+                    <button
+                        type="button"
+                        onClick={() => toggleMode('visual')}
+                        className={cn(
+                            "px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded transition-all flex items-center gap-1",
+                            mode === 'visual' ? "bg-white text-[#606C38] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                        )}
+                    >
+                        <Eye className="h-3 w-3" />
+                        Visual
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => toggleMode('code')}
+                        className={cn(
+                            "px-2 py-1 text-[10px] uppercase font-bold tracking-wider rounded transition-all flex items-center gap-1",
+                            mode === 'code' ? "bg-white text-[#606C38] shadow-sm" : "text-slate-500 hover:text-slate-700"
+                        )}
+                    >
+                        <Code className="h-3 w-3" />
+                        HTML
+                    </button>
+                </div>
             </div>
 
-            <div className="prose prose-sm max-w-none p-4 min-h-[150px]" dir={dir}>
-                <EditorContent editor={editor} />
+            <div className="relative">
+                {mode === 'visual' ? (
+                    <div className="prose prose-sm max-w-none p-4 min-h-[150px]" dir={dir}>
+                        <EditorContent editor={editor} />
+                    </div>
+                ) : (
+                    <div className="p-0 bg-slate-900 min-h-[150px]">
+                        <textarea
+                            value={codeContent}
+                            onChange={handleCodeChange}
+                            spellCheck={false}
+                            className="w-full min-h-[150px] p-4 font-mono text-sm bg-transparent text-slate-300 border-none outline-none resize-y"
+                            placeholder="Paste your HTML here..."
+                        />
+                    </div>
+                )}
             </div>
 
             <style jsx global>{`

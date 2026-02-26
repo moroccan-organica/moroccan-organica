@@ -29,6 +29,7 @@ export interface ProductWithTranslations {
     id: string;
     language: LanguageCode;
     name: string;
+    h1: string | null;
     description: string | null;
     details: string | null;
     slug: string;
@@ -66,6 +67,9 @@ export interface ShopProductDB {
   name: string;
   nameAr: string;
   nameFr: string;
+  h1: string;
+  h1Ar: string;
+  h1Fr: string;
   description: string;
   descriptionAr: string;
   descriptionFr: string;
@@ -113,6 +117,7 @@ export interface CreateProductInput {
   translations: {
     language: LanguageCode;
     name: string;
+    h1?: string;
     description?: string;
     details?: string;
     slug: string;
@@ -147,6 +152,7 @@ export interface UpdateProductInput {
   translations?: {
     language: LanguageCode;
     name: string;
+    h1?: string;
     description?: string;
     details?: string;
     slug: string;
