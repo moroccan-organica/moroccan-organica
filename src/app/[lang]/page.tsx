@@ -105,7 +105,11 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const socialProofData = dict.socialProof;
   const pressFeatureData = dict.pressFeature;
   const privateLabelData = dict.privateLabel;
-  const professionalCtaData = { ...homePageData.professionalCta, ...dict.professionalCta };
+  const professionalCtaData = {
+    ...homePageData.professionalCta,
+    ...dict.professionalCta,
+    href: `/${lang}${dict.professionalCta?.href || homePageData.professionalCta.href}`
+  };
   const visionData = { ...homePageData.vision, ...dict.vision };
 
   return (

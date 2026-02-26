@@ -9,9 +9,29 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const page = await getStaticPageBySystemName('ABOUT_US', lang);
     const globalSeo = await getGlobalSeoSettings(lang);
 
-    const title = page?.translation?.metaTitle || page?.translation?.h1 || "About Us | MoroccanOrganica";
-    const description = page?.translation?.metaDesc || page?.translation?.description?.substring(0, 160) || "Learn about our heritage and commitment to authentic organic Moroccan products.";
-    const keywords = page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "";
+    const meta = {
+        en: {
+            title: "Wholesale of organic cosmetics beauty products",
+            description: "Help re-establish the link between the women Argan oil-cooperatives and Argan oil end customers",
+            keywords: "Organica Group,Buy organic Oil,About Organica Group,Argan oil-cooperatives"
+        },
+        ar: {
+            title: "بيع منتجات التجميل التجميلية العضوية بالجملة",
+            description: "ساعد في إعادة إنشاء الرابط بين تعاونيات زيت أركان النسائية والعملاء النهائيين لزيت أركان",
+            keywords: "اورجانيكا جروب ، شراء زيت عضوي ، حول اورجانيكا جروب ، زيت الارجان-التعاونيات "
+        },
+        fr: {
+            title: "Vente en gros de produits cosmétiques de beauté biologiques",
+            description: "Aider à rétablir le lien entre les coopératives de femmes productrices d'huile d'argan et les clients finaux d'huile d'argan",
+            keywords: "Groupe Organica,Acheter de l'huile biologique,À propos du groupe Organica,Coopératives d'huile d'argan"
+        }
+    };
+
+    const currentMeta = meta[lang as keyof typeof meta] || meta.en;
+
+    const title = page?.translation?.metaTitle || currentMeta.title;
+    const description = page?.translation?.metaDesc || currentMeta.description;
+    const keywords = page?.translation?.keywords || currentMeta.keywords;
 
     const slug = "about-organica-group-sarl";
 

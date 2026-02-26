@@ -7,6 +7,7 @@ import { LayoutContent } from "@/components/common/LayoutContent";
 import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -30,10 +31,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const { lang } = await params;
   const globalSeo = await getGlobalSeoSettings(lang);
 
-  const siteName = globalSeo?.translation?.siteName || "Moroccan Organica";
-  const titleSuffix = globalSeo?.translation?.titleSuffix || " | Premium Organic Products from Morocco";
-  const defaultDesc = globalSeo?.translation?.defaultMetaDesc || "Discover authentic Moroccan organic products. Shop natural argan oil, rose water, and traditional beauty products.";
-  const keywords = globalSeo?.translation?.defaultKeywords || "argan oil, morocco, organic, beauty, wholesale";
+  const siteName = globalSeo?.translation?.siteName || "Argan oil wholesale company - in Bulk - Morocco";
+  const titleSuffix = globalSeo?.translation?.titleSuffix || " | Organica Group";
+  const defaultDesc = globalSeo?.translation?.defaultMetaDesc || "Buy Moroccan Wholesale argan oil and organic cosmetics products company. Using traditional ingredients and natural products for beauty skincare haircare.";
+  const keywords = globalSeo?.translation?.defaultKeywords || "Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure,  bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic";
 
   return {
     metadataBase: new URL('https://www.moroccanorganica.com'),
@@ -61,6 +62,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         { url: '/favicon.png', type: 'image/png' },
       ],
       apple: '/favicon.png',
+    },
+    authors: [{ name: "Organica group" }],
+    robots: "index, follow",
+    other: {
+      "revisit-after": "1 days",
+      "X-UA-Compatible": "IE=edge",
     },
   };
 }
@@ -93,6 +100,19 @@ export default async function RootLayout({
         </Providers>
         <Analytics />
         <SpeedInsights />
+        {/* <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=G-9GZDT6JY9C`}
+        />
+        <Script id="google-analytics-inline" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-9GZDT6JY9C');
+          `}
+        </Script> */}
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import InnerHero from "@/components/common/InnerHero";
 import { motion } from "framer-motion";
 import ProductCard from "@/components/shop/ProductCard";
+import CertificationSlider from "@/components/common/CertificationSlider";
 
 interface CatalogueClientProps {
     pageData: any;
@@ -119,6 +120,8 @@ export default function CatalogueClient({ pageData, products, dict, lang }: Cata
                     )}
                 </div>
             </section>
+
+            <CertificationSlider />
         </div>
     );
 }
