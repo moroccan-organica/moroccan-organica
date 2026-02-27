@@ -88,26 +88,26 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
 
                                             {/* Main Heading */}
                                             {(() => {
-                                                const headingText = slide.heading?.trim() || "";
-                                                const highlightText = slide.highlight?.trim() || "";
-                                                const hasHighlight = highlightText.length > 0;
+                                                const headingText = (slide.heading ?? "").trim();
+                                                const highlightText = (slide.highlight ?? "").trim();
+                                                const headingUpper = headingText.toUpperCase();
+                                                const highlightUpper = highlightText.toUpperCase();
+                                                const hasHighlight = highlightUpper.length > 0;
 
                                                 if (!hasHighlight) {
                                                     return (
                                                         <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
-                                                            {headingText}
+                                                            {headingUpper}
                                                         </h1>
                                                     );
                                                 }
 
-                                                const lowerHeading = headingText.toLowerCase();
-                                                const lowerHighlight = highlightText.toLowerCase();
-                                                const matchIndex = lowerHeading.indexOf(lowerHighlight);
+                                                const matchIndex = headingUpper.indexOf(highlightUpper);
 
                                                 if (matchIndex !== -1) {
-                                                    const before = headingText.slice(0, matchIndex);
-                                                    const match = headingText.slice(matchIndex, matchIndex + highlightText.length);
-                                                    const after = headingText.slice(matchIndex + highlightText.length);
+                                                    const before = headingUpper.slice(0, matchIndex);
+                                                    const match = headingUpper.slice(matchIndex, matchIndex + highlightUpper.length);
+                                                    const after = headingUpper.slice(matchIndex + highlightUpper.length);
                                                     return (
                                                         <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
                                                             {before}
@@ -119,7 +119,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
 
                                                 return (
                                                     <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
-                                                        {headingText} <span className="text-primary">{highlightText}</span>
+                                                        {headingUpper} <span className="text-primary">{highlightUpper}</span>
                                                     </h1>
                                                 );
                                             })()}

@@ -25,7 +25,7 @@ export const homePageData = {
             },
             {
                 badge: "Fast Shipping",
-                heading: "We Ship Organic Products to the",
+                heading: "We Can Ship Our Organic Products to the",
                 highlight: "USA",
                 description: "We are able to ship our argan oil by air cargo worldwide with a short transit time.",
                 image: "/images/slider/slide_3.webp"
@@ -33,13 +33,13 @@ export const homePageData = {
             {
                 badge: "Premium Quality",
                 heading: "Pure Prickly Pear Seed Oil",
-                highlight: "Suppliers",
+                highlight: "Wholesale Suppliers",
                 description: "High grade cosmetic Prickly pear cactus seeds oil production.",
                 image: "/images/slider/slide_4.webp"
             },
             {
                 badge: "Mineral Rich",
-                heading: "Moroccan Rhassoul Clay",
+                heading: "Moroccan Rhassoul Clay in Powder",
                 highlight: "100% Organic",
                 description: "Moroccan Rhassoul clay is the best organic solution to keep your face and skin clean and soft.",
                 image: "/images/slider/slide_5.webp"
@@ -47,7 +47,7 @@ export const homePageData = {
             {
                 badge: "Traditional Spa",
                 heading: "Moroccan Black Soap",
-                highlight: "Wholesale",
+                highlight: "Wholesale in Africa",
                 description: "Moroccan BLACK SOAP with vitamin E is the best organic solution to keep your face and skin clean and soft.",
                 image: "/images/slider/slide_6.webp"
             }
