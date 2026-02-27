@@ -254,13 +254,13 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                             <h3 className="text-white font-serif text-[10px] font-bold mb-3 uppercase tracking-wider">
                                 {content.partners.transport}
                             </h3>
-                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 hover:bg-white transition-all duration-500 group/partner max-w-[180px] mx-auto sm:mx-0">
+                            <div className="p-4 bg-white/10 rounded-lg border border-white/10 hover:bg-white transition-all duration-500 group/partner w-full max-w-[260px] sm:max-w-full mx-auto sm:mx-0">
                                 <Image
                                     src="/images/footer/transport-partner.png"
                                     alt="transport-partner"
-                                    width={200}
-                                    height={40}
-                                    className="h-10 w-auto object-contain"
+                                    width={640}
+                                    height={160}
+                                    className="w-full h-auto object-contain"
                                 />
                             </div>
                         </div>
@@ -272,31 +272,31 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                             {content.partners.payment}
                             <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 sm:left-0 sm:translate-x-0 w-12 h-px bg-[#b87717] border-b border-dashed border-[#b87717]"></span>
                         </h3>
-                        <div className="flex flex-col sm:flex-row lg:flex-col gap-4 items-center sm:items-start justify-center sm:justify-start">
-                            <div className="p-2 bg-white/10 rounded-lg border border-white/10 space-y-2 hover:bg-white transition-all duration-500 group/payment w-full max-w-[200px]">
+                        <div className="flex flex-col sm:flex-row lg:flex-col gap-4 items-stretch sm:items-start justify-center sm:justify-start">
+                            <div className="p-4 bg-white/10 rounded-lg border border-white/10 space-y-4 hover:bg-white transition-all duration-500 group/payment w-full max-w-[260px] sm:max-w-full overflow-hidden mx-auto sm:mx-0">
                                 <Image
                                     src="/images/footer/payment.png"
                                     alt="paypal"
-                                    width={240}
-                                    height={40}
-                                    className="h-10 w-auto object-contain"
+                                    width={640}
+                                    height={160}
+                                    className="w-full h-auto object-contain scale-110 sm:scale-125"
                                 />
                                 <Image
                                     src="/images/footer/62a382de6209494ec2b17086.webp"
                                     alt="stripe"
-                                    width={60}
-                                    height={40}
-                                    className="h-10 w-auto object-contain"
+                                    width={640}
+                                    height={160}
+                                    className="w-full h-auto object-contain scale-110 sm:scale-125"
                                 />
                             </div>
 
-                            <Link href="https://play.google.com/store/apps/details?id=com.moroccanorganica.argan.oil" target="_blank" className="block transform hover:scale-105 transition-all w-full max-w-[150px]">
+                            <Link href="https://play.google.com/store/apps/details?id=com.moroccanorganica.argan.oil" target="_blank" className="block transform hover:scale-105 transition-all w-full max-w-[260px] sm:max-w-full mx-auto sm:mx-0">
                                 <Image
                                     src="/images/footer/google-play.png"
                                     alt="google play"
-                                    width={140}
-                                    height={40}
-                                    className="h-10 w-auto object-contain"
+                                    width={260}
+                                    height={90}
+                                    className="h-20 lg:h-[88px] w-auto object-contain"
                                 />
                             </Link>
                         </div>
