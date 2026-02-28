@@ -36,6 +36,23 @@ export default function DeliveryInformationClient({ lang }: DeliveryInformationC
             questionsTitle: "Questions",
             questionsText: "If you have any questions about the order, the delivery or shipment, please contact us at contact@moroccanorganica.com"
         },
+        fr: {
+            heroTitle: "Informations de livraison",
+            heroDesc: "Politiques d'expédition, zones de livraison et délais estimés",
+            breadcrumbCurrent: "Informations de livraison",
+            generalInfoTitle: "Informations générales",
+            generalInfoText: "Toutes les commandes sont soumises à la disponibilité des produits. Si un article n'est pas en stock au moment de votre commande, nous vous en informerons et rembourserons le montant total selon le mode de paiement d'origine. Tous les produits sont vendus « tels quels ». Vous assumez la responsabilité de votre achat ; aucun retour ni remboursement ne sera effectué une fois la commande traitée et le paiement effectué.",
+            deliveryLocationTitle: "Zone de livraison",
+            deliveryLocationText: "Les articles proposés sur notre site sont disponibles pour une livraison dans le monde entier.",
+            deliveryTimeTitle: "Délai de livraison",
+            deliveryTimeText: "Un délai de livraison estimé vous sera communiqué une fois votre commande passée. Il est calculé à partir de la date d'expédition, et non de la date de commande. Les délais sont donnés à titre indicatif et sont subordonnés à l'acceptation de votre commande. Sauf circonstances exceptionnelles, nous nous efforçons de traiter votre commande dans un délai de [3] jours ouvrés (du lundi au vendredi, hors jours fériés). Nous n'expédions pas le week-end.",
+            shippingCostsTitle: "Frais de livraison",
+            shippingCostsText: "Les frais de livraison dépendent du poids de votre commande et du mode d'expédition. Pour les connaître, ajoutez les articles souhaités au panier et rendez-vous sur la page panier : les frais s'afficheront. Des frais supplémentaires peuvent s'appliquer pour les zones éloignées ou les articles volumineux ou lourds. La TVA est appliquée selon le pays ou la région de livraison.",
+            damagedItemsTitle: "Colis endommagé pendant le transport",
+            damagedItemsText: "En cas de dommage à l'emballage à la livraison, contactez-nous immédiatement sur WhatsApp au +212 777 000 897",
+            questionsTitle: "Questions",
+            questionsText: "Pour toute question concernant la commande, la livraison ou l'expédition, contactez-nous à contact@moroccanorganica.com"
+        },
         ar: {
             heroTitle: "معلومات التسليم",
             heroDesc: "سياسات الشحن ومواقع التسليم والأوقات المقدرة",
@@ -56,6 +73,7 @@ export default function DeliveryInformationClient({ lang }: DeliveryInformationC
     };
 
     const t = content[lang as keyof typeof content] || content.en;
+    const homeLabel = isAr ? "الصفحة الرئيسية" : lang === "fr" ? "Accueil" : "Home";
 
     return (
         <div className="min-h-screen bg-background">
@@ -64,7 +82,7 @@ export default function DeliveryInformationClient({ lang }: DeliveryInformationC
                 description={t.heroDesc}
                 backgroundImage="/images/slider/hero-authentic-argan-oil.webp"
                 breadcrumbs={[
-                    { label: isAr ? "الصفحة الرئيسية" : "Home", href: `/${lang}` },
+                    { label: homeLabel, href: `/${lang}` },
                     { label: isAr ? "أورغانيكا" : "Organica", href: `/${lang}/organica` },
                     { label: t.breadcrumbCurrent },
                 ]}

@@ -1,4 +1,4 @@
-type DictionaryLoader = () => Promise<any>;
+type DictionaryLoader = () => Promise<unknown>;
 
 interface DictionaryGroup {
     common: DictionaryLoader;
@@ -22,6 +22,16 @@ const dictionaries: Record<string, DictionaryGroup> = {
         'private-label': () => import('../locales/en/private-label.json').then((module) => module.default),
         shop: () => import('../locales/en/shop.json').then((module) => module.default),
     },
+    fr: {
+        common: () => import('../locales/fr/common.json').then((module) => module.default),
+        home: () => import('../locales/fr/home.json').then((module) => module.default),
+        about: () => import('../locales/fr/about.json').then((module) => module.default),
+        products: () => import('../locales/fr/products.json').then((module) => module.default),
+        contact: () => import('../locales/fr/contact.json').then((module) => module.default),
+        blog: () => import('../locales/fr/blog.json').then((module) => module.default),
+        'private-label': () => import('../locales/fr/private-label.json').then((module) => module.default),
+        shop: () => import('../locales/fr/shop.json').then((module) => module.default),
+    },
     ar: {
         common: () => import('../locales/ar/common.json').then((module) => module.default),
         home: () => import('../locales/ar/home.json').then((module) => module.default),
@@ -37,7 +47,7 @@ const dictionaries: Record<string, DictionaryGroup> = {
 export type Locale = keyof typeof dictionaries;
 export type Page = keyof DictionaryGroup;
 
-export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<any> => {
+export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<unknown> => {
     const loc = (dictionaries[locale] ? locale : 'en');
     const loadDictionary = dictionaries[loc][page] || dictionaries['en'][page];
     return loadDictionary();

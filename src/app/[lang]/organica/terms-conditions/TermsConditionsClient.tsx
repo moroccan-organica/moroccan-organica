@@ -120,10 +120,51 @@ export default function TermsConditionsClient({ lang }: TermsConditionsClientPro
                     <p><bdi>يمكن توجيه الأسئلة المتعلقة بشروط الاستخدام أو سياسة الخصوصية أو غيرها من المواد ذات الصلة بالسياسة إلى فريق الدعم لدينا من خلال النقر على رابط "اتصل بنا" في خدمة العملاء. أو يمكنك مراسلتنا على: info @ moroccanorganica .com</bdi></p>
                 </>
             )
+        },
+        fr: {
+            heroTitle: "Conditions générales",
+            heroDesc: "Conditions d'utilisation des services d'Organica Group",
+            breadcrumbCurrent: "Conditions générales",
+            section2: (
+                <>
+                    <p>Cet accord a été rédigé en anglais. En cas de conflit avec une version traduite, la version anglaise prévaut. Dernière révision : 7 février 2018.</p>
+                    <h4>Déclaration des droits et responsabilités</h4>
+                    <p>Cette Déclaration des droits et responsabilités (« Déclaration », « Conditions » ou « SRR ») émane de moroccanorganica.com et constitue nos conditions d&apos;utilisation qui régissent notre relation avec les utilisateurs et toute personne interagissant avec moroccanorganica.com, ainsi qu&apos;avec nos marques et services. En utilisant moroccanorganica.com, vous acceptez cette déclaration, telle que mise à jour. Des ressources figurent en fin de document pour vous aider à comprendre le fonctionnement du site.</p>
+                    <h4>CONFIDENTIALITÉ</h4>
+                    <p>Veuillez consulter notre Politique de confidentialité, qui régit également votre visite sur le site.</p>
+                    <h4>COMMUNICATIONS ÉLECTRONIQUES</h4>
+                    <p>En visitant moroccanorganica.com ou en nous envoyant des e-mails, vous acceptez de recevoir nos communications par voie électronique. Nous communiquerons par e-mail ou par avis sur le site. Vous acceptez que tous les accords, avis et communications électroniques satisfassent aux exigences légales.</p>
+                    <h4>DROITS D&Apos;AUTEUR</h4>
+                    <p>Tout contenu du site (textes, graphiques, logos, images, logiciels, etc.) est la propriété de moroccanorganica.com ou de ses fournisseurs et protégé par les lois internationales sur le droit d&apos;auteur.</p>
+                    <h4>MARQUES</h4>
+                    <p>Les marques et l&apos;apparence de moroccanorganica.com ne peuvent être utilisées en lien avec un produit ou service non affilié à Organica, de manière à créer une confusion ou à nuire à la réputation de moroccanorganica.com.</p>
+                    <h4>LICENCE ET ACCÈS AU SITE</h4>
+                    <p>moroccanorganica.com vous accorde une licence limitée pour accéder au site et l&apos;utiliser à titre personnel, sans téléchargement (hors cache) ni modification sans accord écrit. Cette licence n&apos;inclut pas la revente, l&apos;usage commercial, l&apos;extraction de données ou l&apos;utilisation de robots. Toute utilisation non autorisée met fin à la licence.</p>
+                    <h4>VOTRE COMPTE</h4>
+                    <p>Vous êtes responsable de la confidentialité de votre compte et mot de passe. Les mineurs de 18 ans ne peuvent utiliser le site qu&apos;avec un parent ou tuteur. Organica se réserve le droit de refuser le service, de clôturer des comptes ou d&apos;annuler des commandes.</p>
+                </>
+            ),
+            section1: (
+                <>
+                    <h4>AVIS, COMMENTAIRES ET CONTENUS</h4>
+                    <p>Les visiteurs peuvent publier des avis et commentaires tant que le contenu n&apos;est pas illégal, diffamatoire ou préjudiciable. moroccanorganica.com se réserve le droit de supprimer ou modifier tout contenu. En publiant du contenu, vous accordez à Organica une licence non exclusive, perpétuelle et mondiale pour l&apos;utiliser et le modifier. Vous garantissez détenir les droits sur le contenu publié et indemnisez Organica pour toute réclamation liée à ce contenu.</p>
+                    <h4>DESCRIPTIONS DES SERVICES</h4>
+                    <p>Organica s&apos;efforce d&apos;être aussi précis que possible. Toutefois, moroccanorganica.com ne garantit pas que les descriptions de produits ou services sont complètes, fiables ou exemptes d&apos;erreurs. LE SITE EST FOURNI « EN L&apos;ÉTAT ». MOROCCANORGANICA.COM N&apos;OFFRE AUCUNE GARANTIE, EXPRESSE OU IMPLICITE. VOTRE UTILISATION DU SITE EST À VOS PROPRES RISQUES. DANS LA MESURE PERMISE PAR LA LOI, ORGANICA NE SERA PAS RESPONSABLE DES DOMMAGES DIRECTS, INDIRECTS OU CONSÉCUTIFS.</p>
+                    <h4>LOI APPLICABLE</h4>
+                    <p>En visitant moroccanorganica.com, vous acceptez que le droit marocain, sans égard aux conflits de lois, régisse ces conditions et tout litige vous opposant à Organica.</p>
+                    <h4>LITIGES</h4>
+                    <p>Tout litige relatif à votre visite ou aux produits et services achetés via moroccanorganica.com sera soumis à un arbitrage confidentiel au Maroc, sauf en cas de violation des droits de propriété intellectuelle d&apos;Organica, qui pourra saisir les tribunaux marocains.</p>
+                    <h4>POLITIQUES DU SITE, MODIFICATIONS</h4>
+                    <p>Veuillez consulter les autres politiques publiées sur le site. Nous nous réservons le droit de modifier le site, les politiques et ces conditions à tout moment. Si une disposition est jugée invalide, elle sera réputée détachable sans affecter le reste.</p>
+                    <h4>QUESTIONS</h4>
+                    <p>Pour toute question relative aux conditions d&apos;utilisation, à la politique de confidentialité ou à toute autre politique, contactez notre support via le lien « Contact » ou par e-mail : info@moroccanorganica.com</p>
+                </>
+            )
         }
     };
 
     const t = content[lang as keyof typeof content] || content.en;
+    const homeLabel = isAr ? "الصفحة الرئيسية" : lang === "fr" ? "Accueil" : "Home";
 
     return (
         <div className="min-h-screen bg-background">
@@ -132,7 +173,7 @@ export default function TermsConditionsClient({ lang }: TermsConditionsClientPro
                 description={t.heroDesc}
                 backgroundImage="/images/slider/hero-authentic-argan-oil.webp"
                 breadcrumbs={[
-                    { label: isAr ? "الصفحة الرئيسية" : "Home", href: `/${lang}` },
+                    { label: homeLabel, href: `/${lang}` },
                     { label: isAr ? "أورغانيكا" : "Organica", href: `/${lang}/organica` },
                     { label: t.breadcrumbCurrent },
                 ]}

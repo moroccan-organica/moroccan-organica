@@ -24,8 +24,39 @@ const fadeInUp: MotionProps = {
 };
 
 export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) {
-    const data = arganOilPageData;
-    const heroTitle = pageData?.translation?.h1 || data.hero.title;
+    const isArabic = lang === "ar";
+    const isFrench = lang === "fr";
+    const data = arganOilPageData as any;
+
+    const heroData =
+        isArabic && data.heroAr
+            ? data.heroAr
+            : isFrench && data.heroFr
+                ? data.heroFr
+                : data.hero;
+
+    const introData =
+        isArabic && data.introAr
+            ? data.introAr
+            : isFrench && data.introFr
+                ? data.introFr
+                : data.intro;
+
+    const statsData =
+        isArabic && data.statsAr
+            ? data.statsAr
+            : isFrench && data.statsFr
+                ? data.statsFr
+                : data.stats;
+
+    const shippingData =
+        isArabic && data.shippingAr
+            ? data.shippingAr
+            : isFrench && data.shippingFr
+                ? data.shippingFr
+                : data.shipping;
+
+    const heroTitle = pageData?.translation?.h1 || heroData.title;
 
     return (
         <div className="min-h-screen bg-background">
@@ -33,13 +64,25 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
             {/* Hero */}
             <InnerHero
                 title={heroTitle}
-                description={data.hero.description}
-                backgroundImage={data.hero.bgImage}
+                description={heroData.description}
+                backgroundImage={heroData.bgImage}
                 titleTag="h2"
                 breadcrumbs={[
-                    { label: "Home", href: `/${lang}` },
-                    { label: "Organica", href: `/${lang}/organica` },
-                    { label: "Argan Oil of Morocco" },
+                    {
+                        label: isArabic ? "الصفحة الرئيسية" : isFrench ? "Accueil" : "Home",
+                        href: `/${lang}`,
+                    },
+                    {
+                        label: isArabic ? "أورغانيكا" : "Organica",
+                        href: `/${lang}/organica`,
+                    },
+                    {
+                        label: isArabic
+                            ? "زيت الأركان المغربي"
+                            : isFrench
+                                ? "Huile d’argan du Maroc"
+                                : "Argan Oil of Morocco",
+                    },
                 ]}
             />
 
@@ -52,7 +95,7 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
                         <motion.div className="space-y-6" {...fadeInUp}>
                             <div className="relative overflow-hidden rounded-2xl shadow-xl">
                                 <Image
-                                    src={data.intro.image}
+                                    src={introData.image}
                                     alt="argan in bulk"
                                     width={600}
                                     height={440}
@@ -63,7 +106,7 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
 
                             {/* Coloured progress bars (UX/UI refined: compact & premium) */}
                             <div className="space-y-3">
-                                {data.stats.map((stat, idx) => (
+                                {statsData.map((stat: any, idx: number) => (
                                     <motion.div
                                         key={stat.label}
                                         initial={{ opacity: 0, x: -20 }}
@@ -99,16 +142,16 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
                         {/* Right: h1 + body + differentiator */}
                         <motion.div className="space-y-6" {...fadeInUp}>
                             <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold text-primary leading-tight">
-                                {data.intro.heading}
+                                {introData.heading}
                             </h1>
                             <p className="text-muted-foreground text-lg leading-relaxed">
-                                {data.intro.body}
+                                {introData.body}
                             </p>
                             <h3 className="font-serif text-xl font-bold text-foreground">
-                                {data.intro.differentiatorHeading}
+                                {introData.differentiatorHeading}
                             </h3>
                             <p className="text-muted-foreground leading-relaxed">
-                                {data.intro.differentiatorBody}
+                                {introData.differentiatorBody}
                             </p>
                         </motion.div>
                     </div>
@@ -120,7 +163,7 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
                 <div className="container-main">
                     <motion.div className="text-center mb-10" {...fadeInUp}>
                         <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary">
-                            {data.shipping.heading}
+                            {shippingData.heading}
                         </h2>
                     </motion.div>
 
@@ -128,7 +171,7 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
 
                         {/* Left: FAQ blocks */}
                         <motion.div className="space-y-5" {...fadeInUp}>
-                            {data.shipping.leftCol.map((faq, idx) => (
+                            {shippingData.leftCol.map((faq: any, idx: number) => (
                                 <div
                                     key={idx}
                                     className="bg-card border border-border rounded-2xl p-6 shadow-sm"
@@ -147,7 +190,7 @@ export default function ArganOilClient({ lang, pageData }: ArganOilClientProps) 
                             viewport={{ once: true }}
                             transition={{ duration: 0.6 }}
                         >
-                            {data.shipping.rightCol.map((para, idx) => (
+                            {shippingData.rightCol.map((para: string, idx: number) => (
                                 <div
                                     key={idx}
                                     className="bg-card border border-border rounded-2xl p-6 shadow-sm"

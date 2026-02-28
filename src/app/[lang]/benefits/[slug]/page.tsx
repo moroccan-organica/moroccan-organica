@@ -38,8 +38,9 @@ export default function BenefitPostPage({ params }: { params: Promise<{ lang: st
     if (!blogDict) return null;
 
     const isArabic = lang === 'ar';
-    const title = isArabic && post.title_ar ? post.title_ar : post.title;
-    const content = isArabic && post.content_ar ? post.content_ar : post.content;
+    const isFrench = lang === 'fr';
+    const title = isArabic && post.title_ar ? post.title_ar : (isFrench && post.title_fr ? post.title_fr : post.title);
+    const content = isArabic && post.content_ar ? post.content_ar : (isFrench && post.content_fr ? post.content_fr : post.content);
 
     return (
         <main className="min-h-screen bg-white">
@@ -59,7 +60,7 @@ export default function BenefitPostPage({ params }: { params: Promise<{ lang: st
                         className={`absolute top-6 ${isArabic ? 'right-6 lg:right-10' : 'left-6 lg:left-10'} inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ${isArabic ? 'flex-row-reverse' : ''}`}
                     >
                         <ArrowLeft className={`h-4 w-4 ${isArabic ? 'rotate-180' : ''}`} />
-                        {isArabic ? "عودة" : "Back to Benefits"}
+                        {isArabic ? "عودة" : isFrench ? "Retour aux bienfaits" : "Back to Benefits"}
                     </Link>
                     <div className="w-full max-w-5xl mx-auto">
                         <h1 className="text-4xl md:text-6xl font-playfair font-bold text-white leading-tight" dir={isArabic ? 'rtl' : 'ltr'}>

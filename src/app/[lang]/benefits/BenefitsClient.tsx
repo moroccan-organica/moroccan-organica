@@ -20,8 +20,19 @@ export function BenefitsClient({ lang, heroTitle, heroSubtitle, searchPlaceholde
     const filteredBenefits = useMemo(() => {
         const query = searchQuery.toLowerCase();
         return benefitsData.filter((post) => {
-            const matchesTitle = post.title.toLowerCase().includes(query) || (post.title_ar && post.title_ar.toLowerCase().includes(query));
-            const matchesExcerpt = post.excerpt.toLowerCase().includes(query) || (post.excerpt_ar && post.excerpt_ar.toLowerCase().includes(query));
+            const baseTitle = post.title.toLowerCase();
+            const arTitle = post.title_ar?.toLowerCase() || "";
+            const frTitle = post.title_fr?.toLowerCase() || "";
+            const matchesTitle =
+                baseTitle.includes(query) ||
+                arTitle.includes(query) ||
+                frTitle.includes(query);
+
+            const baseExcerpt = post.excerpt.toLowerCase();
+            const arExcerpt = post.excerpt_ar?.toLowerCase() || "";
+            const matchesExcerpt =
+                baseExcerpt.includes(query) ||
+                arExcerpt.includes(query);
             return matchesTitle || matchesExcerpt;
         });
     }, [searchQuery]);

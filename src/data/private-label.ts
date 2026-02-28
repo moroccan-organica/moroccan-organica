@@ -20,6 +20,15 @@ export const privateLabelData = {
             "/images/private-label-argan.jpg"
         ]
     },
+    performanceSnapshot: {
+        label: "Performance Snapshot",
+        title: "What Our Partners Value",
+        bars: [
+            { label: "Projects Done", value: 80, color: "bg-emerald-500" },
+            { label: "Clients Satisfaction", value: 99, color: "bg-sky-500" },
+            { label: "Lowest Charges", value: 48, color: "bg-amber-500" }
+        ]
+    },
     expertise: {
         label: "Our Expertise",
         title: "Why Choose Our Private Label?",

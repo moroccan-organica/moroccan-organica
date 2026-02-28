@@ -1,0 +1,189 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "products": "Produits",
+    "blog": "Blog",
+    "privateLabel": "Marque blanche",
+    "contact": "Contact",
+    "shop": "Boutique",
+    "catalogue": "Organica",
+    "benefits": "Bienfaits",
+    "certifications": "Certifications",
+    "sustainability": "Durabilité",
+    "quality": "Qualité"
+  },
+  "products": {
+    "essentialOils": "Huiles essentielles",
+    "vegetableOils": "Huiles végétales",
+    "driedPlants": "Plantes séchées",
+    "wellness": "Produits bien‑être"
+  },
+  "footer": {
+    "newsletter": {
+      "title": "Newsletter hebdomadaire",
+      "description": "Abonnez‑vous à notre liste pour recevoir nos offres.",
+      "placeholder": "Entrez votre e‑mail",
+      "button": "S’abonner"
+    },
+    "about": {
+      "title": "À propos",
+      "description": "Organica Group — producteurs et exportateurs marocains de premier plan : huiles d’argan naturelles (culinaires et cosmétiques), huiles de graines de figue de barbarie bio, huiles essentielles, savon noir marocain, argile ghassoul, produits 100% biologiques."
+    },
+    "contact": {
+      "title": "Nous contacter",
+      "address": "Lot 377 N°3/6 sidi ghanem Zone industriel , 40110 marrakesh",
+      "factory": "Notre usine est située à Agadir",
+      "phone": "+212 648-273228",
+      "email": "inquiry@moroccanorganica.com"
+    },
+    "links": {
+      "blog": {
+        "title": "Blog",
+        "items": [
+          {
+            "name": "Tous les articles",
+            "href": "/blog"
+          },
+          {
+            "name": "Fournisseur marocain de confiance en ingrédients beauté",
+            "href": "/blog/trusted-moroccan-beauty-ingredient-supplier-2026-guide"
+          },
+          {
+            "name": "Bienfaits de la poudre d’indigo marocain (Nila)",
+            "href": "/benefits/moroccan-indigo-powder-benefits"
+          },
+          {
+            "name": "Les merveilles de l’huile d’argan marocaine",
+            "href": "/benefits/argan-oil-benefits"
+          },
+          {
+            "name": "Guide de l’huile de graines de figue de barbarie",
+            "href": "/benefits/prickly-pear-seed-oil-benefits"
+          }
+        ]
+      },
+      "policy": {
+        "title": "Politique Organica Group",
+        "items": [
+          {
+            "name": "Politique de confidentialité",
+            "href": "/fr/organica/privacy-policy"
+          },
+          {
+            "name": "Informations de livraison",
+            "href": "/fr/organica/delivery-information"
+          },
+          {
+            "name": "Conditions générales",
+            "href": "/fr/organica/terms-conditions"
+          },
+          {
+            "name": "Comment commander/payer",
+            "href": "/fr/organica/how-to-order-pay"
+          },
+          {
+            "name": "Contrôle qualité",
+            "href": "#"
+          },
+          {
+            "name": "Échantillon gratuit",
+            "href": "#"
+          },
+          {
+            "name": "FAQ",
+            "href": "#"
+          }
+        ]
+      },
+      "products": {
+        "title": "Nos produits",
+        "items": [
+          {
+            "name": "Huiles d’argan certifiées bio de haute qualité",
+            "href": "/wholesale-of-moroccan-skincare"
+          },
+          {
+            "name": "Huile de graines de figue de barbarie bio en gros",
+            "href": "/wholesale-of-moroccan-skincare"
+          },
+          {
+            "name": "Savon noir marocain bio en gros",
+            "href": "/wholesale-of-moroccan-skincare"
+          },
+          {
+            "name": "Eau de rose naturelle bio pure",
+            "href": "/wholesale-of-moroccan-skincare"
+          },
+          {
+            "name": "Argile ghassoul en poudre marocaine",
+            "href": "/wholesale-of-moroccan-skincare"
+          }
+        ]
+      }
+    },
+    "partners": {
+      "transport": "Nos partenaires",
+      "payment": "Moyens de paiement"
+    },
+    "rights": "Tous droits réservés | Organica Group LTD"
+  },
+  "languages": {
+    "en": "Anglais",
+    "ar": "Arabe",
+    "fr": "Français"
+  },
+  "checkout": {
+    "title": "Paiement",
+    "customerInfo": {
+      "title": "Informations client",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Adresse e‑mail",
+      "phone": "Téléphone"
+    },
+    "shippingAddress": {
+      "title": "Adresse de livraison",
+      "street": "Adresse",
+      "city": "Ville",
+      "state": "Région/Province",
+      "postalCode": "Code postal",
+      "country": "Pays"
+    },
+    "orderNotes": {
+      "title": "Notes de commande (optionnel)",
+      "placeholder": "Instructions spéciales, notes de livraison, etc."
+    },
+    "paymentMethod": {
+      "title": "Moyen de paiement",
+      "stripe": {
+        "label": "Carte bancaire",
+        "description": "Paiement sécurisé avec Stripe"
+      },
+      "paypal": {
+        "label": "PayPal",
+        "description": "Payer avec votre compte PayPal"
+      },
+      "cardNumber": "Numéro de carte",
+      "cardExpiry": "Date d’expiration",
+      "cardCvc": "CVC",
+      "cardName": "Nom du titulaire"
+    },
+    "orderSummary": {
+      "title": "Récapitulatif",
+      "subtotal": "Sous‑total",
+      "shipping": "Livraison",
+      "tax": "Taxe",
+      "total": "Total",
+      "items": "articles"
+    },
+    "completeOrder": "Valider la commande",
+    "processing": "Traitement...",
+    "terms": "En passant commande, vous acceptez nos",
+    "termsLink": "Conditions d’utilisation",
+    "privacyLink": "Politique de confidentialité",
+    "and": "et",
+    "emptyCart": "Votre panier est vide",
+    "backToShop": "Retour à la boutique"
+  }
+}

@@ -16,6 +16,9 @@
   },
   "collectionsTitle": "Ready-to-ship Collections",
   "priceLabel": "Price",
+  "from": "From",
+  "to": "to",
+  "go": "Go",
   "pageIndicator": "Page {{current}} of {{total}}",
   "filters": [
     "All Products",

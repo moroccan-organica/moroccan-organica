@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ReactNode } from "react";
 
 interface PrivateLabelData {
     badge: string;
@@ -24,6 +25,32 @@ interface PrivateLabelSectionProps {
 const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
     if (!data) return null;
 
+    const highlightKeywords = (text: string, keywords: string[]): ReactNode => {
+        let parts: Array<string | ReactNode> = [text];
+
+        keywords.forEach((keyword, keywordIndex) => {
+            parts = parts.flatMap((part) => {
+                if (typeof part !== "string") return part;
+                const segments = part.split(new RegExp(`(${keyword})`, "gi"));
+                return segments.map((segment, segmentIndex) => {
+                    if (segment.toLowerCase() === keyword.toLowerCase()) {
+                        return (
+                            <strong
+                                key={`${keyword}-${keywordIndex}-${segmentIndex}`}
+                                className="text-foreground font-semibold"
+                            >
+                                {segment}
+                            </strong>
+                        );
+                    }
+                    return segment;
+                });
+            });
+        });
+
+        return parts;
+    };
+
     return (
         <section className="bg-muted/20 pt-0 md:pt-4 lg:pt-6 pb-6 md:pb-10 lg:pb-12">
             <div className="container-main">
@@ -34,16 +61,16 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
                     </p>
                     <div className="mx-auto space-y-4 text-lg md:text-xl leading-8 text-muted-foreground/90">
                         <p>
-                            {data.discoverText1}
+                            {highlightKeywords(data.discoverText1, ["private labeling", "cosmetic products"])}
                         </p>
                         {data.discoverText2 && (
                             <p>
-                                {data.discoverText2}
+                                {highlightKeywords(data.discoverText2, ["private labeling", "cosmetic products"])}
                             </p>
                         )}
                         {data.discoverText3 && (
                             <p>
-                                {data.discoverText3}
+                                {highlightKeywords(data.discoverText3, ["private labeling", "cosmetic products"])}
                             </p>
                         )}
                     </div>
@@ -86,16 +113,16 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
                     <div className="animate-fade-in-right lg:order-2 flex flex-col justify-start gap-4 lg:pl-6 xl:pl-10 max-w-2xl mx-auto md:mx-0 text-left">
                         <div className="space-y-4 text-muted-foreground/90 leading-7 md:leading-8 max-w-3xl">
                             <p>
-                                {data.brandText1}
+                                {highlightKeywords(data.brandText1, ["private label"])}
                             </p>
                             {data.brandText2 && (
                                 <p>
-                                    {data.brandText2}
+                                    {highlightKeywords(data.brandText2, ["private label"])}
                                 </p>
                             )}
                             {data.brandText3 && (
                                 <p>
-                                    {data.brandText3}
+                                    {highlightKeywords(data.brandText3, ["high-quality natural"])}
                                 </p>
                             )}
                         </div>

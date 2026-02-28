@@ -17,6 +17,7 @@ const fadeInUp = {
 
 export default function PrivacyPolicyClient({ lang }: PrivacyPolicyClientProps) {
     const isAr = lang === 'ar';
+    const isFr = lang === 'fr';
 
     const content = {
         en: {
@@ -28,10 +29,16 @@ export default function PrivacyPolicyClient({ lang }: PrivacyPolicyClientProps) 
             heroTitle: "سياسة الخصوصية",
             heroDesc: "التزامنا بخصوصيتك وحماية بياناتك",
             breadcrumbCurrent: "سياسة الخصوصية"
+        },
+        fr: {
+            heroTitle: "Politique de confidentialité",
+            heroDesc: "Notre engagement pour votre vie privée et la protection de vos données",
+            breadcrumbCurrent: "Politique de confidentialité"
         }
     };
 
     const t = content[lang as keyof typeof content] || content.en;
+    const homeLabel = isAr ? "الصفحة الرئيسية" : isFr ? "Accueil" : "Home";
 
     return (
         <div className="min-h-screen bg-background">
@@ -40,7 +47,7 @@ export default function PrivacyPolicyClient({ lang }: PrivacyPolicyClientProps) 
                 description={t.heroDesc}
                 backgroundImage="/images/slider/hero-authentic-argan-oil.webp"
                 breadcrumbs={[
-                    { label: isAr ? "الصفحة الرئيسية" : "Home", href: `/${lang}` },
+                    { label: homeLabel, href: `/${lang}` },
                     { label: isAr ? "أورغانيكا" : "Organica", href: `/${lang}/organica` },
                     { label: t.breadcrumbCurrent },
                 ]}
@@ -49,6 +56,122 @@ export default function PrivacyPolicyClient({ lang }: PrivacyPolicyClientProps) 
             <section className="py-16 md:py-24" dir={isAr ? "rtl" : "ltr"}>
                 <div className="container-main max-w-4xl mx-auto">
                     <motion.div className="rich-text-content" {...fadeInUp}>
+                        {lang === 'fr' ? (
+                            <>
+                                <h1>Politique de confidentialité Organica Group</h1>
+                                <p>
+                                    Organica Group propose ses gammes de produits via sa plateforme « moroccanorganica.com ». « Nous », « notre » ou la « Société » s&apos;engage à garantir la protection de la vie privée. Nous comprenons l&apos;importance de garder les informations personnelles privées et sécurisées. Cette politique décrit de manière générale comment nous gérons les informations personnelles. Pour toute information complémentaire, n&apos;hésitez pas à nous contacter.
+                                </p>
+                                <h4>Principes de confidentialité Organica Group</h4>
+                                <p>
+                                    Cette politique de confidentialité fait partie de nos conditions d&apos;utilisation : nous accordons de l&apos;importance à votre vie privée ; nous ne louerons, n&apos;échangerons ni ne vendrons jamais votre adresse e-mail ; nous n&apos;afficherons jamais publiquement votre adresse e-mail ni d&apos;autres données personnelles vous identifiant, sauf comme indiqué dans cette politique ; nous traiterons toutes les informations personnelles conformément aux obligations qui nous incombent au titre des lois sur la vie privée au Maroc.
+                                </p>
+                                <h4>Qu&apos;est-ce qu&apos;une information personnelle ?</h4>
+                                <p>
+                                    Les informations personnelles détenues par la Société peuvent inclure : nom et date de naissance ; adresses postales (résidence et profession), téléphone, mobile, télécopie et e-mail ; coordonnées bancaires et/ou carte de crédit pour la facturation ; toute information fournie lors de la création de compte, de l&apos;inscription à la newsletter ou du profil utilisateur ; préférences et mot de passe pour l&apos;utilisation du site.
+                                </p>
+                                <h4>Informations fournies à PayPal</h4>
+                                <p>
+                                    Tous les achats effectués sur ce site sont traités de manière sécurisée par PayPal. Sauf consentement explicite de votre part, nous n&apos;avons pas accès aux informations personnelles que vous fournissez à PayPal, autres que celles nécessaires au traitement de votre commande et à la livraison (nom, e-mail, adresse de facturation/livraison).
+                                </p>
+                                <h4>Comment recueillons-nous vos informations personnelles ?</h4>
+                                <p>
+                                    Sur ce site, nous ne recueillons que les informations personnelles nécessaires à notre activité de distribution de soins capillaires, soins de la peau et cosmétiques professionnels.
+                                </p>
+                                <h4>Informations que vous nous fournissez</h4>
+                                <p>
+                                    Nous pouvons recueillir des informations personnelles lorsque vous : créez un compte ; complétez votre profil ; achetez des produits et services via la plateforme Organica Group ; ajoutez des avis, messages de forum ou commentaires ; vous inscrivez à la newsletter ; remplissez un formulaire de contact ; nous contactez par téléphone, e-mail ou lors d&apos;événements. Nous pouvons également recueillir des adresses IP et des données de connexion pour la gestion des sessions et la sécurité.
+                                </p>
+                                <h4>Informations sensibles</h4>
+                                <p>
+                                    Nous pouvons recueillir des informations sensibles lors de l&apos;inscription à la newsletter (avec votre consentement). Ces informations permettent de vous proposer des produits et services adaptés. Le site peut recueillir des adresses IP et des données de journaux pour la sécurité et la prévention des usages abusifs.
+                                </p>
+                                <h4>Cookies</h4>
+                                <p>
+                                    Ce site utilise des « cookies » pour personnaliser votre expérience. Un cookie est un fichier texte placé sur votre disque par le serveur pour identifier et interagir avec votre ordinateur. Il existe des cookies persistants et des cookies de session. Vous pouvez configurer votre navigateur pour accepter, refuser ou être notifié lors de l&apos;envoi d&apos;un cookie. Le refus des cookies peut limiter certaines fonctionnalités du site.
+                                </p>
+                                <h4>Pourquoi utilisons-nous des cookies ?</h4>
+                                <p>
+                                    Pour : mémoriser vos préférences ; gérer l&apos;inscription et la connexion ; faciliter les transactions et le processus de commande ; afficher des notifications pertinentes ; mémoriser les données que vous nous soumettez (formulaires, commentaires, etc.).
+                                </p>
+                                <h4>Cookies tiers</h4>
+                                <p>
+                                    Des tiers (Google Analytics, Google AdSense, réseaux sociaux) peuvent déposer des cookies via ce site pour l&apos;analyse d&apos;audience, la publicité et les boutons de partage.
+                                </p>
+                                <h4>Comment utilisons-nous vos informations personnelles ?</h4>
+                                <p>
+                                    Vos informations peuvent être utilisées pour : vérifier votre identité ; traiter vos commandes et achats ; gérer les litiges et remboursements ; modifier votre compte ; répondre à vos questions ; effectuer des contrôles anti-fraude ; améliorer nos services ; vous envoyer la newsletter si vous y êtes inscrit ; promouvoir des produits et services. Vous pouvez vous désinscrire à tout moment.
+                                </p>
+                                <h4>Informations fournies à des tiers</h4>
+                                <p>
+                                    Lorsque vous accédez à des services fournis par un tiers via ce site, nous transmettons à ce tiers les informations nécessaires au traitement et à l&apos;administration de votre commande (nom, coordonnées, etc.).
+                                </p>
+                                <h4>Informations fournies aux sous-traitants de moroccanorganica.com</h4>
+                                <p>
+                                    Nous pouvons divulguer vos informations personnelles à des sous-traitants. La Société prend des mesures raisonnables pour s&apos;assurer qu&apos;ils sont tenus par des obligations de confidentialité et de protection des données. Ces sous-traitants peuvent utiliser vos informations pour exécuter des services, traiter les commandes, les litiges et remboursements, et répondre à vos demandes.
+                                </p>
+                                <h4>Informations fournies à d&apos;autres organismes</h4>
+                                <p>
+                                    Pour fournir les services demandés, la Société peut divulguer vos informations à des organismes externes (enquêtes clients, facturation, informatique, marketing, analyse, conseils, autorités, etc.) dans le respect de la confidentialité et des obligations légales.
+                                </p>
+                                <h4>Nous contacter au sujet de la confidentialité</h4>
+                                <p>
+                                    Pour toute question sur la gestion de vos informations personnelles ou si vous estimez qu&apos;il y a eu atteinte à votre vie privée, contactez-nous par e-mail ou par courrier.
+                                </p>
+                                <h4>Accès à vos informations personnelles</h4>
+                                <p>
+                                    Dans la plupart des cas, vous pouvez accéder aux informations que nous détenons sur vous. Les demandes doivent être adressées au responsable de la protection des données par e-mail ou courrier. Nous traiterons les demandes dans les meilleurs délais. Des frais peuvent s&apos;appliquer en cas de coût de récupération ; l&apos;accès peut être refusé dans certains cas prévus par la loi (illégalité, impact sur la vie privée d&apos;autrui, procédures judiciaires, etc.). En cas de refus, nous en indiquerons les motifs.
+                                </p>
+                                <h4>Rectification de vos informations personnelles</h4>
+                                <p>
+                                    Nous corrigerons toute information personnelle inexacte, incomplète ou obsolète à votre demande. En cas de désaccord sur l&apos;exactitude d&apos;un enregistrement, nous pouvons, à votre demande, associer à cet enregistrement une mention de votre désaccord.
+                                </p>
+                                <h4>Stockage et sécurité de vos informations personnelles</h4>
+                                <p>
+                                    Nous nous engageons à maintenir la confidentialité des informations que vous nous fournissez, conformément aux politiques internationales en vigueur.
+                                </p>
+                            </>
+                        ) : lang === 'ar' ? (
+                            <>
+                                <h1>سياسة الخصوصية لمجموعة أورجانيكا</h1>
+                                <p><bdi>تقدم مجموعة أورجانيكا منتجاتها عبر منصة « moroccanorganica.com ». « نحن » أو « الشركة » ملتزمون بضمان حماية الخصوصية. ندرك أهمية الحفاظ على سرية وأمان المعلومات الشخصية. تصف هذه السياسة بشكل عام كيفية إدارتنا للمعلومات الشخصية. للاستفسارات الإضافية، لا تتردد في الاتصال بنا.</bdi></p>
+                                <h4>مبادئ الخصوصية لمجموعة أورجانيكا</h4>
+                                <p><bdi>تشكل سياسة الخصوصية هذه جزءاً من شروط الاستخدام: نهتم بخصوصيتك؛ لن نؤجر أو نبادل أو نبيع بريدك الإلكتروني أبداً؛ لن نعرض بريدك أو بياناتك الشخصية علناً إلا كما هو منصوص عليه؛ نتعامل مع جميع المعلومات الشخصية وفقاً للقوانين المعمول بها في المغرب.</bdi></p>
+                                <h4>ما هي المعلومات الشخصية؟</h4>
+                                <p><bdi>قد تتضمن المعلومات الشخصية التي تحتفظ بها الشركة: الاسم وتاريخ الميلاد؛ العناوين البريدية ورقم الهاتف والبريد الإلكتروني؛ تفاصيل الحساب البنكي أو بطاقة الائتمان؛ أي معلومات قدمتها عند إنشاء الحساب أو الاشتراك في النشرة أو إضافتها إلى ملفك؛ تفضيلات وكلمة المرور لاستخدام الموقع.</bdi></p>
+                                <h4>المعلومات المقدمة إلى PayPal</h4>
+                                <p><bdi>جميع المشتريات عبر هذا الموقع تتم معالجتها بشكل آمن عبر PayPal. ما لم توافق صراحة على غير ذلك، لا نرى ولا نصل إلى المعلومات الشخصية التي تقدمها لـ PayPal سوى ما يلزم لمعالجة الطلب والتوصيل (الاسم، البريد، عنوان الفواتير/التوصيل).</bdi></p>
+                                <h4>كيف نجمع معلوماتك الشخصية؟</h4>
+                                <p><bdi>في هذا الموقع نجمع فقط المعلومات الشخصية اللازمة لممارسة نشاطنا المتعلق بتوزيع مستحضرات العناية بالشعر والبشرة ومستحضرات التجميل المهنية.</bdi></p>
+                                <h4>المعلومات التي تقدمها لنا</h4>
+                                <p><bdi>قد نجمع معلومات شخصية عندما: تنشئ حساباً؛ تكمل ملفك؛ تشتري منتجات وخدمات عبر منصة أورجانيكا؛ تضيف تعليقات أو رسائل؛ تشترك في النشرة؛ تملأ نموذج اتصال؛ تتصل بنا هاتفياً أو بريدياً أو في فعاليات. قد نجمع أيضاً عناوين IP وبيانات الاتصال لأغراض الجلسات والأمان.</bdi></p>
+                                <h4>المعلومات الحساسة</h4>
+                                <p><bdi>قد نجمع معلومات حساسة عند الاشتراك في النشرة (بموافقتك). تسمح لنا بتقديم منتجات وخدمات مناسبة. قد يجمع الموقع عناوين IP وبيانات السجلات للأمان ومنع إساءة الاستخدام.</bdi></p>
+                                <h4>ملفات تعريف الارتباط (Cookies)</h4>
+                                <p><bdi>يستخدم هذا الموقع « cookies » لتخصيص تجربتك. Cookie هو ملف نصي يوضع على جهازك لتعريفه والتفاعل معه. توجد cookies دائمة وcookies جلسة. يمكنك ضبط المتصفح لقبول أو رفض أو إشعارك عند إرسال cookie. رفض الـ cookies قد يحد من بعض وظائف الموقع.</bdi></p>
+                                <h4>لماذا نستخدم الـ cookies؟</h4>
+                                <p><bdi>لـ: تذكر تفضيلاتك؛ إدارة التسجيل وتسجيل الدخول؛ تسهيل المعاملات وعملية الطلب؛ عرض إشعارات ذات صلة؛ تذكر البيانات التي ترسلها (نماذج، تعليقات، إلخ).</bdi></p>
+                                <h4>Cookies الطرف الثالث</h4>
+                                <p><bdi>قد يضع أطراف ثالثة (مثل Google Analytics، Google AdSense، شبكات التواصل) cookies عبر هذا الموقع للتحليلات والإعلان وأزرار المشاركة.</bdi></p>
+                                <h4>كيف نستخدم معلوماتك الشخصية؟</h4>
+                                <p><bdi>قد تُستخدم معلوماتك من أجل: التحقق من هويتك؛ معالجة الطلبات والمشتريات؛ إدارة النزاعات والاستردادات؛ تعديل حسابك؛ الرد على استفساراتك؛ إجراء فحوصات لمكافحة الاحتيال؛ تحسين خدماتنا؛ إرسال النشرة إن اشتركت؛ الترويج لمنتجات وخدمات. يمكنك إلغاء الاشتراك في أي وقت.</bdi></p>
+                                <h4>المعلومات المقدمة لأطراف ثالثة</h4>
+                                <p><bdi>عند الحصول على خدمات من طرف ثالث عبر هذا الموقع، نقدم لذلك الطرف المعلومات اللازمة لمعالجة وإدارة طلبك (الاسم، التفاصيل الاتصال، إلخ).</bdi></p>
+                                <h4>المعلومات المقدمة لمقاولي moroccanorganica.com</h4>
+                                <p><bdi>قد نكشف معلوماتك الشخصية لمقاولي moroccanorganica.com. تتخذ الشركة خطوات معقولة لضمان التزامهم بالسرية وحماية البيانات. قد يستخدم هؤلاء المقاولون معلوماتك لتقديم الخدمات، معالجة الطلبات والنزاعات والاستردادات، والرد على استفساراتك.</bdi></p>
+                                <h4>المعلومات المقدمة لمنظمات أخرى</h4>
+                                <p><bdi>لتقديم الخدمات المطلوبة، قد تكشف الشركة معلوماتك لمنظمات خارجية (استفسارات العملاء، الفوترة، تقنية المعلومات، التسويق، التحليل، المستشارون، السلطات، إلخ) مع احترام السرية والالتزامات القانونية.</bdi></p>
+                                <h4>الاتصال بنا بخصوص الخصوصية</h4>
+                                <p><bdi>لأي استفسار حول كيفية إدارة معلوماتك الشخصية أو إن شعرت باختراق لخصوصيتك، اتصل بنا بالبريد أو البريد الإلكتروني.</bdi></p>
+                                <h4>الوصول إلى معلوماتك الشخصية</h4>
+                                <p><bdi>في معظم الحالات يمكنك الوصول إلى المعلومات التي نحتفظ بها عنك. يجب توجيه الطلبات إلى مسؤول الخصوصية بالبريد الإلكتروني أو العادي. نتعامل مع الطلبات في أقرب وقت. قد تُفرض رسوم في حال تكلفة استرجاع المعلومات؛ قد يُرفض الوصول في حالات ينص عليها القانون. في حال الرفض نذكر الأسباب.</bdi></p>
+                                <h4>تصحيح معلوماتك الشخصية</h4>
+                                <p><bdi>سنصحح أي معلومات شخصية غير دقيقة أو ناقصة أو قديمة عند طلبك. إن اختلفنا معك حول دقة سجل، يمكننا عند طلبك إرفاق بيان يوضح رأيك المخالف.</bdi></p>
+                                <h4>تخزين وأمن معلوماتك الشخصية</h4>
+                                <p><bdi>نحن ملتزمون بالحفاظ على سرية المعلومات التي تقدمها لنا وفقاً للسياسات الدولية المعمول بها.</bdi></p>
+                            </>
+                        ) : (
+                            <>
                         <h1>Organica Group Privacy Policy</h1>
                         <p>
                             Organica Group proposes its ranges of products through its platform "moroccanorganica.com " "we", "us" or the "Company" is committed to guarantee the privacy protection. We understand the importance of keeping personal information private and secure. This policy describes generally how we manage personal information. If you would like more information, please don't hesitate to contact us.
@@ -138,6 +261,8 @@ export default function PrivacyPolicyClient({ lang }: PrivacyPolicyClientProps) 
                         <p>
                             We are committed to maintain the confidentiality of the information that you provide us and we will proceed according to international policies.
                         </p>
+                            </>
+                        )}
                     </motion.div>
                 </div>
             </section>

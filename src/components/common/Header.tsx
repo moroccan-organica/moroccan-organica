@@ -53,10 +53,18 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         ];
 
     const benefitsDropdownItems = [
-        ...benefitsData.map(benefit => ({
-            name: isRTL && benefit.title_ar ? benefit.title_ar : benefit.title,
-            href: `/${lang}/benefits/${benefit.slug}`
-        }))
+        ...benefitsData.map(benefit => {
+            let name = benefit.title;
+            if (isRTL && benefit.title_ar) {
+                name = benefit.title_ar;
+            } else if (lang === 'fr' && benefit.title_fr) {
+                name = benefit.title_fr;
+            }
+            return {
+                name,
+                href: `/${lang}/benefits/${benefit.slug}`
+            };
+        })
     ];
 
     const navLinks = [

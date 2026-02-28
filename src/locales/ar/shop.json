@@ -16,6 +16,9 @@
   },
   "collectionsTitle": "منتجات جاهزة للتصدير",
   "priceLabel": "السعر",
+  "from": "من",
+  "to": "إلى",
+  "go": "تطبيق",
   "pageIndicator": "صفحة {{current}} من {{total}}",
   "filters": [
     "كل المنتجات",

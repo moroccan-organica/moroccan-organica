@@ -43,6 +43,12 @@ interface Condition {
     note: string;
 }
 
+interface PerformanceBar {
+    label: string;
+    value: number;
+    color: string;
+}
+
 interface PrivateLabelData {
     hero: {
         label: string;
@@ -50,6 +56,11 @@ interface PrivateLabelData {
         description: string;
         cta: string;
         bgImage: string;
+    };
+    performanceSnapshot?: {
+        label: string;
+        title: string;
+        bars: PerformanceBar[];
     };
     stats: Stat[];
     intro: {
@@ -111,8 +122,17 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
     };
 
     // Merge mock data with dictionary
+    const performanceBars = (data.performanceSnapshot?.bars ?? []).map((bar, i) => ({
+        ...bar,
+        ...(dict.performanceSnapshot?.bars?.[i] || {})
+    }));
     const content = {
         hero: { ...data.hero, ...dict.hero },
+        performanceSnapshot: {
+            label: dict.performanceSnapshot?.label ?? data.performanceSnapshot?.label ?? "Performance Snapshot",
+            title: dict.performanceSnapshot?.title ?? data.performanceSnapshot?.title ?? "What Our Partners Value",
+            bars: performanceBars
+        },
         stats: data.stats.map((s, i) => ({ ...s, ...(dict.stats?.[i] || {}) })),
         intro: { ...data.intro, ...dict.intro },
         expertise: {
@@ -268,26 +288,14 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                 <div className="container-main max-w-5xl">
                     <motion.div className="text-center mb-6 md:mb-8" {...fadeInUp}>
                         <span className="inline-block text-primary font-semibold text-sm uppercase tracking-wider mb-2">
-                            Performance Snapshot
+                            {content.performanceSnapshot.label}
                         </span>
                         <h3 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
-                            What Our Partners Value
+                            {content.performanceSnapshot.title}
                         </h3>
                     </motion.div>
                     <div className="space-y-4">
-                        {[{
-                            label: "Projects Done",
-                            value: 80,
-                            color: "bg-emerald-500"
-                        }, {
-                            label: "Clients Satisfaction",
-                            value: 99,
-                            color: "bg-sky-500"
-                        }, {
-                            label: "Lowest Charges",
-                            value: 48,
-                            color: "bg-amber-500"
-                        }].map((bar) => (
+                        {(content.performanceSnapshot.bars ?? []).map((bar) => (
                             <div key={bar.label} className="bg-white rounded-xl border border-border shadow-sm p-3 md:p-4">
                                 <div className="flex items-center justify-between text-xs md:text-sm font-semibold text-muted-foreground mb-2 uppercase tracking-wide">
                                     <span>{bar.label}</span>

@@ -1,0 +1,293 @@
+{
+  "hero": {
+    "slides": [
+      {
+        "badge": "Grossiste & Vrac",
+        "heading": "Produits de beauté marocains",
+        "highlight": "en gros",
+        "description": "Grossistes de confiance en huile d’argan et en différents produits cosmétiques à base d’huiles biologiques au Maroc."
+      },
+      {
+        "badge": "100% Bio",
+        "heading": "Huile d’argan du",
+        "highlight": "Maroc",
+        "description": "Huile d’argan pour les cheveux, l’or liquide pour votre peau, vos cheveux et vos ongles."
+      },
+      {
+        "badge": "Export mondial",
+        "heading": "Exportateur d’huile d’argan",
+        "highlight": "dans le monde",
+        "description": "Organica Group est spécialiste de l’huile d’argan biologique pure et de l’huile de graines de figue de barbarie 100% biologique, distribuées et conditionnées en vrac."
+      },
+      {
+        "badge": "Expédition rapide",
+        "heading": "Nous pouvons expédier nos produits bio vers les",
+        "highlight": "USA",
+        "description": "Nous pouvons expédier notre huile d’argan par fret aérien dans le monde entier avec un transit court."
+      },
+      {
+        "badge": "Qualité premium",
+        "heading": "Huile de graines de figue de barbarie pure",
+        "highlight": "fournisseurs en gros",
+        "description": "Production d’huile de graines de figue de barbarie de qualité cosmétique supérieure."
+      },
+      {
+        "badge": "Riche en minéraux",
+        "heading": "Rhassoul marocain en poudre",
+        "highlight": "100% Bio",
+        "description": "Le rhassoul marocain est la meilleure solution bio pour garder le visage et la peau propres et doux."
+      },
+      {
+        "badge": "Spa traditionnel",
+        "heading": "Savon noir marocain",
+        "highlight": "en gros en Afrique",
+        "description": "Le SAVON NOIR marocain avec vitamine E est la meilleure solution bio pour garder le visage et la peau propres et doux."
+      }
+    ],
+    "cta": {
+      "quote": "Demander un devis",
+      "view": "Voir les produits"
+    },
+    "trust": {
+      "logistics": "Logistique mondiale",
+      "certified": "Certifié USDA",
+      "moq": "MOQ 100 unités"
+    }
+  },
+  "about": {
+    "badge": "À propos",
+    "title": "POURQUOI ACHETER CHEZ",
+    "highlight": "ORGANICA GROUP ?",
+    "description": "<p class=\"mb-4\">Si vous recherchez un <b>partenaire fiable pour sourcer des produits de beauté et cosmétiques biologiques</b>, Organica Group est votre choix sûr. Nous proposons une gamme complète de cosmétiques bio et de soins du corps, conçus pour répondre aux besoins de santé et de beauté de la tête aux pieds. Notre portefeuille permet aux marques, professionnels et particuliers de trouver des solutions bio adaptées à leurs attentes marché.</p><p class=\"mb-4\">Pour des produits comme l’huile d’argan, le marché présente souvent deux extrêmes : une haute qualité à des prix très élevés, ou une faible qualité à bas prix. Chez Organica Group, nous pensons que la vraie valeur réside dans l’alliance de la qualité et de l’efficacité des coûts. Ce principe est le socle de notre stratégie d’approvisionnement et de production.</p><p>Grâce à notre grande expérience dans le sourcing de matières premières bio de haute qualité, nous pouvons fournir des <b>produits de beauté et cosmétiques certifiés biologiques</b> à des prix compétitifs et durables. Notre approche renforce les partenariats à long terme en maintenant des relations transparentes, éthiques et fiables.</p>",
+    "points": [
+      "Cosmétiques certifiés 100% bio",
+      "Pratiques de commerce équitable",
+      "Authenticité garantie par des relations personnelles avec des coopératives de femmes"
+    ],
+    "stats": {
+      "customers": {
+        "value": "+180",
+        "label": "Clients satisfaits."
+      },
+      "orders": {
+        "value": "+375",
+        "label": "Commandes réalisées."
+      },
+      "labels": {
+        "value": "+462",
+        "label": "Marques privées."
+      }
+    }
+  },
+  "categories": {
+    "badge": "Grossiste",
+    "title": "Fournisseur marocain de confiance en ingrédients beauté",
+    "description": "Nous sommes spécialisés dans la beauté marocaine authentique — entreprise marocaine proposant de l’huile d’argan premium en vrac, fabriquée avec tradition et soin. 100% pure, biologique et issue d’un sourcing éthique — avec services de marque privée, support export et prix compétitifs.",
+    "items": [
+      {
+        "title": "HUILES D’ARGAN CERTIFIÉES BIO",
+        "subtitle": "En gros"
+      },
+      {
+        "title": "HUILE DE GRAINES DE FIGUE DE BARBARIE BIO",
+        "subtitle": "En gros"
+      },
+      {
+        "title": "SAVON NOIR MAROCAIN",
+        "subtitle": "En gros"
+      },
+      {
+        "title": "EAU DE ROSE PURE",
+        "subtitle": "En gros"
+      },
+      {
+        "title": "ARGILE GHASSOUL EN POUDRE",
+        "subtitle": "En gros"
+      }
+    ]
+  },
+  "productsSection": {
+    "badge": "Notre gamme",
+    "title": "MEILLEURES",
+    "highlight": "VENTES",
+    "description": "",
+    "cta": "Demander le catalogue complet",
+    "subtitle": "Directement à la source au Maroc",
+    "viewAll": "Voir tous les produits",
+    "ctaButton": "Ajouter au panier",
+    "items": [
+      {
+        "name": "Huile d’argan pure",
+        "category": "Huile biologique",
+        "description": "Huile d’argan 100% pure certifiée bio, au cœur du Maroc.",
+        "badgeLabel": "Bio"
+      },
+      {
+        "name": "Huile de figue de barbarie",
+        "category": "Huile biologique",
+        "description": "Production d’huile de graines de figue de barbarie de qualité cosmétique supérieure.",
+        "badgeLabel": "Bio"
+      },
+      {
+        "name": "Savon noir marocain",
+        "category": "Hammam",
+        "description": "Savon noir traditionnel à l’huile d’olive et vitamine E.",
+        "badgeLabel": "Hammam"
+      }
+    ]
+  },
+  "trustSection": {
+    "badge": "Nos capacités",
+    "title": "Fabrication à",
+    "highlight": "grande échelle",
+    "warehouse": {
+      "title": "Entrepôt de pointe",
+      "desc": "50 000 ft² de stockage climatisé"
+    },
+    "bulk": {
+      "title": "Capacité de traitement en vrac",
+      "desc": "500+ tonnes traitées par an"
+    },
+    "stats": [
+      {
+        "label": "Années d’expérience"
+      },
+      {
+        "label": "Pays servis"
+      },
+      {
+        "label": "Unités expédiées"
+      },
+      {
+        "label": "Satisfaction client"
+      }
+    ]
+  },
+  "rfq": {
+    "features": [
+      {
+        "title": "Frais d’expédition au plus bas"
+      },
+      {
+        "title": "Condition d’expédition parfaite"
+      },
+      {
+        "title": "Produits de haute qualité"
+      },
+      {
+        "title": "Service de livraison rapide"
+      }
+    ],
+    "form": {
+      "title": "Devis rapide",
+      "name": "Votre nom",
+      "email": "E-mail",
+      "phone": "Téléphone",
+      "type": "Type",
+      "quantity": "Quantité",
+      "destination": "Destination",
+      "message": "Votre message",
+      "submit": "Envoyer"
+    },
+    "successTitle": "Demande de devis envoyée !",
+    "successMessage": "Nous vous répondrons avec un devis sous 24 heures.",
+    "sendAnother": "Envoyer une autre demande",
+    "readyDispatch": "Prêt à expédier — votre commande part sous 48 heures",
+    "productTypes": {
+      "Organic Virgin": "Bio vierge",
+      "Deodorized": "Désodorisée",
+      "Culinary": "Culinaire"
+    }
+  },
+  "socialProof": {
+    "badge": "Preuve sociale",
+    "title": "Ce que disent",
+    "highlight": "nos clients",
+    "rating": {
+      "label": "Excellent",
+      "score": "Note 4,9/5",
+      "source": "Basé sur des avis Google vérifiés"
+    }
+  },
+  "pressFeature": {
+    "date": "Journée internationale de l’Argania • 10 mai",
+    "title": "L’huile d’argan et l’importance de l’arganier pour le Maroc",
+    "subtitle": "Célébrée comme « l’or liquide » pour la peau, les cheveux et l’excellence culinaire",
+    "intro1": "Le 10 mai, nous célébrons la Journée internationale de l’Argania, un arbre polyvalent qui produit la célèbre huile d’argan. Souvent appelée « l’or liquide », l’huile d’argan est devenue un produit de beauté et de santé reconnu dans le monde entier pour ses nombreux bienfaits et sa polyvalence. Extraite des noix de l’arganier (<em>Argania spinosa</em>), originaire du sud-ouest du Maroc, cette huile est utilisée depuis des siècles par les Berbères, à des fins culinaires et cosmétiques. Sa composition riche en fait une ressource naturelle exceptionnelle, utilisée pour le soin de la peau, des cheveux, la santé et même la cuisine.",
+    "intro2": "Voici quelques-uns des principaux bienfaits de l’huile d’argan :",
+    "benefits": [
+      {
+        "title": "Soin de la peau",
+        "description": "Riche en acides gras essentiels, vitamine E et antioxydants, l’huile d’argan est un excellent hydratant pour les peaux sèches et sensibles. Ses propriétés anti-inflammatoires et sa teneur élevée en acide linoléique aident à maintenir la barrière cutanée, à prévenir la perte d’hydratation et à adoucir la peau. Elle aide aussi à réduire rides et ridules, à favoriser l’élasticité et à apaiser des problèmes comme l’acné, l’eczéma et le psoriasis."
+      },
+      {
+        "title": "Soin des cheveux",
+        "description": "Grâce à sa teneur élevée en vitamine E et antioxydants, l’huile d’argan nourrit et répare les cheveux, améliorant force, douceur et brillance — notamment pour les cheveux secs, abîmés ou frisottants. Quelques gouttes appliquées directement réduisent les pointes fourchues, domptent les frisottis, restaurent l’hydratation et favorisent la santé du cuir chevelu."
+      },
+      {
+        "title": "Anti-âge",
+        "description": "La vitamine E puissante combat les radicaux libres responsables de la dégradation des cellules cutanées. Elle aide à garder une peau jeune et éclatante, en minimisant l’apparence des rides et ridules tout en soutenant l’élasticité à long terme."
+      },
+      {
+        "title": "Bienfaits santé",
+        "description": "L’huile d’argan est aussi un incontournable de la cuisine marocaine. Ses graisses mono-insaturées et polyphénols en font une huile bénéfique pour le cœur, favorisant un meilleur cholestérol, la santé cardiovasculaire et le bien-être général. Ses propriétés anti-inflammatoires peuvent aider à réduire le risque de maladies chroniques comme le diabète et les maladies cardiaques."
+      },
+      {
+        "title": "Soin des ongles et cuticules",
+        "description": "Une nutrition riche aide à hydrater ongles et cuticules, à prévenir les fissures ou le dédoublement et à améliorer la résistance et l’apparence."
+      }
+    ],
+    "importanceTitle": "L’importance de l’arganier pour le Maroc",
+    "importanceIntro": "L’arganier est une partie essentielle du patrimoine naturel et culturel du Maroc. Il n’est pas seulement une source de revenus pour de nombreuses familles : il joue aussi un rôle clé dans l’environnement et l’économie locale.",
+    "importancePoints": [
+      {
+        "title": "Importance économique",
+        "description": "L’huile d’argan est l’un des produits d’exportation les plus importants du Maroc. Sa popularité grandissante sur les marchés internationaux a créé de nouvelles opportunités de revenus pour les communautés rurales du sud du Maroc. Les coopératives dirigées par des femmes, créées dans les années 1990, ont renforcé l’autonomisation économique locale en apportant indépendance financière et accès à l’éducation et aux soins."
+      },
+      {
+        "title": "Importance environnementale",
+        "description": "L’arganier joue un rôle crucial dans la protection de l’écosystème marocain. Adaptés aux régions semi-arides, ses racines profondes aident à prévenir l’érosion des sols et la désertification. Les forêts d’arganiers, couvrant environ 800 000 hectares, constituent une barrière contre l’avancée du Sahara, soutiennent la biodiversité et offrent même de la nourriture aux célèbres chèvres grimpeuses."
+      },
+      {
+        "title": "Importance culturelle et patrimoniale",
+        "description": "L’arganier est depuis longtemps au cœur de la culture berbère. Les méthodes d’extraction traditionnelles, impliquant le broyage manuel des noix, se transmettent de génération en génération et restent une part essentielle du patrimoine. Le processus est souvent une activité collective menée par les femmes, renforçant les liens sociaux."
+      },
+      {
+        "title": "Durabilité et conservation",
+        "description": "La hausse de la demande mondiale a soulevé des inquiétudes sur la durabilité, mais d’importants efforts sont en cours pour protéger les forêts d’arganiers. L’UNESCO a reconnu la forêt d’arganiers comme réserve de biosphère en 1998, encourageant des pratiques responsables. De nombreuses coopératives se concentrent désormais sur une production biologique et durable pour préserver cette ressource."
+      },
+      {
+        "title": "Reconnaissance internationale et préservation",
+        "description": "La Journée internationale de l’Argania, célébrée chaque 10 mai, met en lumière l’importance économique, sociale et environnementale de l’arganier. Elle souligne la nécessité de préserver ce trésor, dont l’impact dépasse largement le Maroc et enrichit les industries mondiales de la beauté, de la santé et du bien-être. L’huile d’argan n’est pas qu’un produit cosmétique ou culinaire : c’est un témoignage de l’ingéniosité et de la résilience du peuple berbère, et une ressource à protéger pour les générations futures."
+      }
+    ],
+    "cta": "Lire l’article complet sur UN Today"
+  },
+  "instagram": {
+    "handle": "@moroccanorganic",
+    "title": "Suivez notre aventure",
+    "description": "Les coulisses d’un sourcing durable, du champ à l’expédition",
+    "cta": "SUIVRE SUR INSTAGRAM"
+  },
+  "professionalCta": {
+    "title": "VOUS ÊTES UN PROFESSIONNEL DU SECTEUR COSMÉTIQUE ?",
+    "button": "ENTRER MAINTENANT !",
+    "href": "/organica/argan-oil-of-morocco"
+  },
+  "privateLabel": {
+    "badge": "Nos services",
+    "discoverTitle": "Découvrez notre service de",
+    "discoverHighlight": "marque blanche",
+    "discoverSuffix": "",
+    "discoverText1": "Organica Group propose des services complets de marque blanche pour les produits de beauté biologiques et les soins du corps, en accompagnant des marques du monde entier dans le développement de gammes cosmétiques de haute qualité. Nous sommes spécialisés dans les solutions de private label bio, en fournissant des services de bout en bout adaptés aux marques professionnelles, distributeurs et détaillants.",
+    "discoverText2": "Notre portefeuille comprend une large gamme de produits de soins du corps et cosmétiques bio, fabriqués selon les normes internationales de qualité et de sécurité. Nous collaborons fièrement avec des partenaires sur de nombreux marchés, notamment aux USA, au Royaume‑Uni, au Canada, en Malaisie, au Japon, en Corée du Sud, en Chine, en Australie, au Qatar, en Arabie Saoudite, en Inde, au Pakistan, en France, aux Pays‑Bas et en Afrique du Sud, garantissant une production fiable, la conformité et des capacités d’export.",
+    "discoverText3": "Avec une expertise éprouvée en fabrication de cosmétiques en marque blanche, Organica Group aide les marques à proposer une beauté bio authentique sur les marchés internationaux avec confiance, constance et qualité certifiée.",
+    "brandTitle": "Ajoutez votre propre marque à",
+    "brandHighlight": "votre produit",
+    "brandText1": "Organica Group propose des solutions complètes de marque blanche et d’emballage sur mesure, permettant à nos clients de développer une identité de marque pleinement personnalisée. Nous offrons des options d’emballage uniques pouvant être adaptées à la vision et au positionnement de votre marque. Grâce à des partenariats de longue date avec des fabricants d’emballages internationaux, nous concevons et produisons des packagings adaptés à toutes les catégories. Toutes les usines partenaires sont approuvées pour les marchés américain et européen, assurant conformité, sécurité et standards qualité. Nous proposons également une large sélection d’emballages standards prêts à l’emploi, conçus pour offrir des solutions modernes, performantes et visuellement attractives.",
+    "brandText2": "Personnalisez vos produits en ajoutant votre logo et votre branding pour créer une ligne de marque blanche distinctive. Que votre projet porte sur l’huile d’argan, l’eau de rose, l’huile de figue de barbarie, la poudre de Nila, la poudre d’Aker Fassi ou des essentiels de soins naturels, nous fournissons une solution de bout en bout pour lancer votre marque avec une origine authentique. Notre équipe design vous accompagne tout au long du processus, avec des conseils experts pour développer une gamme alignée sur vos objectifs business.",
+    "brandText3": "Associez‑vous à Organica Group, fabricant de confiance, pour enrichir votre marque avec des produits naturels de haute qualité, combinant authenticité, qualité certifiée et production fiable en marque blanche sur chaque article.",
+    "countriesServed": "Pays servis",
+    "globalExport": "Prêts pour l’export mondial"
+  }
+}

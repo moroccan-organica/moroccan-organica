@@ -1,0 +1,120 @@
+{
+  "hero": {
+    "label": "Fabrication en marque blanche",
+    "title": "Lancez votre propre marque de beauté marocaine",
+    "description": "Nous fabriquons pour vous des soins visage et cheveux premium, 100% biologiques, sous votre propre marque.",
+    "cta": "Télécharger le catalogue & les tarifs"
+  },
+  "stats": [
+    {
+      "label": "Client Satisfaction"
+    },
+    {
+      "label": "Projects Completed"
+    },
+    {
+      "label": "Competitive Wholesale Pricing"
+    }
+  ],
+  "intro": {
+    "label": "Qualité premium",
+    "title": "Cosmétiques bio marocains – Marque blanche",
+    "description1": "Les cosmétiques biologiques marocains font partie des meilleures options pour se démarquer sur le marché. Si vous recherchez des produits haut de gamme, respectueux de la peau et des cheveux, puisant leur efficacité dans l’environnement marocain, nos formules sont idéales.",
+    "description2": "Nous vous offrons la possibilité de lancer votre propre marque de produits de beauté naturels marocains, avec des formules efficaces et des ingrédients 100% bio, adaptés à tous les types de peaux et de cheveux."
+  },
+  "performanceSnapshot": {
+    "label": "Aperçu de performance",
+    "title": "Ce que nos partenaires valorisent",
+    "bars": [
+      { "label": "Projets réalisés" },
+      { "label": "Satisfaction clients" },
+      { "label": "Tarifs les plus bas" }
+    ]
+  },
+  "expertise": {
+    "label": "Notre expertise",
+    "title": "Pourquoi choisir les cosmétiques bio marocains ?",
+    "features": [
+      {
+        "title": "Qualité et naturalité garanties",
+        "description": "Nos produits sont élaborés à partir d’ingrédients naturels qui font la réputation du Maroc, comme l’huile d’argan, la poudre de sidr ou l’huile de rose. Chaque référence est soumise à des contrôles qualité exigeants afin d’assurer efficacité et sécurité."
+      },
+      {
+        "title": "Éclat et régénération de la peau",
+        "description": "Les soins bio marocains illuminent naturellement le teint, atténuent les taches brunes et réduisent les rides. Enrichis en vitamines et antioxydants, ils apportent à la peau une luminosité durable et une vraie vitalité."
+      },
+      {
+        "title": "Nutrition et hydratation des cheveux",
+        "description": "Grâce à des ingrédients comme l’huile d’argan, nos formules fortifient la fibre capillaire, stimulent la pousse et apportent une brillance naturelle. Elles contribuent aussi à hydrater les cheveux et à traiter pellicules, casse et chute."
+      },
+      {
+        "title": "Protection contre les agressions extérieures",
+        "description": "Riches en acides gras et en vitamine E, nos ingrédients aident à protéger la peau et les cheveux des effets néfastes de la pollution et des rayons UV."
+      }
+    ]
+  },
+  "advantages": {
+    "title": "Les atouts uniques de la marque blanche",
+    "list": [
+      "Ingrédients 100% naturels et biologiques",
+      "Sans agents chimiques agressifs",
+      "Protection contre les rides et les signes de l’âge",
+      "Formules équilibrées pour peaux sèches, grasses et normales",
+      "Convient à tous les types de peaux, même sensibles",
+      "Packaging et étiquettes entièrement personnalisables"
+    ]
+  },
+  "process": {
+    "label": "Processus simplifié",
+    "title": "Comment démarrer votre marque blanche",
+    "steps": [
+      {
+        "title": "Sélection des produits",
+        "description": "Définissez la gamme que vous souhaitez lancer sous votre marque : huiles de soin, crèmes hydratantes, shampoings et autres produits bio."
+      },
+      {
+        "title": "Design du packaging et du logo",
+        "description": "Nous vous accompagnons dans la création d’un packaging et d’une identité visuelle en phase avec l’image de votre marque."
+      },
+      {
+        "title": "Personnalisation des formules",
+        "description": "Vous pouvez adapter les formules en fonction des besoins de votre marché local et du profil de votre clientèle."
+      }
+    ]
+  },
+  "terms": {
+    "label": "Conditions claires",
+    "title": "Conditions de partenariat",
+    "conditions": [
+      {
+        "category": "Tubes / pots",
+        "note": "Quantité minimale de commande"
+      },
+      {
+        "category": "Boîtes",
+        "note": "Emballage adapté à la vente au détail"
+      },
+      {
+        "category": "Étiquettes personnalisées",
+        "note": "Impression de haute qualité"
+      },
+      {
+        "category": "Services de design",
+        "note": "Possibles en option ou via vos propres maquettes"
+      },
+      {
+        "category": "Langues",
+        "note": "Anglais, arabe, français et plus encore"
+      }
+    ]
+  },
+  "compliance": {
+    "title": "Note sur la réglementation à l’export",
+    "description": "Les douanes n’autorisent pas l’exportation de produits cosmétiques non étiquetés. Il est donc nécessaire de prévoir au minimum des autocollants facilement amovibles afin d’éviter tout problème lors du passage en douane."
+  },
+  "cta": {
+    "title": "Prêt à vous lancer ?",
+    "description": "Organica Group est le partenaire industriel idéal pour vos projets de marque blanche. Avec une large gamme de soins bio pour la peau et le corps, nous vous offrons flexibilité, qualité haut de gamme et prix compétitifs.",
+    "buttonText": "Contacter notre équipe export"
+  }
+}

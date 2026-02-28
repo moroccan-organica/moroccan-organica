@@ -2,7 +2,7 @@ import { withAuth } from 'next-auth/middleware';
 import type { NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
 
-const locales = ['en', 'ar'];
+const locales = ['en', 'ar', 'fr'];
 const defaultLocale = 'en';
 
 // Define the middleware function

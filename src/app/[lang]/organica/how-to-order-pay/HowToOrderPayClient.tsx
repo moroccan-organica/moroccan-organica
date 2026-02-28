@@ -48,6 +48,33 @@ export default function HowToOrderPayClient({ lang }: HowToOrderPayClientProps) 
             followProcedure: "And then Follow Normal Procedure to Checkout",
             happyShopping: "Click Continue... Happy Shopping!"
         },
+        fr: {
+            heroTitle: "Comment commander et payer",
+            heroDesc: "Suivez notre guide simple pour une commande sans accroc",
+            breadcrumbCurrent: "Comment commander et payer",
+            overviewText: (
+                <>
+                    <p>
+                        Après avoir passé commande, une fois votre paiement traité, la date de pression de l&apos;huile est fixée selon la file des commandes en cours. Vous recevez ainsi une huile d&apos;argan avec sa durée de conservation complète.
+                        Une fois l&apos;huile pressée et les sédiments déposés, elle est envoyée aux douanes pour des analyses sur échantillon afin de confirmer l&apos;origine et la pureté du produit avant export.
+                        Lorsque votre colis est remis au transporteur, vous êtes informé en temps utile du suivi pour estimer la date de livraison (idéal si vous avez des engagements clients, etc.).
+                    </p>
+                    <p>
+                        La durée de pression dépend de la file des commandes. Dès que vous confirmez votre commande, nous avançons avec vous et restons disponibles pour toute question.
+                        Merci de soutenir l&apos;huile d&apos;argan traditionnelle et biologique.
+                    </p>
+                </>
+            ),
+            payTitle: "Payer sans compte PayPal",
+            payDesc: "Vous n'avez pas de compte PayPal ? Vous souhaitez payer par carte bancaire ? Aucun problème, c'est possible.",
+            acceptedCards: "Nous acceptons les paiements par cartes majeures : VISA, MASTERCARD, AMEX, DISCOVER",
+            noAccountNeeded: "Vous n'avez pas besoin de compte pour le paiement PayPal.",
+            simpleStep1: "Pour payer par carte ou si vous n'avez pas de compte PayPal, c'est très simple !",
+            simpleStep2: "Cliquez sur Paiement PayPal puis sur « Payer en tant qu'invité »",
+            otherOption: "Parfois le libellé affiche « Payer par carte de débit ou de crédit » : cliquez dessus.",
+            followProcedure: "Puis suivez la procédure habituelle pour finaliser la commande",
+            happyShopping: "Cliquez sur Continuer... Bon shopping !"
+        },
         ar: {
             heroTitle: "الطلب والدفع",
             heroDesc: "اتبع دليلنا البسيط لعملية طلب سلسة",
@@ -87,6 +114,7 @@ export default function HowToOrderPayClient({ lang }: HowToOrderPayClientProps) 
     };
 
     const t = content[lang as keyof typeof content] || content.en;
+    const homeLabel = isAr ? "الصفحة الرئيسية" : lang === "fr" ? "Accueil" : "Home";
 
     return (
         <div className="min-h-screen bg-background text-foreground">
@@ -95,7 +123,7 @@ export default function HowToOrderPayClient({ lang }: HowToOrderPayClientProps) 
                 description={t.heroDesc}
                 backgroundImage="/images/slider/hero-authentic-argan-oil.webp"
                 breadcrumbs={[
-                    { label: isAr ? "الصفحة الرئيسية" : "Home", href: `/${lang}` },
+                    { label: homeLabel, href: `/${lang}` },
                     { label: isAr ? "أورغانيكا" : "Organica", href: `/${lang}/organica` },
                     { label: t.breadcrumbCurrent },
                 ]}

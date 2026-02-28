@@ -2,10 +2,13 @@ export interface BenefitPost {
     slug: string;
     title: string;
     title_ar?: string;
+    title_fr?: string;
     content: string; // HTML string
     content_ar?: string; // HTML string
+    content_fr?: string; // HTML string
     excerpt: string;
     excerpt_ar?: string;
+    excerpt_fr?: string;
     image: string;
 }
 
@@ -13,10 +16,12 @@ export const benefitsData: BenefitPost[] = [
     {
         slug: "moroccan-black-soap-benefits",
         title: "Moroccan Black Soap Benefits",
+        title_fr: "Bienfaits du savon noir marocain",
         title_ar: "فوائد الصابون البلدي المغربي",
         image: "/images/benefits/moroccan-black-soap.jpg",
         excerpt: "Moroccan organic black soap is the latest skincare product to reach 'holy grail' status, and for good reason. Touted as a solution for breakouts, hyperpigmentation, and more.",
         excerpt_ar: "الصابون الأسود العضوي المغربي هو أحدث منتجات العناية بالبشرة التي وصلت إلى حالة 'الكأس المقدسة'، ولسبب وجيه. يُروج له كحل للبثور وفرط التصبغ والمزيد.",
+        excerpt_fr: "Le savon noir marocain bio est devenu un incontournable des soins de la peau. Reconnu pour aider en cas de boutons, d’hyperpigmentation et plus encore.",
         content: `
         <h2>What is Moroccan organic black soap?</h2>
         <p>Moroccan organic black soap is the latest skincare product to reach "holy grail" status, and for good reason.</p>
@@ -209,14 +214,57 @@ export const benefitsData: BenefitPost[] = [
         <p><bdi>الصابون العضوي المغربي مليء بالعناصر الغذائية الأساسية المصممة لتعزيز لون بشرتك الطبيعي ومساعدتك على التألق من الداخل إلى الخارج. لتحقيق أقصى قدر من النتائج، تدرجي في استخدام الصابون صباحاً ومساءً.</bdi></p>
         <p><bdi>إذا بدأت في تجربة أي طفح جلدي غير عادي أو تهيج، فتوقفي عن الاستخدام حتى تتمكني من استشارة طبيبك أو طبيب الأمراض الجلدية. يمكنهم المساعدة في تحديد سبب أعراضك وما إذا كان يجب عليك التوقف بشكل دائم عن استخدام الصابون الأسود.</bdi></p>
         `,
+        content_fr: `
+        <h2>Qu’est-ce que le savon noir marocain bio ?</h2>
+        <p>Le savon noir marocain bio est devenu un incontournable des soins de la peau, et pour cause.</p>
+        <p>Reconnu pour aider en cas de boutons, d’hyperpigmentation, de vergetures et bien plus encore, le savon noir est un achat beauté idéal à petit budget.</p>
+        <p>Contrairement aux savons de supermarché, le vrai savon noir est fabriqué à la main à partir d’ingrédients végétaux. Chaque achat équitable soutient une production durable et, souvent, les communautés qui le produisent.</p>
+        <p>Vous hésitez encore ? Lisez la suite pour tout savoir sur ce produit culte et comment l’intégrer à votre routine.</p>
+        <h3>1. Il est antibactérien</h3>
+        <p>Ses propriétés antibactériennes naturelles en font une excellente alternative aux nettoyants chimiques. Il peut même éliminer plus de bactéries que certains nettoyants classiques. Malgré son efficacité, il reste doux pour le visage, les mains et le corps.</p>
+        <h3>2. Il convient à tous les types de peaux</h3>
+        <p>Peau sèche ou sensible : le savon noir marocain bio est naturellement sans parfum — choisissez un produit mentionnant « non parfumé ». Les peaux grasses ou mixtes peuvent aussi l’utiliser : il aide à équilibrer le sébum sans décaper ni surgraisser.</p>
+        <h3>3. Il est hydratant</h3>
+        <p>Le beurre de karité est un ingrédient clé. L’huile de coco et le cacao apportent en plus de la douceur et de l’hydratation.</p>
+        <h3>4. Il ne rend pas la peau grasse</h3>
+        <p>Pour les peaux mixtes, le savon noir aide à réguler le sébum sans excès.</p>
+        <h3>5. Il apaise les irritations</h3>
+        <p>Il peut calmer les démangeaisons et irritations liées à l’eczéma, la dermatite de contact ou les allergies cutanées, et même améliorer certaines éruptions (eczéma, psoriasis). Pour renforcer ces effets, privilégiez un savon contenant de l’avoine.</p>
+        <h3>6. Il est anti-inflammatoire</h3>
+        <p>Riche en vitamines A et E, antioxydantes, il aide à protéger les tissus cutanés et peut être utile en cas de rosacée.</p>
+        <h3>7. Il aide à lutter contre l’acné</h3>
+        <p>En régulant le sébum et grâce au karité, il peut réparer les cellules abîmées. Ses propriétés antimicrobiennes peuvent aussi améliorer les acnés sévères.</p>
+        <h3>8. Il peut atténuer les ridules</h3>
+        <p>Le karité et l’huile de coco aident à limiter la perte de collagène et à lisser les ridules. La texture légèrement granuleuse exfolie en douceur.</p>
+        <h3>9. Il protège contre le photo-vieillissement</h3>
+        <p>Les antioxydants du karité aident à protéger la peau des effets du soleil et des taches.</p>
+        <h3>10. Il améliore la texture de la peau</h3>
+        <p>Le savon noir brut, peu lissé, agit comme un gommage naturel et améliore le grain de peau.</p>
+        <h3>11. Il limite les irritations du rasage</h3>
+        <p>L’exfoliation douce et l’hydratation aident à éviter les petits boutons et rougeurs après rasage ou épilation.</p>
+        <h3>12. Il peut réduire l’hyperpigmentation</h3>
+        <p>L’hyperpigmentation est souvent liée aux cicatrices d’acné et au soleil — le savon noir peut aider à apaiser et prévenir.</p>
+        <h3>13. Il peut atténuer cicatrices et vergetures</h3>
+        <p>Grâce au karité et à la vitamine E, il peut réduire les rougeurs et l’aspect des vergetures et cicatrices.</p>
+        <h3>14. Il est antifongique</h3>
+        <p>Des études montrent son efficacité sur plusieurs types de champignons, dont Candida albicans. Il peut être utilisé pour les mycoses des ongles ou le pied d’athlète.</p>
+        <h3>D’où viennent ces bienfaits ?</h3>
+        <p>Ils viennent des ingrédients : huile d’olive et pâte d’olive, eau douce, huile noire extraite, hydroxyde de potassium. Certains savons contiennent aussi des huiles essentielles (eucalyptus) ou de l’avoine, de l’aloe vera.</p>
+        <h3>Comment utiliser le savon noir marocain</h3>
+        <p>Le savon noir brut a une texture granuleuse. Pour un usage quotidien, prélevez un morceau et faites mousser entre les mains, ou dissolvez-le dans l’eau pour un usage liquide. Pour un gommage, appliquez le pain directement en douceur. Rincez à l’eau tiède puis appliquez votre soin hydratant.</p>
+        <h3>Effets secondaires et précautions</h3>
+        <p>Utilisez-le correctement pour éviter les désagréments. Si la peau tire, vous pouvez mélanger le savon à une cuillère à café de miel. En cas d’irritation ou d’allergie, arrêtez et consultez un dermatologue. Préférez un savon authentique, de préférence issu du commerce équitable.</p>
+        `,
     },
     {
         slug: "moroccan-indigo-powder-benefits",
         title: "Moroccan Indigo Powder Benefits",
+        title_fr: "Bienfaits de la poudre d’indigo marocaine",
         title_ar: "فوائد مسحوق النيلة المغربية",
         image: "/images/benefits/nila-powder.jpg",
         excerpt: "Moroccan Indigo Powder is a natural powder extracted from the indigo plant, known for its unique properties for improving skin and hair thanks to its composition rich in minerals and vitamins.",
         excerpt_ar: "مسحوق النيلة المغربية هو مسحوق طبيعي مستخلص من نبات النيلة، معروف بخصائصه الفريدة لتحسين البشرة والشعر بفضل تركيبته الغنية بالمعادن والفيتامينات.",
+        excerpt_fr: "La poudre d’indigo marocaine est une poudre naturelle extraite de l’indigo, connue pour ses propriétés uniques sur la peau et les cheveux grâce à sa richesse en minéraux et vitamines.",
         content: `
         <h3>What is Moroccan Indigo Powder?</h3>
         <p>Moroccan Indigo Powder is a natural powder extracted from the indigo plant, which grows in various regions of Morocco. This powder is an important part of Moroccan beauty heritage. It is distinguished by its unique properties for improving skin and hair thanks to its composition rich in minerals and vitamins.</p>
@@ -312,15 +360,41 @@ export const benefitsData: BenefitPost[] = [
 
         <h3>أفضل الأماكن لشراء مسحوق النيلة المغربية</h3>
         <p>إذا كنت تبحث عن مسحوق نيلة عالي الجودة، يمكنك العثور عليه في <strong>مجموعة أورجانيكا (Organica Group SARL)</strong>، التي تقدم مسحوق نيلة عضوي ممتاز، تم استخلاصه بعناية من أجود النباتات في المغرب.</p>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que la poudre d’indigo marocaine ?</h3>
+        <p>La poudre d’indigo marocaine est une poudre naturelle extraite de l’indigo, qui pousse dans plusieurs régions du Maroc. Elle fait partie du patrimoine beauté marocain et se distingue par ses propriétés uniques pour la peau et les cheveux grâce à sa richesse en minéraux et vitamines.</p>
+        <h3>Comment est-elle extraite ?</h3>
+        <p>Elle est obtenue par séchage et broyage des feuilles, pour donner une poudre fine au bleu caractéristique et à l’odeur fraîche.</p>
+        <h3>Bienfaits pour la peau et les cheveux</h3>
+        <h4>1. Pour la peau</h4>
+        <ul>
+        <li><strong>Éclaircissement et uniformité :</strong> propriétés antibactériennes et antioxydantes, aide à unifier le teint et à atténuer les taches.</li>
+        <li><strong>Acné :</strong> propriétés antiseptiques pour réduire rougeurs et gonflements.</li>
+        <li><strong>Détox et impuretés :</strong> agit comme exfoliant naturel pour une peau nette et saine.</li>
+        <li><strong>Anti-âge :</strong> antioxydants pour lutter contre les rides et le vieillissement prématuré.</li>
+        </ul>
+        <h4>2. Pour les cheveux</h4>
+        <ul>
+        <li><strong>Stimulation de la pousse :</strong> minéraux et vitamines qui favorisent la microcirculation du cuir chevelu.</li>
+        <li><strong>Renforcement :</strong> aide à réparer et fortifier les cheveux abîmés.</li>
+        <li><strong>Antipelliculaire :</strong> propriétés antiseptiques et antibactériennes.</li>
+        </ul>
+        <h3>Comment l’utiliser ?</h3>
+        <p><strong>En masque visage :</strong> mélanger avec de l’eau de rose ou de l’huile d’argan, appliquer 10–15 min puis rincer. <strong>En masque capillaire :</strong> mélanger avec eau tiède ou une huile capillaire, laisser poser 30 min avant le shampooing. <strong>En soin peau :</strong> appliquer sur une peau nettoyée pour équilibrer le sébum et donner de l’éclat.</p>
+        <h3>Où acheter ?</h3>
+        <p>Chez <strong>Organica Group SARL</strong>, qui propose une poudre d’indigo bio premium, extraite des meilleures plantes au Maroc.</p>
         `
     },
     {
         slug: "prickly-pear-seed-oil-benefits",
         title: "Prickly Pear Seed Oil Benefits",
+        title_fr: "Bienfaits de l’huile de graines de figue de barbarie",
         title_ar: "فوائد زيت بذور التين الشوكي",
         image: "/images/benefits/prickly-pear.jpg",
         excerpt: "Prickly pear seed oil is a wonderful natural oil extracted from the seeds of the prickly pear fruit, rich in essential fatty acids and vitamins for skin and hair.",
         excerpt_ar: "زيت بذور التين الشوكي هو زيت طبيعي رائع يُستخلص من بذور فاكهة التين الشوكي، غني بالأحماض الدهنية الأساسية والفيتامينات للبشرة والشعر.",
+        excerpt_fr: "L’huile de graines de figue de barbarie est une huile naturelle précieuse, riche en acides gras essentiels et en vitamines pour la peau et les cheveux.",
         content: `
         <h3>What is Prickly Pear Seed Oil?</h3>
         <p>Prickly pear seed oil is a wonderful natural oil extracted from the seeds of the prickly pear fruit. This oil is rich in many beneficial nutrients, such as essential fatty acids and vitamins, which contribute to improved skin and hair health. Prickly pear seed oil is known for its nourishing and antioxidant properties, making it an ideal ingredient in beauty products.</p>
@@ -418,15 +492,30 @@ export const benefitsData: BenefitPost[] = [
 
         <h3>أفضل الأماكن لشراء زيت بذور التين الشوكي</h3>
         <p> إذا كنت ترغب في شراء زيت بذور تين شوكي عالي الجودة، يمكنك العثور عليه في <strong> مجموعة أورجانيكا(Organica Group SARL) </strong>، التي تقدم زيوت طبيعية نقية ومضمونة، بالإضافة إلى منتجات تجميل أخرى تعتمد على مكونات عضوية.</p>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que l’huile de graines de figue de barbarie ?</h3>
+        <p>Huile naturelle précieuse extraite des graines du fruit du figuier de Barbarie, riche en acides gras essentiels et en vitamines pour la peau et les cheveux. Elle est reconnue pour ses propriétés nourrissantes et antioxydantes. Cette huile rare, produite dans les régions arides du Maroc, est l’une des plus rares et efficaces contre le vieillissement et les rides.</p>
+        <h3>Extraction</h3>
+        <p>Extraction par pression à froid, sans solvants, pour préserver tous les nutriments et garantir une huile 100 % pure.</p>
+        <h3>Bienfaits pour la peau</h3>
+        <ul><li>Hydratation profonde, idéale pour peaux sèches ou matures.</li><li>Antioxydants pour lutter contre les rides et le vieillissement.</li><li>Vitamine C pour unifier le teint et atténuer les taches.</li><li>Propriétés antibactériennes pour l’acné et les inflammations.</li></ul>
+        <h3>Bienfaits pour les cheveux</h3>
+        <ul><li>Renforcement de la racine aux pointes, moins de casse.</li><li>Stimulation de la microcirculation du cuir chevelu et de la pousse.</li><li>Cheveux lisses, brillants et revitalisés, surtout secs ou abîmés.</li></ul>
+        <h3>Utilisation</h3>
+        <p>En soin quotidien sur le visage et le corps pour hydrater et illuminer. En masque capillaire 30 min avant le shampooing, ou en après-shampooing pour la douceur et la brillance. Choisir une huile pression à froid et certifiée bio.</p>
+        <p><strong>Organica Group SARL</strong> propose une huile de figue de barbarie pure et certifiée, ainsi que d’autres produits de beauté bio.</p>
         `
     },
     {
         slug: "rose-water-benefits",
         title: "Rose Water Benefits",
+        title_fr: "Bienfaits de l’eau de rose",
         title_ar: "فوائد ماء الورد",
         image: "/images/benefits/rose-damascena.jpg",
         excerpt: "Rose water is a liquid extracted from rose petals through steam distillation, known for its fragrant aroma and soothing properties for skin and hair.",
         excerpt_ar: "ماء الورد هو سائل يُستخلص من بتلات الورد عن طريق التقطير بالبخار، معروف برائحته العطرة وخصائصه المهدئة للبشرة والشعر.",
+        excerpt_fr: "L’eau de rose est un liquide obtenu par distillation des pétales de rose, réputée pour son parfum et ses propriétés apaisantes pour la peau et les cheveux.",
         content: `
         <h3>What is Rose Water?</h3>
         <p>Rose water is a liquid extracted from rose petals through steam distillation. It is one of the oldest natural ingredients used by civilizations in beauty treatments. Rose water is distinguished by its fragrant aroma and soothing properties, making it ideal for skin and hair.</p>
@@ -538,15 +627,73 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>مجموعة أورجانيكا (Organica Group SARL):</strong> تقدم ماء ورد عضوي 100٪، مُستخلص بعناية من أجود أنواع الورد في المغرب.</li>
         <li>المتاجر الإلكترونية المتخصصة في المنتجات الطبيعية والعناية بالبشرة.</li>
         </ul>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que l’eau de rose ?</h3>
+        <p>L’eau de rose est un liquide obtenu par distillation des pétales de rose à la vapeur. C’est l’un des plus anciens ingrédients naturels utilisés en soins de beauté. Elle se distingue par son parfum et ses propriétés apaisantes, idéale pour la peau et les cheveux.</p>
+        <p>L’eau de rose n’est pas qu’un ingrédient parfumé : elle entre dans la composition de nombreux produits de soin pour la peau et les cheveux. Riche en antioxydants et en propriétés anti-inflammatoires, elle convient parfaitement au nettoyage et à l’apaisement de la peau.</p>
+
+        <h3>Comment est obtenue l’eau de rose ?</h3>
+        <p>L’eau de rose est obtenue par distillation à la vapeur. Les pétales sont chauffés pour en extraire l’huile essentielle, puis distillés en eau de rose. Le produit final conserve ses propriétés naturelles, sans additifs chimiques.</p>
+
+        <h3>Types d’eau de rose</h3>
+        <ul>
+        <li><strong>Eau de rose pour la peau :</strong> utilisée comme hydratant et démaquillant naturel, adaptée à tous les types de peau, y compris les peaux sensibles.</li>
+        <li><strong>Eau de rose pour les cheveux :</strong> elle hydrate le cuir chevelu et renforce les cheveux grâce à ses propriétés naturelles.</li>
+        </ul>
+
+        <h3>Bienfaits de l’eau de rose pour la peau et les cheveux</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <ul>
+        <li><strong>Hydratation :</strong> l’eau de rose hydrate naturellement et apporte douceur et éclat.</li>
+        <li><strong>Anti-âge :</strong> la vitamine C qu’elle contient aide à atténuer les rides et à stimuler le collagène.</li>
+        <li><strong>Apaisement :</strong> ses propriétés antibactériennes et anti-inflammatoires sont utiles en cas d’acné.</li>
+        <li><strong>Éclat :</strong> elle aide à unifier le teint et à illuminer la peau.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <ul>
+        <li><strong>Hydratation des cheveux :</strong> elle hydrate et apporte de la brillance naturelle.</li>
+        <li><strong>Stimulation de la pousse :</strong> elle stimule la microcirculation du cuir chevelu et favorise la pousse.</li>
+        <li><strong>Antipelliculaire :</strong> ses propriétés antibactériennes aident à lutter contre les pellicules et à apaiser le cuir chevelu.</li>
+        </ul>
+
+        <h3>Comment utiliser l’eau de rose ?</h3>
+        <h4>Pour la peau</h4>
+        <ul>
+        <li><strong>En hydratant quotidien :</strong> appliquez l’eau de rose directement sur le visage après le nettoyage.</li>
+        <li><strong>En traitement de l’acné :</strong> utilisez-la en lotion après le lavage pour calmer rougeurs et inflammations.</li>
+        <li><strong>En démaquillant naturel :</strong> elle nettoie et apaise en douceur.</li>
+        </ul>
+
+        <h4>Pour les cheveux</h4>
+        <ul>
+        <li><strong>Soin des cheveux abîmés :</strong> utilisez-la après le shampooing comme après-shampooing ou hydratant pour cheveux secs.</li>
+        <li><strong>Soin du cuir chevelu :</strong> massez le cuir chevelu avec l’eau de rose pour stimuler la circulation et la pousse.</li>
+        </ul>
+
+        <h3>Comment choisir une bonne eau de rose ?</h3>
+        <ul>
+        <li>Choisissez une eau de rose 100 % naturelle, sans additifs chimiques.</li>
+        <li>Préférez une eau de rose bio issue de roses naturelles pour une qualité et des bienfaits optimaux.</li>
+        </ul>
+
+        <h3>Où acheter de l’eau de rose de qualité</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose une eau de rose 100 % bio, extraite des plus belles roses du Maroc.</li>
+        <li>Boutiques en ligne spécialisées en produits naturels et soins de la peau.</li>
+        </ul>
         `
     },
     {
         slug: "sidr-powder-benefits",
         title: "Moroccan Sidr Powder Benefits",
+        title_fr: "Bienfaits de la poudre de sidr marocaine",
         title_ar: "فوائد مسحوق السدر المغربي",
         image: "/images/benefits/sidr-powder.jpg",
         excerpt: "Moroccan Sidr Powder is a natural powder extracted from the leaves of the Sidr tree, known for its powerful healing and cosmetic properties for skin and hair.",
         excerpt_ar: "مسحوق السدر المغربي هو بودرة طبيعية تُستخلص من أوراق شجرة السدر، معروفة بخصائصها العلاجية والتجميلية القوية للبشرة والشعر.",
+        excerpt_fr: "La poudre de sidr marocaine est une poudre naturelle extraite des feuilles du jujubier, connue pour ses propriétés curatives et cosmétiques pour la peau et les cheveux.",
         content: `
         <h3>What is Moroccan Sidr Powder?</h3>
         <p>Moroccan Sidr Powder is a natural powder extracted from the leaves of the Sidr tree (Ziziphus spina-christi), a tree known in Morocco and the Middle East for its powerful healing and cosmetic properties. Sidr has a long history in traditional medicine and has been used since ancient times as one of the most important natural ingredients for skin and hair care.</p>
@@ -644,15 +791,66 @@ export const benefitsData: BenefitPost[] = [
         <li>من المثالي أن تكون عضوية ومن مصالح موردين موثوقين.</li>
         <li>يُفضل شراء البودرة من علامة تجارية مرموقة ذات تجارب إيجابية من العملاء.</li>
         </ul>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que la poudre de sidr marocaine ?</h3>
+        <p>La poudre de sidr marocaine est une poudre naturelle extraite des feuilles du jujubier (Ziziphus spina-christi), arbre réputé au Maroc et au Moyen-Orient pour ses propriétés curatives et cosmétiques. Le sidr est utilisé depuis l’Antiquité en médecine traditionnelle pour les soins de la peau et des cheveux.</p>
+
+        <h3>Comment est obtenue la poudre de sidr ?</h3>
+        <p>Les feuilles de sidr sont récoltées avec soin, séchées à l’ombre pour préserver les actifs, puis réduites en une poudre fine 100 % naturelle, sans additifs chimiques. Cette poudre est riche en vitamines, minéraux et antioxydants.</p>
+
+        <h3>Bienfaits de la poudre de sidr marocaine</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <ul>
+        <li><strong>Nettoyage des pores :</strong> le sidr nettoie les impuretés et l’excès de sébum pour une peau propre et lumineuse.</li>
+        <li><strong>Réduction de l’acné :</strong> ses propriétés antibactériennes et anti-inflammatoires aident à traiter l’acné et les boutons.</li>
+        <li><strong>Gommage naturel :</strong> il agit comme un gommage doux, élimine les cellules mortes et donne un teint lisse et lumineux.</li>
+        <li><strong>Unification du teint :</strong> il aide à éclaircir les zones sombres et à atténuer les taches.</li>
+        <li><strong>Élasticité de la peau :</strong> grâce à ses antioxydants, il contribue à lutter contre le vieillissement et les rides.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <ul>
+        <li><strong>Renforcement des racines :</strong> le sidr nourrit le cuir chevelu et renforce les racines.</li>
+        <li><strong>Réduction de la chute :</strong> ses propriétés antiseptiques et stimulantes aident à limiter la chute des cheveux.</li>
+        <li><strong>Brillance et vitalité :</strong> une utilisation régulière rend les cheveux plus doux et brillants.</li>
+        <li><strong>Antipelliculaire :</strong> il purifie le cuir chevelu et réduit les pellicules.</li>
+        </ul>
+
+        <h3>Comment utiliser la poudre de sidr marocaine</h3>
+        <h4>Pour la peau</h4>
+        <ul>
+        <li>Mélangez une cuillère à café de poudre de sidr avec un peu d’eau de rose ou d’eau tiède pour former une pâte.</li>
+        <li>Appliquez sur le visage ou le corps et laissez poser 15 à 20 minutes.</li>
+        <li>Rincez à l’eau tiède puis appliquez votre crème hydratante.</li>
+        <li>Vous pouvez ajouter de l’huile d’argan ou du gel d’aloe vera pour plus d’hydratation.</li>
+        </ul>
+
+        <h4>Pour les cheveux</h4>
+        <ul>
+        <li>Mélangez la poudre de sidr avec de l’eau tiède ou une huile capillaire naturelle (huile d’argan, ricin).</li>
+        <li>Appliquez sur les cheveux et le cuir chevelu.</li>
+        <li>Laissez poser 20 à 30 minutes puis rincez avec un shampooing doux.</li>
+        <li>Une utilisation hebdomadaire améliore efficacement l’état des cheveux.</li>
+        </ul>
+
+        <h3>Comment choisir une bonne poudre de sidr ?</h3>
+        <ul>
+        <li>Vérifiez que la poudre est 100 % naturelle et sans additifs chimiques.</li>
+        <li>Préférez une poudre bio issue de fournisseurs fiables.</li>
+        <li>Choisissez une marque reconnue avec de bons retours clients.</li>
+        </ul>
         `
     },
     {
         slug: "tabrima-powder-benefits",
         title: "Benefits of Moroccan Tbrima Powder",
+        title_fr: "Bienfaits de la poudre marocaine Tbrima",
         title_ar: "فوائد مسحوق التبرمة المغربي",
         image: "/images/benefits/tabrima-powder.jpg",
         excerpt: "Moroccan Tbrima powder is a traditional skincare product used for centuries in Morocco for skin and hair care, known for its natural mineral content.",
         excerpt_ar: "التبرمة المغربية هي منتج تقليدي للعناية بالبشرة استُخدم لقرون في المغرب، معروفة بمحتواها الغني بالمعادن الطبيعية.",
+        excerpt_fr: "La poudre de Tbrima marocaine est un produit de soin traditionnel utilisé depuis des siècles au Maroc, réputé pour sa richesse en minéraux naturels.",
         content: `
         <h3>What is Moroccan Tbrima Powder?</h3>
         <p>Moroccan Tbrima powder is a traditional skincare product used in Morocco. It is one of the natural remedies that Moroccans have used for centuries. Tbrima powder is obtained from the Tbrima plant, which grows in Morocco and is considered one of the most important ingredients in traditional medicine.</p>
@@ -748,15 +946,65 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>مجموعة أورجانيكا (Organica Group SARL):</strong> تقدم بودرة تبريمة مغربية عضوية مستخلصة من أفضل المصادر في المغرب.</li>
         <li>المتاجر الإلكترونية المتخصصة في المنتجات الطبيعية والعناية بالبشرة.</li>
         </ul>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que la poudre de Tbrima marocaine ?</h3>
+        <p>La poudre de Tbrima marocaine est un produit de soin traditionnel utilisé au Maroc depuis des siècles. Elle provient de la plante Tbrima, qui pousse au Maroc et fait partie des ingrédients clés de la médecine traditionnelle.</p>
+
+        <h3>Comment est obtenue la poudre de Tbrima ?</h3>
+        <p>La poudre de Tbrima est une poudre fine extraite de la plante Tbrima, riche en minéraux naturels (magnésium, potassium, fer). Les feuilles sont séchées puis broyées pour obtenir une poudre utilisée dans de nombreux soins de la peau.</p>
+
+        <h3>Bienfaits de la poudre de Tbrima marocaine</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <ul>
+        <li><strong>Éclaircissement :</strong> la poudre de Tbrima aide à unifier le teint et à atténuer les taches et la pigmentation.</li>
+        <li><strong>Hydratation :</strong> elle hydrate en profondeur, adaptée aux peaux sèches ou sujettes aux rides.</li>
+        <li><strong>Traitement de l’acné :</strong> ses propriétés antibactériennes aident à traiter l’acné et à calmer les inflammations.</li>
+        <li><strong>Gommage :</strong> elle peut servir de gommage naturel pour éliminer les cellules mortes et les impuretés.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <ul>
+        <li><strong>Renforcement :</strong> la poudre de Tbrima contribue à renforcer les cheveux et à limiter la chute.</li>
+        <li><strong>Stimulation de la pousse :</strong> elle stimule la circulation au niveau du cuir chevelu et favorise la pousse.</li>
+        <li><strong>Antipelliculaire :</strong> elle peut être utilisée comme soin naturel contre les pellicules.</li>
+        </ul>
+
+        <h3>Comment utiliser la poudre de Tbrima marocaine</h3>
+        <h4>1. Pour la peau</h4>
+        <ul>
+        <li><strong>Masque :</strong> mélangez la poudre avec de l’eau de rose ou de l’huile d’argan pour former une pâte. Appliquez 15 à 20 minutes puis rincez à l’eau tiède.</li>
+        <li><strong>Gommage :</strong> mélangez avec de l’eau tiède ou du jus de citron pour un gommage efficace.</li>
+        </ul>
+
+        <h4>2. Pour les cheveux</h4>
+        <ul>
+        <li><strong>Soin du cuir chevelu :</strong> mélangez avec de l’eau tiède ou une huile capillaire, appliquez sur le cuir chevelu 30 minutes puis rincez.</li>
+        <li><strong>Masque capillaire :</strong> utilisez avec de l’huile d’argan pour nourrir et faire briller les cheveux.</li>
+        </ul>
+
+        <h3>Comment choisir une bonne poudre de Tbrima ?</h3>
+        <ul>
+        <li>Vérifiez que la poudre est 100 % naturelle et sans traitement chimique.</li>
+        <li>Préférez une poudre de Tbrima bio d’origine naturelle.</li>
+        </ul>
+
+        <h3>Où acheter de la poudre de Tbrima marocaine</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose de la poudre de Tbrima marocaine bio issue des meilleures sources au Maroc.</li>
+        <li>Boutiques en ligne spécialisées en produits naturels et soins de la peau.</li>
+        </ul>
         `
     },
     {
         slug: "argan-oil-benefits",
         title: "Moroccan argan oil benefits",
+        title_fr: "Bienfaits de l’huile d’argan marocaine",
         title_ar: "فوائد زيت الأرغان المغربي",
         image: "/images/benefits/what-is-argan-oil.jpg",
         excerpt: "Argan oil is a vegetable oil extracted from the argan tree, considered one of the most valuable oils due to its exceptional health and beauty benefits.",
         excerpt_ar: "زيت الأركان هو زيت نباتي يُستخلص من شجرة الأركان، ويُعد من أثمن الزيوت بفضل فوائده الصحية والجمالية الاستثنائية.",
+        excerpt_fr: "L’huile d’argan est une huile végétale extraite de l’arganier, l’une des huiles les plus précieuses pour la santé et la beauté.",
         content: `
         <h3>What is Argan Oil?</h3>
         <p>Argan oil is a vegetable oil extracted from the argan tree (Argania spinosa), which grows in southwestern Morocco. It is considered one of the most valuable oils in the world due to its exceptional health and beauty benefits. Characterized by its light golden color and unique flavor, argan oil has been used for centuries in skin and hair care, as well as in traditional medicine.</p>
@@ -884,15 +1132,81 @@ export const benefitsData: BenefitPost[] = [
 
         <h3> الخاتمة </h3>
         <p> زيت الأركان منتج طبيعي رائع بخصائص مذهلة للبشرة والشعر والصحة العامة.إذا كنت تبحثين عن الجودة، تأكدي من اختياره بعناية من مصدر موثوق لضمان أفضل النتائج.</p>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que l’huile d’argan ?</h3>
+        <p>L’huile d’argan est une huile végétale extraite de l’arganier (Argania spinosa), qui pousse dans le sud-ouest du Maroc. Elle est considérée comme l’une des huiles les plus précieuses au monde pour la santé et la beauté. De couleur dorée et au parfum unique, elle est utilisée depuis des siècles pour la peau, les cheveux et la médecine traditionnelle.</p>
+
+        <h3>Comment est-elle extraite ?</h3>
+        <p>L’huile d’argan est extraite des amandons du fruit de l’arganier par un procédé qui associe torréfaction et pression à froid, afin d’obtenir une huile pure et de qualité.</p>
+
+        <h3>Types d’huile d’argan</h3>
+        <h4>Huile d’argan cosmétique (peau et cheveux)</h4>
+        <p>Obtenue par pression à froid des amandons non torréfiés, elle est riche en vitamines et acides gras essentiels, idéale pour nourrir la peau et les cheveux.</p>
+
+        <h4>Huile d’argan culinaire</h4>
+        <p>Les amandons sont torréfiés avant pression. Cette huile est utilisée en cuisine, notamment dans la cuisine marocaine.</p>
+
+        <h3>Bienfaits de l’huile d’argan</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <p>L’huile d’argan hydrate en profondeur grâce à ses acides gras essentiels et à la vitamine E.</p>
+        <ul>
+        <li><strong>Hydratation :</strong> elle aide à régénérer les cellules et à adoucir la peau.</li>
+        <li><strong>Anti-âge :</strong> la vitamine E aide à lutter contre les rides et le vieillissement prématuré.</li>
+        <li><strong>Acné :</strong> ses propriétés antibactériennes aident à calmer les inflammations.</li>
+        <li><strong>Élasticité :</strong> elle améliore la fermeté et la résistance de la peau.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <p>L’huile d’argan est l’une des meilleures huiles naturelles pour la santé capillaire.</p>
+        <ul>
+        <li><strong>Nourriture :</strong> elle hydrate, renforce et fait briller les cheveux.</li>
+        <li><strong>Pointes :</strong> elle limite les fourches et la casse.</li>
+        <li><strong>Pousse :</strong> la vitamine E stimule la microcirculation du cuir chevelu.</li>
+        </ul>
+
+        <h4>3. Bienfaits pour la santé</h4>
+        <ul>
+        <li><strong>Cœur :</strong> les acides gras insaturés contribuent à faire baisser le mauvais cholestérol.</li>
+        <li><strong>Anti-inflammatoire :</strong> elle peut aider en cas d’inflammations chroniques (ex. arthrite).</li>
+        </ul>
+
+        <h3>Comment utiliser l’huile d’argan ?</h3>
+        <h4>1. Pour la peau</h4>
+        <p><strong>En hydratant quotidien :</strong> appliquez sur le visage et le corps après la douche.</p>
+        <p><strong>Peau sèche :</strong> appliquez directement sur les zones sèches ou gercées.</p>
+
+        <h4>2. Pour les cheveux</h4>
+        <p><strong>Soin profond :</strong> appliquez des racines aux pointes, laissez poser une heure ou plus avant le shampooing.</p>
+        <p><strong>Après-shampooing :</strong> utilisez comme conditionneur naturel après le lavage.</p>
+
+        <h3>Comment choisir une bonne huile d’argan ?</h3>
+        <p>Pour une huile de qualité :</p>
+        <ul>
+        <li><strong>Pression à froid :</strong> pour préserver les propriétés.</li>
+        <li><strong>100 % pure :</strong> sans autres huiles ni additifs.</li>
+        <li><strong>Source fiable :</strong> achetez auprès d’un fournisseur reconnu.</li>
+        </ul>
+
+        <h3>Où acheter de l’huile d’argan</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose une huile d’argan bio de haute qualité.</li>
+        <li>Boutiques et sites spécialisés en produits naturels et bio.</li>
+        </ul>
+
+        <h3>Conclusion</h3>
+        <p>L’huile d’argan est un produit naturel aux multiples bienfaits pour la peau, les cheveux et la santé. Choisissez-la avec soin auprès d’un fournisseur de confiance pour en tirer le meilleur parti.</p>
         `
     },
     {
         slug: "aker-fassi-powder-benefits",
         title: "Benefits of Moroccan Aker Fassi Powder",
+        title_fr: "Bienfaits de la poudre marocaine Aker Fassi",
         title_ar: "فوائد مسحوق أكر فاسي المغربي",
         image: "/images/benefits/aker-fassi.jpg",
         excerpt: "Aker Fassi powder is a natural ingredient that Moroccans have used for centuries in skin and hair care, extracted from the flowers of the poppy plant.",
         excerpt_ar: "بودرة العكر الفاسي هي مكون طبيعي استخدمه المغاربة لقرون في العناية بالبشرة والشعر، تُستخرج من أزهار شقائق النعمان.",
+        excerpt_fr: "La poudre d’Aker Fassi est un ingrédient naturel utilisé depuis des siècles au Maroc pour la peau et les cheveux, extraite des fleurs d’anémone.",
         content: `
         <h3>What is Aker Fassi Powder?</h3>
         <p>Aker Fassi powder is a natural ingredient that Moroccans have used for centuries in skin and hair care. This powder is extracted from the flowers of the Aker Fassi plant, one of the most famous traditional Moroccan plants. Aker Fassi powder is characterized by its reddish-orange color and rich properties, making it an effective ingredient in skincare products.</p>
@@ -980,15 +1294,61 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>مجموعة أورجانيكا(Organica Group SARL): </strong> تقدم بودرة العكر الفاسي الطبيعية المستخلصة بعناية من أجود النباتات في المغرب.</li>
         <li>المتاجر الإلكترونية الموثوقة المتخصصة في المنتجات الطبيعية.</li>
         </ul>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que la poudre d’Aker Fassi ?</h3>
+        <p>La poudre d’Aker Fassi est un ingrédient naturel utilisé depuis des siècles au Maroc pour la peau et les cheveux. Elle est extraite des fleurs de l’Aker Fassi (anémone), l’une des plantes traditionnelles marocaines les plus connues. De couleur orangée et riche en actifs, elle entre dans la composition de nombreux soins.</p>
+
+        <h3>Comment est-elle obtenue ?</h3>
+        <p>La poudre est obtenue par séchage et broyage des fleurs pour donner une poudre fine 100 % naturelle, riche en nutriments bénéfiques pour la peau et les cheveux.</p>
+
+        <h3>Bienfaits de la poudre d’Aker Fassi pour la peau et les cheveux</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <ul>
+        <li><strong>Éclaircissement et uniformité du teint :</strong> elle aide à éclaircir et unifier le teint et à atténuer taches et pigmentation.</li>
+        <li><strong>Anti-âge :</strong> ses antioxydants aident à lutter contre les rides et le vieillissement prématuré.</li>
+        <li><strong>Nettoyage profond :</strong> elle agit comme un gommage naturel et purifie les pores.</li>
+        <li><strong>Acné :</strong> ses propriétés antiseptiques et antibactériennes en font un soin efficace contre l’acné.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <ul>
+        <li><strong>Renforcement :</strong> elle renforce les cheveux et limite la chute en favorisant la santé du cuir chevelu.</li>
+        <li><strong>Brillance :</strong> elle donne de l’éclat et de la vitalité aux cheveux.</li>
+        <li><strong>Antipelliculaire :</strong> elle aide à traiter les pellicules et à apaiser le cuir chevelu.</li>
+        </ul>
+
+        <h3>Comment utiliser la poudre d’Aker Fassi ?</h3>
+        <h4>Pour la peau</h4>
+        <ul>
+        <li><strong>Masque :</strong> mélangez avec de l’eau de rose ou de l’huile d’argan pour former une pâte. Appliquez 15 à 20 minutes puis rincez à l’eau tiède.</li>
+        <li><strong>Gommage :</strong> mélangez avec de l’eau tiède pour un gommage naturel.</li>
+        </ul>
+        <h4>Pour les cheveux</h4>
+        <p><strong>Masque capillaire :</strong> mélangez avec une huile capillaire ou de l’eau tiède, appliquez sur le cuir chevelu et les cheveux, laissez poser 30 minutes puis rincez.</p>
+
+        <h3>Comment choisir une bonne poudre d’Aker Fassi ?</h3>
+        <ul>
+        <li>Choisissez une poudre 100 % naturelle, sans traitement chimique.</li>
+        <li>Préférez une poudre Aker Fassi bio pour une efficacité optimale.</li>
+        </ul>
+
+        <h3>Où acheter de la poudre d’Aker Fassi</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose de la poudre d’Aker Fassi naturelle issue des meilleures plantes du Maroc.</li>
+        <li>Boutiques en ligne spécialisées en produits naturels et soins peau/cheveux.</li>
+        </ul>
         `
     },
     {
         slug: "culinary-argan-oil-benefits",
         title: "Culinary argan oil benefits",
+        title_fr: "Bienfaits culinaires de l’huile d’argan",
         title_ar: "فوائد زيت الأرغان للطهي",
         image: "/images/blog/culinary-argan-oil-gourmet.jpg",
         excerpt: "Argan oil for cooking is a pure vegetable oil extracted from the seeds of the argan tree, making it the perfect choice for adding a distinctive flavor and health benefits to your meals.",
         excerpt_ar: "زيت الأركان للطبخ هو زيت نباتي نقي يُستخلص من بذور شجرة الأركان، مما يجعله الخيار الأمثل لإضافة نكهة مميزة وفوائد صحية لوجباتك.",
+        excerpt_fr: "L’huile d’argan culinaire est une huile végétale pure extraite des amandons d’arganier, idéale pour une cuisine savoureuse et saine.",
         content: `
         <h3>What is Argan Oil for Cooking?</h3>
         <p>Argan oil for cooking is a pure vegetable oil extracted from the seeds of the argan tree (Argania spinosa), which grows in Morocco. Argan oil is considered one of the most valuable and beneficial natural oils for cooking due to its richness in essential fatty acids and vitamin E, making it the perfect choice for adding a distinctive flavor and health benefits to your meals.</p>
@@ -1091,15 +1451,69 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>مجموعة أورجانيكا (Organica Group SARL):</strong> تقدم زيت أركان طبيعي للطبخ من المغرب مع ضمان الجودة العالية.</li>
         <li>المتاجر المتخصصة في المنتجات الطبيعية مثل المواقع الإلكترونية التي تقدم زيت الأركان العضوي.</li>
         </ul>
+        `,
+        content_fr: `
+        <h3>Qu’est-ce que l’huile d’argan culinaire ?</h3>
+        <p>L’huile d’argan culinaire est une huile végétale pure extraite des amandons de l’arganier (Argania spinosa), qui pousse au Maroc. Riche en acides gras essentiels et en vitamine E, elle apporte une saveur unique et des bienfaits santé à vos plats.</p>
+
+        <h3>Comment est-elle extraite ?</h3>
+        <p>L’huile d’argan culinaire est obtenue par torréfaction des amandons puis pression. Ce procédé préserve sa saveur et sa valeur nutritionnelle. Elle convient à la cuisson et à la préparation de plats variés, des salades aux plats chauds.</p>
+
+        <h3>Types d’huile d’argan culinaire</h3>
+        <h4>Huile d’argan torréfiée</h4>
+        <p>Les amandons sont torréfiés pour obtenir cette huile au goût riche et chaud, idéale pour la cuisson.</p>
+        <h4>Huile d’argan nature (non torréfiée)</h4>
+        <p>Idéale pour les salades et plats froids, pour une touche de saveur et de santé.</p>
+
+        <h3>Bienfaits de l’huile d’argan en cuisine</h3>
+        <h4>1. Bienfaits santé</h4>
+        <ul>
+        <li><strong>Acides gras essentiels :</strong> elle contient des acides gras insaturés (oléique, linoléique) bénéfiques pour le cœur.</li>
+        <li><strong>Anti-inflammatoire :</strong> ses antioxydants aident à réduire les inflammations.</li>
+        <li><strong>Digestion :</strong> elle peut contribuer à une meilleure digestion.</li>
+        <li><strong>Peau et cheveux :</strong> consommée, la vitamine E qu’elle contient nourrit l’organisme.</li>
+        </ul>
+
+        <h4>2. Saveur en cuisine</h4>
+        <ul>
+        <li><strong>Goût unique :</strong> elle apporte une saveur riche en salades comme en plats chauds.</li>
+        <li><strong>Mise en valeur des ingrédients :</strong> elle rehausse le goût sans l’écraser.</li>
+        </ul>
+
+        <h3>Comment utiliser l’huile d’argan en cuisine ?</h3>
+        <h4>1. En cuisine</h4>
+        <ul>
+        <li>Utilisez-la dans les vinaigrettes et assaisonnements pour une saveur distinctive.</li>
+        <li>Vous pouvez l’utiliser en cuisson douce (sautés, légumes, viandes grillées).</li>
+        </ul>
+        <h4>2. En pâtisserie</h4>
+        <p>Utilisez-la comme alternative saine aux autres huiles dans les gâteaux et le pain.</p>
+        <h4>3. En smoothies</h4>
+        <p>Ajoutez une cuillère à café d’huile d’argan dans vos smoothies pour un côté sain et savoureux.</p>
+
+        <h3>Comment choisir une huile d’argan culinaire ?</h3>
+        <ul>
+        <li>Choisissez une huile naturelle pour une pureté maximale.</li>
+        <li>Préférez une huile torréfiée pour un goût plus marqué en cuisson.</li>
+        <li>Achetez auprès de sources fiables pour garantir la qualité.</li>
+        </ul>
+
+        <h3>Où acheter de l’huile d’argan culinaire ?</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose de l’huile d’argan culinaire naturelle du Maroc, de haute qualité.</li>
+        <li>Boutiques et sites spécialisés en produits naturels et bio.</li>
+        </ul>
         `
     },
     {
         slug: "rhassoul-clay-benefits",
         title: "Benefits of Rhassoul Clay for hair",
+        title_fr: "Bienfaits du ghassoul marocain pour les cheveux",
         title_ar: "فوائد طين الغاسول للشعر",
         image: "/images/benefits/ghassoul-clay.jpg",
         excerpt: "Moroccan Ghassoul is a natural clay extracted from Morocco and known for its deep cleansing properties for skin and hair care.",
         excerpt_ar: "الغاسول المغربي هو طين طبيعي يستخرج من المغرب ومعروف بخصائصه في التنظيف العميق للعناية بالبشرة والشعر.",
+        excerpt_fr: "Le ghassoul marocain est une argile naturelle extraite au Maroc, réputée pour son nettoyage en profondeur de la peau et des cheveux.",
         content: `
         <h2>Moroccan Ghassoul: The Secret to Natural Beauty for Skin and Hair</h2>
 
@@ -1214,15 +1628,75 @@ export const benefitsData: BenefitPost[] = [
         <li><strong>مجموعة أورجانيكا (Organica Group SARL):</strong> تقدم غاسولاً مغربياً طبيعياً 100٪ عالي الجودة يتم الحصول عليه بعناية من جبال الأطلس في المغرب.</li>
         <li>المتاجر الإلكترونية المتخصصة في المنتجات الطبيعية والعضوية.</li>
         </ul>
+        `,
+        content_fr: `
+        <h2>Le ghassoul marocain : secret de beauté naturelle pour la peau et les cheveux</h2>
+
+        <p>Le ghassoul marocain est une argile naturelle extraite au Maroc, réputée pour son pouvoir nettoyant en profondeur pour la peau et les cheveux. Appelé aussi « argile volcanique » ou « argile marocaine », il est un ingrédient clé des soins naturels dans le monde arabe et au-delà.</p>
+
+        <p>Il est 100 % naturel, riche en minéraux et nutriments qui nettoient efficacement la peau et hydratent les cheveux. Riche en magnésium et potassium, c’est un produit aux multiples bienfaits.</p>
+
+        <h3>Comment est extrait le ghassoul marocain ?</h3>
+        <p>L’argile de ghassoul est extraite dans les montagnes de l’Atlas au Maroc. Elle provient de roches volcaniques par un processus entièrement naturel, puis est séchée et purifiée pour un usage sûr sur la peau et les cheveux. Elle absorbe efficacement les excès de sébum et les impuretés.</p>
+
+        <h3>Types de ghassoul marocain</h3>
+        <h4>Ghassoul pour la peau</h4>
+        <p>Utilisé comme gommage naturel, il aide à éliminer les cellules mortes et à régénérer la peau.</p>
+
+        <h4>Ghassoul pour les cheveux</h4>
+        <p>Le ghassoul nettoie le cuir chevelu en profondeur et apporte douceur et brillance aux cheveux.</p>
+
+        <h3>Bienfaits du ghassoul pour la peau et les cheveux</h3>
+        <h4>1. Bienfaits pour la peau</h4>
+        <ul>
+        <li><strong>Nettoyage profond :</strong> il nettoie efficacement la peau des excès de sébum et des impuretés.</li>
+        <li><strong>Gommage naturel :</strong> il élimine les cellules mortes pour une peau fraîche et lumineuse.</li>
+        <li><strong>Acné :</strong> il aide à réguler le sébum et à réduire l’apparence des boutons.</li>
+        <li><strong>Éclat :</strong> il améliore la microcirculation et le teint.</li>
+        </ul>
+
+        <h4>2. Bienfaits pour les cheveux</h4>
+        <ul>
+        <li><strong>Nettoyage du cuir chevelu :</strong> il nettoie naturellement le cuir chevelu et absorbe l’excès de sébum.</li>
+        <li><strong>Volume :</strong> ses propriétés purifiantes renforcent les cheveux et favorisent la pousse.</li>
+        <li><strong>Douceur :</strong> il hydrate les cheveux pour plus de souplesse et de brillance.</li>
+        </ul>
+
+        <h3>Comment utiliser le ghassoul marocain ?</h3>
+        <h4>Pour la peau</h4>
+        <ul>
+        <li><strong>Gommage :</strong> mélangez le ghassoul avec de l’eau de rose ou de l’huile d’argan pour former une pâte à utiliser en gommage.</li>
+        <li><strong>Masque :</strong> mélangez avec de l’eau tiède, appliquez 10 à 15 minutes puis rincez.</li>
+        </ul>
+
+        <h4>Pour les cheveux</h4>
+        <ul>
+        <li><strong>Masque capillaire :</strong> mélangez avec de l’eau tiède ou de l’huile d’argan, appliquez sur le cuir chevelu et les cheveux.</li>
+        <li><strong>Shampooing naturel :</strong> utilisez-le comme shampooing naturel pour un nettoyage profond sans agresser le cuir chevelu.</li>
+        </ul>
+
+        <h3>Comment choisir un bon ghassoul ?</h3>
+        <ul>
+        <li>Vérifiez qu’il est 100 % naturel et sans additifs chimiques.</li>
+        <li>Choisissez un ghassoul provenant de fournisseurs reconnus au Maroc.</li>
+        </ul>
+
+        <h3>Où acheter du ghassoul marocain ?</h3>
+        <ul>
+        <li><strong>Organica Group SARL :</strong> propose du ghassoul marocain 100 % naturel de qualité, issu de l’Atlas marocain.</li>
+        <li>Boutiques en ligne spécialisées en produits naturels et bio.</li>
+        </ul>
         `
     },
     {
         slug: "argan-oil-for-face",
         title: "Argan Oil Benefits for Face",
+        title_fr: "Bienfaits de l’huile d’argan pour le visage",
         title_ar: "فوائد زيت الأرغان للوجه",
         image: "/images/benefits/argan-oil-skin.jpg",
         excerpt: "Argan oil has many benefits because it contains rich compounds.",
         excerpt_ar: "زيت الأرغان هو أحد أفضل الحلول الطبيعية للحفاظ على جمال وجاذبية الشعر والبشرة.",
+        excerpt_fr: "L’huile d’argan est l’une des meilleures solutions naturelles pour la beauté du visage, de la peau et des cheveux.",
         content: `
         <p>Argan oil has many benefits because it contains rich compounds. Learn about its benefits:</p>
 
@@ -1254,15 +1728,33 @@ export const benefitsData: BenefitPost[] = [
         <bdi> يمكن استخدام زيت الارغان كقناع مرطب للشعر ، خاصة إذا كان شعرك تالفًا ، حيث يساعد الفيتامين الموجود في الزيت على تنعيم الخصلات الباهتة وإغلاق الأطراف المتقصفة ، بينما تعمل أحماض الأوميغا الدهنية على تقوية شعرك لمدة 15 إلى 30 دقيقة حتى تجنيها.الفوائد الكاملة للزيت.</bdi></p>
         <p><bdi>مكافحة الشيخوخة </bdi> -4<br>
         <bdi> استُخدم زيت الارغان منذ العصور القديمة لمكافحة الشيخوخة والحفاظ على مرونة الجلد ، وفقًا لدراسة أجريت على النساء بعد سن اليأس ، لذا يوصى بتطبيقه مباشرة على الجلد ".</bdi></p>
+        `,
+        content_fr: `
+        <p>L’huile d’argan offre de nombreux bienfaits grâce à sa composition riche. Découvrez ses atouts :</p>
+
+        <p><strong>1 – Elle aide à traiter l’acné</strong><br>
+        L’huile d’argan contribue à réduire le sébum des peaux grasses et à améliorer l’aspect de la peau. Riche en acide linoléique, elle apaise les inflammations liées à l’acné et les cellules abîmées.</p>
+        <p>Déposez une goutte dans le creux de la main puis massez légèrement les zones concernées pour lutter contre les points blancs tenaces.</p>
+
+        <p><strong>2 – Elle améliore l’aspect de la peau</strong><br>
+        Même sans problème cutané particulier (acné, eczéma, rides, cicatrices), l’huile d’argan permet d’embellir la peau et de la rendre plus douce et souple. Les saponines qu’elle contient aident à stimuler la régénération des cellules et à maintenir une peau saine et résistante.</p>
+
+        <p><strong>3 – Un excellent soin capillaire</strong><br>
+        L’huile d’argan peut être utilisée en masque nourrissant pour les cheveux, surtout s’ils sont abîmés : la vitamine E qu’elle contient aide à gainer les longueurs et à limiter les fourches, tandis que les acides gras omega renforcent la fibre. Laissez poser 15 à 30 minutes pour en tirer tous les bienfaits.</p>
+
+        <p><strong>4 – Anti-âge</strong><br>
+        Utilisée depuis l’Antiquité pour lutter contre le vieillissement et maintenir l’élasticité de la peau, l’huile d’argan est recommandée en application directe sur la peau, comme le confirment des études menées notamment sur des femmes ménopausées.</p>
         `
     },
     {
         slug: "hair-moroccan-oil",
         title: "Argan oil for hair",
+        title_fr: "Bienfaits de l’huile d’argan pour les cheveux",
         title_ar: "زيت الارجان للشعر",
         image: "/images/benefits/argan-oil-hair.jpg",
         excerpt: "Whether you suffer from dry, coarse, damaged, or light hair, argan oil is one of the best natural solutions to maintain the beauty of hair.",
         excerpt_ar: "سواء كنت تعاني من الشعر الجاف أو الخشن أو التالف أو الخفيف ، فإن زيت الأركان هو أحد أفضل الحلول الطبيعية.",
+        excerpt_fr: "Que vous ayez les cheveux secs, abîmés ou fins, l’huile d’argan est l’une des meilleures solutions naturelles pour les nourrir et les embellir.",
         content: `
         <p>Whether you suffer from dry, coarse, damaged, or light hair, argan oil is one of the best natural solutions to maintain the beauty and attractiveness of hair. The benefits of argan oil for hair are numerous and include treating most of its problems such as split ends, hair loss, and dryness. Do not think twice about including this oil in your hair care routine and thus benefit from it. In the following, we will introduce you in detail to the benefits of argan oil for hair, in addition to the method of preparing mixtures of it, which restore your vital qualities and a healthy appearance.</p>
 
@@ -1288,6 +1780,18 @@ export const benefitsData: BenefitPost[] = [
 
         <p>استخدمه كقناع للشعر <br>
         <bdi>على الرغم من أن القليل من الزيت يترك نتيجة جيدة على الشعر ، إلا أن العلاج الليلي يعد وسيلة رائعة لتعظيم آثار الزيت على الشعر.استخدام المزيد من الزيت كقناع للشعر يعني أن الشعر سيمتص أكبر قدر ممكن من العناصر الغذائية.هذا القناع هو اقتراح رائع لاستخدامه في الليلة السابقة لمناسبة مهمة عندما تريد أن يبدو شعرك أنعم.</bdi></p>
+        `,
+        content_fr: `
+        <p>Que vous ayez les cheveux secs, épais, abîmés ou fins, l’huile d’argan est l’une des meilleures solutions naturelles pour préserver la beauté et la vitalité des cheveux. Ses bienfaits sont nombreux : elle aide à lutter contre les fourches, la chute et la sécheresse. N’hésitez pas à l’intégrer à votre routine capillaire. Voici en détail les bienfaits de l’huile d’argan pour les cheveux et comment l’utiliser en soins.</p>
+
+        <p><strong>L’huile d’argan pour les cheveux épais ou rêches</strong><br>
+        L’huile d’argan pénètre mieux la cuticule que beaucoup d’autres huiles grâce à ses molécules plus fines. Mieux absorbée, elle rend le cheveu plus lisse et limite les nœuds. La vitamine E et les acides gras omega protègent les fibres abîmées et renforcent la chevelure.</p>
+
+        <p><strong>L’huile d’argan pour les cheveux colorés</strong><br>
+        Les antioxydants de l’huile d’argan sont particulièrement utiles pour les cheveux colorés, car ils aident à préserver la couleur et à limiter la dégradation du pigment.</p>
+
+        <p><strong>Utilisez-la en masque capillaire</strong><br>
+        Même une petite quantité donne de bons résultats, mais un soin prolongé (par exemple toute une nuit) permet de maximiser les effets. Un masque à l’huile d’argan laisse le temps aux cheveux d’absorber un maximum de nutriments. Idéal la veille d’une occasion importante pour des cheveux plus doux et brillants.</p>
         `
     }
 ];

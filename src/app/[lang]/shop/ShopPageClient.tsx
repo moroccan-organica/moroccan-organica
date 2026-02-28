@@ -76,7 +76,7 @@ export function ShopPageClient({
 
     const categoriesForFilter = categories.map(cat => ({
         id: cat.id,
-        name: lang === 'ar' ? cat.nameAr : cat.name,
+        name: lang === 'ar' ? (cat.nameAr || cat.name) : lang === 'fr' ? (cat.nameFr || cat.name) : cat.name,
         slug: cat.slug,
         color: 'var(--primary)',
     }));
@@ -147,6 +147,7 @@ export function ShopPageClient({
                                 maxPrice: dict.maxPrice as string || "Max Price",
                                 from: dict.from as string || "From",
                                 to: dict.to as string || "to",
+                                go: dict.go as string || "Go",
                             }}
                         />
                     </div>

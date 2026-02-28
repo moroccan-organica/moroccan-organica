@@ -1,0 +1,84 @@
+{
+  "title": "Contactez‑nous | MoroccanOrganica",
+  "description": "Entrez en contact avec MoroccanOrganica pour vos commandes en gros de produits de beauté marocains biologiques haut de gamme.",
+  "hero": {
+    "label": "Envoyer un message",
+    "title": "Prenons contact",
+    "description": "Prêt à collaborer avec l’un des principaux fournisseurs marocains de produits biologiques ? Notre équipe est à votre écoute."
+  },
+  "info": {
+    "title": "Informations de contact",
+    "items": [
+      {
+        "type": "email",
+        "title": "Nous écrire",
+        "details": "inquiry@moroccanorganica.com",
+        "subtext": "Réponse sous 12 heures"
+      },
+      {
+        "type": "phone",
+        "title": "Nous appeler",
+        "details": "+212 648-273228",
+        "subtext": "Lun–Ven, 9h–18h (GMT)"
+      },
+      {
+        "type": "address",
+        "title": "Nous rendre visite",
+        "details": "Agadir, Maroc",
+        "subtext": "Zone industrielle"
+      },
+      {
+        "type": "hours",
+        "title": "Horaires d’ouverture",
+        "details": "Du lundi au vendredi",
+        "subtext": "9h00 – 18h00 (GMT)"
+      }
+    ]
+  },
+  "form": {
+    "label": "Envoyer un message",
+    "title": "Démarrons la conversation",
+    "description": "Remplissez le formulaire ci‑dessous : notre équipe vous répondra sous 12 heures avec une proposition personnalisée."
+  },
+  "benefits": {
+    "title": "Pourquoi travailler avec MoroccanOrganica ?",
+    "items": [
+      "Production directe en usine avec traçabilité complète",
+      "Capacité d’approvisionnement en vrac avec prix stables",
+      "Services de marque blanche et de formulation sur mesure",
+      "Dossier export complet (COA, MSDS, certifications)",
+      "Expéditions internationales rapides et sécurisées"
+    ]
+  },
+  "formFields": {
+    "fullName": "Nom complet *",
+    "fullNamePlaceholder": "John Doe",
+    "email": "Adresse e‑mail *",
+    "emailPlaceholder": "john@company.com",
+    "phone": "Numéro de téléphone",
+    "phonePlaceholder": "+1 (555) 000-0000",
+    "productType": "Type de produit",
+    "productTypes": {
+      "Organic Virgin": "Organic Virgin",
+      "Deodorized": "Deodorized",
+      "Culinary": "Culinary"
+    },
+    "quantity": "Quantité (litres)",
+    "quantityPlaceholder": "Litres",
+    "destination": "Destination",
+    "destinationPlaceholder": "Pays / Ville",
+    "message": "Votre message *",
+    "messagePlaceholder": "Parlez‑nous de vos besoins, quantités souhaitées et questions spécifiques...",
+    "submit": "Envoyer le message",
+    "sending": "Envoi en cours..."
+  },
+  "success": {
+    "title": "Message envoyé !",
+    "message": "Merci pour votre demande. Nous reviendrons vers vous sous 12 heures.",
+    "button": "Envoyer un autre message"
+  },
+  "map": {
+    "city": "Agadir, Maroc",
+    "address": "Zone industrielle, Ait Melloul"
+  }
+}

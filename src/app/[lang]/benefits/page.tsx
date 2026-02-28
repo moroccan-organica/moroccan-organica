@@ -39,13 +39,31 @@ export default async function BenefitsPage({ params }: { params: Promise<{ lang:
     ]);
 
     const isArabic = lang === 'ar';
+    const isFrench = lang === 'fr';
 
-    const heroTitle = page?.translation?.h1 || (isArabic ? "فوائد منتجاتنا" : "Benefits of Moroccan Beauty Products for Skin, Hair & Natural Wellness");
-    const heroSubtitle = page?.translation?.description || (isArabic
-        ? "اكتشف الفوائد المذهلة لمكونات التجميل الطبيعية المغربية"
-        : "Discover the powerful benefits of Moroccan beauty products including Argan Oil, Prickly Pear Seed Oil, Black Soap and Rhassoul Clay.");
-    const searchPlaceholder = (blogDict as Record<string, string>)?.searchPlaceholder || (isArabic ? "بحث..." : "Search...");
-    const readMoreLabel = (blogDict as Record<string, string>)?.readMore || (isArabic ? "اقرأ المزيد" : "Read More");
+    const heroTitle =
+        page?.translation?.h1 ||
+        (isArabic
+            ? "فوائد منتجاتنا"
+            : isFrench
+                ? "BÉNÉFICES DES PRODUITS DE BEAUTÉ MAROCAINS POUR LA PEAU, LES CHEVEUX ET LE BIEN‑ÊTRE NATUREL"
+                : "Benefits of Moroccan Beauty Products for Skin, Hair & Natural Wellness");
+
+    const heroSubtitle =
+        page?.translation?.description ||
+        (isArabic
+            ? "اكتشف الفوائد المذهلة لمكونات التجميل الطبيعية المغربية"
+            : isFrench
+                ? "Découvrez les puissants bienfaits des produits de beauté marocains : huile d’argan, huile de graines de figue de barbarie, savon noir, ghassoul, et bien plus encore."
+                : "Discover the powerful benefits of Moroccan beauty products including Argan Oil, Prickly Pear Seed Oil, Black Soap and Rhassoul Clay.");
+
+    const searchPlaceholder =
+        (blogDict as Record<string, string>)?.searchPlaceholder ||
+        (isArabic ? "بحث..." : isFrench ? "Rechercher un article..." : "Search...");
+
+    const readMoreLabel =
+        (blogDict as Record<string, string>)?.readMore ||
+        (isArabic ? "اقرأ المزيد" : isFrench ? "En savoir plus" : "Read More");
 
     return (
         <BenefitsClient

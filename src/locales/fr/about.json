@@ -1,0 +1,133 @@
+{
+  "hero": {
+    "title": "Bienvenue chez MoroccanOrganica",
+    "subtitle": "Votre source de confiance pour des produits de beauté marocains biologiques haut de gamme.",
+    "description": "Notre entreprise propose une large gamme de produits biologiques marocains, ainsi que des services de marque blanche pour nos clients dans le monde entier. Nous travaillons avec des partenaires en Europe, en Asie, en Amérique, en Australie et en Afrique."
+  },
+  "wholesale": {
+    "title": "GROS DE PRODUITS COSMÉTIQUES BIOLOGIQUES",
+    "description": "Nous fournissons différents produits cosmétiques biologiques marocains et des services de marque privée pour nos clients internationaux, avec une capacité d’export vers les principaux marchés du monde : Europe, Asie, Amérique, Australie et Afrique."
+  },
+  "whoWeAre": {
+    "label": "Qui sommes‑nous",
+    "title": "Organica Group SARL",
+    "description": "Organica Group est un producteur et exportateur de cosmétiques biologiques, actif au Maroc et à l’international, spécialisé dans la vente en gros de produits cosmétiques 100% purs et bio. Nous utilisons des ingrédients traditionnels et naturels pour le soin de la peau, des cheveux et du corps."
+  },
+  "values": {
+    "label": "Nos valeurs",
+    "title": "Principes de commerce équitable",
+    "description": "Les pratiques commerciales d’Organica Group reposent sur trois principes fondamentaux :",
+    "principles": [
+      {
+        "title": "Qualité",
+        "description": "Cosmétiques 100% biologiques."
+      },
+      {
+        "title": "Éthique",
+        "description": "Pratiques de commerce équitable."
+      },
+      {
+        "title": "Authenticité",
+        "description": "Garanties par des relations personnelles avec les femmes des coopératives."
+      }
+    ]
+  },
+  "journey": {
+    "label": "NOTRE PARCOURS",
+    "title": "Un héritage de croissance et d’excellence",
+    "timeline": [
+      {
+        "year": "2015",
+        "title": "Vision et planification stratégique",
+        "description": "Études de marché approfondies et analyses de faisabilité pour poser les bases d’une marque cosmétique marocaine à portée mondiale."
+      },
+      {
+        "year": "2016",
+        "title": "Lancement officiel",
+        "description": "Création de l’entreprise et démarrage de la production avec une mission claire : offrir des produits biologiques marocains premium dans le monde entier."
+      },
+      {
+        "year": "2017",
+        "title": "Renforcement des fondations",
+        "description": "Investissements dans les unités de production, les systèmes de contrôle qualité et les partenariats avec des fournisseurs à travers le Maroc."
+      },
+      {
+        "year": "2018",
+        "title": "Extension de la gamme",
+        "description": "Introduction de l’huile d’argan en vrac, de l’huile de graines de figue de barbarie, du savon noir, de l’argile rhassoul et des services de marque blanche."
+      },
+      {
+        "year": "2019",
+        "title": "Croissance des exportations internationales",
+        "description": "Expansion vers de nouveaux marchés avec une capacité d’export accrue et des partenariats en gros."
+      },
+      {
+        "year": "2021",
+        "title": "Renforcement qualité & certifications",
+        "description": "Mise en conformité avancée avec les normes internationales et amélioration continue des procédures de contrôle qualité."
+      },
+      {
+        "year": "2023",
+        "title": "Montée en puissance de la marque blanche",
+        "description": "Développement de la fabrication à façon, des solutions de conditionnement et des services de création de marque pour des clients internationaux."
+      },
+      {
+        "year": "2025",
+        "title": "Croissance industrielle & présence mondiale",
+        "description": "Augmentation de la capacité de production pour répondre à la demande mondiale tout en maintenant des standards stricts de qualité et de durabilité."
+      }
+    ]
+  },
+  "origins": {
+    "label": "Nos origines",
+    "title": "Produits par des coopératives",
+    "description": "Nos produits sont fabriqués par des coopératives situées dans le sud‑ouest du Maroc, avec des savoir‑faire transmis de génération en génération. Tous nos produits cosmétiques et culinaires sont exportés directement de ces coopératives vers nos clients dans le monde entier."
+  },
+  "cooperatives": {
+    "title": "Produits dans notre usine",
+    "description": "Nos produits sont également fabriqués dans notre unité de production certifiée au Maroc, qui combine procédés modernes et expertise traditionnelle dans la production d’huile d’argan et de cosmétiques naturels. Tous nos produits sont soumis à des contrôles qualité rigoureux et exportés directement vers nos clients internationaux. Nous garantissons la traçabilité complète, le respect des normes d’hygiène et la conformité aux certifications internationales (ECOCERT / USDA Organic US NOP, COA, SPEC.ISO 22716 GMP, MSDS, etc.) pour chaque lot.",
+    "fairTitle": "Principes de commerce équitable",
+    "fairPrinciples": [
+      "Qualité : cosmétiques 100% biologiques",
+      "Éthique : pratiques de commerce équitable",
+      "Authenticité : garantie par une relation directe avec les femmes des coopératives"
+    ],
+    "paragraphs": [
+      "Bienvenue chez MoroccanOrganica, votre partenaire de confiance pour des produits de beauté marocains biologiques haut de gamme. Nous sommes spécialisés dans les soins naturels pour la peau et les cheveux, issus du cœur du Maroc. Chaque produit est conçu avec soin pour offrir la meilleure qualité et un véritable bénéfice en termes de beauté, de santé et de bien‑être.",
+      "En tant qu’acteur majeur du secteur de la beauté bio marocaine en gros, nous proposons un large éventail de produits, notamment l’huile d’argan, le savon noir, l’argile rhassoul et la poudre de Nila, tous sourcés directement auprès de producteurs locaux. Ces produits sont idéaux pour les entreprises qui souhaitent intégrer l’authenticité de la beauté marocaine à leur offre."
+    ]
+  },
+  "promise": {
+    "label": "Notre promesse",
+    "title": "Pourquoi choisir MoroccanOrganica ?",
+    "reasons": [
+      {
+        "title": "Authentique beauté marocaine",
+        "description": "Nous apportons le meilleur du rituel de soin marocain traditionnel, formulé avec des ingrédients naturels utilisés depuis des siècles."
+      },
+      {
+        "title": "Approvisionnement en gros",
+        "description": "Nous proposons des tarifs de gros pour les boutiques de beauté, spas et enseignes qui recherchent des produits biologiques de haute qualité pour leurs clients."
+      },
+      {
+        "title": "Durable et éthique",
+        "description": "Nous travaillons directement avec les communautés locales au Maroc pour garantir un approvisionnement éthique et une production durable."
+      },
+      {
+        "title": "Qualité certifiée & solutions de marque blanche",
+        "description": "Nous produisons sous des standards qualité conformes aux normes cosmétiques et d’exportation internationales, et offrons des services flexibles de marque blanche, de packaging personnalisé et de branding, de la matière en vrac jusqu’au produit fini."
+      }
+    ]
+  },
+  "offer": {
+    "label": "Ce que nous offrons",
+    "title": "Nos produits",
+    "description": "Chez MoroccanOrganica, nous sommes fiers de proposer une large sélection de produits de beauté qui subliment la peau de façon naturelle. De l’huile d’argan au savon noir marocain, chaque produit est riche en antioxydants et nutriments qui nourrissent et régénèrent la peau et les cheveux. Tous nos produits sont sans produits chimiques agressifs, sûrs et efficaces pour tous les types de peau."
+  },
+  "partnership": {
+    "label": "Devenez partenaire",
+    "title": "Opportunités de gros",
+    "description": "Que vous soyez une petite structure ou un grand détaillant, nous offrons des prix de gros compétitifs et des options logistiques flexibles. Rejoignez‑nous pour faire découvrir la beauté des produits biologiques marocains au monde entier.",
+    "cta": "Nous contacter"
+  }
+}

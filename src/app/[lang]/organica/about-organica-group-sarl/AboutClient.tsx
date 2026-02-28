@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { motion, MotionProps, AnimatePresence } from "framer-motion";
 import { Leaf, Handshake, Heart, Check, ArrowRight, LucideIcon, ChevronDown } from "lucide-react";
 import Image from "next/image";
@@ -147,6 +147,52 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
         });
     };
 
+    const highlightPrivateLabel = (text: string) => {
+        const keyword = "private label";
+        return text.split(new RegExp(`(${keyword})`, "gi")).map((part, idx) => (
+            part.toLowerCase() === keyword ? (
+                <strong key={`pl-${idx}`} className="font-semibold text-foreground">{part}</strong>
+            ) : (
+                <span key={`pl-${idx}`}>{part}</span>
+            )
+        ));
+    };
+
+    const highlightKeywords = (text: string, keywords: string[]) => {
+        let parts: Array<string | ReactNode> = [text];
+
+        keywords.forEach((keyword, keywordIndex) => {
+            const regex = new RegExp(`(${keyword})`, "gi");
+            const totalOccurrences = (text.match(regex) || []).length;
+            let seen = 0;
+
+            parts = parts.flatMap((part) => {
+                if (typeof part !== "string") return part;
+                const segments = part.split(regex);
+
+                return segments.map((segment, segmentIndex) => {
+                    if (segment.toLowerCase() === keyword.toLowerCase()) {
+                        seen += 1;
+                        const isLast = seen === totalOccurrences;
+                        if (isLast) {
+                            return (
+                                <strong
+                                    key={`kw-${keywordIndex}-${segmentIndex}`}
+                                    className="font-semibold text-foreground"
+                                >
+                                    {segment}
+                                </strong>
+                            );
+                        }
+                    }
+                    return segment;
+                });
+            });
+        });
+
+        return parts;
+    };
+
     return (
         <div className="min-h-screen bg-background">
             {/* Section A: Hero & Intro */}
@@ -183,7 +229,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                         {content.wholesale.title}
                     </h2>
                     <p className="max-w-5xl mx-auto text-base md:text-xl text-muted-foreground leading-relaxed">
-                        {content.wholesale.description}
+                        {highlightPrivateLabel(content.wholesale.description)}
                     </p>
                 </div>
             </section>
@@ -200,7 +246,7 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                                 {content.whoWeAre.title}
                             </h2>
                             <p className="text-body text-muted-foreground leading-relaxed text-lg">
-                                {content.whoWeAre.description}
+                                {highlightKeywords(content.whoWeAre.description, ["organic cosmetics products"])}
                             </p>
                         </motion.div>
 
@@ -444,7 +490,12 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                             {content.offer.title}
                         </h2>
                         <p className="text-body text-muted-foreground leading-relaxed text-lg">
-                            {content.offer.description}
+                            {highlightKeywords(content.offer.description, [
+                                "MoroccanOrganica",
+                                "Argan oil",
+                                "Moroccan Black soap",
+                                "free from chemicals"
+                            ])}
                         </p>
                     </motion.div>
                 </div>
@@ -471,7 +522,11 @@ export default function AboutClient({ data, dict, lang }: AboutClientProps) {
                             {content.partnership.title}
                         </h2>
                         <p className="text-lg md:text-xl text-white/80 mb-10 leading-relaxed">
-                            {content.partnership.description}
+                            {highlightKeywords(content.partnership.description, [
+                                "wholesale prices",
+                                "organic Moroccan products",
+                                "authentic Moroccan beauty"
+                            ])}
                         </p>
                         <motion.div
                             whileHover={{ scale: 1.05 }}
