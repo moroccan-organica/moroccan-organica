@@ -37,7 +37,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function WholesaleSkincarePage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'home');
+    const dict = await getDictionary(lang, 'home') as any;
     const topSaleProducts = await getTopSaleProducts(lang);
 
     const heroTitle = lang === 'ar' ? "تجارة الجملة لمستحضرات التجميل المغربية" :

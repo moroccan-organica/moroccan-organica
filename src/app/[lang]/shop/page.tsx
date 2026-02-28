@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function ShopPage({ params }: { params: Params }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'shop');
+    const dict = await getDictionary(lang, 'shop') as any;
 
     // Try to fetch from database first, fallback to static data
     let products: ShopProductDB[] = [];

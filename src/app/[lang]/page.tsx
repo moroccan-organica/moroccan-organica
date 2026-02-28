@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params;
-  const dict = await getDictionary(lang, 'home');
+  const dict = await getDictionary(lang, 'home') as any;
   const page = await getStaticPageBySystemName('HOME', lang);
   const featuredProducts = await getFeaturedProducts(lang);
   const topSaleProducts = await getTopSaleProducts(lang);

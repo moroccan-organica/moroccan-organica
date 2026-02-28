@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function ContactPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'contact');
+    const dict = await getDictionary(lang, 'contact') as any;
     const page = await getStaticPageBySystemName('CONTACT', lang);
 
     // Apply DB overrides to the dictionary if available

@@ -240,7 +240,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                 {t.badgeFeatured}
                             </span>
                         )}
-                        <h1 className="mt-4 text-4xl font-semibold text-emerald-950 leading-tight uppercase tracking-tight">
+                        <h1 className="mt-4 text-2xl md:text-3xl lg:text-4xl font-semibold text-emerald-950 leading-tight uppercase tracking-tight">
                             {localizedH1 || localizedName}
                         </h1>
                     </div>
@@ -320,13 +320,13 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                 key={item.id}
                                 className="flex h-full flex-col rounded-2xl border border-emerald-100 bg-white/90 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
                             >
-                                <div className="overflow-hidden rounded-t-2xl">
+                                <div className="aspect-4/3 overflow-hidden rounded-t-2xl relative">
                                     <Image
                                         src={item.image}
                                         alt={isRTL ? item.nameAr : item.name}
-                                        width={640}
-                                        height={400}
-                                        className="h-52 w-full object-cover"
+                                        fill
+                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                                        className="object-cover"
                                         loading="lazy"
                                     />
                                 </div>

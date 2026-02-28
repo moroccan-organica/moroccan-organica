@@ -69,7 +69,7 @@ export default function BlogAdminPage() {
   const [dict, setDict] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    getDictionary(lang, 'blog').then(setDict);
+    getDictionary(lang, 'blog').then((d) => setDict(d as Record<string, unknown>));
   }, [lang]);
 
   const t: AdminBlogTranslations = (dict?.admin as AdminBlogTranslations) || {};

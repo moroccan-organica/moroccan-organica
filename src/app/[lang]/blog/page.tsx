@@ -26,7 +26,7 @@ export default function BlogPage({ params }: { params: Promise<{ lang: string }>
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        getDictionary(lang, 'blog').then(setDict);
+        getDictionary(lang, 'blog').then((d) => setDict(d as Record<string, unknown>));
     }, [lang]);
 
     useEffect(() => {

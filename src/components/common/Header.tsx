@@ -62,7 +62,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
             }
             return {
                 name,
-                href: `/${lang}/benefits/${benefit.slug}`
+                href: `/${lang}/organica/${benefit.slug}`
             };
         })
     ];
@@ -73,7 +73,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         { name: t('nav.about'), href: `/${lang}/organica/about-organica-group-sarl`, isRoute: true, title: t('nav.aboutTitle') || "About our company" },
         { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
         { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },
-        { name: t('nav.benefits'), href: `/${lang}/benefits`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
+        { name: t('nav.benefits'), href: `/${lang}/organica/Benefits-Using-Natural-Beauty-Products`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
         { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true, title: "Shop" },
         { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true, title: "Get in touch" },
     ];
@@ -125,7 +125,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                     </Link>
 
                     {/* Desktop Navigation */}
-                    <nav className="hidden lg:flex items-center gap-6">
+                    <nav className="hidden xl:flex items-center gap-4 2xl:gap-6">
                         {navLinks.map((link) => (
                             <div
                                 key={link.href + link.name}
@@ -137,12 +137,12 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     <Link
                                         href={link.href}
                                         title={link.title}
-                                        className={`flex items-center gap-1 text-base md:text-lg font-semibold text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-sm 2xl:text-base font-semibold text-white uppercase tracking-wider hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
                                             <ChevronDown
-                                                className={`w-3 h-3 transition-transform duration-200 ${openDropdown === link.name ? 'rotate-180' : ''}`}
+                                                className={`w-3 h-3 opacity-70 transition-transform duration-200 ${openDropdown === link.name ? 'rotate-180' : ''}`}
                                             />
                                         )}
                                     </Link>
@@ -150,12 +150,12 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                                     <a
                                         href={link.href}
                                         title={link.title}
-                                        className={`flex items-center gap-1 text-sm md:text-base font-semibold text-white uppercase tracking-wide hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
+                                        className={`flex items-center gap-1 text-xs 2xl:text-sm font-semibold text-white uppercase tracking-wider hover:text-primary transition-colors duration-200 cursor-pointer ${isRTL ? 'flex-row-reverse' : ''}`}
                                     >
                                         {link.name}
                                         {link.hasDropdown && (
                                             <ChevronDown
-                                                className={`w-3 h-3 transition-transform duration-200 ${openDropdown === link.name ? 'rotate-180' : ''}`}
+                                                className={`w-3 h-3 opacity-70 transition-transform duration-200 ${openDropdown === link.name ? 'rotate-180' : ''}`}
                                             />
                                         )}
                                     </a>
@@ -185,10 +185,10 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                     </nav>
 
                     {/* Right Section */}
-                    <div className="hidden lg:flex items-center gap-4">
+                    <div className="hidden xl:flex items-center gap-3 2xl:gap-5">
                         <LanguageSwitcher />
                         <CartDrawer isRTL={isRTL} lang={lang} />
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 2xl:gap-3">
                             {socialLinks.map((social) => (
                                 <Link
                                     key={social.href}
@@ -206,18 +206,21 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                     </div>
 
                     {/* Mobile Menu Button */}
-                    <button
-                        className="lg:hidden p-2 text-white cursor-pointer"
-                        onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        aria-label="Toggle menu"
-                    >
-                        {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-                    </button>
+                    <div className="flex xl:hidden items-center gap-3">
+                        <CartDrawer isRTL={isRTL} lang={lang} />
+                        <button
+                            className="p-2 text-white cursor-pointer hover:bg-white/10 rounded-lg transition-colors"
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            aria-label="Toggle menu"
+                        >
+                            {isMenuOpen ? <X size={26} /> : <Menu size={26} />}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Mobile Navigation */}
                 {isMenuOpen && (
-                    <nav className="lg:hidden py-4 border-t border-border/20 bg-secondary">
+                    <nav className="xl:hidden py-6 border-t border-border/10 bg-secondary/98 h-[calc(100vh-64px)] overflow-y-auto animate-in fade-in slide-in-from-right-5 duration-300">
                         <div className="flex flex-col gap-2">
                             {navLinks.map((link) => (
                                 <div key={link.href + link.name}>
@@ -276,10 +279,9 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                             ))}
 
                             {/* Mobile Utilities */}
-                            <div className={`flex flex-col gap-3 pt-4 border-t border-gray-700 ${isRTL ? 'items-end' : 'items-start'}`}>
-                                <div className={`flex items-center gap-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                            <div className={`flex flex-col gap-6 pt-6 mt-4 border-t border-border/10 ${isRTL ? 'items-end' : 'items-start'}`}>
+                                <div className={`flex items-center gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                                     <LanguageSwitcher />
-                                    <CartDrawer isRTL={isRTL} lang={lang} />
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {socialLinks.map((social) => (

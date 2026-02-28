@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function AboutOrganicaPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'about');
+    const dict = await getDictionary(lang, 'about') as any;
     const page = await getStaticPageBySystemName('ABOUT_US', lang);
 
     // Apply DB overrides to the dictionary if available

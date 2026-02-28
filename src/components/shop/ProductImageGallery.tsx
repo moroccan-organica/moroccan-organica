@@ -14,11 +14,12 @@ export function ProductImageGallery({ images, alt }: ProductImageGalleryProps) {
 
   return (
     <div className="space-y-4">
-      <div className="relative h-[460px] rounded-3xl border border-emerald-50 bg-white shadow-md overflow-hidden">
+      <div className="relative aspect-[4/3] w-full rounded-3xl border border-emerald-50 bg-white shadow-md overflow-hidden">
         <SafeImage
           src={activeImage}
           alt={alt}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1200px"
           className="object-cover"
           priority
         />
@@ -31,11 +32,10 @@ export function ProductImageGallery({ images, alt }: ProductImageGalleryProps) {
               key={img + index}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border transition ${
-                index === activeIndex
+              className={`relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border transition ${index === activeIndex
                   ? 'border-emerald-500 ring-2 ring-emerald-200'
                   : 'border-emerald-100 hover:border-emerald-300'
-              }`}
+                }`}
               aria-label={`View image ${index + 1}`}
             >
               <SafeImage

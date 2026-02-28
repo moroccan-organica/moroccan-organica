@@ -22,7 +22,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
     const [relatedPosts, setRelatedPosts] = useState<BlogPostFull[]>([]);
 
     useEffect(() => {
-        getDictionary(lang, 'blog').then(setDict);
+        getDictionary(lang, 'blog').then((d) => setDict(d as Record<string, unknown>));
     }, [lang]);
 
     useEffect(() => {

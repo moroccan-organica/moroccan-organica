@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function CataloguePage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'products');
+    const dict = await getDictionary(lang, 'products') as any;
     const page = await getStaticPageBySystemName('ORGANICA', lang);
     const products = await getCatalogueProducts(lang);
 

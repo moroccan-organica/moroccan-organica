@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
 
 export default async function PrivateLabelPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params;
-    const dict = await getDictionary(lang, 'private-label');
+    const dict = await getDictionary(lang, 'private-label') as any;
     const page = await getStaticPageBySystemName('PRIVATE_LABEL', lang);
 
     // Apply DB overrides to the dictionary if available

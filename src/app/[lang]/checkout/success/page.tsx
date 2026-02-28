@@ -4,16 +4,16 @@ import { CheckoutSuccessClient } from "./CheckoutSuccessClient";
 type Params = Promise<{ lang: string }>;
 type SearchParams = Promise<{ orderId?: string }>;
 
-export default async function CheckoutSuccessPage({ 
+export default async function CheckoutSuccessPage({
     params,
-    searchParams 
-}: { 
+    searchParams
+}: {
     params: Params;
     searchParams: SearchParams;
 }) {
     const { lang } = await params;
     const { orderId } = await searchParams;
-    const dict = await getDictionary(lang, 'common');
+    const dict = await getDictionary(lang, 'common') as any;
 
     return <CheckoutSuccessClient dict={dict} lang={lang} orderId={orderId} />;
 }

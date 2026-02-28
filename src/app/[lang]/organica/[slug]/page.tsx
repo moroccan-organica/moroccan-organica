@@ -56,46 +56,90 @@ const copy = {
     },
 } as const;
 
+import { benefitsData } from "@/data/benefits";
+import BenefitDetail from "@/components/benefits/BenefitDetail";
+
 type Params = Promise<{ lang: string; slug: string }>;
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
     const { lang, slug } = await params;
-    const product = await getProductBySlug(slug, lang as any);
     const globalSeo = await getGlobalSeoSettings(lang);
 
-    if (!product) {
+    // Try product first
+    const product = await getProductBySlug(slug, lang as any);
+
+    if (product) {
+        const name = lang === 'ar' ? product.nameAr : product.name;
+        const description = lang === 'ar' ? product.descriptionAr : product.description;
+
         return {
-            title: 'Product Not Found',
+            title: product.metaTitle || `${name} | Organica`,
+            description: product.metaDesc || description?.substring(0, 160),
+            keywords: product.keywords || undefined,
+            openGraph: {
+                title: product.metaTitle || name,
+                description: product.metaDesc || description?.substring(0, 160),
+                images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
+                url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+            },
+            alternates: {
+                canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+            }
         };
     }
 
-    const name = lang === 'ar' ? product.nameAr : product.name;
-    const description = lang === 'ar' ? product.descriptionAr : product.description;
+    // Try benefit
+    const benefit = benefitsData.find(b =>
+        b.slug === slug ||
+        (slug === 'Benefits-Using-Natural-Beauty-Products' && b.slug === 'moroccan-black-soap-benefits') ||
+        (slug === 'moroccan-black-soap-suppliers-wholesale-africa-benefits' && b.slug === 'moroccan-black-soap-benefits')
+    );
+
+    if (benefit) {
+        const isArabic = lang === 'ar';
+        const isFrench = lang === 'fr';
+        const title = isArabic && benefit.title_ar ? benefit.title_ar : (isFrench && benefit.title_fr ? benefit.title_fr : benefit.title);
+        const description = isArabic && benefit.excerpt_ar ? benefit.excerpt_ar : (isFrench && benefit.excerpt_fr ? benefit.excerpt_fr : benefit.excerpt);
+
+        return {
+            title: `${title} | Organica Benefits`,
+            description: description.substring(0, 160),
+            openGraph: {
+                title: title,
+                description: description.substring(0, 160),
+                images: [benefit.image],
+                url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+            },
+            alternates: {
+                canonical: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+            }
+        };
+    }
 
     return {
-        title: product.metaTitle || `${name} | Organica`,
-        description: product.metaDesc || description?.substring(0, 160),
-        keywords: product.keywords || undefined,
-        openGraph: {
-            title: product.metaTitle || name,
-            description: product.metaDesc || description?.substring(0, 160),
-            images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
-            url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
-        },
-        alternates: {
-            canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
-        }
+        title: 'Not Found | Organica',
     };
 }
 
 export default async function CatalogueDetailPage({ params }: { params: Params }) {
     const { lang, slug } = await params;
 
-    // Try to fetch from database first
+    // Try to fetch from database first (for products)
     let product: ShopProductDB | null = await getProductBySlug(slug, lang as 'en' | 'ar' | 'fr');
     let relatedProducts: ShopProductDB[] = [];
 
     if (!product) {
+        // Try benefit
+        const benefit = benefitsData.find(b =>
+            b.slug === slug ||
+            (slug === 'Benefits-Using-Natural-Beauty-Products' && b.slug === 'moroccan-black-soap-benefits') ||
+            (slug === 'moroccan-black-soap-suppliers-wholesale-africa-benefits' && b.slug === 'moroccan-black-soap-benefits')
+        );
+
+        if (benefit) {
+            return <BenefitDetail post={benefit} lang={lang} />;
+        }
+
         notFound();
     }
 
