@@ -17,7 +17,7 @@ import { CreditCard, Lock, ShoppingBag, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { StripeElements, type StripeElementsHandle } from "@/components/checkout/StripeElements";
-import { DirectPayPalButtons } from "@/components/checkout/DirectPayPalButtons";
+import { PayPalRedirectButton } from "@/components/checkout/PayPalRedirectButton";
 import { useRef } from "react";
 
 const checkoutSchema = z.object({
@@ -622,7 +622,56 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                 )}
 
 
-                                <div className="mt-8 pt-6 border-t">
+                                <div className="mt-8 pt-6 border-t space-y-4">
+                                    {/* PayPal Buttons - show first when PayPal selected so user sees them immediately */}
+                                    {paymentMethod === "paypal" && (
+                                        <div>
+                                            <PayPalRedirectButton
+                                                orderData={{
+                                                    customer: {
+                                                        firstName: watch("firstName"),
+                                                        lastName: watch("lastName"),
+                                                        email: watch("email"),
+                                                        phone: watch("phone"),
+                                                        orderNotes: watch("orderNotes"),
+                                                    },
+                                                    shippingAddress: {
+                                                        street: watch("street"),
+                                                        city: watch("city"),
+                                                        state: watch("state"),
+                                                        postalCode: watch("postalCode"),
+                                                        country: getCountryCode(watch("country")),
+                                                    },
+                                                    items: items.map((item) => ({
+                                                        productId: item.product.id,
+                                                        quantity: item.quantity,
+                                                        price: item.product.price,
+                                                        productName: isRTL ? item.product.nameAr : item.product.name,
+                                                        productNameAr: item.product.nameAr,
+                                                    })),
+                                                    total,
+                                                    lang,
+                                                }}
+                                                disabled={isProcessing}
+                                                onClick={async () => {
+                                                    const valid = await trigger();
+                                                    return valid;
+                                                }}
+                                                onError={(err) => setPaypalError(err)}
+                                                onSuccess={(orderId) => {
+                                                    clearCart();
+                                                    router.push(`/${lang}/checkout/success?orderId=${orderId}`);
+                                                }}
+                                                label={dict.paymentMethod?.paypal?.label || "Pay with PayPal"}
+                                            />
+                                            {paypalError && (
+                                                <div className="text-sm text-destructive mt-2 p-2 bg-destructive/10 rounded">
+                                                    {paypalError}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+
                                     <Button
                                         type="submit"
                                         className="w-full btn-accent py-6 text-lg"
@@ -637,30 +686,6 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                             dict.completeOrder || "Complete Order"
                                         )}
                                     </Button>
-
-                                    {/* PayPal Buttons Area */}
-                                    {paymentMethod === "paypal" && (
-                                        <div className="mt-6">
-                                            <DirectPayPalButtons
-                                                total={total}
-                                                disabled={isProcessing}
-                                                onClick={async () => await trigger()}
-                                                onApprove={handlePayPalApprove}
-                                                onError={(err: any) => {
-                                                    console.error("PayPal error:", err);
-                                                    setPaypalError(isRTL ? "حدث خطأ مع PayPal" : "An error occurred with PayPal");
-                                                }}
-                                                onCancel={() => {
-
-                                                }}
-                                            />
-                                            {paypalError && (
-                                                <div className="text-sm text-destructive mt-2 p-2 bg-destructive/10 rounded">
-                                                    {paypalError}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
 
                                     <p className="text-xs text-center text-muted-foreground mt-4">
                                         {dict.terms || "By placing your order, you agree to our"}{" "}
