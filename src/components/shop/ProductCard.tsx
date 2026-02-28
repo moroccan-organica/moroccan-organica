@@ -30,8 +30,6 @@ const ProductCard = ({
   image,
   title,
   description,
-  badge,
-  badgeVariant = "organic",
   id,
   price,
   volume,
@@ -48,11 +46,6 @@ const ProductCard = ({
   const lang = params?.lang || 'en';
   const { addItem } = useCart();
   const imageSrc = typeof image === "string" ? image : (image as StaticImageData).src;
-  const badgeStyles = {
-    organic: "bg-primary text-primary-foreground",
-    bulk: "bg-accent text-accent-foreground",
-    premium: "bg-secondary text-secondary-foreground",
-  };
 
   const handleAddToCart = () => {
     if (!id || price === undefined) return;
@@ -96,11 +89,7 @@ const ProductCard = ({
             className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         )}
-        <div className="absolute top-4 left-4">
-          <span className={`px-3 py-1 text-xs font-semibold rounded-full ${badgeStyles[badgeVariant]}`}>
-            {badge}
-          </span>
-        </div>
+        {/* Badge intentionally hidden per request */}
 
         {/* Add to Cart - appears on hover with slide up */}
         {showAddToCart && (

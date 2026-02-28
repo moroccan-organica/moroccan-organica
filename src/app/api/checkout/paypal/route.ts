@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
             items,
             total,
             paypalOrderId,
+            lang = "en",
         } = body;
 
         // 1. Basic Validation
@@ -47,16 +48,20 @@ export async function POST(request: NextRequest) {
         });
         const ordersController = new OrdersController(paypalClient);
 
-        // 3. Handle Captured Order (Verification)
+        // 3. Handle Captured Order (Verification - redirect flow from PayPal)
         if (paypalOrderId) {
             try {
-                // Verify the order status with PayPal
                 const orderResponse = await ordersController.getOrder({ id: paypalOrderId });
                 const orderResultData = orderResponse.result;
+                let status = orderResultData?.status;
 
-                const status = orderResultData?.status;
+                // For redirect flow: capture if still APPROVED
+                if (status === "APPROVED") {
+                    const captureResponse = await ordersController.captureOrder({ id: paypalOrderId });
+                    status = captureResponse.result?.status || "COMPLETED";
+                }
 
-                if (status === "COMPLETED" || status === "APPROVED") {
+                if (status === "COMPLETED") {
                     // Save order to database
                     const orderResult = await createOrder({
                         customer: {
@@ -116,6 +121,12 @@ export async function POST(request: NextRequest) {
 
         // 4. Create New Order (Server-side initialization)
         else {
+            const itemTotalVal = items.reduce(
+                (sum: number, item: any) => sum + item.price * item.quantity,
+                0
+            );
+            const taxVal = Math.max(0, Number(total) - itemTotalVal);
+
             const orderRequest: any = {
                 intent: "CAPTURE",
                 purchaseUnits: [
@@ -123,6 +134,18 @@ export async function POST(request: NextRequest) {
                         amount: {
                             currencyCode: "USD",
                             value: total.toFixed(2),
+                            breakdown: {
+                                itemTotal: {
+                                    currencyCode: "USD",
+                                    value: itemTotalVal.toFixed(2),
+                                },
+                                ...(taxVal > 0 && {
+                                    taxTotal: {
+                                        currencyCode: "USD",
+                                        value: taxVal.toFixed(2),
+                                    },
+                                }),
+                            },
                         },
                         shipping: {
                             name: {
@@ -137,7 +160,7 @@ export async function POST(request: NextRequest) {
                             },
                         },
                         items: items.map((item: any) => ({
-                            name: item.productName || "Product",
+                            name: (item.productName || "Product").substring(0, 127),
                             quantity: item.quantity.toString(),
                             unitAmount: {
                                 currencyCode: "USD",
@@ -157,8 +180,8 @@ export async function POST(request: NextRequest) {
                     brandName: "Moroccan Organica",
                     shippingPreference: "SET_PROVIDED_ADDRESS",
                     userAction: "PAY_NOW",
-                    returnUrl: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/checkout/success`,
-                    cancelUrl: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/checkout`,
+                    returnUrl: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/${lang}/checkout/paypal-return`,
+                    cancelUrl: `${process.env.NEXTAUTH_URL || "http://localhost:3000"}/${lang}/checkout`,
                 },
             };
 

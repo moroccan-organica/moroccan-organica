@@ -56,58 +56,67 @@ export function MarketingModal({ lang }: MarketingModalProps) {
     const handleClose = () => setIsOpen(false);
 
     return (
-        <div
-            className="fixed inset-0 z-100 flex items-center justify-center p-2 sm:p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
-            onClick={handleClose}
-        >
+        <>
             <div
-                className="relative bg-white max-w-[95%] sm:max-w-md md:max-w-lg w-full rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
-                onClick={(e) => e.stopPropagation()}
+                className="fixed inset-0 z-100 flex items-center justify-center p-3 sm:p-5 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300"
+                onClick={handleClose}
             >
+                <div
+                    className="relative bg-white max-w-[660px] sm:max-w-[700px] w-full rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300"
+                    onClick={(e) => e.stopPropagation()}
+                >
                 {/* Header - Ultra Compact */}
-                <div className="bg-primary py-1.5 px-3 flex items-center justify-center relative">
-                    <h2 className="text-white font-bold text-[10px] sm:text-xs md:text-sm font-serif tracking-tight">
+                <div className="bg-primary py-3 px-4 flex items-center justify-center relative">
+                    <h2 className="text-white font-bold text-sm sm:text-base md:text-lg font-serif tracking-tight">
                         {t.title}
                     </h2>
                     <button
                         onClick={handleClose}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full bg-black/10 text-white hover:bg-black/20 transition-colors"
+                        className="absolute right-3 top-1/2 -translate-y-1/2 w-7 h-7 flex items-center justify-center rounded-full bg-black/10 text-white hover:bg-black/20 transition-colors"
                         aria-label="Close modal"
                     >
-                        <X className="w-3 h-3" />
+                        <X className="w-4 h-4" />
                     </button>
                 </div>
 
                 {/* Hero Image Section - Optimized for vertical space */}
-                <div className="relative h-24 sm:h-32 md:h-40 w-full shrink-0">
+                <div className="relative h-72 sm:h-80 md:h-[420px] w-full shrink-0">
                     <Image
                         src="/images/slider/popup_organica.jpg"
                         alt="Moroccan Organica"
                         fill
-                        className="object-cover"
+                        className="object-cover will-change-transform"
+                        style={{ animation: "marketingImageZoom 1500ms ease-out forwards" }}
                         priority
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/30 to-transparent flex items-end justify-center p-2 sm:p-3 text-center">
-                        <p className="text-white font-semibold text-[11px] sm:text-sm md:text-base font-serif italic max-w-sm leading-tight">
+                    <div className="absolute inset-0 bg-linear-to-t from-black/95 via-black/30 to-transparent flex items-end justify-center p-5 sm:p-6 text-center">
+                        <p className="text-white font-semibold text-base sm:text-xl md:text-2xl font-serif italic max-w-2xl leading-tight">
                             {t.heroText}
                         </p>
                     </div>
                 </div>
 
                 {/* Body Content - Tighter spacing to avoid scroll */}
-                <div className="p-3 sm:p-4 md:p-5 space-y-2.5 flex flex-col items-center text-center">
-                    <p className="text-muted-foreground leading-snug text-[10px] sm:text-[12px] md:text-sm font-sans max-w-md">
+                <div className="p-8 sm:p-9 md:p-10 space-y-6 flex flex-col items-center text-center">
+                    <p className="text-muted-foreground leading-snug text-sm sm:text-base md:text-lg font-sans max-w-3xl">
                         {t.bodyText}
                     </p>
 
                     <button
                         onClick={openWhatsApp}
-                        className="w-full sm:w-auto min-w-[140px] py-2 px-5 md:py-2.5 md:px-8 rounded-full font-bold transition-all text-white shadow-sm bg-primary hover:bg-primary/90 text-[10px] sm:text-xs md:text-sm cursor-pointer mt-1"
+                        className="w-full sm:w-auto min-w-[220px] py-3.5 px-7 md:py-4 md:px-12 rounded-full font-bold transition-all text-white shadow-md bg-primary hover:bg-primary/90 text-sm sm:text-base md:text-lg cursor-pointer mt-3"
                     >
                         {t.cta}
                     </button>
                 </div>
             </div>
-        </div>
+            </div>
+            <style jsx global>{`
+                @keyframes marketingImageZoom {
+                    from { transform: scale(1.08); }
+                    to { transform: scale(1); }
+                }
+            `}</style>
+        </>
     );
 }
