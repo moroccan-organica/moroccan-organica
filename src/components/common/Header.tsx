@@ -4,9 +4,16 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import LanguageSwitcher from "./LanguageSwitcher";
-import CartDrawer from "@/components/shop/CartDrawer";
+import dynamic from "next/dynamic";
 import { benefitsData } from "@/data/benefits";
+
+const LanguageSwitcher = dynamic(() => import("./LanguageSwitcher"), {
+    ssr: false,
+});
+
+const CartDrawer = dynamic(() => import("@/components/shop/CartDrawer"), {
+    ssr: false,
+});
 
 
 type Dict = Record<string, unknown>;
