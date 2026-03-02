@@ -11,7 +11,7 @@ interface MarketingModalProps {
 const copy = {
     en: {
         title: "MOROCCAN ORGANICA",
-        heroText: "Quality Moroccan Argan oil & cosmetic products for your brand",
+        heroText: "Discover authentic Moroccan beauty for your brand",
         bodyText: "Discover authentic Moroccan beauty crafted for your brand. Add your own label and access premium-quality products made with traditional expertise and modern standards. Bring the essence of Morocco to your customers.",
         cta: "Start Your Brand",
     },
