@@ -53,12 +53,12 @@ export async function POST(request: NextRequest) {
             try {
                 const orderResponse = await ordersController.getOrder({ id: paypalOrderId });
                 const orderResultData = orderResponse.result;
-                let status = orderResultData?.status;
+                let status: string | undefined = orderResultData?.status as string | undefined;
 
                 // For redirect flow: capture if still APPROVED
                 if (status === "APPROVED") {
                     const captureResponse = await ordersController.captureOrder({ id: paypalOrderId });
-                    status = captureResponse.result?.status || "COMPLETED";
+                    status = (captureResponse.result?.status as string) || "COMPLETED";
                 }
 
                 if (status === "COMPLETED") {

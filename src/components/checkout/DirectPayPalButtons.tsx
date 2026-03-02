@@ -163,7 +163,7 @@ export function DirectPayPalButtons({
                         label: "paypal",
                         height: 45,
                     },
-                    createOrder: (_data, actions) => {
+                    createOrder: (_data: any, actions: any) => {
                         return actions.order.create({
                             intent: "CAPTURE",
                             purchase_units: [
@@ -176,14 +176,14 @@ export function DirectPayPalButtons({
                             ],
                         });
                     },
-                    onClick: async (_data, actions) => {
+                    onClick: async (_data: any, actions: any) => {
                         if (onClick) {
                             const isValid = await onClick();
                             if (!isValid) return actions.reject();
                         }
                         return actions.resolve();
                     },
-                    onApprove: async (_data, actions) => {
+                    onApprove: async (_data: any, actions: any) => {
                         if (!actions.order) return;
                         try {
                             const order = await actions.order.capture();
@@ -193,7 +193,7 @@ export function DirectPayPalButtons({
                             onError(err);
                         }
                     },
-                    onError: (err) => {
+                    onError: (err: any) => {
                         console.error("PayPal button error:", err);
                         onError(err);
                     },
@@ -223,7 +223,7 @@ export function DirectPayPalButtons({
         return () => {
             cancelled = true;
             clearTimeout(timer);
-            buttonsRef.current?.close().catch(() => {});
+            buttonsRef.current?.close().catch(() => { });
             buttonsRef.current = null;
         };
     }, [clientId, locale, onApprove, onError, onCancel, onClick, log]);
