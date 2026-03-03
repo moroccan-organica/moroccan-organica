@@ -1,7 +1,8 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache-tags';
 import { deleteFileFromStorage } from '@/actions/media.actions';
 import {
   ShopProductDB,
@@ -322,11 +323,13 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     // Fetch complete
     const completeProduct = await getProductById(product.id);
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/products');
-    revalidatePath('/[lang]/admin/products/topsale');
-    revalidatePath('/[lang]/admin/products/featured');
-    revalidatePath('/[lang]/admin/products/organica');
+    // Invalidate all product list caches (shop, home featured/topsale, admin)
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    // Invalidate this specific product's detail page cache
+    if (completeProduct?.slug) revalidateTag(CACHE_TAGS.PRODUCT(completeProduct.slug), 'default');
+    if (completeProduct?.id) revalidateTag(CACHE_TAGS.PRODUCT(completeProduct.id), 'default');
+    // Invalidate admin pages (path-based, no lang needed for admin)
+    revalidatePath('/[lang]/admin/products', 'page');
 
     return { success: true, product: completeProduct || undefined };
   } catch (error: any) {
@@ -421,11 +424,13 @@ export async function updateProduct(
 
     const updated = await getProductById(id);
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/products');
-    revalidatePath('/[lang]/admin/products/topsale');
-    revalidatePath('/[lang]/admin/products/featured');
-    revalidatePath('/[lang]/admin/products/organica');
+    // Invalidate all product list caches
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    // Invalidate this specific product's detail page cache
+    revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
+    if (updated?.slug) revalidateTag(CACHE_TAGS.PRODUCT(updated.slug), 'default');
+    // Invalidate admin pages
+    revalidatePath('/[lang]/admin/products', 'page');
 
     return { success: true, product: updated || undefined };
   } catch (error: any) {
@@ -453,11 +458,11 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
       }
     }
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/products');
-    revalidatePath('/[lang]/admin/products/topsale');
-    revalidatePath('/[lang]/admin/products/featured');
-    revalidatePath('/[lang]/admin/products/organica');
+    // Invalidate all product list caches and the specific product cache
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
+    // Invalidate admin pages
+    revalidatePath('/[lang]/admin/products', 'page');
 
     return { success: true };
   } catch (error: any) {
@@ -479,8 +484,9 @@ export async function toggleProductStatus(
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/products');
+    // Invalidate all product lists (availability change affects all list pages)
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
 
     return { success: true };
   } catch (error: any) {

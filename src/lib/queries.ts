@@ -1,7 +1,12 @@
-
+import { unstable_cache } from 'next/cache';
 import { supabase } from './supabase';
+import { CACHE_TAGS } from './cache-tags';
 
-export async function getStaticPageBySystemName(systemName: string, lang: string) {
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC PAGES
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getStaticPageBySystemName(systemName: string, lang: string) {
     try {
         const { data: page, error } = await supabase
             .from('StaticPage')
@@ -35,7 +40,18 @@ export async function getStaticPageBySystemName(systemName: string, lang: string
     }
 }
 
-export async function getGlobalSeoSettings(lang: string) {
+export const getStaticPageBySystemName = (systemName: string, lang: string) =>
+    unstable_cache(
+        () => _getStaticPageBySystemName(systemName, lang),
+        [CACHE_TAGS.STATIC_PAGE(systemName), lang],
+        { tags: [CACHE_TAGS.STATIC_PAGES, CACHE_TAGS.STATIC_PAGE(systemName)] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GLOBAL SEO
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getGlobalSeoSettings(lang: string) {
     try {
         const { data: settings, error } = await supabase
             .from('GlobalSeoSetting')
@@ -56,7 +72,18 @@ export async function getGlobalSeoSettings(lang: string) {
     }
 }
 
-export async function getStaticPageBySlug(slug: string, lang: string) {
+export const getGlobalSeoSettings = (lang: string) =>
+    unstable_cache(
+        () => _getGlobalSeoSettings(lang),
+        [CACHE_TAGS.STATIC_PAGES, `global-seo-${lang}`],
+        { tags: [CACHE_TAGS.STATIC_PAGES] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STATIC PAGE BY SLUG
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getStaticPageBySlug(slug: string, lang: string) {
     try {
         const { data: page, error } = await supabase
             .from('StaticPage')
@@ -91,7 +118,18 @@ export async function getStaticPageBySlug(slug: string, lang: string) {
     }
 }
 
-export async function getFeaturedProducts(lang: string) {
+export const getStaticPageBySlug = (slug: string, lang: string) =>
+    unstable_cache(
+        () => _getStaticPageBySlug(slug, lang),
+        [CACHE_TAGS.STATIC_PAGES, `static-slug-${slug}-${lang}`],
+        { tags: [CACHE_TAGS.STATIC_PAGES] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FEATURED PRODUCTS (home page categories section)
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getFeaturedProducts(lang: string) {
     try {
         const { data: products, error } = await supabase
             .from('Product')
@@ -113,7 +151,6 @@ export async function getFeaturedProducts(lang: string) {
         return products.map((p: any) => {
             const trans = p.translations?.[0] || {};
             const catTrans = p.category?.translations?.[0] || {};
-            // Category image if no product image, or placeholder
             const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
 
             return {
@@ -129,7 +166,18 @@ export async function getFeaturedProducts(lang: string) {
     }
 }
 
-export async function getTopSaleProducts(lang: string) {
+export const getFeaturedProducts = (lang: string) =>
+    unstable_cache(
+        () => _getFeaturedProducts(lang),
+        [CACHE_TAGS.PRODUCTS, `featured-${lang}`],
+        { tags: [CACHE_TAGS.PRODUCTS] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TOP SALE PRODUCTS (home page products section)
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getTopSaleProducts(lang: string) {
     try {
         const { data: products, error } = await supabase
             .from('Product')
@@ -151,9 +199,7 @@ export async function getTopSaleProducts(lang: string) {
             const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
             const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
             const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
-
             const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
-
             const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
             const variant = p.variants?.[0];
 
@@ -164,7 +210,6 @@ export async function getTopSaleProducts(lang: string) {
                 badge: "Top Seller",
                 image: image,
                 slug: transEn.slug || p.id,
-                // Additional fields for ShopProduct
                 category: catTrans.name || "Category",
                 price: variant ? Number(variant.price) : Number(p.basePrice),
                 volume: variant ? variant.sizeName : "Standard",
@@ -172,7 +217,7 @@ export async function getTopSaleProducts(lang: string) {
                 nameAr: transAr.name || trans.name || "Product",
                 descriptionEn: transEn.description || "",
                 descriptionAr: transAr.description || "",
-                gallery: [image], // Fallback
+                gallery: [image],
                 notes: [],
             };
         });
@@ -182,7 +227,18 @@ export async function getTopSaleProducts(lang: string) {
     }
 }
 
-export async function getCatalogueProducts(lang: string) {
+export const getTopSaleProducts = (lang: string) =>
+    unstable_cache(
+        () => _getTopSaleProducts(lang),
+        [CACHE_TAGS.PRODUCTS, `topsale-${lang}`],
+        { tags: [CACHE_TAGS.PRODUCTS] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CATALOGUE PRODUCTS
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getCatalogueProducts(lang: string) {
     try {
         const { data: products, error } = await supabase
             .from('Product')
@@ -203,9 +259,7 @@ export async function getCatalogueProducts(lang: string) {
             const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
             const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
             const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
-
             const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
-
             const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
             const variant = p.variants?.[0];
 
@@ -233,7 +287,18 @@ export async function getCatalogueProducts(lang: string) {
     }
 }
 
-export async function getAllCategories(lang: string) {
+export const getCatalogueProducts = (lang: string) =>
+    unstable_cache(
+        () => _getCatalogueProducts(lang),
+        [CACHE_TAGS.PRODUCTS, `catalogue-${lang}`],
+        { tags: [CACHE_TAGS.PRODUCTS] }
+    )();
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ALL CATEGORIES (nav / shop filter)
+// ─────────────────────────────────────────────────────────────────────────────
+
+async function _getAllCategories(lang: string) {
     try {
         const { data: categories, error } = await supabase
             .from('Category')
@@ -251,3 +316,10 @@ export async function getAllCategories(lang: string) {
         return [];
     }
 }
+
+export const getAllCategories = (lang: string) =>
+    unstable_cache(
+        () => _getAllCategories(lang),
+        [CACHE_TAGS.CATEGORIES, `all-categories-${lang}`],
+        { tags: [CACHE_TAGS.CATEGORIES] }
+    )();

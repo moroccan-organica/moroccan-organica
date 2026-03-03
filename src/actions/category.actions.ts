@@ -1,7 +1,8 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache-tags';
 import { CategoryDB, LanguageCode } from '@/types/product';
 
 // Helper to transform DB category to shop format
@@ -121,8 +122,9 @@ export async function createCategory(input: {
 
     const completeCategory = await getCategoryById(category.id);
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/categories');
+    revalidateTag(CACHE_TAGS.CATEGORIES, 'default');
+    // Products may display category info — invalidate product lists too
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
 
     return { success: true, category: completeCategory || undefined };
   } catch (error: any) {
@@ -137,8 +139,8 @@ export async function deleteCategory(id: string): Promise<{ success: boolean; er
     const { error } = await supabase.from('Category').delete().eq('id', id);
     if (error) throw error;
 
-    revalidatePath('/[lang]/shop');
-    revalidatePath('/[lang]/admin/categories');
+    revalidateTag(CACHE_TAGS.CATEGORIES, 'default');
+    revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
 
     return { success: true };
   } catch (error: any) {
