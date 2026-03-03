@@ -3,7 +3,8 @@
 import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache-tags';
 import { SEOSettings } from '@/types/seo';
 
 async function checkAdmin() {
@@ -113,7 +114,10 @@ export async function updateSEOSettings(body: SEOSettings) {
                 if (insertError) throw insertError;
             }
 
-            revalidatePath('/[lang]/admin/seo');
+            revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
+            // Products also use global SEO for ogImage etc.
+            revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+            revalidatePath('/[lang]/admin/seo', 'page');
             return { success: true };
         } else {
             // Create fresh
@@ -144,7 +148,9 @@ export async function updateSEOSettings(body: SEOSettings) {
                 if (transError) throw transError;
             }
 
-            revalidatePath('/[lang]/admin/seo');
+            revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
+            revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+            revalidatePath('/[lang]/admin/seo', 'page');
             return { success: true };
         }
     } catch (error: any) {

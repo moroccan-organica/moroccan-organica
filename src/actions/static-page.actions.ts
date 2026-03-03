@@ -3,7 +3,8 @@
 import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache-tags';
 import { StaticPageInput } from '@/types/static-page';
 
 async function checkAdmin() {
@@ -86,7 +87,9 @@ export async function createStaticPage(input: StaticPageInput) {
             if (transError) throw transError;
         }
 
-        revalidatePath('/[lang]/admin/static-pages');
+        revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
+        revalidateTag(CACHE_TAGS.STATIC_PAGE(systemName), 'default');
+        revalidatePath('/[lang]/admin/static-pages', 'page');
         return { success: true, id: newPage.id };
     } catch (error: any) {
         console.error('Error creating static page:', error);
@@ -137,7 +140,9 @@ export async function updateStaticPage(id: string, input: StaticPageInput) {
             if (transError) throw transError;
         }
 
-        revalidatePath('/[lang]/admin/static-pages');
+        revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
+        revalidateTag(CACHE_TAGS.STATIC_PAGE(systemName), 'default');
+        revalidatePath('/[lang]/admin/static-pages', 'page');
         return { success: true };
     } catch (error: any) {
         console.error('Error updating static page:', error);
@@ -159,7 +164,8 @@ export async function deleteStaticPage(id: string) {
 
         if (error) throw error;
 
-        revalidatePath('/[lang]/admin/static-pages');
+        revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
+        revalidatePath('/[lang]/admin/static-pages', 'page');
         return { success: true };
     } catch (error: any) {
         console.error('Error deleting static page:', error);
