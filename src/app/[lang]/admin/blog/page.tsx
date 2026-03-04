@@ -108,7 +108,7 @@ export default function BlogAdminPage() {
   }, []);
 
   const handleViewPost = useCallback((post: BlogPost) => {
-    router.push(`/${lang}/blog/${post.slug}`);
+    router.push(`/${lang}/blog-details/${post.slug}`);
   }, [lang, router]);
 
   const handleEditPost = useCallback((post: BlogPost) => {

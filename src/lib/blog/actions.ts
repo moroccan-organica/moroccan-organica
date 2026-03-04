@@ -578,7 +578,7 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
     revalidatePath('/[lang]/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     if (existing?.slug) {
-      revalidatePath(`/[lang]/blog/${existing.slug}`);
+      revalidatePath(`/[lang]/blog-details/${existing.slug}`);
       revalidateTag(CACHE_TAGS.BLOG_POST(existing.slug), 'default');
     }
     return { success: true };

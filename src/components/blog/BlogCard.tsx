@@ -50,7 +50,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
 
   return (
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
-      <Link href={`/${lang}/blog/${post.slug}`} className="relative h-64 overflow-hidden">
+      <Link href={`/${lang}/blog-details/${post.slug}`} className="relative h-64 overflow-hidden">
         <Image
           src={imgSrc}
           alt={title}
@@ -72,7 +72,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
 
       <div className={`flex flex-col flex-1 p-6 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
 
-        <Link href={`/${lang}/blog/${post.slug}`}>
+        <Link href={`/${lang}/blog-details/${post.slug}`}>
           <p className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-[#BC6C25] transition-colors line-clamp-2 min-h-[56px]">
             {title}
           </p>
@@ -84,7 +84,7 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
 
         <div className="mt-auto flex items-center justify-end pt-4 border-t border-slate-50">
           <Link
-            href={`/${lang}/blog/${post.slug}`}
+            href={`/${lang}/blog-details/${post.slug}`}
             className="text-[#BC6C25] text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
           >
             {translations.readMore}
