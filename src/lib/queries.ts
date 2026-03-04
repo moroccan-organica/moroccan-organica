@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { supabase } from './supabase';
 import { CACHE_TAGS } from './cache-tags';
+import { getLocalizedHref } from './utils';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATIC PAGES
@@ -153,23 +154,22 @@ async function _getFeaturedProducts(lang: string) {
             `)
             .eq('placement', 'featured')
             .eq('isAvailable', true)
-            .eq('category.translations.language', lang)
-            .eq('translations.language', lang)
             .order('createdAt', { ascending: false })
             .limit(30);
 
         if (error || !products) return [];
 
         return products.map((p: any) => {
-            const trans = p.translations?.[0] || {};
-            const catTrans = p.category?.translations?.[0] || {};
+            const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
+            const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
+            const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
             const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
 
             return {
                 title: trans.name || "Untitled Product",
                 subtitle: catTrans.name || "Category",
                 image: image,
-                slug: trans.slug || p.id
+                slug: trans.slug || transEn.slug || p.id
             };
         });
     } catch (error) {
@@ -225,7 +225,7 @@ async function _getTopSaleProducts(lang: string) {
                 description: trans.description || "",
                 badge: "Top Seller",
                 image: image,
-                slug: transEn.slug || p.id,
+                slug: trans.slug || transEn.slug || p.id,
                 category: catTrans.name || "Category",
                 price: variant ? Number(variant.price) : Number(p.basePrice),
                 volume: variant ? variant.sizeName : "Standard",
@@ -289,7 +289,7 @@ async function _getCatalogueProducts(lang: string) {
                 description: trans.description || "",
                 badge: "Catalogue",
                 image: image,
-                slug: transEn.slug || p.id,
+                slug: trans.slug || transEn.slug || p.id,
                 category: catTrans.name || "Category",
                 price: variant ? Number(variant.price) : Number(p.basePrice),
                 volume: variant ? variant.sizeName : "Standard",
@@ -333,7 +333,7 @@ async function _getAllCategories(lang: string) {
 
         return categories.map((c: any) => ({
             name: c.translations?.[0]?.name || "Unknown",
-            href: `/${lang}/shop?category=${c.translations?.[0]?.slug || c.id}`
+            href: getLocalizedHref(`/shop?category=${c.translations?.[0]?.slug || c.id}`, lang)
         }));
     } catch (error) {
         console.error("Error fetching categories:", error);

@@ -19,29 +19,31 @@ const LanguageSwitcher = () => {
     // Safely get current language from pathname (e.g. /en/...)
     // default to en if not found
     const pathLang = pathname.split('/')[1];
-    const currentLang = ['en', 'ar', 'fr'].includes(pathLang) ? pathLang : 'en';
+    const currentLang = ['ar', 'fr'].includes(pathLang) ? pathLang : 'en';
 
     const languages = [
         { code: 'en', name: 'English', countryCode: 'US' },
-        { code: 'ar', name: 'العربية', countryCode: 'MA' },
+        { code: 'ma', name: 'العربية', countryCode: 'MA', langCode: 'ar' },
         { code: 'fr', name: 'Français', countryCode: 'FR' },
     ];
 
-    const currentLanguage = languages.find(lang => lang.code === currentLang) || languages[0];
+    const currentLanguage = languages.find(lang => (lang.langCode || lang.code) === currentLang) || languages[0];
 
     const changeLanguage = (langCode: string) => {
-        // If the path starts with a language code, replace it
-        // Otherwise preped it (though usually middleware handles this)
-        const segments = pathname.split('/');
-        // segments[0] is empty string before first slash
-        // segments[1] is the locale if present
-        if (['en', 'ar', 'fr'].includes(segments[1])) {
-            segments[1] = langCode;
-        } else {
-            segments.splice(1, 0, langCode);
+        let segments = pathname.split('/').filter(Boolean);
+
+        // Remove existing locale if present
+        if (['ar', 'fr', 'en'].includes(segments[0])) {
+            segments.shift();
         }
-        const newPath = segments.join('/');
-        router.push(newPath);
+
+        // Add new locale if not English
+        if (langCode !== 'en') {
+            segments.unshift(langCode);
+        }
+
+        const newPath = `/${segments.join('/')}`;
+        router.push(newPath || '/');
         setIsOpen(false);
     };
 
@@ -69,8 +71,8 @@ const LanguageSwitcher = () => {
                 {languages.map((lang) => (
                     <DropdownMenuItem
                         key={lang.code}
-                        onClick={() => changeLanguage(lang.code)}
-                        className={`flex items-center gap-3 cursor-pointer hover:bg-primary/20 transition-colors py-2 ${currentLang === lang.code ? 'bg-primary/30' : ''
+                        onClick={() => changeLanguage(lang.langCode || lang.code)}
+                        className={`flex items-center gap-3 cursor-pointer hover:bg-primary/20 transition-colors py-2 ${currentLang === (lang.langCode || lang.code) ? 'bg-primary/30' : ''
                             }`}
                     >
                         <ReactCountryFlag

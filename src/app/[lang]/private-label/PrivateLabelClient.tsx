@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { getLocalizedHref } from "@/lib/utils";
 
 interface Stat {
     value: string;
@@ -558,7 +559,7 @@ export default function PrivateLabelClient({ data, dict, lang }: PrivateLabelCli
                             whileTap={{ scale: 0.98 }}
                         >
                             <Link
-                                href={`/${lang}/contact`}
+                                href={getLocalizedHref('/contact', lang)}
                                 className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary text-white font-semibold text-lg shadow-lg hover:shadow-xl hover:bg-primary transition-all duration-300"
                             >
                                 {content.cta.buttonText}

@@ -2,6 +2,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { getStaticPageBySystemName, getGlobalSeoSettings, getCatalogueProducts } from "@/lib/queries";
 import { Metadata } from "next";
 import CatalogueClient from "../CatalogueClient";
+import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -40,10 +41,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/organica/essential-oils-wholesale-suppliers`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang)}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/organica/essential-oils-wholesale-suppliers`,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang)}`,
         }
     };
 }

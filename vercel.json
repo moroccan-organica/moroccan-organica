@@ -10,6 +10,36 @@
             ],
             "destination": "https://www.moroccanorganica.com/:path*",
             "permanent": true
+        },
+        {
+            "source": "/en",
+            "destination": "/",
+            "permanent": true
+        },
+        {
+            "source": "/en/:path*",
+            "destination": "/:path*",
+            "permanent": true
+        },
+        {
+            "source": "/:lang/blog/:slug",
+            "destination": "/:lang/blog-details/:slug",
+            "permanent": true
+        },
+        {
+            "source": "/blog/:slug",
+            "destination": "/blog-details/:slug",
+            "permanent": true
+        },
+        {
+            "source": "/:lang/wholesale-of-moroccan-skincare/:slug",
+            "destination": "/:lang/blog-details/:slug",
+            "permanent": true
+        },
+        {
+            "source": "/wholesale-of-moroccan-skincare/:slug",
+            "destination": "/blog-details/:slug",
+            "permanent": true
         }
     ]
 }

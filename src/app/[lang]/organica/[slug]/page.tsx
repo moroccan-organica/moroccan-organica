@@ -12,6 +12,7 @@ import { ShopProductDB } from "@/types/product";
 import { WholesaleQuoteForm } from "@/components/shop/WholesaleQuoteForm";
 import InnerHero from "@/components/common/InnerHero";
 import { HtmlContent } from "@/components/common/HtmlContent";
+import { getLocalizedHref } from "@/lib/utils";
 
 const copy = {
     en: {
@@ -81,10 +82,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
                 title: product.metaTitle || name,
                 description: product.metaDesc || description?.substring(0, 160),
                 images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
-                url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+                url: `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${slug}`, lang)}`,
             },
             alternates: {
-                canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+                canonical: product.canonical || `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${slug}`, lang)}`,
             }
         };
     }
@@ -109,10 +110,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
                 title: title,
                 description: description.substring(0, 160),
                 images: [benefit.image],
-                url: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+                url: `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${slug}`, lang)}`,
             },
             alternates: {
-                canonical: `https://www.moroccanorganica.com/${lang}/organica/${slug}`,
+                canonical: `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${slug}`, lang)}`,
             }
         };
     }
@@ -146,7 +147,7 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
 
     // Redirect logic for different placements
     if (product.placement === 'shop') {
-        redirect(`/${lang}/shop/${slug}`);
+        redirect(getLocalizedHref(`/shop/${slug}`, lang));
     }
 
     // Get related from DB - try by category first
@@ -189,8 +190,8 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
                 backgroundImage={product.image || "/prodct.jpg"}
                 titleTag="h2"
                 breadcrumbs={[
-                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },
-                    { label: localizedName || "", href: `/${lang}/organica/${slug}` }
+                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: getLocalizedHref('/', lang) },
+                    { label: localizedName || "", href: getLocalizedHref(`/organica/${slug}`, lang) }
                 ]}
             />
 

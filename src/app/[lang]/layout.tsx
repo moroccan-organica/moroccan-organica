@@ -35,21 +35,34 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const defaultDesc = globalSeo?.translation?.defaultMetaDesc || "Buy Moroccan Wholesale argan oil and organic cosmetics products company. Using traditional ingredients and natural products for beauty skincare haircare.";
   const keywords = globalSeo?.translation?.defaultKeywords || "Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure,  bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic";
 
+  const baseUrl = 'https://www.moroccanorganica.com';
+  const canonicalPath = lang === 'en' ? '' : `/${lang}`;
+  const canonicalUrl = `${baseUrl}${canonicalPath}`;
+
   return {
-    metadataBase: new URL('https://www.moroccanorganica.com'),
+    metadataBase: new URL(baseUrl),
     title: {
       default: siteName,
       template: "%s",
     },
     description: defaultDesc,
     keywords: keywords,
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        'en': baseUrl,
+        'fr': `${baseUrl}/fr`,
+        'ar': `${baseUrl}/ar`,
+        'x-default': baseUrl,
+      },
+    },
     openGraph: {
       type: 'website',
       siteName: siteName,
       title: siteName,
       description: defaultDesc,
       images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
-      url: `https://www.moroccanorganica.com/${lang}`,
+      url: canonicalUrl,
     },
     twitter: {
       card: 'summary_large_image',

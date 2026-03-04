@@ -4,10 +4,11 @@ import Link from "next/link";
 import { FileText, ArrowLeft, BookOpen } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import { getLocalizedHref } from "@/lib/utils";
 
 export default function BlogNotFound() {
     const pathname = usePathname();
-    const lang = pathname?.startsWith('/ar') ? 'ar' : 'en';
+    const lang = pathname?.startsWith('/ar') ? 'ar' : (pathname?.startsWith('/fr') ? 'fr' : 'en');
     const isRTL = lang === 'ar';
 
     return (
@@ -65,7 +66,7 @@ export default function BlogNotFound() {
                         className="pt-6 flex flex-col sm:flex-row items-center justify-center gap-4"
                     >
                         <Link
-                            href={`/${lang}/blog`}
+                            href={getLocalizedHref('/blog', lang)}
                             className="px-12 py-4 bg-forest text-white rounded-lg font-serif italic text-lg hover:bg-forest-dark transition-all shadow-xl group flex items-center gap-3"
                         >
                             <span className="font-semibold">{isRTL ? 'العودة للمقالات' : 'Back to Magazine'}</span>
@@ -73,7 +74,7 @@ export default function BlogNotFound() {
                         </Link>
 
                         <Link
-                            href={`/${lang}`}
+                            href={getLocalizedHref('/', lang)}
                             className="px-8 py-4 border-b-2 border-transparent hover:border-forest text-forest font-medium transition-all"
                         >
                             {isRTL ? 'الرئيسية' : 'Home Page'}

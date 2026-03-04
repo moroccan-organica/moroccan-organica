@@ -13,6 +13,7 @@ import {
 import Autoplay from "embla-carousel-autoplay";
 import { useRef } from "react";
 import Image from "next/image";
+import { getLocalizedHref } from "@/lib/utils";
 
 // Helper to get icon component or default
 const getIcon = (index: number) => {
@@ -132,7 +133,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                             {/* CTA Buttons */}
                                             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
                                                 <Button asChild className="btn-accent text-lg px-8 py-6 font-semibold group">
-                                                    <Link href={`/${lang}/organica`}>
+                                                    <Link href={getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang)}>
                                                         {cta.quote}
                                                         {isRtl ? (
                                                             <ArrowLeft className="me-2 w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -146,7 +147,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                                     variant="outline"
                                                     className="text-lg px-8 py-6 border-2 border-primary/50 text-primary-foreground bg-transparent hover:bg-primary/20 hover:border-primary"
                                                 >
-                                                    <Link href={`/${lang}/shop`}>
+                                                    <Link href={getLocalizedHref('/shop', lang)}>
                                                         {cta.view}
                                                     </Link>
                                                 </Button>

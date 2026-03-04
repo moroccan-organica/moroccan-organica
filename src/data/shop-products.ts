@@ -15,8 +15,10 @@ export type ShopProduct = {
     volume: string;
     name: string;
     nameAr: string;
+    nameFr?: string;
     description: string;
     descriptionAr: string;
+    descriptionFr?: string;
     notes: string[];
     price: number;
     stockQuantity?: number;

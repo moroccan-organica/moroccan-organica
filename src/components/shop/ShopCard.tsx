@@ -6,6 +6,7 @@ import { SafeImage } from '@/components/ui/safe-image';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ShopProduct, ShopCategory, shopCategories } from '@/data/shop-products';
+import { getLocalizedHref } from '@/lib/utils';
 
 interface ShopCardProps {
   product: ShopProduct;
@@ -18,8 +19,8 @@ interface ShopCardProps {
 
 export function ShopCard({ product, lang, translations }: ShopCardProps) {
   const isRTL = lang === 'ar';
-  const localizedName = isRTL ? product.nameAr : product.name;
-  const localizedDescription = isRTL ? product.descriptionAr : product.description;
+  const localizedName = (lang === 'ar' ? product.nameAr : (lang === 'fr' ? product.nameFr : product.name)) || product.name;
+  const localizedDescription = (lang === 'ar' ? product.descriptionAr : (lang === 'fr' ? product.descriptionFr : product.description)) || product.description;
 
   const category = shopCategories.find((c: ShopCategory) => c.name === product.category);
   const categoryColor = category?.color || 'var(--primary)';
@@ -32,7 +33,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
 
   return (
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
-      <Link href={`/${lang}/shop/${product.slug}`} className="relative h-64 overflow-hidden">
+      <Link href={getLocalizedHref(`/shop/${product.slug}`, lang)} className="relative h-64 overflow-hidden">
         <SafeImage
           src={product.image}
           alt={localizedName}
@@ -65,7 +66,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
           <span className="uppercase tracking-wider font-medium">{product.category}</span>
         </div>
 
-        <Link href={`/${lang}/shop/${product.slug}`}>
+        <Link href={getLocalizedHref(`/shop/${product.slug}`, lang)}>
           <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-accent transition-colors line-clamp-2">
             {localizedName}
           </h3>
@@ -86,7 +87,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
           </div>
 
           <Link
-            href={`/${lang}/shop/${product.slug}`}
+            href={getLocalizedHref(`/shop/${product.slug}`, lang)}
             className="text-accent text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
           >
             {translations.viewDetails}

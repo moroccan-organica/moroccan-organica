@@ -111,11 +111,12 @@ export async function getProducts(options?: {
   placement?: ProductPlacement;
   page?: number;
   limit?: number;
+  lang?: LanguageCode;
 }): Promise<{ products: ShopProductDB[]; total: number }> {
   return unstable_cache(
     async () => {
       try {
-        const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50 } = options || {};
+        const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50, lang = 'en' } = options || {};
 
         let query = supabase
           .from('Product')
@@ -159,7 +160,7 @@ export async function getProducts(options?: {
         if (error) throw error;
 
         return {
-          products: (products || []).map((product) => transformToShopProduct(product)),
+          products: (products || []).map((product) => transformToShopProduct(product, lang as LanguageCode)),
           total: total || 0,
         };
       } catch (error) {
@@ -545,7 +546,8 @@ export async function toggleProductStatus(
 export async function getRelatedProducts(
   productId: string,
   categoryId: string,
-  limit: number = 4
+  limit: number = 4,
+  lang: LanguageCode = 'en'
 ): Promise<ShopProductDB[]> {
   return unstable_cache(
     async () => {
@@ -567,19 +569,19 @@ export async function getRelatedProducts(
 
         if (error) throw error;
 
-        return (products || []).map((product) => transformToShopProduct(product));
+        return (products || []).map((product) => transformToShopProduct(product, lang));
       } catch (error) {
         console.error('Error fetching related products:', error);
         return [];
       }
     },
-    ['related-products', productId, categoryId, String(limit)],
+    ['related-products', productId, categoryId, String(limit), lang],
     { tags: [CACHE_TAGS.PRODUCTS, `related-${productId}`], revalidate: 3600 }
   )();
 }
 
 // GET FEATURED PRODUCTS
-export async function getFeaturedProducts(limit: number = 8): Promise<ShopProductDB[]> {
+export async function getFeaturedProducts(limit: number = 8, lang: LanguageCode = 'en'): Promise<ShopProductDB[]> {
   return unstable_cache(
     async () => {
       try {
@@ -599,13 +601,13 @@ export async function getFeaturedProducts(limit: number = 8): Promise<ShopProduc
 
         if (error) throw error;
 
-        return (products || []).map((product) => transformToShopProduct(product));
+        return (products || []).map((product) => transformToShopProduct(product, lang));
       } catch (error) {
         console.error('Error fetching featured products:', error);
         return [];
       }
     },
-    ['featured-products', String(limit)],
+    ['featured-products', String(limit), lang],
     { tags: [CACHE_TAGS.PRODUCTS, 'featured'], revalidate: 3600 }
   )();
 }

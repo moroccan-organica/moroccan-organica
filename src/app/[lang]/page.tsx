@@ -13,6 +13,7 @@ import { homePageData } from "@/data/home";
 import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { getStaticPageBySystemName, getGlobalSeoSettings, getFeaturedProducts, getTopSaleProducts } from "@/lib/queries";
+import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -32,10 +33,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       description: description,
       images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
       type: 'website',
-      url: `https://www.moroccanorganica.com/${lang}`,
+      url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}`,
     },
     alternates: {
-      canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}`,
+      canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}`,
     }
   }
 }
@@ -108,7 +109,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const professionalCtaData = {
     ...homePageData.professionalCta,
     ...dict.professionalCta,
-    href: `/${lang}${dict.professionalCta?.href || homePageData.professionalCta.href}`
+    href: getLocalizedHref(dict.professionalCta?.href || homePageData.professionalCta.href, lang)
   };
   const visionData = { ...homePageData.vision, ...dict.vision };
 

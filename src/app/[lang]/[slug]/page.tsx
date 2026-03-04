@@ -3,6 +3,7 @@ import { Markdown } from "@/components/common/Markdown";
 import { notFound } from "next/navigation";
 import { Metadata } from "next";
 import { getGlobalSeoSettings } from "@/lib/queries";
+import { getLocalizedHref } from "@/lib/utils";
 
 // Re-validate content every hour
 export const revalidate = 3600;
@@ -32,10 +33,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
             title: page.translation.metaTitle || page.translation.h1 || undefined,
             description: page.translation.metaDesc || undefined,
             images: page.translation.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/${slug}`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref(`/${slug}`, lang)}`,
         },
         alternates: {
-            canonical: page.translation.canonical || `https://www.moroccanorganica.com/${lang}/${slug}`,
+            canonical: page.translation.canonical || `https://www.moroccanorganica.com${getLocalizedHref(`/${slug}`, lang)}`,
         }
     };
 }

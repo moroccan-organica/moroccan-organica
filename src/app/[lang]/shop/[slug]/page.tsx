@@ -10,6 +10,7 @@ import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
 import { HtmlContent } from "@/components/common/HtmlContent";
+import { getLocalizedHref } from "@/lib/utils";
 
 const copy = {
     en: {
@@ -76,10 +77,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: product.metaTitle || name,
             description: product.metaDesc || description?.substring(0, 160),
             images: product.ogImage ? [product.ogImage] : (product.image ? [product.image] : (globalSeo?.ogImage ? [globalSeo.ogImage] : [])),
-            url: `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref(`/shop/${slug}`, lang)}`,
         },
         alternates: {
-            canonical: product.canonical || `https://www.moroccanorganica.com/${lang}/shop/${slug}`,
+            canonical: product.canonical || `https://www.moroccanorganica.com${getLocalizedHref(`/shop/${slug}`, lang)}`,
         }
     };
 }
@@ -179,14 +180,14 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             const category = categories.find(c => c.slug === currentProduct.categorySlug || c.slugAr === currentProduct.categorySlug);
 
             if (category) {
-                relatedProducts = await getRelatedProducts(currentProduct.id, category.id, 3);
+                relatedProducts = await getRelatedProducts(currentProduct.id, category.id, 3, lang as any);
             }
         }
 
         // If no related products found, get any 3 available products (excluding current)
         if (product && relatedProducts.length === 0) {
             const currentProduct = product;
-            const allProductsResult = await getProducts({ isAvailable: true, placement: 'shop', limit: 10 });
+            const allProductsResult = await getProducts({ isAvailable: true, placement: 'shop', limit: 10, lang: lang as any });
             relatedProducts = allProductsResult.products
                 .filter(p => p.id !== currentProduct.id)
                 .slice(0, 3);
@@ -194,7 +195,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
     }
 
     if (product && (product.placement === 'featured' || product.placement === 'topsale')) {
-        redirect(`/${lang}/organica/${slug}`);
+        redirect(getLocalizedHref(`/organica/${slug}`, lang));
     }
 
     if (!product) {
@@ -223,7 +224,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
         <main dir={isRTL ? "rtl" : "ltr"} className="container-main py-16 md:py-24 space-y-16">
             <nav className="text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
-                    <Link href={`/${lang}/shop`} className="hover:text-emerald-700">
+                    <Link href={getLocalizedHref('/shop', lang)} className="hover:text-emerald-700">
                         {t.breadcrumbHome}
                     </Link>
                     <span>/</span>
@@ -310,7 +311,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
                     <h2 className="heading-display text-2xl text-emerald-950">{t.relatedTitle}</h2>
-                    <Link href={`/${lang}/shop`} className="text-sm font-semibold text-emerald-700 hover:underline">
+                    <Link href={getLocalizedHref('/shop', lang)} className="text-sm font-semibold text-emerald-700 hover:underline">
                         {t.backToShop}
                     </Link>
                 </div>
@@ -346,7 +347,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                             {priceFormatter.format(item.price)}
                                         </p>
                                         <Link
-                                            href={item.placement === 'shop' ? `/${lang}/shop/${item.slug}` : `/${lang}/organica/${item.slug}`}
+                                            href={item.placement === 'shop' ? getLocalizedHref(`/shop/${item.slug}`, lang) : getLocalizedHref(`/organica/${item.slug}`, lang)}
                                             className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:text-emerald-900"
                                         >
                                             {t.viewDetails}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { benefitsData } from "@/data/benefits";
+import { getLocalizedHref } from "@/lib/utils";
 
 const LanguageSwitcher = dynamic(() => import("./LanguageSwitcher"), {
     ssr: false,
@@ -51,12 +52,12 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
     };
 
     const productDropdownItems = topProducts.length > 0
-        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/organica/${p.slug}` }))
+        ? topProducts.map(p => ({ name: p.title, href: getLocalizedHref(`/organica/${p.slug}`, lang) }))
         : [
-            { name: t('products.essentialOils'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
-            { name: t('products.vegetableOils'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
-            { name: t('products.driedPlants'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
-            { name: t('products.wellness'), href: `/${lang}/organica/essential-oils-wholesale-suppliers` },
+            { name: t('products.essentialOils'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
+            { name: t('products.vegetableOils'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
+            { name: t('products.driedPlants'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
+            { name: t('products.wellness'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
         ];
 
     const benefitsDropdownItems = [
@@ -69,20 +70,20 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
             }
             return {
                 name,
-                href: `/${lang}/organica/${benefit.slug}`
+                href: getLocalizedHref(`/organica/${benefit.slug}`, lang)
             };
         })
     ];
 
     const navLinks = [
-        { name: t('nav.home'), href: `/${lang}/`, isRoute: true, title: "Home page" },
-        { name: t('nav.products'), href: `/${lang}/wholesale-of-moroccan-skincare`, isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
-        { name: t('nav.about'), href: `/${lang}/organica/about-organica-group-sarl`, isRoute: true, title: t('nav.aboutTitle') || "About our company" },
-        { name: t('nav.blog'), href: `/${lang}/blog`, isRoute: true, title: "Blog" },
-        { name: t('nav.privateLabel'), href: `/${lang}/private-label`, isRoute: true, title: "Private label" },
-        { name: t('nav.benefits'), href: `/${lang}/organica/Benefits-Using-Natural-Beauty-Products`, isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
-        { name: t('nav.shop'), href: `/${lang}/shop`, isRoute: true, title: "Shop" },
-        { name: t('nav.contact'), href: `/${lang}/contact`, isRoute: true, title: "Get in touch" },
+        { name: t('nav.home'), href: getLocalizedHref('/', lang), isRoute: true, title: "Home page" },
+        { name: t('nav.products'), href: getLocalizedHref('/wholesale-of-moroccan-skincare', lang), isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
+        { name: t('nav.about'), href: getLocalizedHref('/organica/about-organica-group-sarl', lang), isRoute: true, title: t('nav.aboutTitle') || "About our company" },
+        { name: t('nav.blog'), href: getLocalizedHref('/blog', lang), isRoute: true, title: "Blog" },
+        { name: t('nav.privateLabel'), href: getLocalizedHref('/private-label', lang), isRoute: true, title: "Private label" },
+        { name: t('nav.benefits'), href: getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang), isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
+        { name: t('nav.shop'), href: getLocalizedHref('/shop', lang), isRoute: true, title: "Shop" },
+        { name: t('nav.contact'), href: getLocalizedHref('/contact', lang), isRoute: true, title: "Get in touch" },
     ];
 
     const socialLinks = [
@@ -120,7 +121,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
             <div className="container mx-auto px-4">
                 <div className="flex items-center justify-between h-16 md:h-20">
                     {/* Logo */}
-                    <Link href={`/${lang}/`} className="flex items-center cursor-pointer">
+                    <Link href={getLocalizedHref('/', lang)} className="flex items-center cursor-pointer">
                         <Image
                             src="/images/logo.png"
                             alt="Moroccan Organica"

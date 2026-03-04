@@ -6,6 +6,7 @@ import { BenefitPost } from "@/data/benefits";
 import { BenefitsContent } from "@/components/benefits/BenefitsContent";
 import { ArrowLeft } from 'lucide-react';
 import InnerHero from "@/components/common/InnerHero";
+import { getLocalizedHref } from "@/lib/utils";
 
 interface BenefitDetailProps {
     post: BenefitPost;
@@ -27,9 +28,9 @@ export default function BenefitDetail({ post, lang }: BenefitDetailProps) {
                 backgroundImage={post.image}
                 titleTag="h1"
                 breadcrumbs={[
-                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },
-                    { label: lang === 'ar' ? 'الفوائد' : isFrench ? 'Bienfaits' : 'Benefits', href: `/${lang}/organica/Benefits-Using-Natural-Beauty-Products` },
-                    { label: title, href: `/${lang}/organica/${post.slug}` }
+                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: getLocalizedHref('/', lang) },
+                    { label: lang === 'ar' ? 'الفوائد' : isFrench ? 'Bienfaits' : 'Benefits', href: getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang) },
+                    { label: title, href: getLocalizedHref(`/organica/${post.slug}`, lang) }
                 ]}
             />
 
@@ -41,7 +42,7 @@ export default function BenefitDetail({ post, lang }: BenefitDetailProps) {
 
                     <div className="mt-12 pt-8 border-t border-emerald-100 flex justify-center">
                         <Link
-                            href={`/${lang}/organica/Benefits-Using-Natural-Beauty-Products`}
+                            href={getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang)}
                             className="inline-flex items-center gap-2 px-8 py-4 bg-[#606C38] text-white rounded-full font-bold hover:bg-[#4a542b] transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-900/20"
                         >
                             <ArrowLeft className={`h-5 w-5 ${isArabic ? 'rotate-180' : ''}`} />

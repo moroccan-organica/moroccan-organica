@@ -6,6 +6,7 @@ import { shopProducts, shopCategories } from "@/data/shop-products";
 import { ShopProductDB, CategoryDB } from "@/types/product";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import { Metadata } from "next";
+import { getLocalizedHref } from "@/lib/utils";
 
 type Params = Promise<{ lang: string }>;
 
@@ -26,10 +27,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/shop`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/shop', lang)}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/shop`,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/shop', lang)}`,
         }
     };
 }
@@ -44,7 +45,7 @@ export default async function ShopPage({ params }: { params: Params }) {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ isAvailable: true, placement: 'shop' }),
+            getProducts({ isAvailable: true, placement: 'shop', lang: lang as any }),
             getCategories(),
         ]);
 

@@ -1,5 +1,6 @@
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import { Metadata } from "next";
+import { getLocalizedHref } from "@/lib/utils";
 
 type Params = Promise<{ lang: string }>;
 
@@ -20,10 +21,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/blog`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/blog', lang)}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/blog`,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/blog', lang)}`,
         }
     };
 }

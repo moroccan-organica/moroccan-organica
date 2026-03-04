@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
 import { BenefitPost } from '@/data/benefits';
+import { getLocalizedHref } from '@/lib/utils';
 
 interface BenefitsCardProps {
     post: BenefitPost;
@@ -47,7 +48,7 @@ export function BenefitsCard({ post, lang, translations }: BenefitsCardProps) {
 
                 <div className={`mt-auto flex items-center ${isArabic ? 'flex-row-reverse' : ''}`}>
                     <Link
-                        href={`/${lang}/organica/${post.slug}`}
+                        href={getLocalizedHref(`/organica/${post.slug}`, lang)}
                         className={`inline-flex items-center gap-2 text-[#606C38] font-medium hover:text-[#BC6C25] transition-colors ${isArabic ? 'flex-row-reverse' : ''}`}
                     >
                         {translations.readMore}

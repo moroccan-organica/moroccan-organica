@@ -3,6 +3,7 @@ import ContactClient from "./ContactClient";
 import { contactPageData } from "@/data/contact";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import { Metadata } from "next";
+import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -21,10 +22,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/contact`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/contact', lang)}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/contact`,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/contact', lang)}`,
         }
     };
 }

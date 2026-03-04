@@ -4,6 +4,7 @@ import { getDictionary } from "@/lib/dictionaries";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import type { Metadata } from "next";
 import { BenefitsClient } from "./BenefitsClient";
+import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -22,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title,
             description,
             images: page?.translation?.ogImage ? [page.translation.ogImage] : (globalSeo?.ogImage ? [globalSeo.ogImage] : []),
-            url: `https://www.moroccanorganica.com/${lang}/organica/Benefits-Using-Natural-Beauty-Products`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang)}`,
         },
         alternates: {
-            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com/${lang}/organica/Benefits-Using-Natural-Beauty-Products`,
+            canonical: page?.translation?.canonical || `https://www.moroccanorganica.com${getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang)}`,
         }
     };
 }

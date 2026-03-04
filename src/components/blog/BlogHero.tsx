@@ -2,6 +2,7 @@ import React from 'react';
 import { Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
+import { getLocalizedHref } from '@/lib/utils';
 
 interface BlogHeroProps {
   title: string;
@@ -55,7 +56,7 @@ export function BlogHero({
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
             <Link
-              href={`/${lang}/organica`}
+              href={getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang)}
               className="btn-accent py-4 px-10 rounded-xl text-lg font-bold uppercase tracking-wide"
             >
               {banner?.button || "Shop Now"}

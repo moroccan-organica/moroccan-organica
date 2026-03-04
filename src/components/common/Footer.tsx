@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, MapPin, MessageCircle, type LucideProps } from "lucide-react";
+import { getLocalizedHref } from "@/lib/utils";
 
 type LinkItem = { href: string; name: string };
 
@@ -95,7 +96,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
     const content = (dict as { footer?: FooterContent }).footer ?? (dict as FooterContent);
 
     const productLinks = topProducts.length > 0
-        ? topProducts.map(p => ({ name: p.title, href: `/${lang}/organica/${p.slug}` }))
+        ? topProducts.map(p => ({ name: p.title, href: getLocalizedHref(`/organica/${p.slug}`, lang) }))
         : content.links.products.items;
 
     const socialLinks = [
@@ -205,7 +206,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                         <ul className="space-y-2">
                             {content.links.blog.items.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
+                                    <Link href={getLocalizedHref(item.href, lang)} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>
@@ -223,7 +224,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                         <ul className="space-y-2">
                             {content.links.policy.items.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
+                                    <Link href={getLocalizedHref(item.href, lang)} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>
@@ -241,7 +242,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                         <ul className="space-y-2 mb-6">
                             {productLinks.map((item: LinkItem, i: number) => (
                                 <li key={i}>
-                                    <Link href={item.href} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic line-clamp-1">
+                                    <Link href={getLocalizedHref(item.href, lang)} className="text-xs text-white/70 hover:text-white transition-colors flex items-center justify-center sm:justify-start gap-2 group italic line-clamp-1">
                                         <span className="w-1 h-1 bg-white/30 rounded-full group-hover:w-2 group-hover:bg-white transition-all duration-300"></span>
                                         {item.name}
                                     </Link>

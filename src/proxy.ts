@@ -20,7 +20,7 @@ async function middleware(req: NextRequestWithAuth) {
         return NextResponse.rewrite(new URL(`${rewrittenPath}${req.nextUrl.search}`, req.url));
     }
 
-    // 1. Locale redirection logic
+    // 1. Locale redirection/rewrite logic
     const pathnameIsMissingLocale = locales.every(
         (locale) => !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`
     );
@@ -31,9 +31,10 @@ async function middleware(req: NextRequestWithAuth) {
         !pathname.startsWith('/_next') &&
         !pathname.includes('.')
     ) {
-        return NextResponse.redirect(
-            new URL(`/${defaultLocale}${pathname}${req.nextUrl.search}`, req.url)
-        );
+        // Rewrite to English instead of redirecting
+        const url = req.nextUrl.clone();
+        url.pathname = `/${defaultLocale}${pathname}`;
+        return NextResponse.rewrite(url);
     }
 
     const isAuthPage = pathname.includes('/login');

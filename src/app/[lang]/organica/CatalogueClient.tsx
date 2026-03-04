@@ -4,6 +4,7 @@ import InnerHero from "@/components/common/InnerHero";
 import { motion } from "framer-motion";
 import ProductCard from "@/components/shop/ProductCard";
 import CertificationSlider from "@/components/common/CertificationSlider";
+import { getLocalizedHref } from "@/lib/utils";
 
 interface CatalogueClientProps {
     pageData: any;
@@ -62,8 +63,8 @@ export default function CatalogueClient({ pageData, products, dict, lang }: Cata
                 badge={dict.badge || "Premium Collection"}
                 backgroundImage={heroImage}
                 breadcrumbs={[
-                    { label: t.breadcrumbHome, href: `/${lang}` },
-                    { label: t.breadcrumbTitle, href: `/${lang}/organica/essential-oils-wholesale-suppliers` }
+                    { label: t.breadcrumbHome, href: getLocalizedHref('/', lang) },
+                    { label: t.breadcrumbTitle, href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) }
                 ]}
             />
 

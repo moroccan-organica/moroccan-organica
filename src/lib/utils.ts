@@ -24,3 +24,9 @@ export function getValidImageUrl(url: string | null | undefined, fallback: strin
     // we prepend a slash to make it a valid path for Next.js Image
     return `/${trimmedUrl}`;
 }
+
+export function getLocalizedHref(path: string, lang: string): string {
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    if (lang === 'en') return cleanPath;
+    return `/${lang}${cleanPath === '/' ? '' : cleanPath}`;
+}

@@ -4,6 +4,7 @@ import { Metadata } from "next";
 import InnerHero from "@/components/common/InnerHero";
 import ProductsSection from "@/components/sections/ProductsSection";
 import { homePageData } from "@/data/home";
+import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -27,10 +28,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             title: title,
             description: description,
             images: globalSeo?.ogImage ? [globalSeo.ogImage] : [],
-            url: `https://www.moroccanorganica.com/${lang}/wholesale-of-moroccan-skincare`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref('/wholesale-of-moroccan-skincare', lang)}`,
         },
         alternates: {
-            canonical: `https://www.moroccanorganica.com/${lang}/wholesale-of-moroccan-skincare`,
+            canonical: `https://www.moroccanorganica.com${getLocalizedHref('/wholesale-of-moroccan-skincare', lang)}`,
         }
     };
 }
@@ -67,8 +68,8 @@ export default async function WholesaleSkincarePage({ params }: { params: Promis
                 badge={lang === 'ar' ? "الأفضل" : lang === 'fr' ? "Meilleurs" : "Best Sale"}
                 backgroundImage="/prodct.jpg"
                 breadcrumbs={[
-                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },
-                    { label: heroTitle, href: `/${lang}/wholesale-of-moroccan-skincare` }
+                    { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: getLocalizedHref('/', lang) },
+                    { label: heroTitle, href: getLocalizedHref('/wholesale-of-moroccan-skincare', lang) }
                 ]}
             />
 

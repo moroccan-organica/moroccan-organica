@@ -9,7 +9,7 @@ import { BlogPostContent } from "@/components/blog/BlogPostContent";
 import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
 import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
-import { getValidImageUrl } from '@/lib/utils';
+import { getValidImageUrl, getLocalizedHref } from '@/lib/utils';
 import { BlogCard } from '@/components/blog/BlogCard';
 
 export default function BlogPostPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
@@ -78,7 +78,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
             <main className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
                 <h1 className="text-2xl font-bold text-slate-900">Post not found</h1>
                 <Link
-                    href={`/${lang}/blog`}
+                    href={getLocalizedHref('/blog', lang)}
                     className="text-[#606C38] hover:underline flex items-center gap-2"
                 >
                     <ArrowLeft className="h-4 w-4" />
@@ -115,7 +115,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                     <div className="container mx-auto px-4">
                         <div className="max-w-4xl mx-auto text-center">
                             <Link
-                                href={`/${lang}/blog`}
+                                href={getLocalizedHref('/blog', lang)}
                                 className={`inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors bg-white/10 backdrop-blur-md px-4 py-2 rounded-full ${isArabic ? 'flex-row-reverse' : ''}`}
                             >
                                 <ArrowLeft className={`h-4 w-4 ${isArabic ? 'rotate-180' : ''}`} />
@@ -126,7 +126,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                             </h1>
                             <div className="flex justify-center mt-4">
                                 <Link
-                                    href={`/${lang}/organica`}
+                                    href={getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang)}
                                     className="bg-[#F9E28B] text-[#114232] font-bold py-3 px-8 rounded-xl text-lg hover:scale-105 transition-all duration-300 uppercase tracking-wide shadow-xl"
                                 >
                                     {(dict.banner as any)?.button || "Shop Now"}
@@ -178,7 +178,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                             <h2 className="text-2xl md:text-3xl font-playfair font-bold text-slate-900" dir={isArabic ? 'rtl' : 'ltr'}>
                                 {(dict.relatedPosts as string) || 'Related Posts'}
                             </h2>
-                            <Link href={`/${lang}/blog`} className="text-[#BC6C25] font-semibold text-sm hover:underline">
+                            <Link href={getLocalizedHref('/blog', lang)} className="text-[#BC6C25] font-semibold text-sm hover:underline">
                                 {dict.backToBlog as string}
                             </Link>
                         </div>

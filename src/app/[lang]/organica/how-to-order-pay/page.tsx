@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import HowToOrderPayClient from "./HowToOrderPayClient";
+import { getLocalizedHref } from "@/lib/utils";
 
 const SLUG = "how-to-order-pay";
 
@@ -48,12 +49,12 @@ export async function generateMetadata({
                 : globalSeo?.ogImage
                     ? [globalSeo.ogImage]
                     : [],
-            url: `https://www.moroccanorganica.com/${lang}/organica/${SLUG}`,
+            url: `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${SLUG}`, lang)}`,
         },
         alternates: {
             canonical:
                 page?.translation?.canonical ||
-                `https://www.moroccanorganica.com/${lang}/organica/${SLUG}`,
+                `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${SLUG}`, lang)}`,
         },
     };
 }
