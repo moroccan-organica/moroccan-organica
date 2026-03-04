@@ -1,7 +1,7 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import { deleteFileFromStorage } from '@/actions/media.actions';
 import {
@@ -112,78 +112,90 @@ export async function getProducts(options?: {
   page?: number;
   limit?: number;
 }): Promise<{ products: ShopProductDB[]; total: number }> {
-  try {
-    const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50 } = options || {};
+  return unstable_cache(
+    async () => {
+      try {
+        const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50 } = options || {};
 
-    let query = supabase
-      .from('Product')
-      .select(`
-        *,
-        category:Category(*, translations:CategoryTranslation(*)),
-        translations:ProductTranslation(*),
-        images:ProductImage(*),
-        variants:ProductVariant(*)
-      `, { count: 'exact' });
+        let query = supabase
+          .from('Product')
+          .select(`
+            *,
+            category:Category(*, translations:CategoryTranslation(*)),
+            translations:ProductTranslation(*),
+            images:ProductImage(*),
+            variants:ProductVariant(*)
+          `, { count: 'exact' });
 
-    if (categoryId) {
-      query = query.eq('categoryId', categoryId);
-    }
+        if (categoryId) {
+          query = query.eq('categoryId', categoryId);
+        }
 
-    if (typeof isAvailable === 'boolean') {
-      query = query.eq('isAvailable', isAvailable);
-    }
+        if (typeof isAvailable === 'boolean') {
+          query = query.eq('isAvailable', isAvailable);
+        }
 
-    if (typeof isFeatured === 'boolean') {
-      query = query.eq('isFeatured', isFeatured);
-    }
+        if (typeof isFeatured === 'boolean') {
+          query = query.eq('isFeatured', isFeatured);
+        }
 
-    if (placement) {
-      query = query.eq('placement', placement);
-    }
+        if (placement) {
+          query = query.eq('placement', placement);
+        }
 
-    if (search) {
-      const searchPattern = `%${search.toLowerCase()}%`;
-      // Complex OR filter in Supabase/PostgREST can be tricky with relations.
-      // This is a simplified version.
-      query = query.or(`sku.ilike.${searchPattern}`);
-      // Note: Searching in translations via 'or' on a relation is restricted in PostgREST unless using specific syntax.
-      // For now, we search in SKU. If we need deeper search, we might need a stored procedure.
-    }
+        if (search) {
+          const searchPattern = `%${search.toLowerCase()}%`;
+          // Complex OR filter in Supabase/PostgREST can be tricky with relations.
+          // This is a simplified version.
+          query = query.or(`sku.ilike.${searchPattern}`);
+          // Note: Searching in translations via 'or' on a relation is restricted in PostgREST unless using specific syntax.
+          // For now, we search in SKU. If we need deeper search, we might need a stored procedure.
+        }
 
-    const { data: products, count: total, error } = await query
-      .order('createdAt', { ascending: false })
-      .range((page - 1) * limit, page * limit - 1);
+        const { data: products, count: total, error } = await query
+          .order('createdAt', { ascending: false })
+          .range((page - 1) * limit, page * limit - 1);
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return {
-      products: (products || []).map((product) => transformToShopProduct(product)),
-      total: total || 0,
-    };
-  } catch (error) {
-    console.error('Error fetching products:', error);
-    return { products: [], total: 0 };
-  }
+        return {
+          products: (products || []).map((product) => transformToShopProduct(product)),
+          total: total || 0,
+        };
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        return { products: [], total: 0 };
+      }
+    },
+    ['all-products', options ? JSON.stringify(options) : 'default'],
+    { tags: [CACHE_TAGS.PRODUCTS], revalidate: 3600 }
+  )();
 }
 
 // GET SINGLE PRODUCT BY SLUG
 export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
-  try {
-    // 1. Find the product ID that has this slug in any language
-    const { data: translation, error } = await supabase
-      .from('ProductTranslation')
-      .select('productId')
-      .eq('slug', slug)
-      .maybeSingle();
+  return unstable_cache(
+    async () => {
+      try {
+        // 1. Find the product ID that has this slug in any language
+        const { data: translation, error } = await supabase
+          .from('ProductTranslation')
+          .select('productId')
+          .eq('slug', slug)
+          .maybeSingle();
 
-    if (error || !translation) return null;
+        if (error || !translation) return null;
 
-    // 2. Fetch the full product by ID with the requested language
-    return getProductById(translation.productId, lang);
-  } catch (error) {
-    console.error('Error fetching product by slug:', error);
-    return null;
-  }
+        // 2. Fetch the full product by ID with the requested language
+        return await getProductById(translation.productId, lang);
+      } catch (error) {
+        console.error('Error fetching product by slug:', error);
+        return null;
+      }
+    },
+    ['product-by-slug', slug, lang],
+    { tags: [CACHE_TAGS.PRODUCTS, `product-slug-${slug}`], revalidate: 3600 }
+  )();
 }
 
 /**
@@ -213,26 +225,32 @@ export async function isSlugUnique(slug: string, excludeProductId?: string): Pro
 
 // GET SINGLE PRODUCT BY ID
 export async function getProductById(id: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
-  try {
-    const { data: product, error } = await supabase
-      .from('Product')
-      .select(`
-        *,
-        category:Category(*, translations:CategoryTranslation(*)),
-        translations:ProductTranslation(*),
-        images:ProductImage(*),
-        variants:ProductVariant(*)
-      `)
-      .eq('id', id)
-      .single();
+  return unstable_cache(
+    async () => {
+      try {
+        const { data: product, error } = await supabase
+          .from('Product')
+          .select(`
+            *,
+            category:Category(*, translations:CategoryTranslation(*)),
+            translations:ProductTranslation(*),
+            images:ProductImage(*),
+            variants:ProductVariant(*)
+          `)
+          .eq('id', id)
+          .single();
 
-    if (error || !product) return null;
+        if (error || !product) return null;
 
-    return transformToShopProduct(product, lang);
-  } catch (error) {
-    console.error('Error fetching product by id:', error);
-    return null;
-  }
+        return transformToShopProduct(product, lang);
+      } catch (error) {
+        console.error('Error fetching product by id:', error);
+        return null;
+      }
+    },
+    ['product-by-id', id, lang],
+    { tags: [CACHE_TAGS.PRODUCTS, CACHE_TAGS.PRODUCT(id)], revalidate: 3600 }
+  )();
 }
 
 
@@ -501,53 +519,65 @@ export async function getRelatedProducts(
   categoryId: string,
   limit: number = 4
 ): Promise<ShopProductDB[]> {
-  try {
-    const { data: products, error } = await supabase
-      .from('Product')
-      .select(`
-        *,
-        category:Category(*, translations:CategoryTranslation(*)),
-        translations:ProductTranslation(*),
-        images:ProductImage(*),
-        variants:ProductVariant(*)
-      `)
-      .eq('categoryId', categoryId)
-      .neq('id', productId)
-      .eq('isAvailable', true)
-      .order('createdAt', { ascending: false })
-      .limit(limit);
+  return unstable_cache(
+    async () => {
+      try {
+        const { data: products, error } = await supabase
+          .from('Product')
+          .select(`
+            *,
+            category:Category(*, translations:CategoryTranslation(*)),
+            translations:ProductTranslation(*),
+            images:ProductImage(*),
+            variants:ProductVariant(*)
+          `)
+          .eq('categoryId', categoryId)
+          .neq('id', productId)
+          .eq('isAvailable', true)
+          .order('createdAt', { ascending: false })
+          .limit(limit);
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return (products || []).map((product) => transformToShopProduct(product));
-  } catch (error) {
-    console.error('Error fetching related products:', error);
-    return [];
-  }
+        return (products || []).map((product) => transformToShopProduct(product));
+      } catch (error) {
+        console.error('Error fetching related products:', error);
+        return [];
+      }
+    },
+    ['related-products', productId, categoryId, String(limit)],
+    { tags: [CACHE_TAGS.PRODUCTS, `related-${productId}`], revalidate: 3600 }
+  )();
 }
 
 // GET FEATURED PRODUCTS
 export async function getFeaturedProducts(limit: number = 8): Promise<ShopProductDB[]> {
-  try {
-    const { data: products, error } = await supabase
-      .from('Product')
-      .select(`
-        *,
-        category:Category(*, translations:CategoryTranslation(*)),
-        translations:ProductTranslation(*),
-        images:ProductImage(*),
-        variants:ProductVariant(*)
-      `)
-      .eq('isAvailable', true)
-      .eq('isFeatured', true)
-      .order('createdAt', { ascending: false })
-      .limit(limit);
+  return unstable_cache(
+    async () => {
+      try {
+        const { data: products, error } = await supabase
+          .from('Product')
+          .select(`
+            *,
+            category:Category(*, translations:CategoryTranslation(*)),
+            translations:ProductTranslation(*),
+            images:ProductImage(*),
+            variants:ProductVariant(*)
+          `)
+          .eq('isAvailable', true)
+          .eq('isFeatured', true)
+          .order('createdAt', { ascending: false })
+          .limit(limit);
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return (products || []).map((product) => transformToShopProduct(product));
-  } catch (error) {
-    console.error('Error fetching featured products:', error);
-    return [];
-  }
+        return (products || []).map((product) => transformToShopProduct(product));
+      } catch (error) {
+        console.error('Error fetching featured products:', error);
+        return [];
+      }
+    },
+    ['featured-products', String(limit)],
+    { tags: [CACHE_TAGS.PRODUCTS, 'featured'], revalidate: 3600 }
+  )();
 }

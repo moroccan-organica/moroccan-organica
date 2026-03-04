@@ -25,4 +25,8 @@ export const CACHE_TAGS = {
 
     // Static page (by systemName)
     STATIC_PAGE: (systemName: string) => `static-page-${systemName}`,
+
+    // Blog
+    BLOG_POSTS: 'blog_posts',
+    BLOG_POST: (idOrSlug: string) => `blog_post-${idOrSlug}`,
 } as const;

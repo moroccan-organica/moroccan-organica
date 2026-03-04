@@ -1,7 +1,8 @@
 'use server';
 
 import { supabase } from '@/lib/supabase';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
+import { CACHE_TAGS } from '@/lib/cache-tags';
 import type { BlogPostFull, BlogCategory } from '@/types/blog';
 
 // ============================================
@@ -279,14 +280,20 @@ export async function getBlogPosts(
 export async function getPublishedPosts(
   options: { page?: number; pageSize?: number; categoryId?: string; search?: string } = {}
 ): Promise<{ posts: BlogPostFull[]; pagination: { page: number; pageSize: number; total: number; totalPages: number } }> {
-  const result = await getBlogPosts({
-    ...options,
-    status: 'published',
-  });
-  return {
-    posts: result.data,
-    pagination: result.pagination,
-  };
+  return unstable_cache(
+    async () => {
+      const result = await getBlogPosts({
+        ...options,
+        status: 'published',
+      });
+      return {
+        posts: result.data,
+        pagination: result.pagination,
+      };
+    },
+    ['published-posts', options ? JSON.stringify(options) : 'default'],
+    { tags: [CACHE_TAGS.BLOG_POSTS], revalidate: 3600 }
+  )();
 }
 
 /**
@@ -347,63 +354,67 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
   }
 }
 
-/**
- * Get a single published blog post by slug
- */
+// GET SINGLE PUBLISHED POST BY SLUG
 export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull | null> {
-  try {
-    const { data: post, error } = await supabase
-      .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
-      .eq('slug', slug)
-      .eq('status', 'published')
-      .single();
+  return unstable_cache(
+    async () => {
+      try {
+        const { data: post, error } = await supabase
+          .from('BlogPost')
+          .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
+          .eq('slug', slug)
+          .eq('status', 'published')
+          .single();
 
-    if (error || !post) return null;
+        if (error || !post) return null;
 
-    return {
-      id: post.id,
-      title: post.title,
-      title_ar: post.titleAr || '',
-      title_fr: post.titleFr || '',
-      slug: post.slug,
-      excerpt: post.excerpt || '',
-      excerpt_ar: post.excerptAr || '',
-      excerpt_fr: post.excerptFr || '',
-      content: post.content || '',
-      content_ar: post.contentAr || '',
-      content_fr: post.contentFr || '',
-      featured_image_url: resolveFeaturedImageUrl(post),
-      author_id: post.authorId,
-      category_id: post.categoryId || '',
-      tags: safeJsonParse(post.tags, []),
-      status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt || '',
-      created_at: post.createdAt,
-      updated_at: post.updatedAt,
-      view_count: post.viewCount,
-      read_time_minutes: post.readTimeMinutes,
-      author: post.author
-        ? {
-          id: post.author.id,
-          name: post.author.name || 'Unknown',
-          avatar_url: post.author.image || '',
-        }
-        : undefined,
-      category: post.category
-        ? {
-          id: post.category.id,
-          name: post.category.name,
-          slug: post.category.slug,
-          color: post.category.color || '#606C38',
-          icon: post.category.icon || '',
-        }
-        : undefined,
-    };
-  } catch (error) {
-    console.error('Error fetching post by slug:', error);
-    return null;
-  }
+        return {
+          id: post.id,
+          title: post.title,
+          title_ar: post.titleAr || '',
+          title_fr: post.titleFr || '',
+          slug: post.slug,
+          excerpt: post.excerpt || '',
+          excerpt_ar: post.excerptAr || '',
+          excerpt_fr: post.excerptFr || '',
+          content: post.content || '',
+          content_ar: post.contentAr || '',
+          content_fr: post.contentFr || '',
+          featured_image_url: resolveFeaturedImageUrl(post),
+          author_id: post.authorId,
+          category_id: post.categoryId || '',
+          tags: safeJsonParse(post.tags, []),
+          status: post.status as 'draft' | 'published' | 'review',
+          published_at: post.publishedAt || '',
+          created_at: post.createdAt,
+          updated_at: post.updatedAt,
+          view_count: post.viewCount,
+          read_time_minutes: post.readTimeMinutes,
+          author: post.author
+            ? {
+              id: post.author.id,
+              name: post.author.name || 'Unknown',
+              avatar_url: post.author.image || '',
+            }
+            : undefined,
+          category: post.category
+            ? {
+              id: post.category.id,
+              name: post.category.name,
+              slug: post.category.slug,
+              color: post.category.color || '#606C38',
+              icon: post.category.icon || '',
+            }
+            : undefined,
+        };
+      } catch (error) {
+        console.error('Error fetching post by slug:', error);
+        return null;
+      }
+    },
+    ['published-post-slug', slug],
+    { tags: [CACHE_TAGS.BLOG_POSTS, CACHE_TAGS.BLOG_POST(slug)], revalidate: 3600 }
+  )();
 }
 
 // ============================================
@@ -506,6 +517,7 @@ export async function createBlogPost(input: BlogPostInput) {
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true, id: post.id, slug: post.slug };
   } catch (error: unknown) {
     console.error('Error creating post:', error);
@@ -559,8 +571,10 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     if (existing?.slug) {
       revalidatePath(`/[lang]/blog/${existing.slug}`);
+      revalidateTag(CACHE_TAGS.BLOG_POST(existing.slug), 'default');
     }
     return { success: true };
   } catch (error: unknown) {
@@ -579,6 +593,7 @@ export async function deleteBlogPost(postId: string) {
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
     console.error('Error deleting post:', error);
@@ -603,6 +618,7 @@ export async function publishBlogPost(postId: string) {
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
     console.error('Error publishing post:', error);
@@ -624,6 +640,7 @@ export async function archiveBlogPost(postId: string) {
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
     console.error('Error archiving post:', error);
@@ -645,6 +662,7 @@ export async function unarchiveBlogPost(postId: string) {
 
     revalidatePath('/[lang]/blog');
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
     console.error('Error unarchiving post:', error);
@@ -656,27 +674,33 @@ export async function unarchiveBlogPost(postId: string) {
  * Get all blog categories (with optional counts)
  */
 export async function getBlogCategories(): Promise<BlogCategory[]> {
-  try {
-    const { data: categories, error } = await supabase
-      .from('BlogCategory')
-      .select('*, posts:BlogPost(count)')
-      .order('sortOrder', { ascending: true });
+  return unstable_cache(
+    async () => {
+      try {
+        const { data: categories, error } = await supabase
+          .from('BlogCategory')
+          .select('*, posts:BlogPost(count)')
+          .order('sortOrder', { ascending: true });
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return (categories || []).map((cat: SupabaseCategoryRow) => ({
-      id: cat.id,
-      name: cat.name,
-      slug: cat.slug,
-      description: cat.description || '',
-      color: cat.color || '#606C38',
-      icon: cat.icon || '',
-      postCount: cat.posts?.[0]?.count || 0,
-    }));
-  } catch (error) {
-    console.error('Error fetching categories:', error);
-    return [];
-  }
+        return (categories || []).map((cat: SupabaseCategoryRow) => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.slug,
+          description: cat.description || '',
+          color: cat.color || '#606C38',
+          icon: cat.icon || '',
+          postCount: cat.posts?.[0]?.count || 0,
+        }));
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        return [];
+      }
+    },
+    ['blog-categories'],
+    { tags: ['blog_categories'], revalidate: 3600 }
+  )();
 }
 
 /**
@@ -702,6 +726,7 @@ export async function createBlogCategory(input: BlogCategoryInput) {
     if (error) throw error;
 
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag('blog_categories', 'default');
     return { success: true, data };
   } catch (error: unknown) {
     console.error('Error creating category:', error);
@@ -730,6 +755,7 @@ export async function deleteBlogCategory(categoryId: string) {
     if (error) throw error;
 
     revalidatePath('/[lang]/admin/blog');
+    revalidateTag('blog_categories', 'default');
     return { success: true };
   } catch (error: unknown) {
     console.error('Error deleting category:', error);
@@ -755,58 +781,64 @@ export async function incrementPostViewCount(postId: string): Promise<void> {
  * Get related posts
  */
 export async function getRelatedPosts(postId: string, categoryId: string | null, limit: number = 3): Promise<BlogPostFull[]> {
-  try {
-    let query = supabase
-      .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*)')
-      .eq('status', 'published')
-      .neq('id', postId);
+  return unstable_cache(
+    async () => {
+      try {
+        let query = supabase
+          .from('BlogPost')
+          .select('*, author:User(id, name, image), category:BlogCategory(*)')
+          .eq('status', 'published')
+          .neq('id', postId);
 
-    if (categoryId) query = query.eq('categoryId', categoryId);
+        if (categoryId) query = query.eq('categoryId', categoryId);
 
-    const { data: posts, error } = await query
-      .order('publishedAt', { ascending: false })
-      .limit(limit);
+        const { data: posts, error } = await query
+          .order('publishedAt', { ascending: false })
+          .limit(limit);
 
-    if (error) throw error;
+        if (error) throw error;
 
-    return (posts || []).map((post: SupabasePostRow) => ({
-      id: post.id,
-      title: post.title,
-      title_ar: post.titleAr || '',
-      title_fr: post.titleFr || '',
-      slug: post.slug,
-      excerpt: post.excerpt || '',
-      excerpt_ar: post.excerptAr || '',
-      excerpt_fr: post.excerptFr || '',
-      content: post.content || '',
-      content_ar: post.contentAr || '',
-      content_fr: post.contentFr || '',
-      featured_image_url: resolveFeaturedImageUrl(post),
-      author_id: post.authorId || '',
-      category_id: post.categoryId || '',
-      tags: safeJsonParse(post.tags, []),
-      status: post.status as 'draft' | 'published' | 'review',
-      published_at: post.publishedAt || '',
-      created_at: post.createdAt,
-      updated_at: post.updatedAt,
-      view_count: post.viewCount || 0,
-      read_time_minutes: post.readTimeMinutes || 0,
-      author: post.author ? {
-        id: post.author.id,
-        name: post.author.name || 'Unknown',
-        avatar_url: post.author.image || '',
-      } : undefined,
-      category: post.category ? {
-        id: post.category.id,
-        name: post.category.name,
-        slug: post.category.slug,
-        color: post.category.color || '#606C38',
-        icon: post.category.icon || '',
-      } : undefined,
-    }));
-  } catch (error) {
-    console.error('Error fetching related posts:', error);
-    return [];
-  }
+        return (posts || []).map((post: SupabasePostRow) => ({
+          id: post.id,
+          title: post.title,
+          title_ar: post.titleAr || '',
+          title_fr: post.titleFr || '',
+          slug: post.slug,
+          excerpt: post.excerpt || '',
+          excerpt_ar: post.excerptAr || '',
+          excerpt_fr: post.excerptFr || '',
+          content: post.content || '',
+          content_ar: post.contentAr || '',
+          content_fr: post.contentFr || '',
+          featured_image_url: resolveFeaturedImageUrl(post),
+          author_id: post.authorId || '',
+          category_id: post.categoryId || '',
+          tags: safeJsonParse(post.tags, []),
+          status: post.status as 'draft' | 'published' | 'review',
+          published_at: post.publishedAt || '',
+          created_at: post.createdAt,
+          updated_at: post.updatedAt,
+          view_count: post.viewCount || 0,
+          read_time_minutes: post.readTimeMinutes || 0,
+          author: post.author ? {
+            id: post.author.id,
+            name: post.author.name || 'Unknown',
+            avatar_url: post.author.image || '',
+          } : undefined,
+          category: post.category ? {
+            id: post.category.id,
+            name: post.category.name,
+            slug: post.category.slug,
+            color: post.category.color || '#606C38',
+            icon: post.category.icon || '',
+          } : undefined,
+        }));
+      } catch (error) {
+        console.error('Error fetching related posts:', error);
+        return [];
+      }
+    },
+    ['related-posts', postId, categoryId || 'all', String(limit)],
+    { tags: [CACHE_TAGS.BLOG_POSTS, `related-${postId}`], revalidate: 3600 }
+  )();
 }
