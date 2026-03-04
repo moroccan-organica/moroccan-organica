@@ -27,7 +27,17 @@ export function BlogHero({
   lang,
 }: BlogHeroProps) {
   return (
-    <section className="bg-primary text-white py-20 md:py-32 pt-36 md:pt-48 relative overflow-hidden">
+    <section
+      className="text-white py-20 md:py-32 pt-36 md:pt-48 relative overflow-hidden"
+      style={{
+        backgroundImage: "url('/blog.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      {/* Dark overlay for text readability */}
+      <div className="absolute inset-0 bg-black/50" />
       {/* Background Decorative Elements */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full -ml-48 -mb-48 blur-3xl" />

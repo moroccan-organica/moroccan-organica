@@ -185,7 +185,7 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
                 title={localizedDescription || localizedName || ""}
                 description=""
                 badge={product.category}
-                backgroundImage={product.image || "/images/slider/slide_2.webp"}
+                backgroundImage={product.image || "/prodct.jpg"}
                 titleTag="h2"
                 breadcrumbs={[
                     { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },

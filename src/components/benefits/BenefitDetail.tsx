@@ -24,7 +24,6 @@ export default function BenefitDetail({ post, lang }: BenefitDetailProps) {
         <main className="min-h-screen bg-[#fefcf8]">
             <InnerHero
                 title={title}
-                description={excerpt}
                 backgroundImage={post.image}
                 titleTag="h1"
                 breadcrumbs={[

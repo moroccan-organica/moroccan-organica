@@ -344,7 +344,8 @@ export const homePageData = {
             "Thanks to its versatility, organic Moroccan argan oil is extensively used in cosmetic and beauty products such as scrubs, soaps, body creams, massage oils, lip care, hair treatments, and nail care solutions. Its natural composition makes it an essential component of daily <strong>organic skincare and cosmetic</strong> routines, suitable for hair, face, body, and nails.",
             "Our mission as a Moroccan argan oil wholesale and organic cosmetics supplier is to share this authentic beauty heritage with our global partners. We are committed to providing certified organic argan oil, produced through responsible and sustainable methods, while meeting international quality standards and certifications. Through transparency, expertise, and sustainability, Moroccan Organica aims to deliver 100% authentic, certified Moroccan organic beauty ingredients to brands worldwide."
         ],
-        image: "/images/slider/moroccan-organica-cooperative (1).webp"
+        image: "/images/slider/moroccan-organica-cooperative (1).webp",
+        image2: "/home.webp"
     },
     rfq: {
         title: "Get Wholesale Pricing",

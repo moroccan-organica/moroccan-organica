@@ -8,6 +8,7 @@ interface VisionData {
   title: string;
   paragraphs: string[];
   image: string;
+  image2?: string;
 }
 
 const VisionSection = ({ data }: { data?: VisionData }) => {
@@ -29,15 +30,28 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
             </div>
 
             {/* Image Side */}
-            <div className="relative w-full rounded-2xl overflow-hidden shadow-card min-h-[260px]">
-              <Image
-                src={data.image}
-                alt={data.title}
-                fill
-                className="object-cover"
-                sizes="(min-width: 1024px) 480px, 100vw"
-                priority
-              />
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full rounded-2xl overflow-hidden shadow-card min-h-[260px]">
+                <Image
+                  src={data.image}
+                  alt={data.title}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 480px, 100vw"
+                  priority
+                />
+              </div>
+              {data.image2 && (
+                <div className="relative w-full rounded-2xl overflow-hidden shadow-card h-[450px]">
+                  <Image
+                    src={data.image2}
+                    alt={`${data.title} 2`}
+                    fill
+                    className="object-cover"
+                    sizes="(min-width: 1024px) 480px, 100vw"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
