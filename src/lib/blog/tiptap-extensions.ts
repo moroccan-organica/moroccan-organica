@@ -20,15 +20,4 @@ export const CustomLink = Link.extend({
             },
         };
     },
-
-    renderHTML({ HTMLAttributes }) {
-        // We explicitly extract href and force our security attributes
-        const { href, rel, target, ...rest } = HTMLAttributes;
-
-        return ['a', mergeAttributes(this.options.HTMLAttributes, rest, {
-            href, // Ensure href is always at the top level
-            rel: 'noopener noreferrer nofollow',
-            target: '_blank'
-        }), 0];
-    },
 });
