@@ -65,7 +65,7 @@ export default async function WholesaleSkincarePage({ params }: { params: Promis
             <InnerHero
                 title={heroTitle}
                 badge={lang === 'ar' ? "الأفضل" : lang === 'fr' ? "Meilleurs" : "Best Sale"}
-                backgroundImage="/images/slider/slide_2.webp"
+                backgroundImage="/prodct.jpg"
                 breadcrumbs={[
                     { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: `/${lang}` },
                     { label: heroTitle, href: `/${lang}/wholesale-of-moroccan-skincare` }

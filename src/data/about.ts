@@ -14,7 +14,7 @@ export const aboutPageData = {
         label: "Who We Are",
         title: "Organica Group SARL",
         description: "Organica Group is a producer and exporter of organic cosmetics products, operating outside and inside of Morocco, for wholesale of 100% pure organic cosmetics products. We use traditional ingredients and natural products for beauty, skincare, and haircare.",
-        image: "/images/about/argan-oil.jpg"
+        image: "/bt.webp"
     },
     values: {
         label: "Our Values",

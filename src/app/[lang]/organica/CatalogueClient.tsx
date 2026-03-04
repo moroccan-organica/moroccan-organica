@@ -13,7 +13,7 @@ interface CatalogueClientProps {
 }
 
 export default function CatalogueClient({ pageData, products, dict, lang }: CatalogueClientProps) {
-    const heroImage = pageData?.translation?.ogImage || "/images/slider/slide_2.webp";
+    const heroImage = pageData?.translation?.ogImage || "/prodct.jpg";
     const isRTL = lang === 'ar';
 
     const t = {

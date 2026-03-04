@@ -38,7 +38,7 @@ export default function InnerHero({
                     className="object-cover object-center"
                     priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-secondary/95 via-secondary/90 to-secondary/80" />
+                <div className="absolute inset-0 bg-gradient-to-r from-secondary/65 via-secondary/55 to-secondary/40" />
             </div>
 
             <div className="container-main relative z-10 py-16 md:py-24">

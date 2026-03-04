@@ -46,6 +46,7 @@ export function BenefitsClient({ lang, heroTitle, heroSubtitle, searchPlaceholde
                 searchValue={searchQuery}
                 onSearchChange={setSearchQuery}
                 lang={lang}
+                backgroundImage="/bnf.webp"
             />
 
             <div className="container mx-auto px-4 py-12">
