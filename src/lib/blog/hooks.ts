@@ -26,10 +26,13 @@ interface PostFilters {
 interface PostInput {
   title: string;
   titleAr?: string;
-  content?: Record<string, unknown>;
-  contentAr?: Record<string, unknown>;
+  titleFr?: string;
+  content?: string;
+  contentAr?: string;
+  contentFr?: string;
   excerpt?: string;
   excerptAr?: string;
+  excerptFr?: string;
   categoryId?: string;
   tags?: string[];
   featuredImageUrl?: string;

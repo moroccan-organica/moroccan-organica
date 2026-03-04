@@ -128,10 +128,13 @@ export default function BlogAdminPage() {
     const postInput = {
       title: data.title || '',
       titleAr: data.title_ar,
+      titleFr: data.title_fr,
       content: data.content,
       contentAr: data.content_ar,
+      contentFr: data.content_fr,
       excerpt: data.excerpt,
       excerptAr: data.excerpt_ar,
+      excerptFr: data.excerpt_fr,
       categoryId: data.category_id,
       tags: data.tags,
       featuredImageUrl: data.featured_image_url,
