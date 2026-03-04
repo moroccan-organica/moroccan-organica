@@ -15,6 +15,7 @@ interface BlogHeroProps {
     button: string;
   };
   lang: string;
+  backgroundImage?: string;
 }
 
 export function BlogHero({
@@ -25,12 +26,13 @@ export function BlogHero({
   onSearchChange,
   banner,
   lang,
+  backgroundImage = '/blog.webp',
 }: BlogHeroProps) {
   return (
     <section
       className="text-white py-20 md:py-32 pt-36 md:pt-48 relative overflow-hidden"
       style={{
-        backgroundImage: "url('/blog.webp')",
+        backgroundImage: `url('${backgroundImage}')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
