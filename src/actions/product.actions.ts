@@ -172,30 +172,51 @@ export async function getProducts(options?: {
   )();
 }
 
-// GET SINGLE PRODUCT BY SLUG
 export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
-  return unstable_cache(
-    async () => {
-      try {
-        // 1. Find the product ID that has this slug in any language
-        const { data: translation, error } = await supabase
-          .from('ProductTranslation')
-          .select('productId')
-          .eq('slug', slug)
-          .maybeSingle();
+  const getFromDb = async () => {
+    try {
+      // 1. Find the product ID that has this slug in any language
+      const { data: translation, error } = await supabase
+        .from('ProductTranslation')
+        .select('productId')
+        .eq('slug', slug)
+        .maybeSingle();
 
-        if (error || !translation) return null;
+      if (error || !translation) return null;
 
-        // 2. Fetch the full product by ID with the requested language
-        return await getProductById(translation.productId, lang);
-      } catch (error) {
-        console.error('Error fetching product by slug:', error);
-        return null;
-      }
-    },
+      // 2. Fetch the full product by ID with the requested language (bypass cache if needed)
+      // We will do the DB call directly here to avoid nested cache issues on fallback
+      const { data: product, error: productError } = await supabase
+        .from('Product')
+        .select(`
+          *,
+          category:Category(*, translations:CategoryTranslation(*)),
+          translations:ProductTranslation(*),
+          images:ProductImage(*),
+          variants:ProductVariant(*)
+        `)
+        .eq('id', translation.productId)
+        .single();
+
+      if (productError || !product) return null;
+
+      return transformToShopProduct(product, lang);
+    } catch (error) {
+      console.error('Error fetching product by slug:', error);
+      return null;
+    }
+  };
+
+  const cachedResult = await unstable_cache(
+    getFromDb,
     ['product-by-slug', slug, lang],
     { tags: [CACHE_TAGS.PRODUCTS, `product-slug-${slug}`], revalidate: 3600 }
   )();
+
+  // If cache returned null, fallback to DB directly to ensure we don't serve a stale "not found"
+  if (cachedResult) return cachedResult;
+
+  return await getFromDb();
 }
 
 /**
@@ -225,32 +246,39 @@ export async function isSlugUnique(slug: string, excludeProductId?: string): Pro
 
 // GET SINGLE PRODUCT BY ID
 export async function getProductById(id: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
-  return unstable_cache(
-    async () => {
-      try {
-        const { data: product, error } = await supabase
-          .from('Product')
-          .select(`
-            *,
-            category:Category(*, translations:CategoryTranslation(*)),
-            translations:ProductTranslation(*),
-            images:ProductImage(*),
-            variants:ProductVariant(*)
-          `)
-          .eq('id', id)
-          .single();
+  const getFromDb = async () => {
+    try {
+      const { data: product, error } = await supabase
+        .from('Product')
+        .select(`
+          *,
+          category:Category(*, translations:CategoryTranslation(*)),
+          translations:ProductTranslation(*),
+          images:ProductImage(*),
+          variants:ProductVariant(*)
+        `)
+        .eq('id', id)
+        .single();
 
-        if (error || !product) return null;
+      if (error || !product) return null;
 
-        return transformToShopProduct(product, lang);
-      } catch (error) {
-        console.error('Error fetching product by id:', error);
-        return null;
-      }
-    },
+      return transformToShopProduct(product, lang);
+    } catch (error) {
+      console.error('Error fetching product by id:', error);
+      return null;
+    }
+  };
+
+  const cachedResult = await unstable_cache(
+    getFromDb,
     ['product-by-id', id, lang],
     { tags: [CACHE_TAGS.PRODUCTS, CACHE_TAGS.PRODUCT(id)], revalidate: 3600 }
   )();
+
+  // If cache returned null, fallback to DB directly to ensure we don't serve a stale "not found"
+  if (cachedResult) return cachedResult;
+
+  return await getFromDb();
 }
 
 

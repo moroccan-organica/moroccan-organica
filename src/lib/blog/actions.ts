@@ -356,65 +356,70 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
 
 // GET SINGLE PUBLISHED POST BY SLUG
 export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull | null> {
-  return unstable_cache(
-    async () => {
-      try {
-        const { data: post, error } = await supabase
-          .from('BlogPost')
-          .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
-          .eq('slug', slug)
-          .eq('status', 'published')
-          .single();
+  const getFromDb = async () => {
+    try {
+      const { data: post, error } = await supabase
+        .from('BlogPost')
+        .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
+        .eq('slug', slug)
+        .eq('status', 'published')
+        .single();
 
-        if (error || !post) return null;
+      if (error || !post) return null;
 
-        return {
-          id: post.id,
-          title: post.title,
-          title_ar: post.titleAr || '',
-          title_fr: post.titleFr || '',
-          slug: post.slug,
-          excerpt: post.excerpt || '',
-          excerpt_ar: post.excerptAr || '',
-          excerpt_fr: post.excerptFr || '',
-          content: post.content || '',
-          content_ar: post.contentAr || '',
-          content_fr: post.contentFr || '',
-          featured_image_url: resolveFeaturedImageUrl(post),
-          author_id: post.authorId,
-          category_id: post.categoryId || '',
-          tags: safeJsonParse(post.tags, []),
-          status: post.status as 'draft' | 'published' | 'review',
-          published_at: post.publishedAt || '',
-          created_at: post.createdAt,
-          updated_at: post.updatedAt,
-          view_count: post.viewCount,
-          read_time_minutes: post.readTimeMinutes,
-          author: post.author
-            ? {
-              id: post.author.id,
-              name: post.author.name || 'Unknown',
-              avatar_url: post.author.image || '',
-            }
-            : undefined,
-          category: post.category
-            ? {
-              id: post.category.id,
-              name: post.category.name,
-              slug: post.category.slug,
-              color: post.category.color || '#606C38',
-              icon: post.category.icon || '',
-            }
-            : undefined,
-        };
-      } catch (error) {
-        console.error('Error fetching post by slug:', error);
-        return null;
-      }
-    },
+      return {
+        id: post.id,
+        title: post.title,
+        title_ar: post.titleAr || '',
+        title_fr: post.titleFr || '',
+        slug: post.slug,
+        excerpt: post.excerpt || '',
+        excerpt_ar: post.excerptAr || '',
+        excerpt_fr: post.excerptFr || '',
+        content: post.content || '',
+        content_ar: post.contentAr || '',
+        content_fr: post.contentFr || '',
+        featured_image_url: resolveFeaturedImageUrl(post),
+        author_id: post.authorId,
+        category_id: post.categoryId || '',
+        tags: safeJsonParse<string[]>(post.tags, []),
+        status: post.status as 'draft' | 'published' | 'review',
+        published_at: post.publishedAt || '',
+        created_at: post.createdAt,
+        updated_at: post.updatedAt,
+        view_count: post.viewCount,
+        read_time_minutes: post.readTimeMinutes,
+        author: post.author
+          ? {
+            id: post.author.id,
+            name: post.author.name || 'Unknown',
+            avatar_url: post.author.image || '',
+          }
+          : undefined,
+        category: post.category
+          ? {
+            id: post.category.id,
+            name: post.category.name,
+            slug: post.category.slug,
+            color: post.category.color || '#606C38',
+            icon: post.category.icon || '',
+          }
+          : undefined,
+      };
+    } catch (error) {
+      console.error('Error fetching post by slug:', error);
+      return null;
+    }
+  };
+
+  const cachedResult = await unstable_cache(
+    getFromDb,
     ['published-post-slug', slug],
     { tags: [CACHE_TAGS.BLOG_POSTS, CACHE_TAGS.BLOG_POST(slug)], revalidate: 3600 }
   )();
+
+  if (cachedResult) return cachedResult;
+  return await getFromDb();
 }
 
 // ============================================

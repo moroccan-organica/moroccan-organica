@@ -40,12 +40,16 @@ async function _getStaticPageBySystemName(systemName: string, lang: string) {
     }
 }
 
-export const getStaticPageBySystemName = (systemName: string, lang: string) =>
-    unstable_cache(
+export const getStaticPageBySystemName = async (systemName: string, lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getStaticPageBySystemName(systemName, lang),
         [CACHE_TAGS.STATIC_PAGE(systemName), lang],
         { tags: [CACHE_TAGS.STATIC_PAGES, CACHE_TAGS.STATIC_PAGE(systemName)] }
     )();
+
+    if (cachedResult) return cachedResult;
+    return await _getStaticPageBySystemName(systemName, lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // GLOBAL SEO
@@ -72,12 +76,16 @@ async function _getGlobalSeoSettings(lang: string) {
     }
 }
 
-export const getGlobalSeoSettings = (lang: string) =>
-    unstable_cache(
+export const getGlobalSeoSettings = async (lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getGlobalSeoSettings(lang),
         [CACHE_TAGS.STATIC_PAGES, `global-seo-${lang}`],
         { tags: [CACHE_TAGS.STATIC_PAGES] }
     )();
+
+    if (cachedResult) return cachedResult;
+    return await _getGlobalSeoSettings(lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATIC PAGE BY SLUG
@@ -118,12 +126,16 @@ async function _getStaticPageBySlug(slug: string, lang: string) {
     }
 }
 
-export const getStaticPageBySlug = (slug: string, lang: string) =>
-    unstable_cache(
+export const getStaticPageBySlug = async (slug: string, lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getStaticPageBySlug(slug, lang),
         [CACHE_TAGS.STATIC_PAGES, `static-slug-${slug}-${lang}`],
         { tags: [CACHE_TAGS.STATIC_PAGES] }
     )();
+
+    if (cachedResult) return cachedResult;
+    return await _getStaticPageBySlug(slug, lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FEATURED PRODUCTS (home page categories section)
@@ -166,12 +178,16 @@ async function _getFeaturedProducts(lang: string) {
     }
 }
 
-export const getFeaturedProducts = (lang: string) =>
-    unstable_cache(
+export const getFeaturedProducts = async (lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getFeaturedProducts(lang),
         [CACHE_TAGS.PRODUCTS, `featured-${lang}`],
         { tags: [CACHE_TAGS.PRODUCTS] }
     )();
+
+    if (cachedResult && cachedResult.length > 0) return cachedResult;
+    return await _getFeaturedProducts(lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TOP SALE PRODUCTS (home page products section)
@@ -227,12 +243,16 @@ async function _getTopSaleProducts(lang: string) {
     }
 }
 
-export const getTopSaleProducts = (lang: string) =>
-    unstable_cache(
+export const getTopSaleProducts = async (lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getTopSaleProducts(lang),
         [CACHE_TAGS.PRODUCTS, `topsale-${lang}`],
         { tags: [CACHE_TAGS.PRODUCTS] }
     )();
+
+    if (cachedResult && cachedResult.length > 0) return cachedResult;
+    return await _getTopSaleProducts(lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CATALOGUE PRODUCTS
@@ -287,12 +307,16 @@ async function _getCatalogueProducts(lang: string) {
     }
 }
 
-export const getCatalogueProducts = (lang: string) =>
-    unstable_cache(
+export const getCatalogueProducts = async (lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getCatalogueProducts(lang),
         [CACHE_TAGS.PRODUCTS, `catalogue-${lang}`],
         { tags: [CACHE_TAGS.PRODUCTS] }
     )();
+
+    if (cachedResult && cachedResult.length > 0) return cachedResult;
+    return await _getCatalogueProducts(lang);
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ALL CATEGORIES (nav / shop filter)
@@ -317,9 +341,13 @@ async function _getAllCategories(lang: string) {
     }
 }
 
-export const getAllCategories = (lang: string) =>
-    unstable_cache(
+export const getAllCategories = async (lang: string) => {
+    const cachedResult = await unstable_cache(
         () => _getAllCategories(lang),
         [CACHE_TAGS.CATEGORIES, `all-categories-${lang}`],
         { tags: [CACHE_TAGS.CATEGORIES] }
     )();
+
+    if (cachedResult && cachedResult.length > 0) return cachedResult;
+    return await _getAllCategories(lang);
+};
