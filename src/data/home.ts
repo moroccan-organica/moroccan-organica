@@ -99,7 +99,7 @@ export const homePageData = {
     categories: {
         badge: "Wholesale",
         title: "Trusted Moroccan Beauty Ingredient Supplier",
-        description: "We specialize in authentic Moroccan beauty — We are a Moroccan company offering premium bulk Argan oil, crafted with tradition and care. 100% pure, organic, and ethically sourced — with private label services, export support, and competitive pricing.",
+        description: "We specialize in <strong>authentic Moroccan beauty</strong> — We are a Moroccan company offering premium bulk Argan oil, crafted with tradition and care. 100% pure, organic, and ethically sourced — with private label services, export support, and competitive pricing.",
         items: [
             {
                 title: "Aker Fassi Powder",
@@ -342,7 +342,7 @@ export const homePageData = {
             "<strong>Argan oil from Morocco</strong> is a premium organic plant oil, produced using cold-pressed extraction from Argania Spinosa Kernel Oil, sourced from sustainably managed argan forests. Our production process respects both nature and tradition, ensuring purity, traceability, and long-term sustainability.",
             "Often referred to as “liquid gold,” Moroccan argan oil is renowned in the <strong>beauty and cosmetics industry</strong> for its exceptional properties. Rich in natural antioxidants, vitamins A and E, and essential fatty acids, organic argan oil is widely recognized for its hydrating, anti-aging, anti-oxidant, and anti-inflammatory benefits. It is a key ingredient in modern <strong>organic beauty and cosmetic formulations</strong>.",
             "Thanks to its versatility, organic Moroccan argan oil is extensively used in cosmetic and beauty products such as scrubs, soaps, body creams, massage oils, lip care, hair treatments, and nail care solutions. Its natural composition makes it an essential component of daily <strong>organic skincare and cosmetic</strong> routines, suitable for hair, face, body, and nails.",
-            "Our mission as a Moroccan argan oil wholesale and organic cosmetics supplier is to share this authentic beauty heritage with our global partners. We are committed to providing certified organic argan oil, produced through responsible and sustainable methods, while meeting international quality standards and certifications. Through transparency, expertise, and sustainability, Moroccan Organica aims to deliver 100% authentic, certified Moroccan organic beauty ingredients to brands worldwide."
+            "Our mission as a Moroccan argan oil wholesale and organic cosmetics supplier is to share this authentic beauty heritage with our global partners. We are committed to providing certified organic argan oil, produced through responsible and sustainable methods, while meeting international quality standards and certifications. Through transparency, expertise, and sustainability, Moroccan Organica aims to deliver 100% authentic, <strong>certified Moroccan organic beauty ingredients</strong> to brands worldwide."
         ],
         image: "/images/slider/moroccan-organica-cooperative (1).webp",
         image2: "/home.webp"

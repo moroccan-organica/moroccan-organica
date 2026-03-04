@@ -34,6 +34,52 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  async redirects() {
+    return [
+      // Old site: /organica/argan-oil → new argan oil page
+      {
+        source: '/organica/argan-oil',
+        destination: '/organica/argan-oil-of-morocco',
+        permanent: true,
+      },
+      // Old site: /organica/delivery-Information (capital I) → correct lowercase route
+      {
+        source: '/organica/delivery-Information',
+        destination: '/organica/delivery-information',
+        permanent: true,
+      },
+      // Localized variants for delivery-Information
+      {
+        source: '/:lang(fr|ar)/organica/delivery-Information',
+        destination: '/:lang/organica/delivery-information',
+        permanent: true,
+      },
+      // Old site: /organica/contact → new /contact page
+      {
+        source: '/organica/contact',
+        destination: '/contact',
+        permanent: true,
+      },
+      // Localized variants for /organica/contact
+      {
+        source: '/:lang(fr|ar)/organica/contact',
+        destination: '/:lang/contact',
+        permanent: true,
+      },
+      // Old PHP: /product_details → new /shop
+      {
+        source: '/product_details',
+        destination: '/shop',
+        permanent: true,
+      },
+      // Localized variants for argan-oil redirect
+      {
+        source: '/:lang(fr|ar)/organica/argan-oil',
+        destination: '/:lang/organica/argan-oil-of-morocco',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

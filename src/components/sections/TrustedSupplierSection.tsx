@@ -62,9 +62,10 @@ const TrustedSupplierSection = ({ data }: ProductCategoryCarouselProps) => {
               {content.title}
             </p>
             {content.description && (
-              <p className="text-muted-foreground text-lg md:text-xl max-w-3xl leading-relaxed mx-auto">
-                {content.description}
-              </p>
+              <p
+                className="text-muted-foreground text-lg md:text-xl max-w-3xl leading-relaxed mx-auto"
+                dangerouslySetInnerHTML={{ __html: content.description }}
+              />
             )}
           </motion.div>
 

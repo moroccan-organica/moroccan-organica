@@ -55,9 +55,9 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         ? topProducts.map(p => ({ name: p.title, href: getLocalizedHref(`/organica/${p.slug}`, lang) }))
         : [
             { name: t('products.essentialOils'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
-            { name: t('products.vegetableOils'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
-            { name: t('products.driedPlants'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
-            { name: t('products.wellness'), href: getLocalizedHref('/organica/essential-oils-wholesale-suppliers', lang) },
+            { name: t('products.vegetableOils'), href: getLocalizedHref('/organica/argan-oil-of-morocco', lang) },
+            { name: t('products.driedPlants'), href: getLocalizedHref('/organica/organic-prickly-pear-seed-oil-wholesale', lang) },
+            { name: t('products.wellness'), href: getLocalizedHref('/organica/wholesale-pure-rosewater-from-morocco-organic-natural', lang) },
         ];
 
     const benefitsDropdownItems = [
@@ -80,7 +80,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
         { name: t('nav.products'), href: getLocalizedHref('/wholesale-of-moroccan-skincare', lang), isRoute: true, hasDropdown: true, dropdownItems: productDropdownItems, title: "Products" },
         { name: t('nav.about'), href: getLocalizedHref('/organica/about-organica-group-sarl', lang), isRoute: true, title: t('nav.aboutTitle') || "About our company" },
         { name: t('nav.blog'), href: getLocalizedHref('/blog', lang), isRoute: true, title: "Blog" },
-        { name: t('nav.privateLabel'), href: getLocalizedHref('/private-label', lang), isRoute: true, title: "Private label" },
+        { name: t('nav.privateLabel'), href: getLocalizedHref('/organica/argan-oil-private-label-manufacturer', lang), isRoute: true, title: "Private label" },
         { name: t('nav.benefits'), href: getLocalizedHref('/organica/Benefits-Using-Natural-Beauty-Products', lang), isRoute: true, hasDropdown: true, dropdownItems: benefitsDropdownItems, title: "Benefits" },
         { name: t('nav.shop'), href: getLocalizedHref('/shop', lang), isRoute: true, title: "Shop" },
         { name: t('nav.contact'), href: getLocalizedHref('/contact', lang), isRoute: true, title: "Get in touch" },
