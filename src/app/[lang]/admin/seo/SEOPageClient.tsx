@@ -27,7 +27,6 @@ import { SafeImage } from '@/components/ui/safe-image';
 
 const DEFAULT_LOCALIZED: LocalizedSettings = {
     siteName: 'Moroccan Organica',
-    titleSuffix: ' | Premium Argan Oil',
     defaultMetaDesc: '',
     defaultKeywords: ''
 };
@@ -69,7 +68,6 @@ export function SEOPageClient() {
                     if (['en', 'fr', 'ar'].includes(t.language)) {
                         newTranslations[t.language as LanguageCode] = {
                             siteName: t.siteName || '',
-                            titleSuffix: t.titleSuffix || '',
                             defaultMetaDesc: t.defaultMetaDesc || '',
                             defaultKeywords: t.defaultKeywords || ''
                         };
@@ -199,16 +197,6 @@ export function SEOPageClient() {
                                             onChange={(e) => updateLocalized('siteName', e.target.value)}
                                             placeholder="Moroccan Organica"
                                         />
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="titleSuffix">Title Suffix</Label>
-                                        <Input
-                                            id="titleSuffix"
-                                            value={currentLocalized.titleSuffix}
-                                            onChange={(e) => updateLocalized('titleSuffix', e.target.value)}
-                                            placeholder=" | Premium Argan Oil"
-                                        />
-                                        <p className="text-xs text-slate-500 mt-1">Appended to page titles (e.g. "Home | Moroccan Organica")</p>
                                     </div>
                                 </div>
 

@@ -5,6 +5,8 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import TextAlign from '@tiptap/extension-text-align';
+
+import { CustomLink } from '@/lib/blog/tiptap-extensions';
 import Underline from '@tiptap/extension-underline';
 import {
     Bold,
@@ -68,8 +70,13 @@ export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr'
         extensions: [
             StarterKit,
             Underline,
-            Link.configure({
+            CustomLink.configure({
                 openOnClick: false,
+                validate: href => !!href,
+                HTMLAttributes: {
+                    rel: 'noopener noreferrer nofollow',
+                    target: '_blank',
+                },
             }),
             TextAlign.configure({
                 types: ['heading', 'paragraph'],
@@ -197,7 +204,11 @@ export function SimpleTiptapEditor({ content, onChange, placeholder, dir = 'ltr'
                     onClick={() => {
                         const url = window.prompt('URL');
                         if (url) {
-                            editor.chain().focus().setLink({ href: url }).run();
+                            editor.chain().focus().setLink({
+                                href: url,
+                                target: '_blank',
+                                rel: 'noopener noreferrer nofollow'
+                            }).run();
                         } else if (url === '') {
                             editor.chain().focus().unsetLink().run();
                         }

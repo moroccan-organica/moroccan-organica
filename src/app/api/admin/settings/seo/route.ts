@@ -99,7 +99,6 @@ export async function POST(req: Request) {
                         globalSeoSettingId: existing.id,
                         language: t.language,
                         siteName: t.siteName,
-                        titleSuffix: t.titleSuffix,
                         defaultMetaDesc: t.defaultMetaDesc,
                         defaultKeywords: t.defaultKeywords
                     })));
@@ -137,7 +136,6 @@ export async function POST(req: Request) {
                         globalSeoSettingId: created.id,
                         language: t.language,
                         siteName: t.siteName,
-                        titleSuffix: t.titleSuffix,
                         defaultMetaDesc: t.defaultMetaDesc,
                         defaultKeywords: t.defaultKeywords
                     })));

@@ -94,8 +94,9 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
 
     // Select content based on language
     const isArabic = lang === 'ar';
-    const title = isArabic && post.title_ar ? post.title_ar : post.title;
-    const content = isArabic && post.content_ar?.content?.length ? post.content_ar : post.content;
+    const isFrench = lang === 'fr';
+    const title = isArabic ? (post.title_ar || post.title) : (isFrench ? (post.title_fr || post.title) : post.title);
+    const content = isArabic ? (post.content_ar || post.content) : (isFrench ? (post.content_fr || post.content) : post.content);
 
     return (
         <main className="min-h-screen bg-white">

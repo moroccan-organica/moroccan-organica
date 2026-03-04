@@ -1,14 +1,19 @@
+'use client';
+
 import React from 'react';
+import { HtmlContent } from '@/components/common/HtmlContent';
 
 interface BenefitsContentProps {
     content: string;
+    dir?: 'ltr' | 'rtl';
 }
 
-export function BenefitsContent({ content }: BenefitsContentProps) {
+export function BenefitsContent({ content, dir }: BenefitsContentProps) {
     return (
-        <div
+        <HtmlContent
+            html={content}
             className="rich-text-content"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dir={dir}
         />
     );
 }

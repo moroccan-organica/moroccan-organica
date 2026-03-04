@@ -20,7 +20,7 @@ interface PostPreviewDialogProps {
   featuredImagePreview: string | null;
   categoryLabel: string;
   tags: string[];
-  contentJson: Record<string, unknown> | null;
+  contentHTML: string;
 }
 
 export function PostPreviewDialog({
@@ -31,7 +31,7 @@ export function PostPreviewDialog({
   featuredImagePreview,
   categoryLabel,
   tags,
-  contentJson,
+  contentHTML,
 }: PostPreviewDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -88,16 +88,16 @@ export function PostPreviewDialog({
                 {excerpt || 'No excerpt provided.'}
               </p>
 
-              <BlogPostContent 
-                content={contentJson} 
-                contentUnavailableText="No content available to preview." 
+              <BlogPostContent
+                content={contentHTML}
+                contentUnavailableText="No content available to preview."
               />
 
               {tags.length > 0 && (
                 <div className="mt-16 pt-8 border-t border-slate-100">
                   <div className="flex flex-wrap gap-2">
                     {tags.map(tag => (
-                      <span 
+                      <span
                         key={tag}
                         className="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider rounded-full"
                       >

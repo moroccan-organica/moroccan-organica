@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { JSONContent, generateHTML } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 import TiptapLink from '@tiptap/extension-link';
@@ -8,6 +8,10 @@ import TextAlign from '@tiptap/extension-text-align';
 import TiptapYoutube from '@tiptap/extension-youtube';
 import { Video as CustomVideo } from '@/lib/tiptap-video';
 import { BlogImage } from '@/lib/tiptap-image';
+
+import { CustomLink } from '@/lib/blog/tiptap-extensions';
+
+import { HtmlContent } from '@/components/common/HtmlContent';
 
 type BlogContent = JSONContent | string | null;
 
@@ -17,41 +21,6 @@ interface BlogPostContentProps {
 }
 
 export function BlogPostContent({ content, contentUnavailableText }: BlogPostContentProps) {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  // Attach a single click handler for all links inside the content,
-  // so nothing higher in the DOM tree can swallow the click.
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const handleClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (!target) return;
-
-      const anchor = target.closest('a') as HTMLAnchorElement | null;
-      if (!anchor || !anchor.href) return;
-
-      // Let middle-click / modifier clicks behave normally
-      if (event.button === 1 || event.metaKey || event.ctrlKey || event.shiftKey) {
-        return;
-      }
-
-      event.preventDefault();
-      const href = anchor.href;
-
-      // External links → open in new tab, internal links → same tab
-      if (/^https?:\/\//i.test(href) && !href.startsWith(window.location.origin)) {
-        window.open(href, '_blank', 'noopener,noreferrer');
-      } else {
-        window.location.href = href;
-      }
-    };
-
-    el.addEventListener('click', handleClick);
-    return () => el.removeEventListener('click', handleClick);
-  }, []);
-
   if (!content) {
     return <p className="text-slate-500 italic">{contentUnavailableText}</p>;
   }
@@ -59,28 +28,35 @@ export function BlogPostContent({ content, contentUnavailableText }: BlogPostCon
   // Normalize to an HTML string (either existing HTML or generated from TipTap JSON)
   let html: string;
 
-  if (typeof content === 'string') {
+  if (typeof content === 'string' && !content.trim().startsWith('{')) {
     html = content;
   } else {
-    html = generateHTML(content as JSONContent, [
-      StarterKit,
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      TiptapLink.configure({ openOnClick: true }),
-      BlogImage.configure({
-        HTMLAttributes: {
-          class: 'editor-image',
-        },
-      }),
-      TiptapYoutube.configure({ controls: false, nocookie: true }),
-      CustomVideo,
-    ]);
+    try {
+      const json = typeof content === 'string' ? JSON.parse(content) : content;
+      html = generateHTML(json as JSONContent, [
+        StarterKit,
+        TextAlign.configure({ types: ['heading', 'paragraph'] }),
+        CustomLink.configure({
+          openOnClick: true,
+          validate: href => !!href,
+        }),
+        BlogImage.configure({
+          HTMLAttributes: {
+            class: 'editor-image',
+          },
+        }),
+        TiptapYoutube.configure({ controls: false, nocookie: true }),
+        CustomVideo,
+      ]);
+    } catch (e) {
+      html = typeof content === 'string' ? content : '';
+    }
   }
 
   return (
-    <div
-      ref={containerRef}
+    <HtmlContent
+      html={html}
       className="rich-text-content"
-      dangerouslySetInnerHTML={{ __html: html }}
     />
   );
 }

@@ -32,7 +32,6 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
   const globalSeo = await getGlobalSeoSettings(lang);
 
   const siteName = globalSeo?.translation?.siteName || "Argan oil wholesale company - in Bulk - Morocco";
-  const titleSuffix = globalSeo?.translation?.titleSuffix || " | Organica Group";
   const defaultDesc = globalSeo?.translation?.defaultMetaDesc || "Buy Moroccan Wholesale argan oil and organic cosmetics products company. Using traditional ingredients and natural products for beauty skincare haircare.";
   const keywords = globalSeo?.translation?.defaultKeywords || "Argan oil, Argan oil benefits for skin, prickly pear oil, argan oil for hair, argan oil for face, pure argan oil, argan oil for skin, argan oil price, 100%pure,  bulk, beauty products, argan oil of morocco, beauty products online, beauty, beauty brand, cosmetic";
 
@@ -40,7 +39,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     metadataBase: new URL('https://www.moroccanorganica.com'),
     title: {
       default: siteName,
-      template: `%s${titleSuffix}`,
+      template: "%s",
     },
     description: defaultDesc,
     keywords: keywords,

@@ -18,11 +18,10 @@ interface BlogCardProps {
 
 const DEFAULT_IMAGE = '/images/placeholder.svg';
 
-const extractText = (node: JSONContent | null | undefined): string => {
-  if (!node) return '';
-  if (node.type === 'text') return node.text || '';
-  if (Array.isArray(node.content)) return node.content.map((child) => extractText(child)).join(' ');
-  return '';
+const extractText = (html: string | null | undefined): string => {
+  if (!html) return '';
+  if (typeof html !== 'string') return '';
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
 };
 
 export function BlogCard({ post, lang, translations }: BlogCardProps) {
@@ -35,14 +34,15 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
   }, [post.featured_image_url]);
 
   const contentFallback = React.useMemo(() => {
-    const source = lang === 'ar' ? post.content_ar : post.content;
+    const source = lang === 'ar' ? post.content_ar : (lang === 'fr' ? post.content_fr : post.content);
     return extractText(source)?.trim() || '';
-  }, [lang, post.content, post.content_ar]);
+  }, [lang, post.content, post.content_ar, post.content_fr]);
 
   // Select content based on language
   const isArabic = lang === 'ar';
-  const title = isArabic && post.title_ar ? post.title_ar : post.title;
-  const rawExcerpt = isArabic && post.excerpt_ar ? post.excerpt_ar : post.excerpt;
+  const isFrench = lang === 'fr';
+  const title = isArabic ? (post.title_ar || post.title) : (isFrench ? (post.title_fr || post.title) : post.title);
+  const rawExcerpt = isArabic ? (post.excerpt_ar || post.excerpt) : (isFrench ? (post.excerpt_fr || post.excerpt) : post.excerpt);
   const cleanedExcerpt = rawExcerpt?.trim() || '';
   const longerText = contentFallback.length > cleanedExcerpt.length ? contentFallback : cleanedExcerpt;
   const descriptionSource = longerText || cleanedExcerpt || contentFallback;

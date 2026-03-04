@@ -11,10 +11,13 @@ import type { BlogPostFull, BlogCategory } from '@/types/blog';
 interface BlogPostInput {
   title: string;
   titleAr?: string;
-  content?: Record<string, unknown>;
-  contentAr?: Record<string, unknown>;
+  titleFr?: string;
+  content?: string;
+  contentAr?: string;
+  contentFr?: string;
   excerpt?: string;
   excerptAr?: string;
+  excerptFr?: string;
   categoryId?: string;
   tags?: string[];
   featuredImageUrl?: string;
@@ -34,10 +37,13 @@ interface BlogCategoryInput {
 interface BlogPostUpdateData {
   title?: string;
   titleAr: string | null;
+  titleFr: string | null;
   content: string;
   contentAr: string | null;
+  contentFr: string | null;
   excerpt: string;
   excerptAr: string | null;
+  excerptFr: string | null;
   categoryId: string | null;
   tags: string;
   featuredImageUrl: string | null;
@@ -53,11 +59,14 @@ interface SupabasePostRow {
   id: string;
   title: string;
   titleAr?: string;
+  titleFr?: string;
   slug: string;
   excerpt?: string;
   excerptAr?: string;
+  excerptFr?: string;
   content?: string;
   contentAr?: string;
+  contentFr?: string;
   featuredImageUrl?: string;
   authorId?: string;
   categoryId?: string;
@@ -213,8 +222,8 @@ export async function getBlogPosts(
       slug: post.slug,
       excerpt: post.excerpt || '',
       excerpt_ar: post.excerptAr || '',
-      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
-      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
+      content: post.content || '',
+      content_ar: post.contentAr || '',
       featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId || '',
       category_id: post.categoryId || '',
@@ -294,11 +303,14 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
       id: post.id,
       title: post.title,
       title_ar: post.titleAr || '',
+      title_fr: post.titleFr || '',
       slug: post.slug,
       excerpt: post.excerpt || '',
       excerpt_ar: post.excerptAr || '',
-      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
-      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
+      excerpt_fr: post.excerptFr || '',
+      content: post.content || '',
+      content_ar: post.contentAr || '',
+      content_fr: post.contentFr || '',
       featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
@@ -350,11 +362,14 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
       id: post.id,
       title: post.title,
       title_ar: post.titleAr || '',
+      title_fr: post.titleFr || '',
       slug: post.slug,
       excerpt: post.excerpt || '',
       excerpt_ar: post.excerptAr || '',
-      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
-      content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
+      excerpt_fr: post.excerptFr || '',
+      content: post.content || '',
+      content_ar: post.contentAr || '',
+      content_fr: post.contentFr || '',
       featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId,
       category_id: post.categoryId || '',
@@ -421,7 +436,7 @@ export async function isBlogPostSlugUnique(slug: string, excludePostId?: string)
 export async function createBlogPost(input: BlogPostInput) {
   try {
     const authorId = await getDefaultAuthorId();
-    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
+    const { title, titleAr, titleFr, content, contentAr, contentFr, excerpt, excerptAr, excerptFr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
 
     let uniqueSlug = manualSlug || generateSlug(title);
 
@@ -445,13 +460,16 @@ export async function createBlogPost(input: BlogPostInput) {
     const { data: post, error } = await supabase
       .from('BlogPost')
       .insert({
-        title,
+        title: title,
         titleAr: titleAr || null,
+        titleFr: titleFr || null,
         slug: uniqueSlug,
-        content: JSON.stringify(content || { type: 'doc', content: [] }),
-        contentAr: contentAr ? JSON.stringify(contentAr) : null,
+        content: content || '',
+        contentAr: contentAr || null,
+        contentFr: contentFr || null,
         excerpt: excerpt || '',
         excerptAr: excerptAr || null,
+        excerptFr: excerptFr || null,
         categoryId: categoryId || null,
         tags: JSON.stringify(tags || []),
         featuredImageUrl: featuredImageUrl || null,
@@ -460,7 +478,7 @@ export async function createBlogPost(input: BlogPostInput) {
         publishedAt: status === 'published' ? new Date().toISOString() : null,
         metaTitle: metaTitle || null,
         metaDescription: metaDescription || null,
-        readTimeMinutes: Math.max(1, Math.ceil((JSON.stringify(content || {}).length) / 1000)),
+        readTimeMinutes: Math.max(1, Math.ceil(Math.max((content || '').length, (contentAr || '').length, (contentFr || '').length) / 500)),
       })
       .select()
       .single();
@@ -503,22 +521,25 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
       .eq('id', postId)
       .maybeSingle();
 
-    const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
+    const { title, titleAr, titleFr, content, contentAr, contentFr, excerpt, excerptAr, excerptFr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription, slug: manualSlug } = input;
 
     const updateData: BlogPostUpdateData = {
       title,
       titleAr: titleAr || null,
-      content: JSON.stringify(content || { type: 'doc', content: [] }),
-      contentAr: contentAr ? JSON.stringify(contentAr) : null,
+      titleFr: titleFr || null,
+      content: content || '',
+      contentAr: contentAr || null,
+      contentFr: contentFr || null,
       excerpt: excerpt || '',
       excerptAr: excerptAr || null,
+      excerptFr: excerptFr || null,
       categoryId: categoryId || null,
       tags: JSON.stringify(tags || []),
       featuredImageUrl: featuredImageUrl || null,
       status: status || 'draft',
       metaTitle: metaTitle || null,
       metaDescription: metaDescription || null,
-      readTimeMinutes: Math.max(1, Math.ceil((JSON.stringify(content || {}).length) / 1000)),
+      readTimeMinutes: Math.max(1, Math.ceil(Math.max((content || '').length, (contentAr || '').length, (contentFr || '').length) / 500)),
       slug: manualSlug || undefined,
     };
 
@@ -753,7 +774,7 @@ export async function getRelatedPosts(postId: string, categoryId: string | null,
       slug: post.slug,
       excerpt: post.excerpt || '',
       excerpt_ar: post.excerptAr || '',
-      content: safeJsonParse(post.content, { type: 'doc', content: [] }),
+      content: post.content || '',
       content_ar: safeJsonParse(post.contentAr, { type: 'doc', content: [] }),
       featured_image_url: resolveFeaturedImageUrl(post),
       author_id: post.authorId || '',

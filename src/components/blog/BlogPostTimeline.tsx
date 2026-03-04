@@ -11,48 +11,37 @@ export interface TimelineItem {
 }
 
 export interface BlogPostTimelineProps {
-  content: JSONContent | null;
+  content: string | null;
   className?: string;
   recommendedTitle?: string;
 }
 
-function extractHeadings(content: JSONContent | null): TimelineItem[] {
-  if (!content) return [];
+function extractHeadings(html: string | null): TimelineItem[] {
+  if (!html || typeof html !== 'string') return [];
 
   const headings: TimelineItem[] = [];
   const idCounts: Record<string, number> = {};
 
-  function traverse(node: JSONContent) {
-    if (node.type === 'heading' && node.attrs?.level) {
-      const level = node.attrs.level as number;
-      const text = extractText(node);
-      if (text) {
-        const baseId = generateId(text);
-        idCounts[baseId] = (idCounts[baseId] || 0) + 1;
-        const id = idCounts[baseId] === 1 ? baseId : `${baseId}-${idCounts[baseId]}`;
-        headings.push({ id, text, level });
-      }
-    }
+  // For server-side rendering, we could use a regex or just skip.
+  // Since this is used in useMemo in a client component, we use DOMParser.
+  if (typeof window === 'undefined') return [];
 
-    if (node.content && Array.isArray(node.content)) {
-      node.content.forEach(traverse);
-    }
-  }
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const headingElements = doc.querySelectorAll('h1, h2, h3, h4, h5, h6');
 
-  traverse(content);
+  headingElements.forEach((el) => {
+    const level = parseInt(el.tagName.substring(1));
+    const text = el.textContent || '';
+    if (text) {
+      const baseId = generateId(text);
+      idCounts[baseId] = (idCounts[baseId] || 0) + 1;
+      const id = idCounts[baseId] === 1 ? baseId : `${baseId}-${idCounts[baseId]}`;
+      headings.push({ id, text, level });
+    }
+  });
+
   return headings;
-}
-
-function extractText(node: JSONContent): string {
-  if (node.type === 'text') {
-    return node.text || '';
-  }
-
-  if (node.content && Array.isArray(node.content)) {
-    return node.content.map(extractText).join('');
-  }
-
-  return '';
 }
 
 function generateId(text: string): string {
@@ -64,10 +53,10 @@ function generateId(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-export function BlogPostTimeline({ 
-  content, 
+export function BlogPostTimeline({
+  content,
   className,
-  recommendedTitle 
+  recommendedTitle
 }: BlogPostTimelineProps) {
   const headings = useMemo(() => extractHeadings(content), [content]);
   const [activeId, setActiveId] = useState<string | null>(null);

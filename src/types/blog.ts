@@ -21,11 +21,14 @@ export interface BlogPost {
   id: string;
   title: string;
   title_ar?: string;
+  title_fr?: string;
   slug: string;
   excerpt: string;
   excerpt_ar?: string;
-  content: JSONContent;
-  content_ar?: JSONContent;
+  excerpt_fr?: string;
+  content: string;
+  content_ar?: string;
+  content_fr?: string;
   featured_image_url: string;
   author_id: string;
   category_id: string;

@@ -9,7 +9,6 @@ import { generateSlug } from '@/lib/slug';
 import { PostFormHeader } from './post-form/PostFormHeader';
 import { PostFormSidebar } from './post-form/PostFormSidebar';
 import { PostPreviewDialog } from './post-form/PostPreviewDialog';
-import { JSONContent } from '@tiptap/core';
 import { uploadBlogImage } from '@/actions/media.actions';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Languages, Type, FileText, Wand2, Check, AlertCircle, Loader2 } from 'lucide-react';
@@ -31,16 +30,21 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
 
   // Form State - English
   const [title, setTitle] = useState(post?.title || '');
-  const [contentJson, setContentJson] = useState<JSONContent>(post?.content || { type: 'doc', content: [] });
+  const [contentHTML, setContentHTML] = useState<string>(post?.content || '');
   const [excerpt, setExcerpt] = useState(post?.excerpt || '');
 
   // Form State - Arabic
   const [titleAr, setTitleAr] = useState(post?.title_ar || '');
-  const [contentArJson, setContentArJson] = useState<JSONContent>(post?.content_ar || { type: 'doc', content: [] });
+  const [contentArHTML, setContentArHTML] = useState<string>(post?.content_ar || '');
   const [excerptAr, setExcerptAr] = useState(post?.excerpt_ar || '');
+
+  // Form State - French
+  const [titleFr, setTitleFr] = useState(post?.title_fr || '');
+  const [contentFrHTML, setContentFrHTML] = useState<string>(post?.content_fr || '');
+  const [excerptFr, setExcerptFr] = useState(post?.excerpt_fr || '');
+
   const [slug, setSlug] = useState(post?.slug || '');
   const [slugStatus, setSlugStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>(post?.slug ? 'valid' : 'idle');
-  const [editorInitialContentAr, setEditorInitialContentAr] = useState<JSONContent | string>(post?.content_ar ?? '');
   const [categoryId, setCategoryId] = useState(post?.category_id || '');
   const [tags, setTags] = useState<string[]>(post?.tags || []);
   const [tagInput, setTagInput] = useState('');
@@ -49,7 +53,6 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
   const [featuredImagePreview, setFeaturedImagePreview] = useState<string | null>(post?.featured_image_url || null);
   const [metaTitle, setMetaTitle] = useState(post?.title || '');
   const [metaDescription, setMetaDescription] = useState(post?.excerpt || '');
-  const [editorInitialContent, setEditorInitialContent] = useState<JSONContent | string>(post?.content ?? '');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [mediaDialogOpen, setMediaDialogOpen] = useState(false);
 
@@ -92,14 +95,24 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
     if (isEditing && post?.content) {
       const content = post.content;
       editInitTimeoutRef.current = window.setTimeout(() => {
-        setEditorInitialContent((prev) => {
-          if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
+        setContentHTML((prev) => {
+          if (prev !== content) return content;
           return prev;
         });
-        setContentJson((prev) => {
-          if (JSON.stringify(prev) !== JSON.stringify(content)) return content;
-          return prev;
-        });
+      }, 0);
+    }
+
+    if (isEditing && post?.content_ar) {
+      const contentAr = post.content_ar;
+      window.setTimeout(() => {
+        setContentArHTML(contentAr);
+      }, 0);
+    }
+
+    if (isEditing && post?.content_fr) {
+      const contentFr = post.content_fr;
+      window.setTimeout(() => {
+        setContentFrHTML(contentFr);
       }, 0);
     }
 
@@ -128,8 +141,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
 
         if (parsed.title) setTitle(parsed.title);
         if (parsed.content) {
-          setContentJson(parsed.content);
-          setEditorInitialContent(parsed.content);
+          setContentHTML(parsed.content);
         }
         if (parsed.excerpt) setExcerpt(parsed.excerpt);
         if (parsed.slug) {
@@ -139,10 +151,17 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
         // Arabic fields
         if (parsed.title_ar) setTitleAr(parsed.title_ar);
         if (parsed.content_ar) {
-          setContentArJson(parsed.content_ar);
-          setEditorInitialContentAr(parsed.content_ar);
+          setContentArHTML(parsed.content_ar);
         }
         if (parsed.excerpt_ar) setExcerptAr(parsed.excerpt_ar);
+
+        // French fields
+        if (parsed.title_fr) setTitleFr(parsed.title_fr);
+        if (parsed.content_fr) {
+          setContentFrHTML(parsed.content_fr);
+        }
+        if (parsed.excerpt_fr) setExcerptFr(parsed.excerpt_fr);
+
         if (parsed.category_id) setCategoryId(parsed.category_id);
         if (parsed.tags) setTags(parsed.tags);
         if (parsed.featured_image_url) {
@@ -175,11 +194,14 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
       try {
         const toSave: Record<string, unknown> = {
           title,
-          content: contentJson,
+          content: contentHTML,
           excerpt,
           title_ar: titleAr,
-          content_ar: contentArJson,
+          content_ar: contentArHTML,
           excerpt_ar: excerptAr,
+          title_fr: titleFr,
+          content_fr: contentFrHTML,
+          excerpt_fr: excerptFr,
           category_id: categoryId,
           tags,
           featured_image_url: featuredImageUrl,
@@ -198,7 +220,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [title, contentJson, excerpt, titleAr, contentArJson, excerptAr, categoryId, tags, featuredImageUrl, metaTitle, metaDescription, DRAFT_KEY, slug]);
+  }, [title, contentHTML, excerpt, titleAr, contentArHTML, excerptAr, titleFr, contentFrHTML, excerptFr, categoryId, tags, featuredImageUrl, metaTitle, metaDescription, DRAFT_KEY, slug]);
 
   // Featured Image Handlers
   const handleFeaturedImageChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -298,10 +320,13 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
     const postData: Partial<BlogPost> = {
       title,
       title_ar: titleAr || undefined,
-      content: contentJson,
-      content_ar: contentArJson,
+      title_fr: titleFr || undefined,
+      content: contentHTML,
+      content_ar: contentArHTML,
+      content_fr: contentFrHTML,
       excerpt,
       excerpt_ar: excerptAr || undefined,
+      excerpt_fr: excerptFr || undefined,
       category_id: categoryId || undefined,
       tags,
       featured_image_url: finalFeaturedImageUrl,
@@ -330,10 +355,12 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
   }, [
     DRAFT_KEY,
     categoryId,
-    contentJson,
-    contentArJson,
+    contentHTML,
+    contentArHTML,
+    contentFrHTML,
     excerpt,
     excerptAr,
+    excerptFr,
     featuredImageFile,
     featuredImagePreview,
     featuredImageUrl,
@@ -385,6 +412,10 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
                   <TabsTrigger value="ar" className="gap-2 data-[state=active]:bg-[#606C38] data-[state=active]:text-white">
                     <span className="text-[10px] font-bold">AR</span>
                     العربية
+                  </TabsTrigger>
+                  <TabsTrigger value="fr" className="gap-2 data-[state=active]:bg-[#606C38] data-[state=active]:text-white">
+                    <span className="text-[10px] font-bold">FR</span>
+                    Français
                   </TabsTrigger>
                 </TabsList>
               </div>
@@ -465,9 +496,9 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
                     </Label>
                   </div>
                   <RichTextEditor
-                    initialContent={editorInitialContent}
-                    onChange={(_, json) => {
-                      if (json) setContentJson(json);
+                    initialContent={contentHTML}
+                    onChange={(html) => {
+                      setContentHTML(html);
                     }}
                     placeholder={t.contentPlaceholder || "Once upon a time in Morocco..."}
                     postId={post?.id}
@@ -519,9 +550,9 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
                     <FileText className="h-4 w-4 text-[#606C38]" />
                   </div>
                   <RichTextEditor
-                    initialContent={editorInitialContentAr}
-                    onChange={(_, json) => {
-                      if (json) setContentArJson(json);
+                    initialContent={contentArHTML}
+                    onChange={(html) => {
+                      setContentArHTML(html);
                     }}
                     placeholder={t.contentArPlaceholder || 'Write article content in Arabic...'}
                     postId={post?.id}
@@ -543,6 +574,59 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
                     placeholder={t.summaryArPlaceholder || 'Brief summary in Arabic...'}
                     dir="rtl"
                     className="flex min-h-[120px] w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#606C38] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none shadow-sm text-right"
+                  />
+                </div>
+              </TabsContent>
+
+              {/* French Tab */}
+              <TabsContent value="fr" className="space-y-8 mt-0 focus-visible:ring-0">
+                {/* French Title */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Type className="h-4 w-4 text-[#606C38]" />
+                    <Label htmlFor="titleFr" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      Article Title (French)
+                    </Label>
+                  </div>
+                  <Input
+                    id="titleFr"
+                    value={titleFr}
+                    onChange={(e) => setTitleFr(e.target.value)}
+                    placeholder="Entrez le titre de l'article..."
+                    className="text-2xl font-playfair font-bold h-16 rounded-2xl border-slate-100 shadow-sm focus:ring-[#606C38]"
+                  />
+                </div>
+
+                {/* French Content Editor */}
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <FileText className="h-4 w-4 text-[#606C38]" />
+                    <Label className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                      Content (French)
+                    </Label>
+                  </div>
+                  <RichTextEditor
+                    initialContent={contentFrHTML}
+                    onChange={(html) => {
+                      setContentFrHTML(html);
+                    }}
+                    placeholder="Écrivez le contenu de l'article en français..."
+                    postId={post?.id}
+                    onMediaDialogChange={setMediaDialogOpen}
+                  />
+                </div>
+
+                {/* French Excerpt */}
+                <div className="space-y-3">
+                  <Label htmlFor="excerptFr" className="text-xs font-bold uppercase tracking-widest text-slate-400">
+                    Summary / Excerpt (French)
+                  </Label>
+                  <textarea
+                    id="excerptFr"
+                    value={excerptFr}
+                    onChange={(e) => setExcerptFr(e.target.value)}
+                    placeholder="Un bref résumé de votre article..."
+                    className="flex min-h-[120px] w-full rounded-2xl border border-slate-100 bg-white px-4 py-3 text-sm ring-offset-background placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#606C38] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all resize-none shadow-sm"
                   />
                 </div>
               </TabsContent>
@@ -585,7 +669,7 @@ export function PostForm({ post, categories, onSave, onCancel, isLoading, transl
         featuredImagePreview={featuredImagePreview}
         categoryLabel={selectedCategoryName || 'Uncategorized'}
         tags={tags}
-        contentJson={contentJson}
+        contentHTML={contentHTML}
       />
     </div>
   );

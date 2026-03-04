@@ -8,7 +8,6 @@ export interface GlobalSettings {
 
 export interface LocalizedSettings {
     siteName: string;
-    titleSuffix: string;
     defaultMetaDesc: string;
     defaultKeywords: string;
 }
@@ -20,7 +19,6 @@ export interface SEOSettings {
     translations: {
         language: string;
         siteName?: string;
-        titleSuffix?: string;
         defaultMetaDesc?: string;
         defaultKeywords?: string;
     }[];

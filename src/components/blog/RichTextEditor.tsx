@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { JSONContent } from '@tiptap/core';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import TiptapLink from '@tiptap/extension-link';
 import TiptapPlaceholder from '@tiptap/extension-placeholder';
 import TiptapYoutube from '@tiptap/extension-youtube';
 import TextAlign from '@tiptap/extension-text-align';
 import { cn } from '@/lib/utils';
 import { Video as CustomVideo } from '@/lib/tiptap-video';
 import { BlogImage } from '@/lib/tiptap-image';
+import { CustomLink } from '@/lib/blog/tiptap-extensions';
 import {
   EditorHeader,
   EditorToolbar,
@@ -28,8 +27,8 @@ import { MediaLibraryDialog } from './MediaLibraryDialog';
 import './editor/styles/RichTextEditor.css';
 
 export interface RichTextEditorProps {
-  initialContent?: JSONContent | string;
-  onChange: (html: string, json: unknown) => void;
+  initialContent?: string;
+  onChange: (html: string) => void;
   placeholder?: string;
   postId?: string;
   onMediaDialogChange?: (isOpen: boolean) => void;
@@ -46,12 +45,31 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
   const lastSelectionRef = useRef<{ from: number; to: number } | null>(null);
   const editorContainerRef = useRef<HTMLDivElement>(null);
 
+  const updateWordCount = useCallback((text: string) => {
+    const clean = text.replace(/\s+/g, ' ').trim();
+    const count = clean ? clean.split(' ').filter(Boolean).length : 0;
+    setWordCount(count);
+  }, []);
+
+  const {
+    lastSaved,
+    scheduleAutoSave,
+    formatLastSaved,
+  } = useAutosaveStatus({ delay: 600 });
+
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
       StarterKit,
       TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      TiptapLink.configure({ openOnClick: false }),
+      CustomLink.configure({
+        openOnClick: false,
+        validate: href => !!href,
+        HTMLAttributes: {
+          rel: 'noopener noreferrer nofollow',
+          target: '_blank',
+        },
+      }),
       BlogImage.configure({
         HTMLAttributes: {
           class: 'editor-image',
@@ -67,11 +85,13 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     onCreate: ({ editor }) => {
       const html = editor.getHTML();
       setCodeHtml(html);
-      onChange(html, editor.getJSON());
+      onChange(html);
       updateWordCount(editor.getText());
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML(), editor.getJSON());
+      const html = editor.getHTML();
+      setCodeHtml(html);
+      onChange(html);
       updateWordCount(editor.getText());
       scheduleAutoSave();
     },
@@ -80,34 +100,6 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     },
   });
 
-  const updateWordCount = useCallback((text: string) => {
-    const clean = text.replace(/\s+/g, ' ').trim();
-    const count = clean ? clean.split(' ').filter(Boolean).length : 0;
-    setWordCount(count);
-  }, []);
-
-  const {
-    mediaDialogOpen,
-    openMediaDialog,
-    closeMediaDialog,
-    mediaItems,
-    mediaLoading,
-    handleUploadFile,
-    handleMediaSelect,
-  } = useBlogMediaManager({
-    postId,
-    onMediaSelect: (media) => {
-      if (!editor) return;
-      if (media.media_type === 'image') {
-        editor.chain().focus().setImage({ src: media.url, alt: media.alt_text || '' }).run();
-      }
-    },
-  });
-
-  useEffect(() => {
-    onMediaDialogChange?.(mediaDialogOpen);
-  }, [mediaDialogOpen, onMediaDialogChange]);
-
   const {
     selectionToolbar,
     selectedImage,
@@ -115,6 +107,34 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     handleSelectionUpdate,
     getResizeHandlesPosition: getSelectionResizePosition,
   } = useSelectionToolbar({ editor, editorContainerRef });
+
+  const {
+    mediaDialogOpen,
+    openMediaDialog: openMediaLibrary,
+    closeMediaDialog,
+    mediaItems,
+    mediaLoading,
+    handleUploadFile,
+    handleMediaSelect,
+  } = useBlogMediaManager({
+    postId,
+    onMediaSelect: (media: any) => {
+      if (!editor) return;
+
+      const { pos } = selectedImage || selectedVideo || { pos: null };
+
+      if (pos !== null) {
+        // Replacement mode
+        const nodeType = selectedImage ? 'image' : selectedVideo?.node?.type?.name === 'youtube' ? 'youtube' : 'video';
+        editor.chain().focus().setNodeSelection(pos).updateAttributes(nodeType, {
+          src: media.url,
+          ...(media.media_type === 'video' ? { thumbnail: media.thumbnail_url } : {})
+        }).run();
+      } else if (media.media_type === 'image') {
+        editor.chain().focus().setImage({ src: media.url, alt: media.alt_text || '' }).run();
+      }
+    },
+  });
 
   const resizePosition = getSelectionResizePosition();
   const {
@@ -135,7 +155,16 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     handleImageAlign,
     handleImageDelete,
     handleImageReplace,
-  } = useEditorCommands({ editor, selectedImage, selectedVideo });
+  } = useEditorCommands({
+    editor,
+    selectedImage,
+    selectedVideo,
+  });
+
+  // Override handleImageReplace to open media library
+  const onImageReplace = useCallback(() => {
+    openMediaLibrary();
+  }, [openMediaLibrary]);
 
   useEffect(() => {
     if (!editor) return;
@@ -148,11 +177,9 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     return () => clearTimeout(id);
   }, [editor, updateWordCount]);
 
-  const {
-    lastSaved,
-    scheduleAutoSave,
-    formatLastSaved,
-  } = useAutosaveStatus({ delay: 600 });
+  useEffect(() => {
+    onMediaDialogChange?.(mediaDialogOpen);
+  }, [mediaDialogOpen, onMediaDialogChange]);
 
   const handleBlockChange = (newBlock: BlockType) => {
     setBlockType(newBlock);
@@ -161,8 +188,13 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
 
   const handleCodeChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const html = e.target.value;
-    onChange(html, null);
     setCodeHtml(html);
+
+    if (editor) {
+      editor.commands.setContent(html, { emitUpdate: true });
+      onChange(html);
+    }
+
     const text = html.replace(/<[^>]*>/g, ' ');
     updateWordCount(text);
     scheduleAutoSave();
@@ -188,10 +220,14 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
     }
 
     if (hasSelection && !text) {
-      chain.focus().extendMarkRange('link').setLink({ href: url }).run();
+      chain.focus().extendMarkRange('link').setLink({
+        href: url,
+        target: '_blank',
+        rel: 'noopener noreferrer nofollow'
+      }).run();
     } else {
       const linkText = text || url;
-      chain.focus().insertContent(`<a href="${url}">${linkText}</a>`).run();
+      chain.focus().insertContent(`<a href="${url}" target="_blank" rel="noopener noreferrer nofollow">${linkText}</a>`).run();
     }
 
     lastSelectionRef.current = null;
@@ -203,7 +239,7 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
       isFullscreen && 'fixed inset-4 z-50 rounded-lg'
     )}>
       <EditorHeader
-        onInsertImage={openMediaDialog}
+        onInsertImage={openMediaLibrary}
         mode={mode}
         onModeChange={setMode}
         codeHtml={codeHtml}
@@ -235,7 +271,7 @@ export function RichTextEditor({ initialContent = '', onChange, placeholder, pos
             handleCommand={handleCommand}
             handleLink={handleLink}
             handleImageAlign={handleImageAlign}
-            handleImageReplace={handleImageReplace}
+            handleImageReplace={onImageReplace}
             handleImageDelete={handleImageDelete}
             handleResizeStart={handleResizeStart}
             getNodeResizePosition={getNodeResizePosition}

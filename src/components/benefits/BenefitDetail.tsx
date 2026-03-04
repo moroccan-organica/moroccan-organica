@@ -37,7 +37,7 @@ export default function BenefitDetail({ post, lang }: BenefitDetailProps) {
             <div className="container-main py-16">
                 <div className="max-w-4xl mx-auto bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-emerald-900/5 border border-emerald-50">
                     <article className={`prose prose-emerald max-w-none ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>
-                        <BenefitsContent content={content} />
+                        <BenefitsContent content={content} dir={isArabic ? 'rtl' : 'ltr'} />
                     </article>
 
                     <div className="mt-12 pt-8 border-t border-emerald-100 flex justify-center">

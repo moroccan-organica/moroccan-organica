@@ -9,6 +9,7 @@ import { Metadata } from "next";
 import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
+import { HtmlContent } from "@/components/common/HtmlContent";
 
 const copy = {
     en: {
@@ -300,9 +301,9 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
             <section className="space-y-6">
                 <h2 className="heading-display text-3xl text-emerald-950">{t.descriptionTitle}</h2>
-                <div
+                <HtmlContent
+                    html={localizedDetails || localizedDescription}
                     className="prose prose-emerald max-w-none text-lg leading-relaxed text-muted-foreground"
-                    dangerouslySetInnerHTML={{ __html: localizedDetails || localizedDescription }}
                 />
             </section>
 

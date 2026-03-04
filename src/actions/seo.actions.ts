@@ -106,7 +106,6 @@ export async function updateSEOSettings(body: SEOSettings) {
                         globalSeoSettingId: existing.id,
                         language: t.language,
                         siteName: t.siteName,
-                        titleSuffix: t.titleSuffix,
                         defaultMetaDesc: t.defaultMetaDesc,
                         defaultKeywords: t.defaultKeywords
                     })));
@@ -140,7 +139,6 @@ export async function updateSEOSettings(body: SEOSettings) {
                         globalSeoSettingId: created.id,
                         language: t.language,
                         siteName: t.siteName,
-                        titleSuffix: t.titleSuffix,
                         defaultMetaDesc: t.defaultMetaDesc,
                         defaultKeywords: t.defaultKeywords
                     })));

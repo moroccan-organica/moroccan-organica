@@ -86,7 +86,7 @@ const PressFeatureSection = ({ data }: PressFeatureSectionProps) => {
             <a
               href="https://untoday.org/argan-oil-and-the-importance-of-the-argan-tree-to-morocco/"
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               className="inline-flex items-center gap-3 text-primary font-semibold text-3xl md:text-4xl underline underline-offset-8 decoration-4"
             >
               {data.cta}

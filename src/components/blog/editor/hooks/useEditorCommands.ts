@@ -25,12 +25,12 @@ export interface UseEditorCommandsProps {
 export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseEditorCommandsProps) {
   const handleCommand = useCallback((command: string, value?: string) => {
     if (!editor) return;
-    
+
     // Ensure editor is focused
     if (!editor.isFocused) {
       editor.chain().focus().run();
     }
-    
+
     const chain = editor.chain().focus();
 
     switch (command) {
@@ -48,7 +48,11 @@ export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseE
         return;
       case 'createLink':
         if (!value) return;
-        chain.extendMarkRange('link').setLink({ href: value }).run();
+        chain.extendMarkRange('link').setLink({
+          href: value,
+          target: '_blank',
+          rel: 'noopener noreferrer nofollow'
+        }).run();
         return;
       case 'insertImage':
         if (!value) return;
@@ -128,7 +132,7 @@ export function useEditorCommands({ editor, selectedImage, selectedVideo }: UseE
     if (!editor || !selected) return;
     const { pos, node } = selected;
     const nodeType = node?.type?.name || (selectedImage ? 'image' : 'video');
-    
+
     const alignStyle =
       align === 'center'
         ? 'display: block; margin-left: auto; margin-right: auto;'

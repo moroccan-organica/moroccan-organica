@@ -11,6 +11,7 @@ import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
 import { WholesaleQuoteForm } from "@/components/shop/WholesaleQuoteForm";
 import InnerHero from "@/components/common/InnerHero";
+import { HtmlContent } from "@/components/common/HtmlContent";
 
 const copy = {
     en: {
@@ -222,9 +223,9 @@ export default async function CatalogueDetailPage({ params }: { params: Params }
                             <div className="space-y-2 pt-2 border-t border-emerald-100">
                                 {localizedDetails && (
                                     <section className="space-y-6">
-                                        <div
+                                        <HtmlContent
+                                            html={localizedDetails}
                                             className="prose prose-emerald max-w-none text-slate-700 leading-relaxed"
-                                            dangerouslySetInnerHTML={{ __html: localizedDetails }}
                                         />
                                     </section>
                                 )}
