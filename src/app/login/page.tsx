@@ -35,7 +35,7 @@ export default function LoginPage() {
 
             if (result?.ok) {
                 // Force a hard refresh or ensure router is ready
-                window.location.href = `/${lang}/admin`
+                window.location.href = `/admin`
             }
         } catch (err) {
             console.error('Login error:', err)

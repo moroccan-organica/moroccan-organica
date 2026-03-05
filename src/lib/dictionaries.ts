@@ -47,8 +47,47 @@ const dictionaries: Record<string, DictionaryGroup> = {
 export type Locale = keyof typeof dictionaries;
 export type Page = keyof DictionaryGroup;
 
-export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<unknown> => {
+import { supabase } from './supabase';
+
+export const getDictionary = async <T extends Page>(locale: string, page: T): Promise<any> => {
     const loc = (dictionaries[locale] ? locale : 'en');
     const loadDictionary = dictionaries[loc][page] || dictionaries['en'][page];
-    return loadDictionary();
+
+    // Load static content
+    const staticDict = await loadDictionary() as any;
+
+    try {
+        // Proxy logic: Try to fetch overrides from DB always
+        const systemName = page.toUpperCase().replace('-', '_');
+        const { data: dbPage } = await supabase
+            .from('StaticPage')
+            .select('*, translations:StaticPageTranslation(*)')
+            .eq('systemName', systemName)
+            .eq('translations.language', loc)
+            .maybeSingle();
+
+        if (dbPage?.translations?.[0]) {
+            const trans = dbPage.translations[0];
+            // Merge DB H1/Description into the dictionary
+            // This ensures "data from db always" for pages like Home, Private Label, etc.
+            return {
+                ...staticDict,
+                hero: {
+                    ...staticDict.hero,
+                    title: trans.h1 || staticDict.hero?.title,
+                    description: trans.description || staticDict.hero?.description
+                },
+                meta: {
+                    ...staticDict.meta,
+                    title: trans.metaTitle || staticDict.meta?.title,
+                    description: trans.metaDesc || staticDict.meta?.description,
+                    keywords: trans.keywords || staticDict.meta?.keywords
+                }
+            };
+        }
+    } catch (error) {
+        console.warn(`[Dictionary Proxy] Failed to fetch DB overrides for ${page}:`, error);
+    }
+
+    return staticDict;
 }

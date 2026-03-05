@@ -15,6 +15,8 @@ async function checkAdmin() {
     return session;
 }
 
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 /**
  * Get global SEO settings (ADMIN ONLY)
  */
@@ -30,7 +32,7 @@ export async function getSEOSettings() {
 
         // Initialize default if not exists
         if (!settings) {
-            const { data: newSettings, error: createError } = await supabase
+            const { data: newSettings, error: createError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .insert({})
                 .select()
@@ -39,7 +41,7 @@ export async function getSEOSettings() {
             if (createError) throw createError;
 
             const languages = ['en', 'fr', 'ar'];
-            const { error: transError } = await supabase
+            const { error: transError } = await supabaseAdmin
                 .from('GlobalSeoTranslation')
                 .insert(languages.map(lang => ({
                     globalSeoSettingId: newSettings.id,
@@ -49,7 +51,7 @@ export async function getSEOSettings() {
             if (transError) throw transError;
 
             // Fetch created with translations
-            const { data: complete, error: finalError } = await supabase
+            const { data: complete, error: finalError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .select('*, translations:GlobalSeoTranslation(*)')
                 .eq('id', newSettings.id)

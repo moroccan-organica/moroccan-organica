@@ -28,6 +28,8 @@ async function middleware(req: NextRequestWithAuth) {
     if (
         pathnameIsMissingLocale &&
         !pathname.startsWith('/api') &&
+        !pathname.startsWith('/admin') && // Exclude admin from localized rewrite
+        !pathname.startsWith('/login') && // Exclude login from localized rewrite
         !pathname.startsWith('/_next') &&
         !pathname.includes('.')
     ) {
@@ -37,31 +39,27 @@ async function middleware(req: NextRequestWithAuth) {
         return NextResponse.rewrite(url);
     }
 
-    const isAuthPage = pathname.includes('/login');
+    const isAuthPage = pathname === '/login' || pathname.startsWith('/login/');
 
     // 2. Auth protection
     if (isAuthPage) {
         if (isAuth) {
-            const lang = pathname.split('/')[1] || defaultLocale;
-            return NextResponse.redirect(new URL(`/${lang}/admin`, req.url));
+            return NextResponse.redirect(new URL(`/admin`, req.url));
         }
         return null;
     }
 
-    if (pathname.includes('/admin')) {
+    if (pathname.startsWith('/admin')) {
         if (!isAuth) {
-            const segments = pathname.split('/');
-            const lang = segments[1] || defaultLocale;
             const from = pathname + req.nextUrl.search;
+            // Redirect to root login directly
             return NextResponse.redirect(
-                new URL(`/${lang}/login?from=${encodeURIComponent(from)}`, req.url)
+                new URL(`/login?from=${encodeURIComponent(from)}`, req.url)
             );
         }
 
         if (token?.role !== 'ADMIN') {
-            const segments = pathname.split('/');
-            const lang = segments[1] || defaultLocale;
-            return NextResponse.redirect(new URL(`/${lang}`, req.url));
+            return NextResponse.redirect(new URL(`/en`, req.url));
         }
     }
 

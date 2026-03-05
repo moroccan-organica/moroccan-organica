@@ -3,10 +3,7 @@ import { getCategories } from "@/actions/category.actions";
 import { PlacementProductsPageClient } from "@/components/admin/PlacementProductsPageClient";
 import { ShopProductDB, CategoryDB } from "@/types/product";
 
-type Params = Promise<{ lang: string }>;
-
-export default async function CatalogueProductsPage({ params }: { params: Params }) {
-    await params;
+export default async function FeaturedProductsPage() {
 
     let products: ShopProductDB[] = [];
     let categories: CategoryDB[] = [];
@@ -14,7 +11,7 @@ export default async function CatalogueProductsPage({ params }: { params: Params
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ placement: 'catalogue' }),
+            getProducts({ placement: 'featured' }),
             getCategories(),
         ]);
 
@@ -22,7 +19,7 @@ export default async function CatalogueProductsPage({ params }: { params: Params
         totalProducts = productsResult.total;
         categories = categoriesResult;
     } catch (error) {
-        console.error('Error fetching catalogue products:', error);
+        console.error('Error fetching featured products:', error);
     }
 
     return (
@@ -30,7 +27,7 @@ export default async function CatalogueProductsPage({ params }: { params: Params
             initialProducts={products}
             categories={categories}
             totalProducts={totalProducts}
-            placement="catalogue"
+            placement="featured"
         />
     );
 }

@@ -62,12 +62,12 @@ interface AdminSidebarProps {
 export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: AdminSidebarProps) {
   const pathname = usePathname();
 
-  const getHref = (path: string) => `/${lang}${path}`;
+  const getHref = (path: string) => path;
 
   const isActive = (path: string) => {
     const href = getHref(path);
     if (path === '/admin') {
-      return pathname === href || pathname === `/${lang}/admin`;
+      return pathname === href;
     }
     return pathname.startsWith(href);
   };
@@ -170,7 +170,7 @@ export function AdminSidebar({ collapsed = false, onToggle, lang = 'en' }: Admin
       {/* Footer */}
       <div className="border-t border-border/10 p-4">
         <button
-          onClick={() => signOut({ callbackUrl: `/${lang}/login` })}
+          onClick={() => signOut({ callbackUrl: `/login` })}
           className={cn(
             'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-slate-300 hover:bg-red-500/10 hover:text-red-400 transition-all cursor-pointer',
             collapsed && 'justify-center px-3'

@@ -53,17 +53,19 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     ...homePageData.hero,
     ...dict.hero,
     slides: homePageData.hero.slides.map((slide, i) => {
+      // Use DB content if available, otherwise fallback to dict/static
+      const dictSlide = dict.hero?.slides?.[i] || {};
       if (i === 0 && page?.translation) {
         return {
           ...slide,
-          ...dict.hero.slides[i],
-          heading: page.translation.h1 || slide.heading,
-          description: page.translation.description || slide.description
+          ...dictSlide,
+          heading: page.translation.h1 || dictSlide.heading || slide.heading,
+          description: page.translation.description || dictSlide.description || slide.description
         };
       }
       return {
         ...slide,
-        ...dict.hero.slides[i]
+        ...dictSlide
       };
     })
   };

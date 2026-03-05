@@ -10,9 +10,9 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const page = await getStaticPageBySystemName('PRIVATE_LABEL', lang);
     const globalSeo = await getGlobalSeoSettings(lang);
 
-    const title = page?.translation?.metaTitle || page?.translation?.h1 || "Private Label & Wholesale | MoroccanOrganica";
-    const description = page?.translation?.metaDesc || page?.translation?.description?.substring(0, 160) || "Launch your own brand with our premium private label services for Moroccan organic oils and cosmetics.";
-    const keywords = page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "";
+    const title = page?.translation?.metaTitle || page?.translation?.h1 || "Argan oil manufacturer private-label service";
+    const description = page?.translation?.metaDesc || page?.translation?.description?.substring(0, 160) || "private labeling is available for all our products , All you have to do is send us a physical or a digital sample of your label, organic argan oil private label";
+    const keywords = page?.translation?.keywords || "private label products, private label cosmetics, private label wholesale, private label manufacturers, private label skincare, Health, and beauty private label, white label products to sell";
 
     return {
         title: title,
