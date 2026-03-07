@@ -112,25 +112,16 @@ export default function ContactClient({ data, dict }: ContactClientProps) {
         setIsSubmitting(true);
 
         try {
-            const payload = {
-                ...formData,
-                company: "Not Provided (Contact Form)",
-                message: `
-                Product Type: ${formData.type}
-                Quantity: ${formData.liters} Liters
-                Destination: ${formData.destination}
-                
-                Message:
-                ${formData.message}
-                `
-            };
-
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(payload),
+                body: JSON.stringify({
+                    ...formData,
+                    product: "General Inquiry",
+                    formType: "general"
+                }),
             });
 
             const result = await response.json();

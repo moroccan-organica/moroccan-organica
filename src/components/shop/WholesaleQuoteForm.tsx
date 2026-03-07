@@ -82,10 +82,41 @@ export function WholesaleQuoteForm({ lang, productName }: QuoteFormProps) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        setIsSubmitting(false);
-        setIsSuccess(true);
+
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    product: productName,
+                    formType: "quote"
+                }),
+            });
+
+            if (!response.ok) {
+                const result = await response.json();
+                throw new Error(result.error || 'Failed to send message');
+            }
+
+            setIsSuccess(true);
+            setFormData({
+                name: "",
+                email: "",
+                phone: "",
+                type: productName,
+                liters: "",
+                destination: "",
+                message: "",
+            });
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            alert('Failed to send message. Please try again later.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

@@ -67,7 +67,8 @@ const RFQSection = ({ data, aboutData }: { data: RFQContent; aboutData: AboutCon
             
             Message:
             ${formData.message}
-            `
+            `,
+        formType: "quote"
       };
 
       const response = await fetch('/api/contact', {
