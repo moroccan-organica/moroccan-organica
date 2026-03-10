@@ -207,7 +207,7 @@ async function _getTopSaleProducts(lang: string) {
             .eq('placement', 'topsale')
             .eq('isAvailable', true)
             .order('createdAt', { ascending: false })
-            .limit(9);
+            .limit(12);
 
         if (error || !products) return [];
 
