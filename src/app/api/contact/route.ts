@@ -7,10 +7,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const { name, email, phone, company, message, type, liters, destination, product, formType } = body;
 
-    // Basic validation
-    if (!name || !email || !message) {
+    // Basic validation - message is optional for quote forms
+    if (!name || !email) {
       return NextResponse.json(
-        { error: 'Name, email, and message are required fields.' },
+        { error: 'Name and email are required fields.' },
         { status: 400 }
       );
     }
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"Moroccan Organica" <${process.env.CONTACT_EMAIL_FROM || process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_EMAIL_TO || 'inquiry@moroccanorganica.com',
+      to: toEmail,
       replyTo: email,
       subject: subject,
       text: textContent,
