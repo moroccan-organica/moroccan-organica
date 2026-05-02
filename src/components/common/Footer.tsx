@@ -259,6 +259,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                                 <Image
                                     src="/images/footer/transport-partner.png"
                                     alt="transport-partner"
+                                    title="Moroccan Organica Shipping Partners"
                                     width={640}
                                     height={160}
                                     className="w-full h-auto object-contain"
@@ -278,6 +279,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                                 <Image
                                     src="/images/footer/payment.png"
                                     alt="paypal"
+                                    title="Secure Payment Methods - PayPal"
                                     width={640}
                                     height={160}
                                     className="w-full h-auto object-contain scale-110 sm:scale-125"
@@ -285,6 +287,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                                 <Image
                                     src="/images/footer/62a382de6209494ec2b17086.webp"
                                     alt="stripe"
+                                    title="Secure Payment Methods - Stripe"
                                     width={640}
                                     height={160}
                                     className="w-full h-auto object-contain scale-110 sm:scale-125"
@@ -295,6 +298,7 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                                 <Image
                                     src="/images/footer/google-play.png"
                                     alt="google play"
+                                    title="Download Moroccan Organica App on Google Play"
                                     width={260}
                                     height={90}
                                     className="h-20 lg:h-[88px] w-auto object-contain"

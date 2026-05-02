@@ -4,7 +4,7 @@ export const aboutPageData = {
         title: "Welcome to MoroccanOrganica",
         subtitle: "Your trusted source for premium Moroccan organic beauty products.",
         description: "Our company provides different Moroccan organic products and services, including private label solutions for our worldwide customers. We deal with international countries all over the world — in Europe, Asia, America, Australia, and Africa.",
-        bgImage: "/images/about_organica.jpg"
+        bgImage: "/images/moroccan-organica-beauty-about.jpg"
     },
     wholesale: {
         title: "WHOLESALE OF ORGANIC COSMETICS PRODUCTS",
@@ -14,7 +14,7 @@ export const aboutPageData = {
         label: "Who We Are",
         title: "Organica Group SARL",
         description: "Organica Group is a producer and exporter of organic cosmetics products, operating outside and inside of Morocco, for wholesale of 100% pure organic cosmetics products. We use traditional ingredients and natural products for beauty, skincare, and haircare.",
-        image: "/bt.webp"
+        image: "/moroccan-organic-cosmetics-factory.webp"
     },
     values: {
         label: "Our Values",

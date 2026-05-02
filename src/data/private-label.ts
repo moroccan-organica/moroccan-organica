@@ -4,7 +4,7 @@ export const privateLabelData = {
         title: "Launch Your Own Moroccan Beauty Brand",
         description: "We manufacture premium, 100% organic skincare and haircare products under your private label.",
         cta: "Download Catalog & Pricing",
-        bgImage: "/images/privet_label.jpg"
+        bgImage: "/images/moroccan-private-label-beauty-products.jpg"
     },
     stats: [
         { value: "99%", label: "Client Satisfaction" },
@@ -52,7 +52,7 @@ export const privateLabelData = {
         ],
         sideImages: [
             "/images/slider/slider.jpeg",
-            "/images/privet_label12.jpg",
+            "/images/moroccan-organic-cosmetics-private-label.jpg",
             "/images/slider/ims1.jpg",
             "/images/slider/ims2.jpg",
             "/images/slider/img3.jpeg",
@@ -69,7 +69,7 @@ export const privateLabelData = {
             "Suitable for All Skin Types, Including Sensitive Skin",
             "Customizable Packaging and Labels"
         ],
-        mainImage: "/images/privet_label.jpg"
+        mainImage: "/images/moroccan-private-label-beauty-products.jpg"
     },
     process: {
         label: "Simple Process",
@@ -103,8 +103,8 @@ export const privateLabelData = {
             { category: "Languages", moq: "Included", unit: "", note: "English, Arabic, French & more" }
         ],
         sideImages: [
-            "/images/privet_label.jpg",
-            "/images/privet_label12.jpg",
+            "/images/moroccan-private-label-beauty-products.jpg",
+            "/images/moroccan-organic-cosmetics-private-label.jpg",
             "/images/private-label-argan.jpg"
         ]
     },

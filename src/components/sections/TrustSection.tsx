@@ -33,6 +33,7 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
             <Image
               src={content.warehouse.image}
               alt={content.warehouse.title}
+              title={content.warehouse.title}
               width={800}
               height={600}
               className="w-full h-64 md:h-80 object-cover"
@@ -48,6 +49,7 @@ const TrustSection = ({ data }: { data: TrustContent }) => {
             <Image
               src={content.bulk.image}
               alt={content.bulk.title}
+              title={content.bulk.title}
               width={800}
               height={600}
               className="w-full h-64 md:h-80 object-cover"

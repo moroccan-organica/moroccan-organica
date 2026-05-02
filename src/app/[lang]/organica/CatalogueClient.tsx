@@ -14,7 +14,7 @@ interface CatalogueClientProps {
 }
 
 export default function CatalogueClient({ pageData, products, dict, lang }: CatalogueClientProps) {
-    const heroImage = pageData?.translation?.ogImage || "/prodct.jpg";
+    const heroImage = pageData?.translation?.ogImage || "/images/slider/hero-authentic-argan-oil.webp";
     const isRTL = lang === 'ar';
 
     const t = {

@@ -76,6 +76,7 @@ const ProductCard = ({
             <Image
               src={imageSrc}
               alt={title}
+              title={title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
               className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -85,6 +86,7 @@ const ProductCard = ({
           <Image
             src={imageSrc}
             alt={title}
+            title={title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
             className="object-cover group-hover:scale-105 transition-transform duration-500"

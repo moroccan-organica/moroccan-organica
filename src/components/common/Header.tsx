@@ -125,6 +125,7 @@ const Header = ({ dict, lang, topProducts = [] }: HeaderProps) => {
                         <Image
                             src="/images/logo.png"
                             alt="Moroccan Organica"
+                            title="Moroccan Organica - Organic Beauty Products"
                             width={160}
                             height={48}
                             priority

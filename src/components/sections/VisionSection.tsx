@@ -35,6 +35,7 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
                 <Image
                   src={data.image}
                   alt={data.title}
+                  title={data.title}
                   fill
                   className="object-cover"
                   sizes="(min-width: 1024px) 480px, 100vw"
@@ -46,6 +47,7 @@ const VisionSection = ({ data }: { data?: VisionData }) => {
                   <Image
                     src={data.image2}
                     alt={`${data.title} 2`}
+                    title={data.title}
                     fill
                     className="object-cover"
                     sizes="(min-width: 1024px) 480px, 100vw"

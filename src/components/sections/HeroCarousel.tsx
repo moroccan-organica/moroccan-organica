@@ -69,6 +69,7 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                         <Image
                                             src={slide.image}
                                             alt={slide.heading}
+                                            title={slide.heading}
                                             fill
                                             className="object-cover"
                                             priority={index === 0}

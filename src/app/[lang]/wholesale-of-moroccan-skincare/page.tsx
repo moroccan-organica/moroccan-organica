@@ -66,7 +66,7 @@ export default async function WholesaleSkincarePage({ params }: { params: Promis
             <InnerHero
                 title={heroTitle}
                 badge={lang === 'ar' ? "الأفضل" : lang === 'fr' ? "Meilleurs" : "Best Sale"}
-                backgroundImage="/prodct.jpg"
+                backgroundImage="/moroccan-beauty-products-wholesale.jpg"
                 breadcrumbs={[
                     { label: lang === 'ar' ? 'الرئيسية' : 'Home', href: getLocalizedHref('/', lang) },
                     { label: heroTitle, href: getLocalizedHref('/wholesale-of-moroccan-skincare', lang) }

@@ -106,6 +106,45 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <Providers lang={lang}>
+          <Script
+            id="schema-org"
+            strategy="afterInteractive"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Moroccan Organica",
+                "alternateName": ["Organic Moroccan Beauty", "Argan Oil Wholesale Morocco"],
+                "url": `https://www.moroccanorganica.com/${lang === 'en' ? '' : lang}`,
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": {
+                    "@type": "EntryPoint",
+                    "urlTemplate": `https://www.moroccanorganica.com/${lang}/shop?q={search_term_string}`
+                  },
+                  "query-input": "required name=search_term_string"
+                },
+                "hasPart": [
+                  {
+                    "@type": "SiteNavigationElement",
+                    "name": "Shop",
+                    "url": `https://www.moroccanorganica.com/${lang}/shop`
+                  },
+                  {
+                    "@type": "SiteNavigationElement",
+                    "name": "About Us",
+                    "url": `https://www.moroccanorganica.com/${lang}/organica/about-organica-group-sarl`
+                  },
+                  {
+                    "@type": "SiteNavigationElement",
+                    "name": "Private Label",
+                    "url": `https://www.moroccanorganica.com/${lang}/organica/argan-oil-private-label-manufacturer`
+                  }
+                ]
+              })
+            }}
+          />
           <LayoutContent dict={dict} lang={lang} topProducts={topProducts}>
             {children}
           </LayoutContent>

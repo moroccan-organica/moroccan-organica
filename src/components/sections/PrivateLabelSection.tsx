@@ -57,6 +57,7 @@ const PrivateLabelSection = ({ data }: PrivateLabelSectionProps) => {
                             <Image
                                 src="/images/private-label-argan.jpg"
                                 alt={data.discoverHighlight}
+                                title={data.brandTitle}
                                 width={720}
                                 height={720}
                                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
