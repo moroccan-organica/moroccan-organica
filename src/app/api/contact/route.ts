@@ -82,7 +82,7 @@ export async function POST(req: Request) {
     };
 
     const mailOptions = {
-      from: `"Moroccan Organica" <${process.env.CONTACT_EMAIL_FROM || process.env.SMTP_USER}>`,
+      from: `"Moroccan Organica" <${authUser}>`,
       to: toEmail,
       replyTo: email,
       subject: subject,
