@@ -23,8 +23,8 @@ const copy = {
     },
     fr: {
         title: "MOROCCAN ORGANICA",
-        heroText: "Produits cosmétiques et huile d'argan marocaine de qualité pour votre marque",
-        bodyText: "Découvrez la beauté marocaine authentique conçue pour votre marque. Ajoutez votre propre label et accédez à des produits de qualité premium fabriqués avec un savoir-faire traditionnel et des normes modernes. Apportez l'essence du Maroc à vos clients.",
+        heroText: "Découvrez l'authentique beauté marocaine pour votre marque",
+        bodyText: "Découvrez l'authentique beauté marocaine, conçue pour votre marque. Apposez votre étiquette et accédez à des produits haut de gamme, alliant savoir-faire traditionnel et standards modernes. Offrez à vos clients l'essence même du Maroc.",
         cta: "Lancez Votre Marque",
     }
 } as const;

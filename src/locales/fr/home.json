@@ -8,8 +8,8 @@
     "slides": [
       {
         "badge": "Grossiste & Vrac",
-        "heading": "Découvrez nos Produits Naturels",
-        "highlight": "en Gros",
+        "heading": "PRODUITS DE BEAUTÉ MAROCAIN",
+        "highlight": "EN GROS",
         "description": "Grossistes de confiance en huile d’argan et en différents produits cosmétiques à base d’huiles biologiques au Maroc."
       },
       {
@@ -294,5 +294,14 @@
     "brandText3": "Associez‑vous à Organica Group, fabricant de confiance, pour enrichir votre marque avec des produits naturels de haute qualité, combinant authenticité, qualité certifiée et production fiable en marque blanche sur chaque article.",
     "countriesServed": "Pays servis",
     "globalExport": "Prêts pour l’export mondial"
+  },
+  "vision": {
+    "title": "VISION MOROCCAN ORGANICA",
+    "paragraphs": [
+      "L'huile d'argan du Maroc est une huile végétale biologique de première qualité, obtenue par pression à froid de l'huile de noyau d'Argania Spinosa, provenant de forêts d'arganiers gérées durablement. Notre processus de production respecte la nature et la tradition, garantissant pureté, traçabilité et durabilité.",
+      "Souvent surnommée « l'or liquide », l'huile d'argan marocaine est réputée dans l'industrie cosmétique pour ses propriétés exceptionnelles. Riche en antioxydants naturels, en vitamines A et E et en acides gras essentiels, l'huile d'argan biologique est reconnue pour ses bienfaits hydratants, anti-âge, antioxydants et anti-inflammatoires. C'est un ingrédient clé des formulations cosmétiques biologiques modernes.",
+      "Grâce à sa polyvalence, l'huile d'argan biologique marocaine est largement utilisée dans les produits cosmétiques tels que les gommages, les savons, les crèmes pour le corps, les huiles de massage, les soins des lèvres, les soins capillaires et les soins des ongles. Sa composition naturelle en fait un élément essentiel des routines de soins biologiques quotidiennes, pour les cheveux, le visage, le corps et les ongles.",
+      "Notre mission, en tant que fournisseur d'huile d'argan marocaine en gros et de cosmétiques biologiques, est de partager ce patrimoine de beauté authentique avec nos partenaires du monde entier. Nous nous engageons à fournir une huile d'argan biologique certifiée, produite selon des méthodes responsables et durables, tout en respectant les normes et certifications de qualité internationales. Grâce à la transparence, à l'expertise et au développement durable, Moroccan Organica a pour objectif de fournir aux marques du monde entier des ingrédients de beauté biologiques marocains 100 % authentiques et certifiés."
+    ]
   }
 }
