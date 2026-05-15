@@ -1,10 +1,15 @@
 {
+  "meta": {
+    "title": "Grossiste en Cosmétiques Bio Maroc - Fournisseur d’Huile d'Argan et Produits de Beauté Naturels",
+    "description": "Explorez notre sélection exclusive de produits cosmétiques bio en gros, y compris l’huile d’argan, le savon noir, et d’autres soins naturels. Votre fournisseur de confiance au Maroc pour des produits de beauté de qualité supérieure. Fournisseur en Cosmétiques Bio au Maroc –",
+    "keywords": "Grossiste cosmétique Maroc, Produits de beauté bio, Huile d'argan en gros, Fournisseur de cosmétiques naturels, Cosmétiques bio Maroc, Savon noir marocain, Soins du visage bio, Fournisseur huile d'argan, Produits cosmétiques bio en gros, Cosmétiques marocains naturels, Beauté naturelle Maroc"
+  },
   "hero": {
     "slides": [
       {
         "badge": "Grossiste & Vrac",
-        "heading": "Produits de beauté marocains",
-        "highlight": "en gros",
+        "heading": "Découvrez nos Produits Naturels",
+        "highlight": "en Gros",
         "description": "Grossistes de confiance en huile d’argan et en différents produits cosmétiques à base d’huiles biologiques au Maroc."
       },
       {

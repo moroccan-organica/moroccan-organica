@@ -17,12 +17,13 @@ import { getLocalizedHref } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
+  const dict = await getDictionary(lang, 'home');
   const page = await getStaticPageBySystemName('HOME', lang);
   const globalSeo = await getGlobalSeoSettings(lang);
 
-  const title = page?.translation?.metaTitle || page?.translation?.h1 || globalSeo?.translation?.siteName || "Moroccan Organica";
-  const description = page?.translation?.metaDesc || globalSeo?.translation?.defaultMetaDesc || "";
-  const keywords = page?.translation?.keywords || globalSeo?.translation?.defaultKeywords || "";
+  const title = page?.translation?.metaTitle || page?.translation?.h1 || dict?.meta?.title || globalSeo?.translation?.siteName || "Moroccan Organica";
+  const description = page?.translation?.metaDesc || dict?.meta?.description || globalSeo?.translation?.defaultMetaDesc || "";
+  const keywords = page?.translation?.keywords || dict?.meta?.keywords || globalSeo?.translation?.defaultKeywords || "";
 
   return {
     title: title,
