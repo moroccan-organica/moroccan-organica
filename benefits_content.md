@@ -10,7 +10,7 @@
 <p>And unlike the synthetic soaps you find at the drugstore, authentic black soap is handmade from plant-based ingredients in Africa. Each fair-trade purchase supports sustainable production and, in some cases, directly benefits communities in need.</p>
 <p>Still not convinced? Read on to learn more about this cult favorite and how you can add it to your routine.</p>
 
-<h3>1. It's antibacterial</h3>
+<h3>1It's antibacterial</h3>
 <p>Natural antibacterial properties make Moroccan organic black soap an excellent alternative to chemical-laden cleaners. In fact, it may actually remove more bacteria than chemical cleansers do. Despite its strength, black soap is gentle enough to use on your face, hands, and body.</p>
 
 <h3>2. It's safe for all skin types</h3>
