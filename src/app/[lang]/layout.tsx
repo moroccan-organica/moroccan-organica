@@ -8,6 +8,7 @@ import { getTopSaleProducts, getGlobalSeoSettings } from "@/lib/queries";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import Script from "next/script";
+import { organizationSchema, localBusinessSchema, renderSchemas } from "@/lib/seo/schemas";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -106,43 +107,61 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <Providers lang={lang}>
+          {/* Global Structured Data: WebSite + Organization + LocalBusiness */}
           <Script
             id="schema-org"
             strategy="afterInteractive"
             type="application/ld+json"
             dangerouslySetInnerHTML={{
-              __html: JSON.stringify({
-                "@context": "https://schema.org",
-                "@type": "WebSite",
-                "name": "Moroccan Organica",
-                "alternateName": ["Organic Moroccan Beauty", "Argan Oil Wholesale Morocco"],
-                "url": `https://www.moroccanorganica.com/${lang === 'en' ? '' : lang}`,
-                "potentialAction": {
-                  "@type": "SearchAction",
-                  "target": {
-                    "@type": "EntryPoint",
-                    "urlTemplate": `https://www.moroccanorganica.com/${lang}/shop?q={search_term_string}`
+              __html: renderSchemas(
+                {
+                  "@context": "https://schema.org",
+                  "@type": "WebSite",
+                  "@id": "https://www.moroccanorganica.com/#website",
+                  "name": "Moroccan Organica",
+                  "alternateName": ["Organic Moroccan Beauty", "Argan Oil Wholesale Morocco"],
+                  "url": `https://www.moroccanorganica.com/${lang === 'en' ? '' : lang}`,
+                  "publisher": { "@id": "https://www.moroccanorganica.com/#organization" },
+                  "inLanguage": lang === 'ar' ? 'ar' : (lang === 'fr' ? 'fr' : 'en'),
+                  "potentialAction": {
+                    "@type": "SearchAction",
+                    "target": {
+                      "@type": "EntryPoint",
+                      "urlTemplate": `https://www.moroccanorganica.com/${lang}/shop?q={search_term_string}`
+                    },
+                    "query-input": "required name=search_term_string"
                   },
-                  "query-input": "required name=search_term_string"
+                  "hasPart": [
+                    {
+                      "@type": "SiteNavigationElement",
+                      "name": "Shop",
+                      "url": `https://www.moroccanorganica.com/${lang}/shop`
+                    },
+                    {
+                      "@type": "SiteNavigationElement",
+                      "name": "About Us",
+                      "url": `https://www.moroccanorganica.com/${lang}/organica/about-organica-group-sarl`
+                    },
+                    {
+                      "@type": "SiteNavigationElement",
+                      "name": "Private Label",
+                      "url": `https://www.moroccanorganica.com/${lang}/organica/argan-oil-private-label-manufacturer`
+                    },
+                    {
+                      "@type": "SiteNavigationElement",
+                      "name": "FAQ",
+                      "url": `https://www.moroccanorganica.com/${lang}/faq`
+                    },
+                    {
+                      "@type": "SiteNavigationElement",
+                      "name": "Contact",
+                      "url": `https://www.moroccanorganica.com/${lang}/contact`
+                    }
+                  ]
                 },
-                "hasPart": [
-                  {
-                    "@type": "SiteNavigationElement",
-                    "name": "Shop",
-                    "url": `https://www.moroccanorganica.com/${lang}/shop`
-                  },
-                  {
-                    "@type": "SiteNavigationElement",
-                    "name": "About Us",
-                    "url": `https://www.moroccanorganica.com/${lang}/organica/about-organica-group-sarl`
-                  },
-                  {
-                    "@type": "SiteNavigationElement",
-                    "name": "Private Label",
-                    "url": `https://www.moroccanorganica.com/${lang}/organica/argan-oil-private-label-manufacturer`
-                  }
-                ]
-              })
+                organizationSchema(),
+                localBusinessSchema()
+              )
             }}
           />
           <LayoutContent dict={dict} lang={lang} topProducts={topProducts}>

@@ -4,6 +4,8 @@ import { contactPageData } from "@/data/contact";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import { Metadata } from "next";
 import { getLocalizedHref } from "@/lib/utils";
+import { contactPageSchema, breadcrumbSchema, renderSchemas } from "@/lib/seo/schemas";
+import Script from "next/script";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -43,9 +45,25 @@ export default async function ContactPage({ params }: { params: Promise<{ lang: 
     }
 
     return (
-        <ContactClient
-            data={contactPageData}
-            dict={dict}
-        />
+        <>
+            <Script
+                id="contact-schema"
+                strategy="afterInteractive"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: renderSchemas(
+                        contactPageSchema(lang),
+                        breadcrumbSchema([
+                            { name: lang === 'ar' ? 'الصفحة الرئيسية' : (lang === 'fr' ? 'Accueil' : 'Home'), url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}` },
+                            { name: lang === 'ar' ? 'اتصل بنا' : (lang === 'fr' ? 'Contact' : 'Contact Us') }
+                        ])
+                    )
+                }}
+            />
+            <ContactClient
+                data={contactPageData}
+                dict={dict}
+            />
+        </>
     );
 }

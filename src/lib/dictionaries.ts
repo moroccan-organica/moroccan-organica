@@ -9,6 +9,7 @@ interface DictionaryGroup {
     blog: DictionaryLoader;
     'private-label': DictionaryLoader;
     shop: DictionaryLoader;
+    faq: DictionaryLoader;
 }
 
 const dictionaries: Record<string, DictionaryGroup> = {
@@ -21,6 +22,7 @@ const dictionaries: Record<string, DictionaryGroup> = {
         blog: () => import('../locales/en/blog.json').then((module) => module.default),
         'private-label': () => import('../locales/en/private-label.json').then((module) => module.default),
         shop: () => import('../locales/en/shop.json').then((module) => module.default),
+        faq: () => import('../locales/en/faq.json').then((module) => module.default),
     },
     fr: {
         common: () => import('../locales/fr/common.json').then((module) => module.default),
@@ -31,6 +33,7 @@ const dictionaries: Record<string, DictionaryGroup> = {
         blog: () => import('../locales/fr/blog.json').then((module) => module.default),
         'private-label': () => import('../locales/fr/private-label.json').then((module) => module.default),
         shop: () => import('../locales/fr/shop.json').then((module) => module.default),
+        faq: () => import('../locales/fr/faq.json').then((module) => module.default),
     },
     ar: {
         common: () => import('../locales/ar/common.json').then((module) => module.default),
@@ -41,6 +44,7 @@ const dictionaries: Record<string, DictionaryGroup> = {
         blog: () => import('../locales/ar/blog.json').then((module) => module.default),
         'private-label': () => import('../locales/ar/private-label.json').then((module) => module.default),
         shop: () => import('../locales/ar/shop.json').then((module) => module.default),
+        faq: () => import('../locales/ar/faq.json').then((module) => module.default),
     }
 }
 

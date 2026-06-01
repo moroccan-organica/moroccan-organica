@@ -4,6 +4,8 @@ import { Metadata } from "next";
 import { aboutPageData } from "@/data/about";
 import { getStaticPageBySystemName, getGlobalSeoSettings } from "@/lib/queries";
 import { getLocalizedHref } from "@/lib/utils";
+import { breadcrumbSchema, webPageSchema, renderSchemas } from "@/lib/seo/schemas";
+import Script from "next/script";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params;
@@ -64,8 +66,31 @@ export default async function AboutOrganicaPage({ params }: { params: Promise<{ 
         if (page.translation.description) dict.hero.description = page.translation.description;
     }
 
+    const slug = "about-organica-group-sarl";
+    const aboutUrl = `https://www.moroccanorganica.com${getLocalizedHref(`/organica/${slug}`, lang)}`;
+
     return (
         <main>
+            <Script
+                id="about-schema"
+                strategy="afterInteractive"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: renderSchemas(
+                        webPageSchema(
+                            dict.hero?.title || 'About Moroccan Organica',
+                            dict.hero?.description || 'Moroccan manufacturer and exporter of organic beauty ingredients',
+                            aboutUrl,
+                            'AboutPage'
+                        ),
+                        breadcrumbSchema([
+                            { name: lang === 'ar' ? 'الصفحة الرئيسية' : (lang === 'fr' ? 'Accueil' : 'Home'), url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}` },
+                            { name: lang === 'ar' ? 'أورغانيكا' : 'Organica', url: `https://www.moroccanorganica.com${getLocalizedHref('/organica', lang)}` },
+                            { name: lang === 'ar' ? 'معلومات عنا' : (lang === 'fr' ? 'À propos' : 'About Us') }
+                        ])
+                    )
+                }}
+            />
             <AboutClient data={aboutPageData} dict={dict} lang={lang} />
         </main>
     );

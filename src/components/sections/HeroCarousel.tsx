@@ -95,12 +95,13 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                                 const headingUpper = headingText.toUpperCase();
                                                 const highlightUpper = highlightText.toUpperCase();
                                                 const hasHighlight = highlightUpper.length > 0;
+                                                const HeadingTag = (index === 0 ? "h1" : index === 1 ? "h2" : index === 2 ? "h3" : index === 3 ? "h4" : index === 4 ? "h5" : "h6") as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
                                                 if (!hasHighlight) {
                                                     return (
-                                                        <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                        <HeadingTag className="heading-display text-primary-foreground mb-6 leading-tight">
                                                             {headingUpper}
-                                                        </h1>
+                                                        </HeadingTag>
                                                     );
                                                 }
 
@@ -111,18 +112,18 @@ const HeroCarousel = ({ slides, trust, cta, lang }: HeroCarouselProps) => {
                                                     const match = headingUpper.slice(matchIndex, matchIndex + highlightUpper.length);
                                                     const after = headingUpper.slice(matchIndex + highlightUpper.length);
                                                     return (
-                                                        <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                        <HeadingTag className="heading-display text-primary-foreground mb-6 leading-tight">
                                                             {before}
                                                             <span className="text-primary">{match}</span>
                                                             {after}
-                                                        </h1>
+                                                        </HeadingTag>
                                                     );
                                                 }
 
                                                 return (
-                                                    <h1 className="heading-display text-primary-foreground mb-6 leading-tight">
+                                                    <HeadingTag className="heading-display text-primary-foreground mb-6 leading-tight">
                                                         {headingUpper} <span className="text-primary">{highlightUpper}</span>
-                                                    </h1>
+                                                    </HeadingTag>
                                                 );
                                             })()}
 

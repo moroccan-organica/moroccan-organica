@@ -11,6 +11,8 @@ import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
 import { ShopProductDB } from "@/types/product";
 import { HtmlContent } from "@/components/common/HtmlContent";
 import { getLocalizedHref } from "@/lib/utils";
+import { productSchema, breadcrumbSchema, renderSchemas } from "@/lib/seo/schemas";
+import Script from "next/script";
 
 const copy = {
     en: {
@@ -222,6 +224,32 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
     return (
         <main dir={isRTL ? "rtl" : "ltr"} className="container-main py-16 md:py-24 space-y-16">
+            {/* Product + Breadcrumb Structured Data */}
+            <Script
+                id="product-schema"
+                strategy="afterInteractive"
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: renderSchemas(
+                        productSchema({
+                            name: localizedName,
+                            description: (localizedDescription || '').substring(0, 500),
+                            image: product.image,
+                            price: product.price,
+                            slug: slug,
+                            lang: lang,
+                            category: product.category,
+                            sku: product.sku || product.id,
+                            availability: product.isAvailable,
+                        }),
+                        breadcrumbSchema([
+                            { name: isRTL ? "الصفحة الرئيسية" : "Home", url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}` },
+                            { name: t.breadcrumbHome, url: `https://www.moroccanorganica.com${getLocalizedHref('/shop', lang)}` },
+                            { name: localizedName }
+                        ])
+                    )
+                }}
+            />
             <nav className="text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                     <Link href={getLocalizedHref('/shop', lang)} className="hover:text-emerald-700">

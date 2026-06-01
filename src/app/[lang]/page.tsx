@@ -14,6 +14,8 @@ import { Metadata } from "next";
 import { getDictionary } from "@/lib/dictionaries";
 import { getStaticPageBySystemName, getGlobalSeoSettings, getFeaturedProducts, getTopSaleProducts } from "@/lib/queries";
 import { getLocalizedHref } from "@/lib/utils";
+import { breadcrumbSchema } from "@/lib/seo/schemas";
+import Script from "next/script";
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
@@ -116,8 +118,20 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   };
   const visionData = { ...homePageData.vision, ...dict.vision };
 
-  return (
+    return (
     <main className="min-h-screen">
+      <Script
+        id="home-breadcrumb"
+        strategy="afterInteractive"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(
+            breadcrumbSchema([
+              { name: lang === 'ar' ? 'الصفحة الرئيسية' : (lang === 'fr' ? 'Accueil' : 'Home'), url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}` },
+            ])
+          )
+        }}
+      />
       <Hero data={heroData} lang={lang} />
 
       <PrivateLabelSection data={privateLabelData} />

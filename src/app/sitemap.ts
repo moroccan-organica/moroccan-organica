@@ -11,6 +11,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/shop',
         '/blog',
         '/contact',
+        '/faq',
         '/wholesale-of-moroccan-skincare',
     ];
 

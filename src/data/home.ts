@@ -18,7 +18,7 @@ export const homePageData = {
             },
             {
                 badge: "Global Export",
-                heading: "EXPORTER OF ARGAN OIL.",
+                heading: "EXPORTER OF ARGAN OIL",
                 highlight: "Worldwide",
                 description: "Organica Group is a specialist in Pure Organic Argan Oil and 100% Organic Prickly Pear Seed Cactus Oil, distributed and packaged in bulk.",
                 image: "/images/slider/hero-moroccan-saffron-threads.webp"

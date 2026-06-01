@@ -11,6 +11,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
 import { getValidImageUrl, getLocalizedHref } from '@/lib/utils';
 import { BlogCard } from '@/components/blog/BlogCard';
+import { articleSchema, breadcrumbSchema, renderSchemas } from '@/lib/seo/schemas';
 
 export default function BlogPostPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
     const { lang, slug } = React.use(params);
@@ -100,6 +101,30 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
 
     return (
         <main className="min-h-screen bg-white">
+            {/* Article + Breadcrumb Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: renderSchemas(
+                        articleSchema({
+                            title: title,
+                            description: content ? content.replace(/<[^>]*>/g, '').substring(0, 200) : title,
+                            image: imgSrc !== '/images/placeholder.svg' ? imgSrc : undefined,
+                            slug: slug,
+                            lang: lang,
+                            publishedAt: post.created_at,
+                            updatedAt: post.updated_at || post.created_at,
+                            tags: post.tags || [],
+                            category: post.category?.name,
+                        }),
+                        breadcrumbSchema([
+                            { name: isArabic ? 'الصفحة الرئيسية' : (isFrench ? 'Accueil' : 'Home'), url: `https://www.moroccanorganica.com${getLocalizedHref('/', lang)}` },
+                            { name: isArabic ? 'مقالات' : 'Blog', url: `https://www.moroccanorganica.com${getLocalizedHref('/blog', lang)}` },
+                            { name: title }
+                        ])
+                    )
+                }}
+            />
             {/* Post Header */}
             <div className="relative h-[70vh] min-h-[500px] w-full">
                 <Image
