@@ -15,19 +15,19 @@ export async function generateMetadata({
     const globalSeo = await getGlobalSeoSettings(lang);
     const meta = {
         en: {
-            title: "Organica Group - Order & payment",
-            description: "Organica group - Paying by Paypal without an account",
-            keywords: "Organica Group Order & payment,moroccanorganica.com Order and payment"
+            title: "How to Order & Pay | Private Label Moroccan Beauty Products | Organica Group",
+            description: "Learn how to order private label Moroccan beauty products from Organica Group. Free label design support, clear payment process, and product photo approval before shipping.",
+            keywords: "private label Moroccan beauty products, how to order Moroccan cosmetics, Moroccan cosmetic supplier, argan oil private label, prickly pear seed oil wholesale, Moroccan black soap supplier, Organica Group, bulk Moroccan beauty products, private label skincare Morocco, Moroccan cosmetics wholesale"
         },
         ar: {
-            title: "Organica Group - الطلب والدفع",
-            description: "مجموعة Organica - الدفع عن طريق Paypal بدون حساب",
-            keywords: "طلب ودفع Organica Group، moroccanorganica.com الطلب والدفع"
+            title: "كيفية الطلب والدفع | منتجات التجميل المغربية بالماركة الخاصة | مجموعة أورجانيكا",
+            description: "تعرف على كيفية طلب منتجات التجميل المغربية بالماركة الخاصة من مجموعة أورجانيكا. دعم مجاني لتصميم الملصقات، عملية دفع واضحة، والموافقة على صور المنتجات قبل الشحن.",
+            keywords: "منتجات تجميل مغربية ماركة خاصة, كيفية طلب مستحضرات التجميل المغربية, مورد مستحضرات تجميل مغربية, زيت أركان ماركة خاصة, زيت بذور التين الشوكي بالجملة, مورد الصابون البلدي المغربي, مجموعة أورجانيكا, منتجات تجميل مغربية بالجملة"
         },
         fr: {
-            title: "Organica Group - Commande & Paiement",
-            description: "Organica group - Payer par Paypal sans compte",
-            keywords: "Organica Group Commande & Paiement, moroccanorganica.com Commande et paiement"
+            title: "Comment commander et payer | Produits de beauté marocains de marque privée | Organica Group",
+            description: "Découvrez comment commander des produits cosmétiques marocains en marque privée auprès d'Organica Group. Conception d'étiquettes gratuite, processus de paiement clair et envoi de photos avant expédition.",
+            keywords: "produits de beauté marocains marque privée, comment commander cosmétiques marocains, fournisseur cosmétiques marocains, huile d'argan marque privée, huile de figue de barbarie en gros, savon noir marocain fournisseur, Organica Group, produits cosmétiques marocains en vrac"
         }
     };
 
