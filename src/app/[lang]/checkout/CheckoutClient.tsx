@@ -133,10 +133,31 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
 
     // Helper to convert country names to ISO codes
     const getCountryCode = (country: string) => {
+        const countryMap: Record<string, string> = {
+            morocco: "MA", maroc: "MA", "المغرب": "MA", ma: "MA",
+            "united states": "US", usa: "US", us: "US",
+            canada: "CA", ca: "CA",
+            singapore: "SG", sg: "SG",
+            india: "IN", "in": "IN",
+            "united kingdom": "GB", uk: "GB", gb: "GB",
+            germany: "DE", de: "DE",
+            belgium: "BE", be: "BE",
+            luxembourg: "LU", lu: "LU",
+            japan: "JP", jp: "JP",
+            sweden: "SE", se: "SE",
+            switzerland: "CH", suisse: "CH", suise: "CH", ch: "CH",
+            "south africa": "ZA", "sout africa": "ZA", za: "ZA",
+            ireland: "IE", ie: "IE",
+            netherlands: "NL", nl: "NL",
+            ksa: "SA", "saudi arabia": "SA", sa: "SA",
+            uae: "AE", "united arab emirates": "AE", ae: "AE",
+            poland: "PL", pl: "PL",
+            china: "CN", cn: "CN",
+            france: "FR", fr: "FR",
+            spain: "ES", es: "ES",
+        };
         const c = country?.toLowerCase() || "";
-        if (c === "maroc" || c === "morocco" || c === "المغرب" || c === "ma") return "MA";
-        if (c === "france" || c === "fr") return "FR";
-        return "MA";
+        return countryMap[c] || "MA";
     };
 
     const onSubmit = async (data: CheckoutFormData) => {
@@ -490,15 +511,26 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="Morocco">Morocco</SelectItem>
+                                                <SelectItem value="USA">USA (United States)</SelectItem>
+                                                <SelectItem value="Canada">Canada</SelectItem>
+                                                <SelectItem value="United Kingdom">United Kingdom</SelectItem>
+                                                <SelectItem value="Germany">Germany</SelectItem>
+                                                <SelectItem value="France">France</SelectItem>
+                                                <SelectItem value="Belgium">Belgium</SelectItem>
+                                                <SelectItem value="Luxembourg">Luxembourg</SelectItem>
                                                 <SelectItem value="Netherlands">Netherlands</SelectItem>
-                                                <SelectItem value="India">India</SelectItem>
                                                 <SelectItem value="Ireland">Ireland</SelectItem>
+                                                <SelectItem value="Sweden">Sweden</SelectItem>
+                                                <SelectItem value="Switzerland">Switzerland</SelectItem>
+                                                <SelectItem value="Spain">Spain</SelectItem>
+                                                <SelectItem value="India">India</SelectItem>
+                                                <SelectItem value="Singapore">Singapore</SelectItem>
+                                                <SelectItem value="Japan">Japan</SelectItem>
+                                                <SelectItem value="China">China</SelectItem>
+                                                <SelectItem value="South Africa">South Africa</SelectItem>
                                                 <SelectItem value="KSA">KSA (Saudi Arabia)</SelectItem>
                                                 <SelectItem value="UAE">UAE (United Arab Emirates)</SelectItem>
                                                 <SelectItem value="Poland">Poland</SelectItem>
-                                                <SelectItem value="China">China</SelectItem>
-                                                <SelectItem value="France">France</SelectItem>
-                                                <SelectItem value="Spain">Spain</SelectItem>
                                                 <SelectItem value="Other">Other</SelectItem>
                                             </SelectContent>
                                         </Select>
