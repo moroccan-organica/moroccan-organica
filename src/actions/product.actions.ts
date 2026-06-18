@@ -1,10 +1,10 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
-
+import { supabase } from '@/lib/supabase';
+import { deleteFileFromStorage } from '@/lib/delete-storage-file';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
-import { deleteFileFromStorage } from '@/actions/media.actions';
 import {
   ShopProductDB,
   CreateProductInput,
@@ -119,7 +119,7 @@ export async function getProducts(options?: {
       try {
         const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50, lang = 'en' } = options || {};
 
-        let query = supabaseAdmin
+        let query = supabase
           .from('Product')
           .select(`
             *,
@@ -178,7 +178,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
   const getFromDb = async () => {
     try {
       // 1. Find the product ID that has this slug in any language
-      const { data: translation, error } = await supabaseAdmin
+      const { data: translation, error } = await supabase
         .from('ProductTranslation')
         .select('productId')
         .eq('slug', slug)
@@ -186,9 +186,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
 
       if (error || !translation) return null;
 
-      // 2. Fetch the full product by ID with the requested language (bypass cache if needed)
-      // We will do the DB call directly here to avoid nested cache issues on fallback
-      const { data: product, error: productError } = await supabaseAdmin
+      const { data: product, error: productError } = await supabase
         .from('Product')
         .select(`
           *,
@@ -250,7 +248,7 @@ export async function isSlugUnique(slug: string, excludeProductId?: string): Pro
 export async function getProductById(id: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
   const getFromDb = async () => {
     try {
-      const { data: product, error } = await supabaseAdmin
+      const { data: product, error } = await supabase
         .from('Product')
         .select(`
           *,
@@ -553,7 +551,7 @@ export async function getRelatedProducts(
   return unstable_cache(
     async () => {
       try {
-        const { data: products, error } = await supabaseAdmin
+        const { data: products, error } = await supabase
           .from('Product')
           .select(`
             *,
@@ -586,7 +584,7 @@ export async function getFeaturedProducts(limit: number = 8, lang: LanguageCode 
   return unstable_cache(
     async () => {
       try {
-        const { data: products, error } = await supabaseAdmin
+        const { data: products, error } = await supabase
           .from('Product')
           .select(`
             *,

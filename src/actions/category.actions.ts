@@ -1,6 +1,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { supabase } from '@/lib/supabase';
 
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
@@ -32,7 +33,7 @@ function transformToShopCategory(category: any, preferredLang: LanguageCode = 'e
 // GET ALL CATEGORIES
 export async function getCategories(): Promise<CategoryDB[]> {
   try {
-    const { data: categories, error } = await supabaseAdmin
+    const { data: categories, error } = await supabase
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .order('createdAt', { ascending: true });
@@ -49,7 +50,7 @@ export async function getCategories(): Promise<CategoryDB[]> {
 // GET CATEGORY BY SLUG
 export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en'): Promise<CategoryDB | null> {
   try {
-    const { data: categories, error } = await supabaseAdmin
+    const { data: categories, error } = await supabase
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .eq('translations.slug', slug);
@@ -66,7 +67,7 @@ export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en')
 // GET CATEGORY BY ID
 export async function getCategoryById(id: string): Promise<CategoryDB | null> {
   try {
-    const { data: category, error } = await supabaseAdmin
+    const { data: category, error } = await supabase
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .eq('id', id)
