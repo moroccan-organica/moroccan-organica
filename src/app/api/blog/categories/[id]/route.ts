@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,7 +17,7 @@ export async function DELETE(
     const { id } = await params;
 
     // Check if category has posts
-    const { count: postsCount, error: countError } = await supabase
+    const { count: postsCount, error: countError } = await supabaseAdmin
       .from('BlogPost')
       .select('*', { count: 'exact', head: true })
       .eq('categoryId', id);
@@ -31,7 +31,7 @@ export async function DELETE(
       );
     }
 
-    const { error: deleteError } = await supabase
+    const { error: deleteError } = await supabaseAdmin
       .from('BlogCategory')
       .delete()
       .eq('id', id);

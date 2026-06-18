@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { SEOSettings } from '@/types/seo';
@@ -11,7 +11,7 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { data: settings, error } = await supabase
+        const { data: settings, error } = await supabaseAdmin
             .from('GlobalSeoSetting')
             .select('*, translations:GlobalSeoTranslation(*)')
             .limit(1)
@@ -19,7 +19,7 @@ export async function GET() {
 
         // Initialize default if not exists
         if (!settings) {
-            const { data: newSettings, error: createError } = await supabase
+            const { data: newSettings, error: createError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .insert({})
                 .select()
@@ -28,7 +28,7 @@ export async function GET() {
             if (createError) throw createError;
 
             const languages = ['en', 'fr', 'ar'];
-            const { error: transError } = await supabase
+            const { error: transError } = await supabaseAdmin
                 .from('GlobalSeoTranslation')
                 .insert(languages.map(lang => ({
                     globalSeoSettingId: newSettings.id,
@@ -38,7 +38,7 @@ export async function GET() {
             if (transError) throw transError;
 
             // Fetch created with translations
-            const { data: complete, error: finalError } = await supabase
+            const { data: complete, error: finalError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .select('*, translations:GlobalSeoTranslation(*)')
                 .eq('id', newSettings.id)
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
         const body = await req.json() as SEOSettings;
 
         // Find existing to update
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
             .from('GlobalSeoSetting')
             .select('id')
             .limit(1)
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
 
         if (existing) {
             // Update main setting
-            const { error: updateError } = await supabase
+            const { error: updateError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .update({
                     ogImage: body.ogImage,
@@ -85,7 +85,7 @@ export async function POST(req: Request) {
             if (updateError) throw updateError;
 
             // Sync translations: Delete and Insert
-            const { error: deleteError } = await supabase
+            const { error: deleteError } = await supabaseAdmin
                 .from('GlobalSeoTranslation')
                 .delete()
                 .eq('globalSeoSettingId', existing.id);
@@ -93,7 +93,7 @@ export async function POST(req: Request) {
             if (deleteError) throw deleteError;
 
             if (body.translations && body.translations.length > 0) {
-                const { error: insertError } = await supabase
+                const { error: insertError } = await supabaseAdmin
                     .from('GlobalSeoTranslation')
                     .insert(body.translations.map(t => ({
                         globalSeoSettingId: existing.id,
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
             }
 
             // Return updated complete
-            const { data: updated, error: finalError } = await supabase
+            const { data: updated, error: finalError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .select('*, translations:GlobalSeoTranslation(*)')
                 .eq('id', existing.id)
@@ -117,7 +117,7 @@ export async function POST(req: Request) {
             return NextResponse.json(updated);
         } else {
             // Create fresh
-            const { data: created, error: createError } = await supabase
+            const { data: created, error: createError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .insert({
                     ogImage: body.ogImage,
@@ -130,7 +130,7 @@ export async function POST(req: Request) {
             if (createError) throw createError;
 
             if (body.translations && body.translations.length > 0) {
-                const { error: transError } = await supabase
+                const { error: transError } = await supabaseAdmin
                     .from('GlobalSeoTranslation')
                     .insert(body.translations.map(t => ({
                         globalSeoSettingId: created.id,
@@ -143,7 +143,7 @@ export async function POST(req: Request) {
                 if (transError) throw transError;
             }
 
-            const { data: complete, error: finalError } = await supabase
+            const { data: complete, error: finalError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .select('*, translations:GlobalSeoTranslation(*)')
                 .eq('id', created.id)

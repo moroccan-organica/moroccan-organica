@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 
 export interface DashboardStats {
     totalProducts: number;
@@ -40,7 +41,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         const endOfLastMonth = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999).toISOString();
 
         // Total products
-        const { count: totalProducts, error: pError } = await supabase
+        const { count: totalProducts, error: pError } = await supabaseAdmin
             .from('Product')
             .select('*', { count: 'exact', head: true })
             .eq('isAvailable', true)
@@ -49,7 +50,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         if (pError) throw pError;
 
         // Products created before this month
-        const { count: lastMonthProducts, error: lpError } = await supabase
+        const { count: lastMonthProducts, error: lpError } = await supabaseAdmin
             .from('Product')
             .select('*', { count: 'exact', head: true })
             .eq('isAvailable', true)
@@ -63,14 +64,14 @@ export async function getDashboardStats(): Promise<DashboardStats> {
             : 0;
 
         // Total orders this month
-        const { count: totalOrders, error: oError } = await supabase
+        const { count: totalOrders, error: oError } = await supabaseAdmin
             .from('Order')
             .select('*', { count: 'exact', head: true })
             .gte('createdAt', startOfMonth);
 
         if (oError) throw oError;
 
-        const { count: lastMonthOrders, error: loError } = await supabase
+        const { count: lastMonthOrders, error: loError } = await supabaseAdmin
             .from('Order')
             .select('*', { count: 'exact', head: true })
             .gte('createdAt', startOfLastMonth)
@@ -83,7 +84,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
             : 0;
 
         // Revenue this month
-        const { data: revenueData, error: rError } = await supabase
+        const { data: revenueData, error: rError } = await supabaseAdmin
             .from('Order')
             .select('totalAmount')
             .gte('createdAt', startOfMonth)
@@ -93,7 +94,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
         const revenue = (revenueData || []).reduce((acc, curr) => acc + Number(curr.totalAmount), 0);
 
         // Revenue last month
-        const { data: lastMonthRevenueData, error: lrError } = await supabase
+        const { data: lastMonthRevenueData, error: lrError } = await supabaseAdmin
             .from('Order')
             .select('totalAmount')
             .gte('createdAt', startOfLastMonth)
@@ -133,7 +134,7 @@ export async function getDashboardStats(): Promise<DashboardStats> {
  */
 export async function getRecentOrders(limit: number = 5): Promise<RecentOrder[]> {
     try {
-        const { data: orders, error } = await supabase
+        const { data: orders, error } = await supabaseAdmin
             .from('Order')
             .select('*, customer:Customer(*)')
             .order('createdAt', { ascending: false })
@@ -161,7 +162,7 @@ export async function getRecentOrders(limit: number = 5): Promise<RecentOrder[]>
 export async function getTopProducts(limit: number = 4): Promise<TopProduct[]> {
     try {
         // Fetch order items and variants to count manually since we don't have groupBy in Supabase client easily
-        const { data: orderItems, error: itemsError } = await supabase
+        const { data: orderItems, error: itemsError } = await supabaseAdmin
             .from('OrderItem')
             .select(`
                 variantId,

@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const postId = searchParams.get('postId');
     const mediaType = searchParams.get('mediaType'); // 'image' or 'video'
 
-    let query = supabase.from('BlogMedia').select('*');
+    let query = supabaseAdmin.from('BlogMedia').select('*');
 
     if (postId) {
       query = query.eq('postId', postId);
@@ -64,7 +64,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Media ID is required' }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogMedia')
       .delete()
       .eq('id', id);

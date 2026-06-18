@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
@@ -21,7 +21,7 @@ export async function PUT(
             return NextResponse.json({ error: 'Status is required' }, { status: 400 });
         }
 
-        const { data: order, error } = await supabase
+        const { data: order, error } = await supabaseAdmin
             .from('Order')
             .update({ status })
             .eq('id', id)

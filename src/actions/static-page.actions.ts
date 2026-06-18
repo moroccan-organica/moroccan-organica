@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { revalidatePath, revalidateTag } from 'next/cache';
@@ -22,7 +23,7 @@ export async function getStaticPages() {
     await checkAdmin();
 
     try {
-        const { data: pages, error } = await supabase
+        const { data: pages, error } = await supabaseAdmin
             .from('StaticPage')
             .select(`
                 *,
@@ -50,7 +51,7 @@ export async function createStaticPage(input: StaticPageInput) {
         if (!systemName) throw new Error('System Name is required');
 
         // Check unique systemName
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
             .from('StaticPage')
             .select('id')
             .eq('systemName', systemName)
@@ -59,7 +60,7 @@ export async function createStaticPage(input: StaticPageInput) {
         if (existing) throw new Error('Page with this System Name already exists');
 
         // Create the page
-        const { data: newPage, error: pageError } = await supabase
+        const { data: newPage, error: pageError } = await supabaseAdmin
             .from('StaticPage')
             .insert({ systemName })
             .select()
@@ -69,7 +70,7 @@ export async function createStaticPage(input: StaticPageInput) {
 
         // Create translations
         if (translations && translations.length > 0) {
-            const { error: transError } = await supabase
+            const { error: transError } = await supabaseAdmin
                 .from('StaticPageTranslation')
                 .insert(translations.map(t => ({
                     staticPageId: newPage.id,
@@ -107,7 +108,7 @@ export async function updateStaticPage(id: string, input: StaticPageInput) {
 
     try {
         // Update basic info
-        const { error: pageError } = await supabase
+        const { error: pageError } = await supabaseAdmin
             .from('StaticPage')
             .update({ systemName })
             .eq('id', id);
@@ -117,12 +118,12 @@ export async function updateStaticPage(id: string, input: StaticPageInput) {
         // Sync translations
         if (translations && translations.length > 0) {
             // Simple sync: delete existing and re-insert (not ideal but works for now)
-            await supabase
+            await supabaseAdmin
                 .from('StaticPageTranslation')
                 .delete()
                 .eq('staticPageId', id);
 
-            const { error: transError } = await supabase
+            const { error: transError } = await supabaseAdmin
                 .from('StaticPageTranslation')
                 .insert(translations.map(t => ({
                     staticPageId: id,
@@ -157,7 +158,7 @@ export async function deleteStaticPage(id: string) {
     await checkAdmin();
 
     try {
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from('StaticPage')
             .delete()
             .eq('id', id);

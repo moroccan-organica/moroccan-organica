@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -17,7 +17,7 @@ function generateSlug(name: string): string {
 // GET /api/blog/categories - List all categories
 export async function GET() {
   try {
-    const { data: categories, error } = await supabase
+    const { data: categories, error } = await supabaseAdmin
       .from('BlogCategory')
       .select('*, posts:BlogPost(count)')
       .order('sortOrder', { ascending: true });
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     let uniqueSlug = slug;
 
     while (true) {
-      const { data: existing } = await supabase
+      const { data: existing } = await supabaseAdmin
         .from('BlogCategory')
         .select('id')
         .eq('slug', uniqueSlug)
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
       counter++;
     }
 
-    const { data: category, error } = await supabase
+    const { data: category, error } = await supabaseAdmin
       .from('BlogCategory')
       .insert({
         name,

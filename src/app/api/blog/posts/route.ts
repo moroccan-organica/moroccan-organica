@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 
 function generateSlug(title: string): string {
   return title
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
     const pageSize = parseInt(searchParams.get('pageSize') || '10');
     const search = searchParams.get('search');
 
-    let query = supabase
+    let query = supabaseAdmin
       .from('BlogPost')
       .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
 
@@ -142,7 +142,7 @@ export async function GET(request: NextRequest) {
 // No strict auth check - follows product.actions.ts pattern
 // The admin pages are already protected by middleware/layout
 async function getDefaultAuthorId(): Promise<string> {
-  const { data: adminUser } = await supabase
+  const { data: adminUser } = await supabaseAdmin
     .from('User')
     .select('id')
     .eq('role', 'ADMIN')
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     let uniqueSlug = slug;
 
     while (true) {
-      const { data: existing } = await supabase
+      const { data: existing } = await supabaseAdmin
         .from('BlogPost')
         .select('id')
         .eq('slug', uniqueSlug)
@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
       counter++;
     }
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .insert({
         title,
@@ -210,7 +210,7 @@ export async function POST(request: NextRequest) {
     // If featured image URL is provided, link it to the post in BlogMedia
     if (featuredImageUrl && !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
       // Check if media already exists (from upload API)
-      const { data: existingMedia } = await supabase
+      const { data: existingMedia } = await supabaseAdmin
         .from('BlogMedia')
         .select('id')
         .eq('url', featuredImageUrl)
@@ -220,13 +220,13 @@ export async function POST(request: NextRequest) {
 
       if (existingMedia) {
         // Link existing media to post
-        await supabase
+        await supabaseAdmin
           .from('BlogMedia')
           .update({ postId: post.id })
           .eq('id', existingMedia.id);
       } else {
         // Create new media entry
-        await supabase
+        await supabaseAdmin
           .from('BlogMedia')
           .insert({
             postId: post.id,

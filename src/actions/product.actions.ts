@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import { deleteFileFromStorage } from '@/actions/media.actions';
@@ -118,7 +119,7 @@ export async function getProducts(options?: {
       try {
         const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50, lang = 'en' } = options || {};
 
-        let query = supabase
+        let query = supabaseAdmin
           .from('Product')
           .select(`
             *,
@@ -177,7 +178,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
   const getFromDb = async () => {
     try {
       // 1. Find the product ID that has this slug in any language
-      const { data: translation, error } = await supabase
+      const { data: translation, error } = await supabaseAdmin
         .from('ProductTranslation')
         .select('productId')
         .eq('slug', slug)
@@ -187,7 +188,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
 
       // 2. Fetch the full product by ID with the requested language (bypass cache if needed)
       // We will do the DB call directly here to avoid nested cache issues on fallback
-      const { data: product, error: productError } = await supabase
+      const { data: product, error: productError } = await supabaseAdmin
         .from('Product')
         .select(`
           *,
@@ -225,7 +226,7 @@ export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'):
  */
 export async function isSlugUnique(slug: string, excludeProductId?: string): Promise<boolean> {
   try {
-    let query = supabase
+    let query = supabaseAdmin
       .from('ProductTranslation')
       .select('productId')
       .eq('slug', slug);
@@ -249,7 +250,7 @@ export async function isSlugUnique(slug: string, excludeProductId?: string): Pro
 export async function getProductById(id: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
   const getFromDb = async () => {
     try {
-      const { data: product, error } = await supabase
+      const { data: product, error } = await supabaseAdmin
         .from('Product')
         .select(`
           *,
@@ -292,15 +293,15 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     }
 
     // Verify category exists
-    const { data: cat } = await supabase.from('Category').select('id').eq('id', input.categoryId).single();
+    const { data: cat } = await supabaseAdmin.from('Category').select('id').eq('id', input.categoryId).single();
     if (!cat) return { success: false, error: 'Category not found' };
 
     // Check SKU
-    const { data: existingSku } = await supabase.from('Product').select('id').eq('sku', input.sku).maybeSingle();
+    const { data: existingSku } = await supabaseAdmin.from('Product').select('id').eq('sku', input.sku).maybeSingle();
     if (existingSku) return { success: false, error: `SKU "${input.sku}" already exists` };
 
     // Insert Product
-    const { data: product, error: productError } = await supabase
+    const { data: product, error: productError } = await supabaseAdmin
       .from('Product')
       .insert({
         categoryId: input.categoryId,
@@ -319,7 +320,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
 
     // Insert Translations
     if (input.translations && input.translations.length > 0) {
-      const { error: transError } = await supabase
+      const { error: transError } = await supabaseAdmin
         .from('ProductTranslation')
         .insert(input.translations.map(t => ({
           productId: product.id,
@@ -342,7 +343,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     if (input.images && input.images.length > 0) {
       const validImages = input.images.filter(img => !img.url.startsWith('data:'));
       if (validImages.length > 0) {
-        const { error: imgError } = await supabase
+        const { error: imgError } = await supabaseAdmin
           .from('ProductImage')
           .insert(validImages.map((img, index) => ({
             productId: product.id,
@@ -355,7 +356,7 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
 
     // Insert Variants
     if (input.variants && input.variants.length > 0) {
-      const { error: varError } = await supabase
+      const { error: varError } = await supabaseAdmin
         .from('ProductVariant')
         .insert(input.variants.map(v => ({
           productId: product.id,
@@ -392,7 +393,7 @@ export async function updateProduct(
 ): Promise<{ success: boolean; product?: ShopProductDB; error?: string }> {
   try {
     // Update main product
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from('Product')
       .update({
         categoryId: input.categoryId,
@@ -410,10 +411,10 @@ export async function updateProduct(
 
     // Update translations: delete and insert for simplicity (sync)
     if (input.translations) {
-      const { error: delTransError } = await supabase.from('ProductTranslation').delete().eq('productId', id);
+      const { error: delTransError } = await supabaseAdmin.from('ProductTranslation').delete().eq('productId', id);
       if (delTransError) throw delTransError;
 
-      const { error: insTransError } = await supabase
+      const { error: insTransError } = await supabaseAdmin
         .from('ProductTranslation')
         .insert(input.translations.map(t => ({
           productId: id,
@@ -435,7 +436,7 @@ export async function updateProduct(
     // Update images
     if (input.images) {
       // Get existing images to compare
-      const { data: oldImages } = await supabase.from('ProductImage').select('url').eq('productId', id);
+      const { data: oldImages } = await supabaseAdmin.from('ProductImage').select('url').eq('productId', id);
       const oldUrls = oldImages?.map(img => img.url) || [];
 
       const validImages = input.images.filter(img => !img.url.startsWith('data:') && !img.url.startsWith('blob:'));
@@ -447,9 +448,9 @@ export async function updateProduct(
         await deleteFileFromStorage(url);
       }
 
-      await supabase.from('ProductImage').delete().eq('productId', id);
+      await supabaseAdmin.from('ProductImage').delete().eq('productId', id);
       if (validImages.length > 0) {
-        await supabase.from('ProductImage').insert(validImages.map((img, index) => ({
+        await supabaseAdmin.from('ProductImage').insert(validImages.map((img, index) => ({
           productId: id,
           url: img.url,
           isPrimary: img.isPrimary ?? index === 0,
@@ -459,8 +460,8 @@ export async function updateProduct(
 
     // Update variants
     if (input.variants) {
-      await supabase.from('ProductVariant').delete().eq('productId', id);
-      await supabase.from('ProductVariant').insert(input.variants.map(v => ({
+      await supabaseAdmin.from('ProductVariant').delete().eq('productId', id);
+      await supabaseAdmin.from('ProductVariant').insert(input.variants.map(v => ({
         productId: id,
         sku: v.sku,
         sizeName: v.sizeName,
@@ -490,12 +491,12 @@ export async function updateProduct(
 export async function deleteProduct(id: string): Promise<{ success: boolean; error?: string }> {
   try {
     // Get image URLs before deleting the product
-    const { data: images } = await supabase
+    const { data: images } = await supabaseAdmin
       .from('ProductImage')
       .select('url')
       .eq('productId', id);
 
-    const { error } = await supabase.from('Product').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('Product').delete().eq('id', id);
     if (error) throw error;
 
     // Delete images from storage
@@ -524,7 +525,7 @@ export async function toggleProductStatus(
   value: boolean
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('Product')
       .update({ [field]: value })
       .eq('id', id);
@@ -552,7 +553,7 @@ export async function getRelatedProducts(
   return unstable_cache(
     async () => {
       try {
-        const { data: products, error } = await supabase
+        const { data: products, error } = await supabaseAdmin
           .from('Product')
           .select(`
             *,
@@ -585,7 +586,7 @@ export async function getFeaturedProducts(limit: number = 8, lang: LanguageCode 
   return unstable_cache(
     async () => {
       try {
-        const { data: products, error } = await supabase
+        const { data: products, error } = await supabaseAdmin
           .from('Product')
           .select(`
             *,

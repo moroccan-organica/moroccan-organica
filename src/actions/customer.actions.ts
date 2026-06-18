@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -26,7 +27,7 @@ export async function getCustomers(options: GetCustomersOptions = {}) {
     const { page = 1, limit = 20, search = '', startDate, endDate } = options;
 
     try {
-        let query = supabase
+        let query = supabaseAdmin
             .from('Customer')
             .select('*, orders:Order(count), addresses:Address(*)', { count: 'exact' });
 

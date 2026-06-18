@@ -1,7 +1,7 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
     try {
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
         const startDate = searchParams.get('startDate');
         const endDate = searchParams.get('endDate');
 
-        let query = supabase
+        let query = supabaseAdmin
             .from('Customer')
             .select('*, orders:Order(count), addresses:Address(*)', { count: 'exact' });
 

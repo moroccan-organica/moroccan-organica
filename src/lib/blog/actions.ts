@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import type { BlogPostFull, BlogCategory } from '@/types/blog';
@@ -151,7 +152,7 @@ function resolveFeaturedImageUrl(post: SupabasePostRow): string {
 // Returns a default admin user ID for authorId field
 async function getDefaultAuthorId(): Promise<string> {
   // Get first admin user from database
-  const { data: adminUser } = await supabase
+  const { data: adminUser } = await supabaseAdmin
     .from('User')
     .select('id')
     .eq('role', 'ADMIN')
@@ -193,7 +194,7 @@ export async function getBlogPosts(
   const { page = 1, pageSize = 10, categoryId, search, status } = options;
 
   try {
-    let query = supabase
+    let query = supabaseAdmin
       .from('BlogPost')
       .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
 
@@ -301,7 +302,7 @@ export async function getPublishedPosts(
  */
 export async function getBlogPostById(id: string): Promise<BlogPostFull | null> {
   try {
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
       .eq('id', id)
@@ -358,7 +359,7 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
 export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull | null> {
   const getFromDb = async () => {
     try {
-      const { data: post, error } = await supabase
+      const { data: post, error } = await supabaseAdmin
         .from('BlogPost')
         .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
         .eq('slug', slug)
@@ -431,7 +432,7 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
  */
 export async function isBlogPostSlugUnique(slug: string, excludePostId?: string): Promise<boolean> {
   try {
-    let query = supabase
+    let query = supabaseAdmin
       .from('BlogPost')
       .select('id')
       .eq('slug', slug);
@@ -464,7 +465,7 @@ export async function createBlogPost(input: BlogPostInput) {
       let counter = 1;
       const baseSlug = uniqueSlug;
       while (true) {
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
           .from('BlogPost')
           .select('id')
           .eq('slug', uniqueSlug)
@@ -476,7 +477,7 @@ export async function createBlogPost(input: BlogPostInput) {
       }
     }
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .insert({
         title: title,
@@ -506,7 +507,7 @@ export async function createBlogPost(input: BlogPostInput) {
 
     // Handle Media linking logic
     if (featuredImageUrl && !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
-      const { data: existingMedia } = await supabase
+      const { data: existingMedia } = await supabaseAdmin
         .from('BlogMedia')
         .select('id')
         .eq('url', featuredImageUrl)
@@ -514,9 +515,9 @@ export async function createBlogPost(input: BlogPostInput) {
         .maybeSingle();
 
       if (existingMedia) {
-        await supabase.from('BlogMedia').update({ postId: post.id }).eq('id', existingMedia.id);
+        await supabaseAdmin.from('BlogMedia').update({ postId: post.id }).eq('id', existingMedia.id);
       } else {
-        await supabase.from('BlogMedia').insert({ postId: post.id, mediaType: 'image', url: featuredImageUrl });
+        await supabaseAdmin.from('BlogMedia').insert({ postId: post.id, mediaType: 'image', url: featuredImageUrl });
       }
     }
 
@@ -535,7 +536,7 @@ export async function createBlogPost(input: BlogPostInput) {
  */
 export async function updateBlogPost(postId: string, input: Partial<BlogPostInput>) {
   try {
-    const { data: existing } = await supabase
+    const { data: existing } = await supabaseAdmin
       .from('BlogPost')
       .select('slug')
       .eq('id', postId)
@@ -567,7 +568,7 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
       updateData.publishedAt = new Date().toISOString();
     }
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogPost')
       .update(updateData)
       .eq('id', postId);
@@ -593,7 +594,7 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
  */
 export async function deleteBlogPost(postId: string) {
   try {
-    const { error } = await supabase.from('BlogPost').delete().eq('id', postId);
+    const { error } = await supabaseAdmin.from('BlogPost').delete().eq('id', postId);
     if (error) throw error;
 
     revalidatePath('/[lang]/blog');
@@ -611,7 +612,7 @@ export async function deleteBlogPost(postId: string) {
  */
 export async function publishBlogPost(postId: string) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogPost')
       .update({
         status: 'published',
@@ -636,7 +637,7 @@ export async function publishBlogPost(postId: string) {
  */
 export async function archiveBlogPost(postId: string) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogPost')
       .update({ status: 'archived' })
       .eq('id', postId);
@@ -658,7 +659,7 @@ export async function archiveBlogPost(postId: string) {
  */
 export async function unarchiveBlogPost(postId: string) {
   try {
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogPost')
       .update({ status: 'draft' })
       .eq('id', postId);
@@ -682,7 +683,7 @@ export async function getBlogCategories(): Promise<BlogCategory[]> {
   return unstable_cache(
     async () => {
       try {
-        const { data: categories, error } = await supabase
+        const { data: categories, error } = await supabaseAdmin
           .from('BlogCategory')
           .select('*, posts:BlogPost(count)')
           .order('sortOrder', { ascending: true });
@@ -716,7 +717,7 @@ export async function createBlogCategory(input: BlogCategoryInput) {
     const { name, description, color, icon } = input;
     const slug = generateSlug(name);
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('BlogCategory')
       .insert({
         name,
@@ -745,7 +746,7 @@ export async function createBlogCategory(input: BlogCategoryInput) {
 export async function deleteBlogCategory(categoryId: string) {
   try {
     // Check for associated posts first
-    const { count, error: countError } = await supabase
+    const { count, error: countError } = await supabaseAdmin
       .from('BlogPost')
       .select('*', { count: 'exact', head: true })
       .eq('categoryId', categoryId);
@@ -756,7 +757,7 @@ export async function deleteBlogCategory(categoryId: string) {
       return { success: false, error: 'Cannot delete category with associated posts' };
     }
 
-    const { error } = await supabase.from('BlogCategory').delete().eq('id', categoryId);
+    const { error } = await supabaseAdmin.from('BlogCategory').delete().eq('id', categoryId);
     if (error) throw error;
 
     revalidatePath('/[lang]/admin/blog');
@@ -773,9 +774,9 @@ export async function deleteBlogCategory(categoryId: string) {
  */
 export async function incrementPostViewCount(postId: string): Promise<void> {
   try {
-    const { data: post } = await supabase.from('BlogPost').select('viewCount').eq('id', postId).single();
+    const { data: post } = await supabaseAdmin.from('BlogPost').select('viewCount').eq('id', postId).single();
     if (post) {
-      await supabase.from('BlogPost').update({ viewCount: (post.viewCount || 0) + 1 }).eq('id', postId);
+      await supabaseAdmin.from('BlogPost').update({ viewCount: (post.viewCount || 0) + 1 }).eq('id', postId);
     }
   } catch (error) {
     console.error('Error incrementing view count:', error);
@@ -789,7 +790,7 @@ export async function getRelatedPosts(postId: string, categoryId: string | null,
   return unstable_cache(
     async () => {
       try {
-        let query = supabase
+        let query = supabaseAdmin
           .from('BlogPost')
           .select('*, author:User(id, name, image), category:BlogCategory(*)')
           .eq('status', 'published')

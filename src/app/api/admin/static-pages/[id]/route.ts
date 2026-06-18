@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { StaticPageInput } from '@/types/static-page';
@@ -15,7 +15,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json() as StaticPageInput;
         const { systemName, translations } = body;
 
-        const { data: existing, error: fetchError } = await supabase
+        const { data: existing, error: fetchError } = await supabaseAdmin
             .from('StaticPage')
             .select('systemName')
             .eq('id', id)
@@ -26,7 +26,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         if (systemName && systemName !== existing.systemName) {
-            const { data: conflict } = await supabase
+            const { data: conflict } = await supabaseAdmin
                 .from('StaticPage')
                 .select('id')
                 .eq('systemName', systemName)
@@ -38,7 +38,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Update page
-        const { error: pageUpdateError } = await supabase
+        const { error: pageUpdateError } = await supabaseAdmin
             .from('StaticPage')
             .update({ systemName })
             .eq('id', id);
@@ -46,7 +46,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         if (pageUpdateError) throw pageUpdateError;
 
         // Sync translations: Delete and Insert
-        const { error: deleteError } = await supabase
+        const { error: deleteError } = await supabaseAdmin
             .from('StaticPageTranslation')
             .delete()
             .eq('staticPageId', id);
@@ -54,7 +54,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         if (deleteError) throw deleteError;
 
         if (translations && translations.length > 0) {
-            const { error: insertError } = await supabase
+            const { error: insertError } = await supabaseAdmin
                 .from('StaticPageTranslation')
                 .insert(translations.map(t => ({
                     staticPageId: id,
@@ -73,7 +73,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         }
 
         // Get updated page
-        const { data: updatedPage, error: finalError } = await supabase
+        const { data: updatedPage, error: finalError } = await supabaseAdmin
             .from('StaticPage')
             .select('*, translations:StaticPageTranslation(*)')
             .eq('id', id)
@@ -98,7 +98,7 @@ export async function DELETE(req: Request, { params }: { params: Promise<{ id: s
 
         const { id } = await params;
 
-        const { error } = await supabase
+        const { error } = await supabaseAdmin
             .from('StaticPage')
             .delete()
             .eq('id', id);

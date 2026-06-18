@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { MetadataRoute } from 'next';
-import { supabase } from '@/lib/supabase';
 
 const BASE_URL = 'https://www.moroccanorganica.com';
 const LANGUAGES = ['en', 'fr', 'ar'];
@@ -16,13 +16,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
     // 2. Fetch Products for dynamic routes
-    const { data: products } = await supabase
+    const { data: products } = await supabaseAdmin
         .from('Product')
         .select('id, translations:ProductTranslation(slug, language)')
         .eq('isAvailable', true);
 
     // 3. Fetch Static Pages (Organica custom pages)
-    const { data: staticPages } = await supabase
+    const { data: staticPages } = await supabaseAdmin
         .from('StaticPage')
         .select('id, translations:StaticPageTranslation(slug, language)');
 

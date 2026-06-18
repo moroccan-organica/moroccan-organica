@@ -1,6 +1,6 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { supabase } from '@/lib/supabase';
 import * as bcryptModule from 'bcryptjs';
 const bcrypt = (bcryptModule as Record<string, unknown>).default as typeof bcryptModule || bcryptModule;
 
@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
                     throw new Error('Invalid credentials');
                 }
 
-                const { data: user, error } = await supabase
+                const { data: user, error } = await supabaseAdmin
                     .from('User')
                     .select('*')
                     .eq('email', credentials.email)

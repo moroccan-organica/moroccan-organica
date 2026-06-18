@@ -1,6 +1,7 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { revalidatePath } from 'next/cache';
@@ -60,7 +61,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
     error?: string;
 }> {
     try {
-        const { data: customer, error: customerError } = await supabase
+        const { data: customer, error: customerError } = await supabaseAdmin
             .from('Customer')
             .upsert({
                 email: input.customer.email,
@@ -75,7 +76,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
 
         if (customerError) throw customerError;
 
-        const { data: address, error: addressError } = await supabase
+        const { data: address, error: addressError } = await supabaseAdmin
             .from('Address')
             .insert({
                 customerId: customer.id,
@@ -93,7 +94,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
         let orderReference = generateOrderReference();
         let attempts = 0;
         while (attempts < 10) {
-            const { data: existing } = await supabase
+            const { data: existing } = await supabaseAdmin
                 .from('Order')
                 .select('id')
                 .eq('reference', orderReference)
@@ -104,7 +105,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
         }
 
         const orderItemsData = await Promise.all(input.items.map(async (item) => {
-            let { data: variant, error: varError } = await supabase
+            let { data: variant, error: varError } = await supabaseAdmin
                 .from('ProductVariant')
                 .select('id, sizeName')
                 .or(`id.eq.${item.productId},productId.eq.${item.productId}`)
@@ -112,7 +113,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
                 .maybeSingle();
 
             if (!variant) {
-                const { data: vBySku } = await supabase
+                const { data: vBySku } = await supabaseAdmin
                     .from('ProductVariant')
                     .select('id, sizeName')
                     .eq('sku', item.productId)
@@ -133,7 +134,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
             };
         }));
 
-        const { data: order, error: orderError } = await supabase
+        const { data: order, error: orderError } = await supabaseAdmin
             .from('Order')
             .insert({
                 reference: orderReference,
@@ -149,7 +150,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
 
         if (orderError) throw orderError;
 
-        const { error: itemsError } = await supabase
+        const { error: itemsError } = await supabaseAdmin
             .from('OrderItem')
             .insert(orderItemsData.map(item => ({
                 ...item,
@@ -158,7 +159,7 @@ export async function createOrder(input: CreateOrderInput): Promise<{
 
         if (itemsError) throw itemsError;
 
-        await supabase
+        await supabaseAdmin
             .from('Customer')
             .update({
                 totalSpent: (customer.totalSpent || 0) + input.totalAmount
@@ -186,7 +187,7 @@ export async function getOrders() {
     await checkAdmin();
 
     try {
-        const { data: orders, error } = await supabase
+        const { data: orders, error } = await supabaseAdmin
             .from('Order')
             .select(`
                 *,
@@ -225,7 +226,7 @@ export async function updateOrderStatus(id: string, status: string) {
     await checkAdmin();
 
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseAdmin
             .from('Order')
             .update({ status })
             .eq('id', id)

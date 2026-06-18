@@ -1,10 +1,10 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { SEOSettings } from '@/types/seo';
 
 async function checkAdmin() {
@@ -15,8 +15,6 @@ async function checkAdmin() {
     return session;
 }
 
-import { supabaseAdmin } from '@/lib/supabase-admin';
-
 /**
  * Get global SEO settings (ADMIN ONLY)
  */
@@ -24,7 +22,7 @@ export async function getSEOSettings() {
     await checkAdmin();
 
     try {
-        const { data: settings, error } = await supabase
+        const { data: settings, error } = await supabaseAdmin
             .from('GlobalSeoSetting')
             .select('*, translations:GlobalSeoTranslation(*)')
             .limit(1)
@@ -76,7 +74,7 @@ export async function updateSEOSettings(body: SEOSettings) {
 
     try {
         // Find existing to update
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
             .from('GlobalSeoSetting')
             .select('id')
             .limit(1)
@@ -84,7 +82,7 @@ export async function updateSEOSettings(body: SEOSettings) {
 
         if (existing) {
             // Update main setting
-            const { error: updateError } = await supabase
+            const { error: updateError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .update({
                     ogImage: body.ogImage,
@@ -96,13 +94,13 @@ export async function updateSEOSettings(body: SEOSettings) {
             if (updateError) throw updateError;
 
             // Sync translations: Delete and Insert
-            await supabase
+            await supabaseAdmin
                 .from('GlobalSeoTranslation')
                 .delete()
                 .eq('globalSeoSettingId', existing.id);
 
             if (body.translations && body.translations.length > 0) {
-                const { error: insertError } = await supabase
+                const { error: insertError } = await supabaseAdmin
                     .from('GlobalSeoTranslation')
                     .insert(body.translations.map(t => ({
                         globalSeoSettingId: existing.id,
@@ -122,7 +120,7 @@ export async function updateSEOSettings(body: SEOSettings) {
             return { success: true };
         } else {
             // Create fresh
-            const { data: created, error: createError } = await supabase
+            const { data: created, error: createError } = await supabaseAdmin
                 .from('GlobalSeoSetting')
                 .insert({
                     ogImage: body.ogImage,
@@ -135,7 +133,7 @@ export async function updateSEOSettings(body: SEOSettings) {
             if (createError) throw createError;
 
             if (body.translations && body.translations.length > 0) {
-                const { error: transError } = await supabase
+                const { error: transError } = await supabaseAdmin
                     .from('GlobalSeoTranslation')
                     .insert(body.translations.map(t => ({
                         globalSeoSettingId: created.id,

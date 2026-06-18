@@ -1,6 +1,7 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase-admin';
+
 import { revalidateTag } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import { CategoryDB, LanguageCode } from '@/types/product';
@@ -31,7 +32,7 @@ function transformToShopCategory(category: any, preferredLang: LanguageCode = 'e
 // GET ALL CATEGORIES
 export async function getCategories(): Promise<CategoryDB[]> {
   try {
-    const { data: categories, error } = await supabase
+    const { data: categories, error } = await supabaseAdmin
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .order('createdAt', { ascending: true });
@@ -48,7 +49,7 @@ export async function getCategories(): Promise<CategoryDB[]> {
 // GET CATEGORY BY SLUG
 export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en'): Promise<CategoryDB | null> {
   try {
-    const { data: categories, error } = await supabase
+    const { data: categories, error } = await supabaseAdmin
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .eq('translations.slug', slug);
@@ -65,7 +66,7 @@ export async function getCategoryBySlug(slug: string, lang: LanguageCode = 'en')
 // GET CATEGORY BY ID
 export async function getCategoryById(id: string): Promise<CategoryDB | null> {
   try {
-    const { data: category, error } = await supabase
+    const { data: category, error } = await supabaseAdmin
       .from('Category')
       .select('*, translations:CategoryTranslation(*)')
       .eq('id', id)
@@ -95,7 +96,7 @@ export async function createCategory(input: {
   }[];
 }): Promise<{ success: boolean; category?: CategoryDB; error?: string }> {
   try {
-    const { data: category, error: categoryError } = await supabase
+    const { data: category, error: categoryError } = await supabaseAdmin
       .from('Category')
       .insert({ image: input.image || null })
       .select()
@@ -104,7 +105,7 @@ export async function createCategory(input: {
     if (categoryError) throw categoryError;
 
     if (input.translations && input.translations.length > 0) {
-      const { error: transError } = await supabase
+      const { error: transError } = await supabaseAdmin
         .from('CategoryTranslation')
         .insert(input.translations.map(t => ({
           categoryId: category.id,
@@ -136,7 +137,7 @@ export async function createCategory(input: {
 // DELETE CATEGORY
 export async function deleteCategory(id: string): Promise<{ success: boolean; error?: string }> {
   try {
-    const { error } = await supabase.from('Category').delete().eq('id', id);
+    const { error } = await supabaseAdmin.from('Category').delete().eq('id', id);
     if (error) throw error;
 
     revalidateTag(CACHE_TAGS.CATEGORIES, 'default');

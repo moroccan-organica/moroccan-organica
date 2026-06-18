@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -16,7 +16,7 @@ export async function POST(
 
     const { id } = await params;
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .update({ status: 'archived' })
       .eq('id', id)
@@ -48,7 +48,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .update({ status: 'draft' })
       .eq('id', id)

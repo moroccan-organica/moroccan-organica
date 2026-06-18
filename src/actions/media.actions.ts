@@ -1,6 +1,6 @@
 'use server';
 
-import { supabase } from '@/lib/supabase';
+import { compressImageForUpload } from '@/lib/compress-image';
 import { supabaseAdmin } from '@/lib/supabase-admin';
 
 // Supabase Storage Buckets
@@ -11,7 +11,7 @@ const BLOG_BUCKET = 'blog';
  * Helper to delete a file from Supabase Storage using its public URL
  */
 export async function deleteFileFromStorage(url: string) {
-    if (!url || (!url.includes('supabase.co') && !url.includes('storage.supabase.com'))) return;
+    if (!url || (!url.includes('supabaseAdmin.co') && !url.includes('storage.supabaseAdmin.com'))) return;
 
     try {
         const bucket = url.includes(`/public/${BLOG_BUCKET}/`) ? BLOG_BUCKET :
@@ -85,18 +85,17 @@ export async function uploadBlogImage(formData: FormData) {
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 9);
         const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const ext = originalName.split('.').pop() || 'jpg';
-        const filename = `${timestamp}-${randomStr}.${ext}`;
-        const filepath = `${filename}`; // Storage path inside bucket
 
         const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const rawBuffer = Buffer.from(bytes);
+        const { buffer, mimeType, extension } = await compressImageForUpload(rawBuffer, file.type);
+        const filename = `${timestamp}-${randomStr}.${extension}`;
+        const filepath = `${filename}`;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+        const { error: uploadError } = await supabaseAdmin.storage
             .from(BLOG_BUCKET)
             .upload(filepath, buffer, {
-                contentType: file.type,
+                contentType: mimeType,
                 upsert: true
             });
 
@@ -107,15 +106,15 @@ export async function uploadBlogImage(formData: FormData) {
             .from(BLOG_BUCKET)
             .getPublicUrl(filepath);
 
-        const { data: blogMedia, error } = await supabase
+        const { data: blogMedia, error } = await supabaseAdmin
             .from('BlogMedia')
             .insert({
                 postId: postId || null,
                 mediaType: 'image',
                 url: publicUrl,
                 storagePath: filepath,
-                fileSizeBytes: file.size,
-                mimeType: file.type,
+                fileSizeBytes: buffer.length,
+                mimeType,
                 altText: originalName.replace(/\.[^/.]+$/, ''),
             })
             .select()
@@ -148,7 +147,7 @@ export async function uploadBlogImage(formData: FormData) {
  */
 export async function getBlogMedia(filters: { postId?: string; mediaType?: string } = {}) {
     try {
-        let query = supabase.from('BlogMedia').select('*');
+        let query = supabaseAdmin.from('BlogMedia').select('*');
 
         if (filters.postId) {
             query = query.eq('postId', filters.postId);
@@ -185,7 +184,7 @@ export async function getBlogMedia(filters: { postId?: string; mediaType?: strin
 export async function deleteBlogMedia(id: string) {
     try {
         // First get the media to know the storage path
-        const { data: media, error: getError } = await supabase
+        const { data: media, error: getError } = await supabaseAdmin
             .from('BlogMedia')
             .select('storagePath')
             .eq('id', id)
@@ -198,7 +197,7 @@ export async function deleteBlogMedia(id: string) {
                 .remove([media.storagePath]);
         }
 
-        const { error } = await supabase.from('BlogMedia').delete().eq('id', id);
+        const { error } = await supabaseAdmin.from('BlogMedia').delete().eq('id', id);
         if (error) throw error;
         return { success: true };
     } catch (error: unknown) {
@@ -225,19 +224,17 @@ export async function uploadProductImage(formData: FormData) {
 
         const timestamp = Date.now();
         const randomStr = Math.random().toString(36).substring(2, 9);
-        const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-        const ext = originalName.split('.').pop() || 'jpg';
-        const filename = `${timestamp}-${randomStr}.${ext}`;
-        const filepath = `${filename}`;
 
         const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
+        const rawBuffer = Buffer.from(bytes);
+        const { buffer, mimeType, extension } = await compressImageForUpload(rawBuffer, file.type);
+        const filename = `${timestamp}-${randomStr}.${extension}`;
+        const filepath = `${filename}`;
 
-        // Upload to Supabase Storage
-        const { data: uploadData, error: uploadError } = await supabaseAdmin.storage
+        const { error: uploadError } = await supabaseAdmin.storage
             .from(PRODUCT_BUCKET)
             .upload(filepath, buffer, {
-                contentType: file.type,
+                contentType: mimeType,
                 upsert: true
             });
 

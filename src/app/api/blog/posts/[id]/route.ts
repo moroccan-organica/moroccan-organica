@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 
@@ -42,7 +42,7 @@ export async function GET(
   try {
     const { id } = await params;
 
-    const { data: post, error } = await supabase
+    const { data: post, error } = await supabaseAdmin
       .from('BlogPost')
       .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)')
       .eq('id', id)
@@ -108,7 +108,7 @@ export async function PUT(
     const body = await request.json();
     const { title, titleAr, content, contentAr, excerpt, excerptAr, categoryId, tags, featuredImageUrl, status, metaTitle, metaDescription } = body;
 
-    const { data: existingPost, error: fetchError } = await supabase
+    const { data: existingPost, error: fetchError } = await supabaseAdmin
       .from('BlogPost')
       .select('*')
       .eq('id', id)
@@ -127,7 +127,7 @@ export async function PUT(
         let counter = 1;
         let uniqueSlug = newSlug;
         while (true) {
-          const { data: otherPost } = await supabase
+          const { data: otherPost } = await supabaseAdmin
             .from('BlogPost')
             .select('id')
             .eq('slug', uniqueSlug)
@@ -160,7 +160,7 @@ export async function PUT(
       }
     }
 
-    const { data: post, error: updateError } = await supabase
+    const { data: post, error: updateError } = await supabaseAdmin
       .from('BlogPost')
       .update(updateData)
       .eq('id', id)
@@ -173,7 +173,7 @@ export async function PUT(
     if (featuredImageUrl !== undefined && featuredImageUrl &&
       !featuredImageUrl.startsWith('data:') && !featuredImageUrl.startsWith('blob:')) {
       // Check if media already exists for this post
-      const { data: existingMedia } = await supabase
+      const { data: existingMedia } = await supabaseAdmin
         .from('BlogMedia')
         .select('id')
         .eq('postId', id)
@@ -183,13 +183,13 @@ export async function PUT(
 
       if (existingMedia) {
         // Update existing media URL
-        await supabase
+        await supabaseAdmin
           .from('BlogMedia')
           .update({ url: featuredImageUrl })
           .eq('id', existingMedia.id);
       } else {
         // Check if media exists but not linked
-        const { data: unlinkedMedia } = await supabase
+        const { data: unlinkedMedia } = await supabaseAdmin
           .from('BlogMedia')
           .select('id')
           .eq('url', featuredImageUrl)
@@ -199,13 +199,13 @@ export async function PUT(
 
         if (unlinkedMedia) {
           // Link existing media to post
-          await supabase
+          await supabaseAdmin
             .from('BlogMedia')
             .update({ postId: id })
             .eq('id', unlinkedMedia.id);
         } else {
           // Create new media entry
-          await supabase
+          await supabaseAdmin
             .from('BlogMedia')
             .insert({
               postId: id,
@@ -240,7 +240,7 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('BlogPost')
       .delete()
       .eq('id', id);

@@ -1,5 +1,5 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { StaticPageInput } from '@/types/static-page';
@@ -11,7 +11,7 @@ export async function GET() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { data: pages, error } = await supabase
+        const { data: pages, error } = await supabaseAdmin
             .from('StaticPage')
             .select(`
                 *,
@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         }
 
         // Check unique systemName
-        const { data: existing } = await supabase
+        const { data: existing } = await supabaseAdmin
             .from('StaticPage')
             .select('id')
             .eq('systemName', systemName)
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         }
 
         // Create the page
-        const { data: newPage, error: pageError } = await supabase
+        const { data: newPage, error: pageError } = await supabaseAdmin
             .from('StaticPage')
             .insert({ systemName })
             .select()
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
         // Create translations
         if (translations && translations.length > 0) {
-            const { error: transError } = await supabase
+            const { error: transError } = await supabaseAdmin
                 .from('StaticPageTranslation')
                 .insert(translations.map(t => ({
                     staticPageId: newPage.id,
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
         }
 
         // Fetch the complete page with translations
-        const { data: completePage, error: fetchError } = await supabase
+        const { data: completePage, error: fetchError } = await supabaseAdmin
             .from('StaticPage')
             .select('*, translations:StaticPageTranslation(*)')
             .eq('id', newPage.id)

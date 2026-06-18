@@ -1,10 +1,10 @@
+import { supabaseAdmin } from '@/lib/supabase-admin';
 import { NextRequest, NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
-import { supabase } from '@/lib/supabase';
 
 const UPLOAD_DIR = join(process.cwd(), 'public', 'images', 'blog');
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     const publicUrl = `/images/blog/${filename}`;
 
     // Save to BlogMedia table
-    const { data: blogMedia, error } = await supabase
+    const { data: blogMedia, error } = await supabaseAdmin
       .from('BlogMedia')
       .insert({
         postId: postId || null,
