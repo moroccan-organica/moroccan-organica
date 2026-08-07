@@ -38,6 +38,8 @@ export async function POST(req: Request) {
       (body.formType === 'general' ? (process.env.SMTP_CONTACT_PASS || process.env.SMTP_PASSWORD) :
         (process.env.SMTP_INQUIRY_PASS || process.env.SMTP_PASSWORD));
 
+    const fromAddress = authUser || process.env.CONTACT_EMAIL_FROM || 'inquiry@moroccanorganica.com';
+
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
@@ -83,7 +85,7 @@ export async function POST(req: Request) {
     };
 
     const mailOptions = {
-      from: `"Moroccan Organica" <${authUser}>`,
+      from: `"Moroccan Organica" <${fromAddress}>`,
       to: toEmail,
       replyTo: email,
       subject: subject,
@@ -184,7 +186,7 @@ export async function POST(req: Request) {
 
     await transporter.sendMail(mailOptions);
 
-    const autoReply = buildAutoReplyEmail({ name, fromAddress: authUser });
+    const autoReply = buildAutoReplyEmail({ name, fromAddress });
     try {
       await transporter.sendMail({
         ...autoReply,
