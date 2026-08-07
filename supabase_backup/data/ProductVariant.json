@@ -1,0 +1,226 @@
+[
+  {
+    "id": "973ef217-c68e-4a6d-8fb5-4abad6447f52",
+    "productId": "a3ca9dcc-93ec-472f-a890-9edf007626a7",
+    "sku": "SKU-1-VAR",
+    "sizeName": "Default",
+    "price": 5,
+    "stock": 50
+  },
+  {
+    "id": "2dde4faf-c3b6-4f2f-ba2b-4d3385ff6cac",
+    "productId": "bb9c7cf7-aa7a-4bfd-8ddc-06c0bfb0f7c9",
+    "sku": "SKU-3-VAR",
+    "sizeName": "Default",
+    "price": 30,
+    "stock": 30
+  },
+  {
+    "id": "f94d82b0-225a-4af4-b18e-14fc058581a2",
+    "productId": "c743557d-c346-4598-a33d-0f8ecdfa092a",
+    "sku": "SKU-4-VAR",
+    "sizeName": "Default",
+    "price": 18.99,
+    "stock": 40
+  },
+  {
+    "id": "d40e9c07-94c3-4506-95cd-23b3d60fad1b",
+    "productId": "7a3f287c-1cb8-482d-a456-efe27bd2fade",
+    "sku": "SKU-5-VAR",
+    "sizeName": "Default",
+    "price": 22,
+    "stock": 60
+  },
+  {
+    "id": "4a831671-a27b-4cad-8679-2e7623f4d2aa",
+    "productId": "ba494a21-cc36-4de2-85b2-0b54c8441fa4",
+    "sku": "SKU-6-VAR",
+    "sizeName": "Default",
+    "price": 12.99,
+    "stock": 70
+  },
+  {
+    "id": "6f75239a-6ce7-4e9a-81b4-0abcce911c97",
+    "productId": "10277369-adbc-48f1-9c78-b5932feed959",
+    "sku": "SKU-7-VAR",
+    "sizeName": "Default",
+    "price": 24.99,
+    "stock": 50
+  },
+  {
+    "id": "3f80acac-1fea-4b51-a205-43a2a7c38b92",
+    "productId": "4ea6b76a-d3d0-413c-a08e-2605e3edcea1",
+    "sku": "SKU-15-VAR",
+    "sizeName": "Default",
+    "price": 250,
+    "stock": 22
+  },
+  {
+    "id": "7c946171-4ec5-44e9-95bf-d576da861b9c",
+    "productId": "91c36668-4109-45e8-ac85-ae0a0ac8b0ef",
+    "sku": "SKU-17-VAR",
+    "sizeName": "Default",
+    "price": 250,
+    "stock": 22
+  },
+  {
+    "id": "97679294-9589-4c4a-9579-92b30d581e50",
+    "productId": "2a756614-c75d-4d23-99b3-feee2fcc729c",
+    "sku": "SKU-19-VAR",
+    "sizeName": "Default",
+    "price": 330,
+    "stock": 90000
+  },
+  {
+    "id": "bac8c2ab-2114-4c98-a16f-5fa847cb87b5",
+    "productId": "6bea9c72-d041-42a0-ac3e-ad678c5f0ef2",
+    "sku": "SKU-28-default",
+    "sizeName": "Default",
+    "price": 535,
+    "stock": 20
+  },
+  {
+    "id": "a4962240-e302-48bb-9773-13a9d139eed4",
+    "productId": "9e3cc924-f568-4359-b4ea-771cc638828c",
+    "sku": "SKU-30-default",
+    "sizeName": "Default",
+    "price": 535,
+    "stock": 28
+  },
+  {
+    "id": "476dad94-1a78-4572-abf7-a5a9d629d188",
+    "productId": "133588b0-6d3a-4ac5-80c4-4a7279485ec9",
+    "sku": "SKU-31-default",
+    "sizeName": "Default",
+    "price": 535,
+    "stock": 26
+  },
+  {
+    "id": "fb0d6211-9e43-4f1a-94aa-6a4cb2a0a7a0",
+    "productId": "3bf12dec-6365-47be-9eb5-efc5a2a4097a",
+    "sku": "SKU-27-default",
+    "sizeName": "Default",
+    "price": 149,
+    "stock": 15
+  },
+  {
+    "id": "0051711e-5535-415d-a23f-7034562a38fc",
+    "productId": "657054aa-80c6-4d46-9de4-cf9f27b7b681",
+    "sku": "SKU-23-default",
+    "sizeName": "Default",
+    "price": 360,
+    "stock": 12
+  },
+  {
+    "id": "3afbe82d-5bb1-4cf1-8224-f474cf67a461",
+    "productId": "4c77533c-1998-4eef-9ab0-7fe6568ad7e2",
+    "sku": "SKU-24-default",
+    "sizeName": "Default",
+    "price": 1490,
+    "stock": 15
+  },
+  {
+    "id": "4a24196f-612b-4225-8df1-62761c5202e0",
+    "productId": "dec77251-8ee4-4a8f-8f56-1aa22379f68b",
+    "sku": "SKU-25-default",
+    "sizeName": "Default",
+    "price": 663,
+    "stock": 12
+  },
+  {
+    "id": "c1d048a7-2437-43f5-8ea4-77850321b307",
+    "productId": "35436dab-328f-4534-8452-45a020e4ede6",
+    "sku": "SKU-26-default",
+    "sizeName": "Default",
+    "price": 1595,
+    "stock": 21
+  },
+  {
+    "id": "9346dec2-54ae-4c9a-b06f-97c72984d243",
+    "productId": "13048195-0bff-49c6-b0b6-eee22930c42b",
+    "sku": "SKU-29-default",
+    "sizeName": "Default",
+    "price": 213,
+    "stock": 19
+  },
+  {
+    "id": "59b51542-472e-4c90-90f8-8e8e2d9446a9",
+    "productId": "7f3933a7-9acc-4b6f-99fc-c81426a678d8",
+    "sku": "SKU-36-default",
+    "sizeName": "Default",
+    "price": 390,
+    "stock": 35
+  },
+  {
+    "id": "cc07e266-d514-489c-b63d-b33647866045",
+    "productId": "81aa7e25-f2f2-42a8-a737-963d553293d0",
+    "sku": "SKU-42-default",
+    "sizeName": "Default",
+    "price": 190,
+    "stock": 50
+  },
+  {
+    "id": "0340a2d8-7cde-4732-87dd-e8fbe052b56d",
+    "productId": "ece84229-1cd9-49f1-900d-916427358cc5",
+    "sku": "SKU-46-default",
+    "sizeName": "Default",
+    "price": 100,
+    "stock": 50
+  },
+  {
+    "id": "7e81e4f6-f9c1-4b45-96e0-29a75454367b",
+    "productId": "9410ff1b-aef4-489a-9d2c-c7fded7e8550",
+    "sku": "SKU-45-default",
+    "sizeName": "Default",
+    "price": 250,
+    "stock": 50
+  },
+  {
+    "id": "5a789afd-eab0-4bf4-b799-b82229edb81b",
+    "productId": "1f2d2f8a-4e85-4743-acd5-66e64660bb61",
+    "sku": "SKU-44-default",
+    "sizeName": "Default",
+    "price": 150,
+    "stock": 50
+  },
+  {
+    "id": "baaadb46-17af-4056-b989-56dc33016d89",
+    "productId": "a0589d56-f162-4d36-9337-ca92fafd362c",
+    "sku": "SKU-35-default",
+    "sizeName": "Default",
+    "price": 990,
+    "stock": 62
+  },
+  {
+    "id": "469e8b3a-f41a-4980-a8ca-549698816b60",
+    "productId": "e0538e4b-690a-4a75-9348-aed0d2d926f6",
+    "sku": "SKU-34-default",
+    "sizeName": "Default",
+    "price": 339,
+    "stock": 54
+  },
+  {
+    "id": "c52aed2b-da32-4319-be06-41afe8f2cca1",
+    "productId": "643292df-b9b4-4442-9205-742f596347f0",
+    "sku": "SKU-33-default",
+    "sizeName": "Default",
+    "price": 233,
+    "stock": 65
+  },
+  {
+    "id": "bb5c075f-572d-46eb-9b5c-d1b834b0430b",
+    "productId": "a7bf3471-5bbc-4658-befa-71d597577c6c",
+    "sku": "SKU-32-default",
+    "sizeName": "Default",
+    "price": 390,
+    "stock": 16
+  },
+  {
+    "id": "51df9953-1187-4421-bb58-c79f42c7d785",
+    "productId": "4a4cb5a5-cd15-43b9-9cf6-ae728f6b4319",
+    "sku": "SKU-47-default",
+    "sizeName": "Default",
+    "price": 1,
+    "stock": 50
+  }
+]

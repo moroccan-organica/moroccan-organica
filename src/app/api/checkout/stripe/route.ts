@@ -9,7 +9,10 @@ import { createOrder } from "@/actions/order.actions";
  */
 
 // Initialize Stripe with secret key from environment
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "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";
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeSecretKey) {
+    throw new Error("STRIPE_SECRET_KEY is not configured");
+}
 const stripe = new Stripe(stripeSecretKey, {
     apiVersion: "2026-01-28.clover",
 });

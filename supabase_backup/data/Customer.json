@@ -1,0 +1,18 @@
+[
+  {
+    "id": "7e811733-ea2a-456a-8af3-b529e767cae8",
+    "email": "dewux@mailinator.com",
+    "phone": "+1 (463) 691-2012",
+    "firstName": "Azalia",
+    "lastName": "Bernard",
+    "isWholesale": false,
+    "companyName": null,
+    "taxId": null,
+    "totalSpent": 209,
+    "lastOrderDate": "2026-07-06T10:06:21.851",
+    "marketingOptIn": false,
+    "adminNotes": null,
+    "createdAt": "2026-07-06T10:06:22.772",
+    "updatedAt": "2026-07-06T10:06:22.772"
+  }
+]

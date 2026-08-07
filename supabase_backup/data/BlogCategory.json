@@ -1,0 +1,62 @@
+[
+  {
+    "id": "e6a8201c-155c-4793-99b5-beb1c9f31cc3",
+    "name": "black soap",
+    "nameAr": null,
+    "slug": "black-soap",
+    "description": null,
+    "color": "#606C38",
+    "icon": null,
+    "sortOrder": 0,
+    "createdAt": "2026-02-16T21:21:11.32",
+    "updatedAt": "2026-02-16T21:21:11.32"
+  },
+  {
+    "id": "84215c41-d4dd-4257-85f3-4b7b09a5cb92",
+    "name": "Produits Naturels",
+    "nameAr": null,
+    "slug": "produits-naturels",
+    "description": "Articles sur les produits bio et naturels du Maroc",
+    "color": "#606C38",
+    "icon": null,
+    "sortOrder": 0,
+    "createdAt": "2026-02-16T21:24:44.926",
+    "updatedAt": "2026-02-16T21:24:44.926"
+  },
+  {
+    "id": "bcat_01",
+    "name": "Beauty & Wellness",
+    "nameAr": "الجمال والصحة",
+    "slug": "beauty-health",
+    "description": "Traditional Moroccan beauty secrets and natural wellness tips.",
+    "color": "#8B4513",
+    "icon": null,
+    "sortOrder": 0,
+    "createdAt": "2026-02-17T21:13:28.334",
+    "updatedAt": "2026-02-17T21:13:28.334"
+  },
+  {
+    "id": "bcat_02",
+    "name": "Healthy Living",
+    "nameAr": "الحياة الصحية",
+    "slug": "healthy-living",
+    "description": "Tips for a natural and healthy lifestyle using Moroccan organic products.",
+    "color": "#2E8B57",
+    "icon": null,
+    "sortOrder": 0,
+    "createdAt": "2026-02-17T21:13:28.334",
+    "updatedAt": "2026-02-17T21:13:28.334"
+  },
+  {
+    "id": "bcat_03",
+    "name": "Entertainment",
+    "nameAr": "ترفيه",
+    "slug": "entertainment",
+    "description": "General stories and interesting facts about Moroccan heritage.",
+    "color": "#606C38",
+    "icon": null,
+    "sortOrder": 0,
+    "createdAt": "2026-02-17T21:13:28.334",
+    "updatedAt": "2026-02-17T21:13:28.334"
+  }
+]

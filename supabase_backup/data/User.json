@@ -1,0 +1,13 @@
+[
+  {
+    "id": "user_admin_01",
+    "name": "Admin User",
+    "email": "admin@moroccan-organica.com",
+    "emailVerified": null,
+    "image": null,
+    "password": "$2b$12$K4XeqWZabsVRs0ulHrVQ5ObgI5XofSyZR9oXEZ.xZx4KUJyfbOOV6",
+    "role": "ADMIN",
+    "createdAt": "2026-02-17T20:41:48.618",
+    "updatedAt": "2026-02-17T20:41:48.618"
+  }
+]

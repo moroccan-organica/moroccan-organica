@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
+import { buildAutoReplyEmail } from '@/lib/emails/auto-reply';
 
 export async function POST(req: Request) {
   try {
@@ -181,8 +182,17 @@ export async function POST(req: Request) {
             `,
     };
 
-    // Send email
     await transporter.sendMail(mailOptions);
+
+    const autoReply = buildAutoReplyEmail({ name, fromAddress: authUser });
+    try {
+      await transporter.sendMail({
+        ...autoReply,
+        to: email,
+      });
+    } catch (autoReplyError) {
+      console.error('Error sending auto-reply email:', autoReplyError);
+    }
 
     return NextResponse.json({ success: true, message: 'Email sent successfully!' });
   } catch (error) {

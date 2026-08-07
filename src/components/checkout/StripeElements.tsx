@@ -6,10 +6,8 @@ import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-const stripePromise = loadStripe(
-    process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
-    "pk_live_51R6wPIIyF1N47bdozKFkx0sumpCfUqrWwRJsoefO3SD1MNxgjOYlYN7MOwVHfrGv6Pe9xXmdYfgxn7GKFcIZyehI003HAqMx6I"
-);
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
 
 export interface StripeElementsHandle {
     createPaymentMethod: (billingDetails?: {
@@ -167,6 +165,17 @@ StripePaymentForm.displayName = "StripePaymentForm";
 
 export const StripeElements = forwardRef<StripeElementsHandle, StripeElementsProps>(
     ({ amount, onPaymentMethodCreated, onError }, ref) => {
+        if (!stripePromise) {
+            return (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                        Stripe is not configured. Please set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.
+                    </AlertDescription>
+                </Alert>
+            );
+        }
+
         const options: StripeElementsOptions = {
             mode: "payment",
             amount: Math.round(amount * 100), // Convert to cents

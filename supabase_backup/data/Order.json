@@ -1,0 +1,14 @@
+[
+  {
+    "id": "926f3f4a-900e-41ba-b1de-484743df1f79",
+    "reference": "MO-2026-6A1UH1L",
+    "customerId": "7e811733-ea2a-456a-8af3-b529e767cae8",
+    "shippingAddressId": "5b3c97c2-eaba-45ea-8e10-b3c9b9de1e2e",
+    "status": "PENDING",
+    "totalAmount": 209,
+    "paymentProvider": "STRIPE",
+    "paymentId": "pi_3Tq9PtGg7MYzqE9w0RkyeDHg",
+    "createdAt": "2026-07-06T10:06:23.277",
+    "updatedAt": "2026-07-06T10:06:23.277"
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cat_argan",
+    "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80",
+    "createdAt": "2026-02-16T20:12:38.807",
+    "updatedAt": "2026-02-16T20:12:38.807"
+  },
+  {
+    "id": "cat_essential",
+    "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80",
+    "createdAt": "2026-02-16T20:12:38.807",
+    "updatedAt": "2026-02-16T20:12:38.807"
+  },
+  {
+    "id": "cat_spices",
+    "image": "https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=800&q=80",
+    "createdAt": "2026-02-16T20:12:38.807",
+    "updatedAt": "2026-02-16T20:12:38.807"
+  },
+  {
+    "id": "cat_powders",
+    "image": "https://images.unsplash.com/photo-1596040033229-a0b4c8af6c10?w=800&q=80",
+    "createdAt": "2026-02-16T20:12:38.807",
+    "updatedAt": "2026-02-16T20:12:38.807"
+  },
+  {
+    "id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11",
+    "image": null,
+    "createdAt": "2026-02-18T07:25:35.04",
+    "updatedAt": "2026-02-18T07:25:35.04"
+  }
+]
