@@ -27,26 +27,20 @@ export async function POST(req: Request) {
       toEmail = process.env.CONTACT_EMAIL_ORDERS || 'orders@moroccanorganica.com';
     }
 
-    console.log(`Email routing: formType=${formType}, product=${product} -> targeting TO=${toEmail}`);
+    console.log(`Email routing: formType=${formType}, product=${product} -> FROM=noreply TO=${toEmail}`);
 
-    // Configure the transporter with dynamic authentication if provided
-    const authUser = body.formType === 'order' ? (process.env.SMTP_ORDERS_USER || process.env.SMTP_USER) :
-      (body.formType === 'general' ? (process.env.SMTP_CONTACT_USER || process.env.SMTP_USER) :
-        (process.env.SMTP_INQUIRY_USER || process.env.SMTP_USER));
-
-    const authPass = body.formType === 'order' ? (process.env.SMTP_ORDERS_PASS || process.env.SMTP_PASSWORD) :
-      (body.formType === 'general' ? (process.env.SMTP_CONTACT_PASS || process.env.SMTP_PASSWORD) :
-        (process.env.SMTP_INQUIRY_PASS || process.env.SMTP_PASSWORD));
-
-    const fromAddress = authUser || process.env.CONTACT_EMAIL_FROM || 'inquiry@moroccanorganica.com';
+    // Sender: always noreply (SMTP auth + From). Never use the receiver address as sender.
+    const fromAddress = process.env.CONTACT_EMAIL_FROM || 'noreply@moroccanorganica.com';
+    const smtpUser = process.env.SMTP_USER || fromAddress;
+    const smtpPass = process.env.SMTP_PASSWORD;
 
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: Number(process.env.SMTP_PORT) || 587,
       secure: process.env.SMTP_SECURE === 'true',
       auth: {
-        user: authUser,
-        pass: authPass,
+        user: smtpUser,
+        pass: smtpPass,
       },
       tls: {
         // Required for self-signed certificates or chain issues
