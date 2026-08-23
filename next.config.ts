@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Prevent Next.js from picking the parent folder lockfile as workspace root.
+  turbopack: {
+    root: __dirname,
+  },
   images: {
     // Skip Next.js image optimization proxy — Supabase storage URLs resolve
     // through NAT64 which Next.js blocks as "private IP". With unoptimized,
