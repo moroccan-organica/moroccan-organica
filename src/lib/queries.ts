@@ -1,7 +1,7 @@
 import { unstable_cache } from 'next/cache';
 import { supabase } from './supabase';
 import { CACHE_TAGS } from './cache-tags';
-import { getLocalizedHref } from './utils';
+import { getLocalizedHref, getValidImageUrl } from './utils';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STATIC PAGES
@@ -163,7 +163,7 @@ async function _getFeaturedProducts(lang: string) {
             const trans = p.translations?.find((t: any) => t.language === lang) || p.translations?.[0] || {};
             const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
             const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
-            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
+            const image = getValidImageUrl(p.images?.[0]?.url || p.category?.image);
 
             return {
                 title: trans.name || "Untitled Product",
@@ -216,7 +216,7 @@ async function _getTopSaleProducts(lang: string) {
             const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
             const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
             const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
-            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
+            const image = getValidImageUrl(p.images?.[0]?.url || p.category?.image);
             const variant = p.variants?.[0];
 
             return {
@@ -280,7 +280,7 @@ async function _getCatalogueProducts(lang: string) {
             const transEn = p.translations?.find((t: any) => t.language === 'en') || p.translations?.[0] || {};
             const transAr = p.translations?.find((t: any) => t.language === 'ar') || p.translations?.[0] || {};
             const catTrans = p.category?.translations?.find((t: any) => t.language === lang) || p.category?.translations?.[0] || {};
-            const image = p.images?.[0]?.url || p.category?.image || "/images/placeholder.svg";
+            const image = getValidImageUrl(p.images?.[0]?.url || p.category?.image);
             const variant = p.variants?.[0];
 
             return {

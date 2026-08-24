@@ -3,6 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { supabase } from '@/lib/supabase';
 import { deleteFileFromStorage } from '@/lib/delete-storage-file';
+import { getValidImageUrl } from '@/lib/utils';
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import {
@@ -40,14 +41,15 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
     !img.url.startsWith('blob:')
   );
 
-  const mainImage = validImages.length > 0
+  const rawMainImage = validImages.length > 0
     ? (primaryImage && !primaryImage.url.startsWith('data:') && !primaryImage.url.startsWith('blob:')
       ? primaryImage.url
       : validImages[0]?.url)
-    : '/images/placeholder.svg';
+    : '';
+  const mainImage = getValidImageUrl(rawMainImage);
   const gallery = validImages
-    .filter((img: any) => img.url !== mainImage)
-    .map((img: any) => img.url);
+    .filter((img: any) => img.url !== rawMainImage)
+    .map((img: any) => getValidImageUrl(img.url));
 
 
   const variants = product.variants || [];

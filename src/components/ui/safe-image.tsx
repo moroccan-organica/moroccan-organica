@@ -2,6 +2,7 @@
 
 import React, { useState, useCallback, useMemo } from 'react';
 import Image, { ImageProps } from 'next/image';
+import { getValidImageUrl } from '@/lib/utils';
 
 interface SafeImageProps extends Omit<ImageProps, 'onError'> {
   fallbackSrc?: string;
@@ -22,10 +23,11 @@ export function SafeImage({
   ...props 
 }: SafeImageProps) {
   const [errorKey, setErrorKey] = useState<string | null>(null);
+  const normalizedSrc = typeof src === 'string' ? getValidImageUrl(src, fallbackSrc) : src;
 
   // Derive the current source - if this src had an error, use fallback
   const currentSrc = useMemo(() => {
-    const srcString = typeof src === 'string' ? src : String(src);
+    const srcString = typeof normalizedSrc === 'string' ? normalizedSrc : String(normalizedSrc);
     
     // If this src had an error, use fallback
     if (errorKey === srcString) {
@@ -38,8 +40,8 @@ export function SafeImage({
       return fallbackSrc;
     }
     
-    return src;
-  }, [src, errorKey, fallbackSrc]);
+    return normalizedSrc;
+  }, [normalizedSrc, errorKey, fallbackSrc]);
 
   // Check if the source is a data URL (base64) or blob URL
   const isDataUrl = typeof currentSrc === 'string' && currentSrc.startsWith('data:');
@@ -49,11 +51,11 @@ export function SafeImage({
   const defaultSizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw";
 
   const handleError = useCallback(() => {
-    const srcString = typeof src === 'string' ? src : String(src);
+    const srcString = typeof normalizedSrc === 'string' ? normalizedSrc : String(normalizedSrc);
     if (errorKey !== srcString) {
       setErrorKey(srcString);
     }
-  }, [src, errorKey]);
+  }, [normalizedSrc, errorKey]);
 
   // For data URLs and blob URLs, use native img tag to avoid Next.js optimization issues
   if (isDataUrl || isBlobUrl) {

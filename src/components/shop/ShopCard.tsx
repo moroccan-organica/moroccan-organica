@@ -6,7 +6,7 @@ import { SafeImage } from '@/components/ui/safe-image';
 import { ArrowRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ShopProduct, ShopCategory, shopCategories } from '@/data/shop-products';
-import { getLocalizedHref } from '@/lib/utils';
+import { getLocalizedHref, getValidImageUrl } from '@/lib/utils';
 
 interface ShopCardProps {
   product: ShopProduct;
@@ -35,7 +35,7 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
       <Link href={getLocalizedHref(`/shop/${product.slug}`, lang)} className="relative h-64 overflow-hidden">
         <SafeImage
-          src={product.image}
+          src={getValidImageUrl(product.image)}
           alt={localizedName}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-110"

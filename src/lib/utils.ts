@@ -5,10 +5,37 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs));
 }
 
+const SUPABASE_STORAGE_PATH = '/storage/v1/object/public/';
+
+/**
+ * Rewrites Supabase Storage URLs from a migrated/old project host to the
+ * current NEXT_PUBLIC_SUPABASE_URL host while preserving bucket + file path.
+ */
+export function resolveStorageUrl(url: string): string {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, '');
+    if (!supabaseUrl || !url.includes('.supabase.co') || !url.includes(SUPABASE_STORAGE_PATH)) {
+        return url;
+    }
+
+    try {
+        const currentHost = new URL(supabaseUrl).host;
+        const parsed = new URL(url);
+        if (parsed.host === currentHost) return url;
+
+        const storageIndex = parsed.pathname.indexOf(SUPABASE_STORAGE_PATH);
+        if (storageIndex === -1) return url;
+
+        const storagePath = parsed.pathname.slice(storageIndex + SUPABASE_STORAGE_PATH.length);
+        return `${supabaseUrl}${SUPABASE_STORAGE_PATH}${storagePath}`;
+    } catch {
+        return url;
+    }
+}
+
 export function getValidImageUrl(url: string | null | undefined, fallback: string = '/images/placeholder.svg'): string {
     if (!url || typeof url !== 'string' || url.trim() === '') return fallback;
 
-    const trimmedUrl = url.trim();
+    const trimmedUrl = resolveStorageUrl(url.trim());
 
     // Valid patterns for next/image
     if (

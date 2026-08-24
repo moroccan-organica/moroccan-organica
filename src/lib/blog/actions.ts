@@ -1,6 +1,7 @@
 'use server';
 
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { getValidImageUrl } from '@/lib/utils';
 
 import { revalidatePath, revalidateTag, unstable_cache } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
@@ -136,12 +137,14 @@ function safeJsonParse<T>(jsonString: string | null | undefined, fallback: T): T
  */
 function resolveFeaturedImageUrl(post: SupabasePostRow): string {
   // Prefer the stored featuredImageUrl if it's a full URL
-  if (post.featuredImageUrl?.startsWith('http')) return post.featuredImageUrl;
+  if (post.featuredImageUrl?.startsWith('http')) {
+    return getValidImageUrl(post.featuredImageUrl, '');
+  }
 
   // Fall back to first linked BlogMedia with a valid URL
   if (post.media?.length) {
     const imageMedia = post.media.find(m => m.mediaType === 'image' && m.url?.startsWith('http'));
-    if (imageMedia) return imageMedia.url;
+    if (imageMedia) return getValidImageUrl(imageMedia.url, '');
   }
 
   return '';

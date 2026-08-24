@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useCart } from "@/components/shop/CartContext";
 import type { ShopProduct } from "@/data/shop-products";
-import { getLocalizedHref } from "@/lib/utils";
+import { getLocalizedHref, getValidImageUrl } from "@/lib/utils";
 
 interface ProductCardProps {
   image: string | StaticImageData;
@@ -46,7 +46,9 @@ const ProductCard = ({
   const params = useParams();
   const lang = params?.lang || 'en';
   const { addItem } = useCart();
-  const imageSrc = typeof image === "string" ? image : (image as StaticImageData).src;
+  const imageSrc = getValidImageUrl(
+    typeof image === "string" ? image : (image as StaticImageData).src
+  );
 
   const handleAddToCart = () => {
     if (!id || price === undefined) return;
