@@ -549,14 +549,15 @@ export async function toggleProductStatus(
 // GET RELATED PRODUCTS
 export async function getRelatedProducts(
   productId: string,
-  categoryId: string,
+  categoryId?: string,
   limit: number = 4,
-  lang: LanguageCode = 'en'
+  lang: LanguageCode = 'en',
+  placement?: ProductPlacement
 ): Promise<ShopProductDB[]> {
   return unstable_cache(
     async () => {
       try {
-        const { data: products, error } = await supabase
+        let query = supabase
           .from('Product')
           .select(`
             *,
@@ -565,9 +566,18 @@ export async function getRelatedProducts(
             images:ProductImage(*),
             variants:ProductVariant(*)
           `)
-          .eq('categoryId', categoryId)
           .neq('id', productId)
-          .eq('isAvailable', true)
+          .eq('isAvailable', true);
+
+        if (categoryId) {
+          query = query.eq('categoryId', categoryId);
+        }
+
+        if (placement) {
+          query = query.eq('placement', placement);
+        }
+
+        const { data: products, error } = await query
           .order('createdAt', { ascending: false })
           .limit(limit);
 
@@ -579,7 +589,7 @@ export async function getRelatedProducts(
         return [];
       }
     },
-    ['related-products', productId, categoryId, String(limit), lang],
+    ['related-products', productId, categoryId || 'all', String(limit), lang, placement || 'all'],
     { tags: [CACHE_TAGS.PRODUCTS, `related-${productId}`], revalidate: 3600 }
   )();
 }

@@ -132,11 +132,54 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 metaDesc: '',
                 keywords: '',
             };
+        }
+    }
 
-            // Get related from static
-            relatedProducts = shopProducts
-                .filter((item) => item.id !== staticProduct.id && item.category === staticProduct.category)
-                .slice(0, 3)
+    if (!product) {
+        notFound();
+    }
+
+    if (product.placement === 'featured' || product.placement === 'topsale') {
+        redirect(getLocalizedHref(`/organica/${slug}`, lang));
+    }
+
+    // Fetch related products strictly from the shop collection
+    if (product) {
+        const currentProduct = product;
+
+        // 1. Try to get shop products from same category in DB
+        if (currentProduct.categorySlug) {
+            try {
+                const { getCategories } = await import('@/actions/category.actions');
+                const categories = await getCategories();
+                const category = categories.find(c => c.slug === currentProduct.categorySlug || c.slugAr === currentProduct.categorySlug);
+
+                if (category) {
+                    relatedProducts = await getRelatedProducts(currentProduct.id, category.id, 3, lang as any, 'shop');
+                }
+            } catch (e) {
+                console.error('Error fetching categories for related products:', e);
+            }
+        }
+
+        // 2. If fewer than 3 found in same category, get other shop products from DB
+        if (relatedProducts.length < 3) {
+            try {
+                const allProductsResult = await getProducts({ isAvailable: true, placement: 'shop', limit: 10, lang: lang as any });
+                const existingIds = new Set([currentProduct.id, ...relatedProducts.map(p => p.id)]);
+                const additional = allProductsResult.products.filter(p => !existingIds.has(p.id) && p.slug !== currentProduct.slug);
+                relatedProducts = [...relatedProducts, ...additional].slice(0, 3);
+            } catch (e) {
+                console.error('Error fetching additional shop products:', e);
+            }
+        }
+
+        // 3. If still fewer than 3, fallback to static shopProducts
+        if (relatedProducts.length < 3) {
+            const existingSlugs = new Set([currentProduct.slug, ...relatedProducts.map(p => p.slug)]);
+            const staticRemaining = shopProducts
+                .filter(p => !existingSlugs.has(p.slug))
+                .slice(0, 3 - relatedProducts.length)
                 .map(p => ({
                     id: p.id,
                     slug: p.slug,
@@ -171,37 +214,8 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                     metaDesc: '',
                     keywords: '',
                 }));
+            relatedProducts = [...relatedProducts, ...staticRemaining];
         }
-    } else {
-        // Get related from DB - try by category first
-        if (product && product.categorySlug) {
-            const currentProduct = product;
-            // Find category by slug to get ID
-            const { getCategories } = await import('@/actions/category.actions');
-            const categories = await getCategories();
-            const category = categories.find(c => c.slug === currentProduct.categorySlug || c.slugAr === currentProduct.categorySlug);
-
-            if (category) {
-                relatedProducts = await getRelatedProducts(currentProduct.id, category.id, 3, lang as any);
-            }
-        }
-
-        // If no related products found, get any 3 available products (excluding current)
-        if (product && relatedProducts.length === 0) {
-            const currentProduct = product;
-            const allProductsResult = await getProducts({ isAvailable: true, placement: 'shop', limit: 10, lang: lang as any });
-            relatedProducts = allProductsResult.products
-                .filter(p => p.id !== currentProduct.id)
-                .slice(0, 3);
-        }
-    }
-
-    if (product && (product.placement === 'featured' || product.placement === 'topsale')) {
-        redirect(getLocalizedHref(`/organica/${slug}`, lang));
-    }
-
-    if (!product) {
-        notFound();
     }
 
     const isRTL = lang === "ar";
@@ -345,45 +359,55 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                 </div>
                 {relatedProducts.length > 0 ? (
                     <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                        {relatedProducts.map((item) => (
-                            <article
-                                key={item.id}
-                                className="flex h-full flex-col rounded-2xl border border-emerald-100 bg-white/90 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
-                            >
-                                <div className="aspect-4/3 overflow-hidden rounded-t-2xl relative">
-                                    <Image
-                                        src={item.image}
-                                        alt={isRTL ? item.nameAr : item.name}
-                                        fill
-                                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                                        className="object-cover"
-                                        loading="lazy"
-                                    />
-                                </div>
-                                <div className="flex flex-1 flex-col gap-3 p-5">
-                                    <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">
-                                        {item.category}
-                                    </p>
-                                    <h3 className="text-lg font-semibold text-emerald-900">
-                                        {isRTL ? item.nameAr : item.name}
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground line-clamp-2">
-                                        {isRTL ? item.descriptionAr : item.description}
-                                    </p>
-                                    <div className="mt-auto flex items-center justify-between">
-                                        <p className="text-base font-semibold text-emerald-700">
-                                            {priceFormatter.format(item.price)}
+                        {relatedProducts.map((item) => {
+                            const itemName = isRTL ? item.nameAr : item.name;
+                            const itemDesc = isRTL ? item.descriptionAr : item.description;
+                            const itemHref = getLocalizedHref(`/shop/${item.slug}`, lang);
+
+                            return (
+                                <article
+                                    key={item.id}
+                                    className="group flex h-full flex-col rounded-2xl border border-emerald-100 bg-white/90 shadow-sm transition hover:-translate-y-1 hover:shadow-lg overflow-hidden"
+                                >
+                                    <Link href={itemHref} className="aspect-4/3 overflow-hidden rounded-t-2xl relative block" aria-label={itemName}>
+                                        <Image
+                                            src={item.image}
+                                            alt={itemName}
+                                            fill
+                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
+                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            loading="lazy"
+                                        />
+                                    </Link>
+                                    <div className="flex flex-1 flex-col gap-3 p-5">
+                                        <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">
+                                            {item.category}
                                         </p>
-                                        <Link
-                                            href={item.placement === 'shop' ? getLocalizedHref(`/shop/${item.slug}`, lang) : getLocalizedHref(`/organica/${item.slug}`, lang)}
-                                            className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:text-emerald-900"
-                                        >
-                                            {t.viewDetails}
+                                        <Link href={itemHref} aria-label={itemName}>
+                                            <h3 className="text-lg font-semibold text-emerald-900 group-hover:text-emerald-700 transition-colors line-clamp-2">
+                                                {itemName}
+                                            </h3>
                                         </Link>
+                                        <p className="text-sm text-muted-foreground line-clamp-2">
+                                            {itemDesc}
+                                        </p>
+                                        <div className="mt-auto flex items-center justify-between pt-3 border-t border-emerald-50">
+                                            <p className="text-base font-semibold text-emerald-700">
+                                                {priceFormatter.format(item.price)}
+                                            </p>
+                                            <Link
+                                                href={itemHref}
+                                                className="rounded-full border border-emerald-200 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:border-emerald-600 hover:text-emerald-900"
+                                                aria-label={`${t.viewDetails}: ${itemName}`}
+                                            >
+                                                {t.viewDetails}
+                                                <span className="sr-only">: {itemName}</span>
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                            </article>
-                        ))}
+                                </article>
+                            );
+                        })}
                     </div>
                 ) : (
                     <div className="text-center py-12 text-muted-foreground">
