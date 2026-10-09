@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   // Prevent Next.js from picking the parent folder lockfile as workspace root.
   turbopack: {
     root: __dirname,
