@@ -3,6 +3,9 @@ import { getCategories } from "@/actions/category.actions";
 import { PlacementProductsPageClient } from "@/components/admin/PlacementProductsPageClient";
 import { ShopProductDB, CategoryDB } from "@/types/product";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function FeaturedProductsPage() {
 
     let products: ShopProductDB[] = [];
@@ -11,7 +14,7 @@ export default async function FeaturedProductsPage() {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ placement: 'featured' }),
+            getProducts({ placement: 'featured', limit: 500 }),
             getCategories(),
         ]);
 

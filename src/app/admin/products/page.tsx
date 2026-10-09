@@ -4,6 +4,9 @@ import { ProductsPageClient } from "./ProductsPageClient";
 import { shopProducts, shopCategories } from "@/data/shop-products";
 import { ShopProductDB, CategoryDB } from "@/types/product";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function ProductsPage() {
 
     // Fetch from database with fallback to static data
@@ -13,7 +16,7 @@ export default async function ProductsPage() {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ placement: 'shop' }),
+            getProducts({ placement: 'shop', limit: 1000 }),
             getCategories(),
         ]);
 
