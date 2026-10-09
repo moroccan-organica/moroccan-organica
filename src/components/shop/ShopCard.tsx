@@ -33,7 +33,11 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
 
   return (
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
-      <Link href={getLocalizedHref(`/shop/${product.slug}`, lang)} className="relative h-64 overflow-hidden">
+      <Link 
+        href={getLocalizedHref(`/shop/${product.slug}`, lang)} 
+        className="relative h-64 overflow-hidden"
+        aria-label={localizedName}
+      >
         <SafeImage
           src={getValidImageUrl(product.image)}
           alt={localizedName}
@@ -66,7 +70,10 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
           <span className="uppercase tracking-wider font-medium">{product.category}</span>
         </div>
 
-        <Link href={getLocalizedHref(`/shop/${product.slug}`, lang)}>
+        <Link 
+          href={getLocalizedHref(`/shop/${product.slug}`, lang)}
+          aria-label={localizedName}
+        >
           <h3 className="text-xl font-playfair font-bold text-slate-900 mb-3 group-hover:text-accent transition-colors line-clamp-2">
             {localizedName}
           </h3>
@@ -89,8 +96,10 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
           <Link
             href={getLocalizedHref(`/shop/${product.slug}`, lang)}
             className="text-accent text-sm font-semibold flex items-center gap-1 hover:gap-2 transition-all"
+            aria-label={`${translations.viewDetails}: ${localizedName}`}
           >
             {translations.viewDetails}
+            <span className="sr-only">: {localizedName}</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
         </div>

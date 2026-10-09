@@ -74,7 +74,11 @@ const ProductCard = ({
       {/* Image - 4:3 Aspect Ratio */}
       <div className="relative aspect-4/3 rounded-xl overflow-hidden bg-muted">
         {slug ? (
-          <Link href={getLocalizedHref(`/${basePath}/${slug}`, lang as string)} className="absolute inset-0 z-0">
+          <Link 
+            href={getLocalizedHref(`/${basePath}/${slug}`, lang as string)} 
+            className="absolute inset-0 z-0"
+            aria-label={title}
+          >
             <Image
               src={imageSrc}
               alt={title}
@@ -114,7 +118,10 @@ const ProductCard = ({
       {/* Content */}
       <div className="p-6 flex flex-col grow relative z-10 bg-card">
         {slug ? (
-          <Link href={getLocalizedHref(`/${basePath}/${slug}`, lang as string)}>
+          <Link 
+            href={getLocalizedHref(`/${basePath}/${slug}`, lang as string)}
+            aria-label={title}
+          >
             <p className="heading-card text-foreground font-bold mb-2 hover:text-primary transition-colors">{title}</p>
           </Link>
         ) : (
