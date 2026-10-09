@@ -62,6 +62,8 @@ export function useBlogPosts(filters?: PostFilters) {
       search: filters?.search,
       status: filters?.status,
     }),
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
 
@@ -190,7 +192,8 @@ export function useBlogCategories() {
   return useQuery({
     queryKey: blogQueryKeys.categories(),
     queryFn: () => actions.getBlogCategories(),
-    staleTime: 10 * 60 * 1000,
+    staleTime: 0,
+    refetchOnMount: true,
   });
 }
 

@@ -372,12 +372,13 @@ export async function createProduct(input: CreateProductInput): Promise<{ succes
     const completeProduct = await getProductById(product.id);
 
     // Invalidate all product list caches (shop, home featured/topsale, admin)
+    // Invalidate all product list caches
     revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
     // Invalidate this specific product's detail page cache
     if (completeProduct?.slug) revalidateTag(CACHE_TAGS.PRODUCT(completeProduct.slug), 'default');
     if (completeProduct?.id) revalidateTag(CACHE_TAGS.PRODUCT(completeProduct.id), 'default');
-    // Invalidate admin pages (path-based, no lang needed for admin)
-    revalidatePath('/[lang]/admin/products', 'page');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/products');
 
     return { success: true, product: completeProduct || undefined };
   } catch (error: any) {
@@ -477,8 +478,8 @@ export async function updateProduct(
     // Invalidate this specific product's detail page cache
     revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
     if (updated?.slug) revalidateTag(CACHE_TAGS.PRODUCT(updated.slug), 'default');
-    // Invalidate admin pages
-    revalidatePath('/[lang]/admin/products', 'page');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/products');
 
     return { success: true, product: updated || undefined };
   } catch (error: any) {
@@ -509,8 +510,8 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; err
     // Invalidate all product list caches and the specific product cache
     revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
     revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
-    // Invalidate admin pages
-    revalidatePath('/[lang]/admin/products', 'page');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/products');
 
     return { success: true };
   } catch (error: any) {
@@ -535,6 +536,8 @@ export async function toggleProductStatus(
     // Invalidate all product lists (availability change affects all list pages)
     revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
     revalidateTag(CACHE_TAGS.PRODUCT(id), 'default');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/products');
 
     return { success: true };
   } catch (error: any) {

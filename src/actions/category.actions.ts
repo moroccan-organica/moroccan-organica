@@ -3,7 +3,7 @@
 import { supabaseAdmin } from '@/lib/supabase-admin';
 import { supabase } from '@/lib/supabase';
 
-import { revalidateTag } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { CACHE_TAGS } from '@/lib/cache-tags';
 import { CategoryDB, LanguageCode } from '@/types/product';
 
@@ -125,8 +125,9 @@ export async function createCategory(input: {
     const completeCategory = await getCategoryById(category.id);
 
     revalidateTag(CACHE_TAGS.CATEGORIES, 'default');
-    // Products may display category info — invalidate product lists too
     revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/categories');
 
     return { success: true, category: completeCategory || undefined };
   } catch (error: any) {
@@ -143,6 +144,8 @@ export async function deleteCategory(id: string): Promise<{ success: boolean; er
 
     revalidateTag(CACHE_TAGS.CATEGORIES, 'default');
     revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/categories');
 
     return { success: true };
   } catch (error: any) {

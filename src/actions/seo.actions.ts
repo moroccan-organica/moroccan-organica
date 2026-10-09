@@ -114,9 +114,9 @@ export async function updateSEOSettings(body: SEOSettings) {
             }
 
             revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
-            // Products also use global SEO for ogImage etc.
             revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
-            revalidatePath('/[lang]/admin/seo', 'page');
+            revalidatePath('/', 'layout');
+            revalidatePath('/admin/seo');
             return { success: true };
         } else {
             // Create fresh
@@ -148,7 +148,8 @@ export async function updateSEOSettings(body: SEOSettings) {
 
             revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
             revalidateTag(CACHE_TAGS.PRODUCTS, 'default');
-            revalidatePath('/[lang]/admin/seo', 'page');
+            revalidatePath('/', 'layout');
+            revalidatePath('/admin/seo');
             return { success: true };
         }
     } catch (error: any) {

@@ -197,28 +197,54 @@ export async function getBlogPosts(
   const { page = 1, pageSize = 10, categoryId, search, status } = options;
 
   try {
-    let query = supabaseAdmin
-      .from('BlogPost')
-      .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
+    let posts: SupabasePostRow[] | null = null;
+    let total: number | null = null;
 
-    if (status && status !== 'all') {
-      query = query.eq('status', status);
+    try {
+      const result = await supabaseAdmin
+        .from('BlogPost')
+        .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' })
+        .order('createdAt', { ascending: false })
+        .range((page - 1) * pageSize, page * pageSize - 1);
+
+      if (result.error) throw result.error;
+      posts = (result.data as SupabasePostRow[]) || [];
+      total = result.count;
+    } catch (joinError) {
+      console.warn('Joining relations failed, falling back to simple BlogPost query:', joinError);
+      let simpleQuery = supabaseAdmin
+        .from('BlogPost')
+        .select('*, category:BlogCategory(*)', { count: 'exact' });
+
+      if (status && status !== 'all') {
+        simpleQuery = simpleQuery.eq('status', status);
+      }
+      if (categoryId) {
+        simpleQuery = simpleQuery.eq('categoryId', categoryId);
+      }
+      if (search) {
+        const searchPattern = `%${search.toLowerCase()}%`;
+        simpleQuery = simpleQuery.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
+      }
+
+      const result = await simpleQuery
+        .order('createdAt', { ascending: false })
+        .range((page - 1) * pageSize, page * pageSize - 1);
+
+      if (result.error) {
+        // Last fallback: direct simple select
+        const direct = await supabaseAdmin
+          .from('BlogPost')
+          .select('*', { count: 'exact' })
+          .order('createdAt', { ascending: false })
+          .range((page - 1) * pageSize, page * pageSize - 1);
+        posts = (direct.data as SupabasePostRow[]) || [];
+        total = direct.count;
+      } else {
+        posts = (result.data as SupabasePostRow[]) || [];
+        total = result.count;
+      }
     }
-
-    if (categoryId) {
-      query = query.eq('categoryId', categoryId);
-    }
-
-    if (search) {
-      const searchPattern = `%${search.toLowerCase()}%`;
-      query = query.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
-    }
-
-    const { data: posts, count: total, error } = await query
-      .order('createdAt', { ascending: false })
-      .range((page - 1) * pageSize, page * pageSize - 1);
-
-    if (error) throw error;
 
     const formattedPosts: BlogPostFull[] = (posts || []).map((post: SupabasePostRow) => ({
       id: post.id,
@@ -524,8 +550,8 @@ export async function createBlogPost(input: BlogPostInput) {
       }
     }
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true, id: post.id, slug: post.slug };
   } catch (error: unknown) {
@@ -578,11 +604,10 @@ export async function updateBlogPost(postId: string, input: Partial<BlogPostInpu
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     if (existing?.slug) {
-      revalidatePath(`/[lang]/blog-details/${existing.slug}`);
       revalidateTag(CACHE_TAGS.BLOG_POST(existing.slug), 'default');
     }
     return { success: true };
@@ -600,8 +625,8 @@ export async function deleteBlogPost(postId: string) {
     const { error } = await supabaseAdmin.from('BlogPost').delete().eq('id', postId);
     if (error) throw error;
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
@@ -625,8 +650,8 @@ export async function publishBlogPost(postId: string) {
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
@@ -647,8 +672,8 @@ export async function archiveBlogPost(postId: string) {
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
@@ -669,8 +694,8 @@ export async function unarchiveBlogPost(postId: string) {
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/blog');
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag(CACHE_TAGS.BLOG_POSTS, 'default');
     return { success: true };
   } catch (error: unknown) {
@@ -734,7 +759,8 @@ export async function createBlogCategory(input: BlogCategoryInput) {
 
     if (error) throw error;
 
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag('blog_categories', 'default');
     return { success: true, data };
   } catch (error: unknown) {
@@ -763,7 +789,8 @@ export async function deleteBlogCategory(categoryId: string) {
     const { error } = await supabaseAdmin.from('BlogCategory').delete().eq('id', categoryId);
     if (error) throw error;
 
-    revalidatePath('/[lang]/admin/blog');
+    revalidatePath('/', 'layout');
+    revalidatePath('/admin/blog');
     revalidateTag('blog_categories', 'default');
     return { success: true };
   } catch (error: unknown) {

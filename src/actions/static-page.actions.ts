@@ -143,7 +143,8 @@ export async function updateStaticPage(id: string, input: StaticPageInput) {
 
         revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
         revalidateTag(CACHE_TAGS.STATIC_PAGE(systemName), 'default');
-        revalidatePath('/[lang]/admin/static-pages', 'page');
+        revalidatePath('/', 'layout');
+        revalidatePath('/admin/static-pages');
         return { success: true };
     } catch (error: any) {
         console.error('Error updating static page:', error);
@@ -166,7 +167,8 @@ export async function deleteStaticPage(id: string) {
         if (error) throw error;
 
         revalidateTag(CACHE_TAGS.STATIC_PAGES, 'default');
-        revalidatePath('/[lang]/admin/static-pages', 'page');
+        revalidatePath('/', 'layout');
+        revalidatePath('/admin/static-pages');
         return { success: true };
     } catch (error: any) {
         console.error('Error deleting static page:', error);
