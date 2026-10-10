@@ -115,66 +115,71 @@ export async function getProducts(options?: {
   page?: number;
   limit?: number;
   lang?: LanguageCode;
+  bypassCache?: boolean;
 }): Promise<{ products: ShopProductDB[]; total: number }> {
-  return unstable_cache(
-    async () => {
-      try {
-        const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50, lang = 'en' } = options || {};
+  const fetchProducts = async () => {
+    try {
+      const { categoryId, search, isAvailable, isFeatured, placement, page = 1, limit = 50, lang = 'en' } = options || {};
 
-        let query = supabase
-          .from('Product')
-          .select(`
-            *,
-            category:Category(*, translations:CategoryTranslation(*)),
-            translations:ProductTranslation(*),
-            images:ProductImage(*),
-            variants:ProductVariant(*)
-          `, { count: 'exact' });
+      const client = supabaseAdmin || supabase;
+      let query = client
+        .from('Product')
+        .select(`
+          *,
+          category:Category(*, translations:CategoryTranslation(*)),
+          translations:ProductTranslation(*),
+          images:ProductImage(*),
+          variants:ProductVariant(*)
+        `, { count: 'exact' });
 
-        if (categoryId) {
-          query = query.eq('categoryId', categoryId);
-        }
-
-        if (typeof isAvailable === 'boolean') {
-          query = query.eq('isAvailable', isAvailable);
-        }
-
-        if (typeof isFeatured === 'boolean') {
-          query = query.eq('isFeatured', isFeatured);
-        }
-
-        if (placement) {
-          query = query.eq('placement', placement);
-        }
-
-        if (search) {
-          const searchPattern = `%${search.toLowerCase()}%`;
-          // Complex OR filter in Supabase/PostgREST can be tricky with relations.
-          // This is a simplified version.
-          query = query.or(`sku.ilike.${searchPattern}`);
-          // Note: Searching in translations via 'or' on a relation is restricted in PostgREST unless using specific syntax.
-          // For now, we search in SKU. If we need deeper search, we might need a stored procedure.
-        }
-
-        const { data: products, count: total, error } = await query
-          .order('createdAt', { ascending: false })
-          .range((page - 1) * limit, page * limit - 1);
-
-        if (error) throw error;
-
-        return {
-          products: (products || []).map((product) => transformToShopProduct(product, lang as LanguageCode)),
-          total: total || 0,
-        };
-      } catch (error) {
-        console.error('Error fetching products:', error);
-        return { products: [], total: 0 };
+      if (categoryId) {
+        query = query.eq('categoryId', categoryId);
       }
-    },
+
+      if (typeof isAvailable === 'boolean') {
+        query = query.eq('isAvailable', isAvailable);
+      }
+
+      if (typeof isFeatured === 'boolean') {
+        query = query.eq('isFeatured', isFeatured);
+      }
+
+      if (placement) {
+        query = query.eq('placement', placement);
+      }
+
+      if (search) {
+        const searchPattern = `%${search.toLowerCase()}%`;
+        query = query.or(`sku.ilike.${searchPattern}`);
+      }
+
+      const { data: products, count: total, error } = await query
+        .order('createdAt', { ascending: false })
+        .range((page - 1) * limit, page * limit - 1);
+
+      if (error) throw error;
+
+      return {
+        products: (products || []).map((product) => transformToShopProduct(product, lang as LanguageCode)),
+        total: total || 0,
+      };
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      return { products: [], total: 0 };
+    }
+  };
+
+  if (options?.bypassCache) {
+    return fetchProducts();
+  }
+
+  return unstable_cache(
+    fetchProducts,
     ['all-products', options ? JSON.stringify(options) : 'default'],
     { tags: [CACHE_TAGS.PRODUCTS], revalidate: 3600 }
   )();
 }
+
 
 export async function getProductBySlug(slug: string, lang: LanguageCode = 'en'): Promise<ShopProductDB | null> {
   const getFromDb = async () => {

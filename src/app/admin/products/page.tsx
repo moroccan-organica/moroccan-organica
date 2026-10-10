@@ -16,7 +16,7 @@ export default async function ProductsPage() {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ placement: 'shop', limit: 1000 }),
+            getProducts({ placement: 'shop', limit: 1000, bypassCache: true }),
             getCategories(),
         ]);
 
