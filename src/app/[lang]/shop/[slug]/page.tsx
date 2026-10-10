@@ -369,13 +369,13 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                                     key={item.id}
                                     className="group flex h-full flex-col rounded-2xl border border-emerald-100 bg-white/90 shadow-sm transition hover:-translate-y-1 hover:shadow-lg overflow-hidden"
                                 >
-                                    <Link href={itemHref} className="aspect-4/3 overflow-hidden rounded-t-2xl relative block" aria-label={itemName}>
+                                    <Link href={itemHref} className="aspect-square overflow-hidden rounded-t-2xl relative block bg-slate-50/60 p-4" aria-label={itemName}>
                                         <Image
                                             src={item.image}
                                             alt={itemName}
                                             fill
                                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-                                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                                            className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
                                     </Link>

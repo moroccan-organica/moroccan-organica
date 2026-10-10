@@ -35,14 +35,14 @@ export function ShopCard({ product, lang, translations }: ShopCardProps) {
     <article className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
       <Link 
         href={getLocalizedHref(`/shop/${product.slug}`, lang)} 
-        className="relative h-64 overflow-hidden"
+        className="relative h-64 overflow-hidden bg-slate-50/50 flex items-center justify-center p-3"
         aria-label={localizedName}
       >
         <SafeImage
           src={getValidImageUrl(product.image)}
           alt={localizedName}
           fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
+          className="object-contain p-3 transition-transform duration-500 group-hover:scale-105"
         />
         {product.badge && (
           <div className="absolute top-4 left-4">
