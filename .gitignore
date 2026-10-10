@@ -50,3 +50,8 @@ next-env.d.ts
 *.db
 *.db-journal
 *.db-wal
+
+# Raw image uploads
+poder abad/
+*.traineddata
+
