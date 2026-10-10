@@ -72,11 +72,11 @@ const ProductCard = ({
   return (
     <div className="group flex flex-col h-full bg-card rounded-lg overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       {/* Image - Aspect Ratio */}
-      <div className="relative aspect-square rounded-xl overflow-hidden bg-muted/30 p-2 flex items-center justify-center">
+      <div className="relative aspect-square rounded-xl overflow-hidden bg-muted/20">
         {slug ? (
           <Link 
             href={getLocalizedHref(`/${basePath}/${slug}`, lang as string)} 
-            className="absolute inset-0 z-0 p-2 flex items-center justify-center"
+            className="absolute inset-0 z-0"
             aria-label={title}
           >
             <Image
@@ -85,7 +85,7 @@ const ProductCard = ({
               title={title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-              className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
             />
           </Link>
         ) : (
@@ -95,7 +95,7 @@ const ProductCard = ({
             title={title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
-            className="object-contain p-2 group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-105 transition-transform duration-500"
           />
         )}
         {/* Badge intentionally hidden per request */}

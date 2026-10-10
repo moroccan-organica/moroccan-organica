@@ -13,28 +13,31 @@ export function ProductImageGallery({ images, alt }: ProductImageGalleryProps) {
   const activeImage = images[activeIndex] ?? images[0];
 
   return (
-    <div className="space-y-4">
-      <div className="relative aspect-square w-full rounded-3xl border border-emerald-100/80 bg-white shadow-sm overflow-hidden p-3 sm:p-6 flex items-center justify-center group">
-        <SafeImage
-          src={activeImage}
-          alt={alt}
-          fill
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 75vw, 1200px"
-          className="object-contain p-2 sm:p-4 transition-transform duration-500 group-hover:scale-105"
-          priority
-        />
+    <div className="space-y-4 flex flex-col items-center w-full">
+      <div className="w-full flex justify-center">
+        <div className="relative rounded-3xl border border-emerald-100/70 bg-white shadow-sm overflow-hidden p-2 sm:p-4 w-fit max-w-full flex items-center justify-center">
+          <SafeImage
+            src={activeImage}
+            alt={alt}
+            width={750}
+            height={750}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 750px"
+            className="w-auto h-auto max-h-[560px] max-w-full object-contain block rounded-2xl transition-transform duration-300 hover:scale-[1.01]"
+            priority
+          />
+        </div>
       </div>
 
       {images.length > 1 && (
-        <div className="flex gap-3 overflow-x-auto pb-1" aria-label="Product gallery thumbnails">
+        <div className="flex gap-3 justify-center overflow-x-auto pb-1 max-w-full" aria-label="Product gallery thumbnails">
           {images.map((img, index) => (
             <button
               key={img + index}
               type="button"
               onClick={() => setActiveIndex(index)}
-              className={`relative h-20 w-20 aspect-square shrink-0 overflow-hidden rounded-2xl border p-1 bg-white transition ${index === activeIndex
-                  ? 'border-emerald-500 ring-2 ring-emerald-200 shadow-sm'
-                  : 'border-emerald-100 hover:border-emerald-300'
+              className={`relative size-20 shrink-0 overflow-hidden rounded-2xl border bg-white p-1 transition ${index === activeIndex
+                  ? 'border-emerald-600 ring-2 ring-emerald-200'
+                  : 'border-slate-200 hover:border-emerald-400'
                 }`}
               aria-label={`View image ${index + 1}`}
             >
