@@ -53,5 +53,6 @@ next-env.d.ts
 
 # Raw image uploads
 poder abad/
+transparent/
 *.traineddata
 
