@@ -39,6 +39,8 @@ export interface BlogPost {
   updated_at: string;
   view_count: number;
   read_time_minutes: number;
+  meta_title?: string;
+  meta_description?: string;
 }
 
 export interface BlogPostFull extends BlogPost {

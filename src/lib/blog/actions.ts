@@ -268,6 +268,8 @@ export async function getBlogPosts(
       updated_at: post.updatedAt,
       view_count: post.viewCount || 0,
       read_time_minutes: post.readTimeMinutes || 0,
+      meta_title: post.metaTitle || '',
+      meta_description: post.metaDescription || '',
       author: post.author
         ? {
           id: post.author.id,
@@ -361,6 +363,8 @@ export async function getBlogPostById(id: string): Promise<BlogPostFull | null> 
       updated_at: post.updatedAt,
       view_count: post.viewCount,
       read_time_minutes: post.readTimeMinutes,
+      meta_title: post.metaTitle || '',
+      meta_description: post.metaDescription || '',
       author: post.author
         ? {
           id: post.author.id,
@@ -419,6 +423,8 @@ export async function getPublishedPostBySlug(slug: string): Promise<BlogPostFull
         updated_at: post.updatedAt,
         view_count: post.viewCount,
         read_time_minutes: post.readTimeMinutes,
+        meta_title: post.metaTitle || '',
+        meta_description: post.metaDescription || '',
         author: post.author
           ? {
             id: post.author.id,

@@ -107,7 +107,12 @@ const CartDrawer = ({ isRTL = false, lang = "en" }: CartDrawerProps) => {
                                             <h4 className="font-medium text-foreground">
                                                 {isRTL ? item.product.nameAr : item.product.name}
                                             </h4>
-                                            <p className="text-primary font-semibold">
+                                            {item.product.volume && (
+                                                <span className="text-xs font-semibold text-emerald-800 bg-emerald-100/80 px-2 py-0.5 rounded-md inline-block w-fit mt-0.5">
+                                                    {item.product.volume}
+                                                </span>
+                                            )}
+                                            <p className="text-primary font-semibold mt-1">
                                                 ${item.product.price.toFixed(2)}
                                             </p>
                                             <div className="flex items-center gap-2 mt-auto">

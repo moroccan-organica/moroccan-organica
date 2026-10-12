@@ -1,106 +1,107 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 import { getDictionary } from "@/lib/dictionaries";
-import { getPublishedPostBySlug, incrementPostViewCount, getPublishedPosts } from "@/lib/blog/actions";
+import { getPublishedPostBySlug, getPublishedPosts } from "@/lib/blog/actions";
+import { getGlobalSeoSettings } from "@/lib/queries";
 import { BlogPostContent } from "@/components/blog/BlogPostContent";
 import { BlogPostTimeline } from "@/components/blog/BlogPostTimeline";
-import { ArrowLeft, Loader2 } from 'lucide-react';
+import { BlogHeaderImage } from "@/components/blog/BlogHeaderImage";
+import { BlogPostViewTracker } from "@/components/blog/BlogPostViewTracker";
+import { ArrowLeft } from 'lucide-react';
 import type { BlogPostFull } from "@/types/blog";
 import { getValidImageUrl, getLocalizedHref } from '@/lib/utils';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { articleSchema, breadcrumbSchema, renderSchemas } from '@/lib/seo/schemas';
 
-export default function BlogPostPage({ params }: { params: Promise<{ lang: string, slug: string }> }) {
-    const { lang, slug } = React.use(params);
-    const [dict, setDict] = useState<Record<string, unknown> | null>(null);
-    const [post, setPost] = useState<BlogPostFull | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
-    const [notFound, setNotFound] = useState(false);
-    const [imgSrc, setImgSrc] = useState('/images/placeholder.svg');
-    const [relatedPosts, setRelatedPosts] = useState<BlogPostFull[]>([]);
+interface PageProps {
+    params: Promise<{
+        lang: string;
+        slug: string;
+    }>;
+}
 
-    useEffect(() => {
-        getDictionary(lang, 'blog').then((d) => setDict(d as Record<string, unknown>));
-    }, [lang]);
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+    const { lang, slug } = await params;
+    const post = await getPublishedPostBySlug(slug);
+    const globalSeo = await getGlobalSeoSettings(lang);
 
-    useEffect(() => {
-        async function fetchPost() {
-            setIsLoading(true);
-            try {
-                const fetchedPost = await getPublishedPostBySlug(slug);
-                if (fetchedPost) {
-                    setPost(fetchedPost);
-                    setImgSrc(getValidImageUrl(fetchedPost.featured_image_url));
-                    await incrementPostViewCount(fetchedPost.id);
-                } else {
-                    setNotFound(true);
-                }
-            } catch (error) {
-                console.error('Error fetching post:', error);
-                setNotFound(true);
-            } finally {
-                setIsLoading(false);
-            }
-        }
-        fetchPost();
-    }, [slug]);
-
-    useEffect(() => {
-        async function fetchRelated() {
-            if (!post) return;
-            try {
-                const { posts } = await getPublishedPosts({
-                    page: 1,
-                    pageSize: 4,
-                    categoryId: post.category_id,
-                });
-                const filtered = posts.filter((p: BlogPostFull) => p.id !== post.id).slice(0, 3);
-                setRelatedPosts(filtered);
-            } catch (error) {
-                console.error('Error fetching related posts:', error);
-            }
-        }
-        fetchRelated();
-    }, [post]);
-
-    if (isLoading) {
-        return (
-            <main className="min-h-screen bg-white flex items-center justify-center">
-                <Loader2 className="h-8 w-8 animate-spin text-[#606C38]" />
-            </main>
-        );
+    if (!post) {
+        return {
+            title: 'Post Not Found',
+        };
     }
 
-    if (notFound || !post) {
-        return (
-            <main className="min-h-screen bg-white flex flex-col items-center justify-center gap-4">
-                <h1 className="text-2xl font-bold text-slate-900">Post not found</h1>
-                <Link
-                    href={getLocalizedHref('/blog', lang)}
-                    className="text-[#606C38] hover:underline flex items-center gap-2"
-                >
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Blog
-                </Link>
-            </main>
-        );
+    const isArabic = lang === 'ar';
+    const isFrench = lang === 'fr';
+    const postTitle = isArabic ? (post.title_ar || post.title) : (isFrench ? (post.title_fr || post.title) : post.title);
+    const postExcerpt = isArabic ? (post.excerpt_ar || post.excerpt) : (isFrench ? (post.excerpt_fr || post.excerpt) : post.excerpt);
+    const title = post.meta_title || postTitle;
+    const cleanDesc = post.meta_description || (postExcerpt
+        ? postExcerpt.replace(/<[^>]*>/g, '').trim().substring(0, 160)
+        : (post.content ? post.content.replace(/<[^>]*>/g, '').trim().substring(0, 160) : title));
+
+    const image = post.featured_image_url || globalSeo?.ogImage || undefined;
+    const canonicalUrl = `https://www.moroccanorganica.com${getLocalizedHref(`/blog-details/${slug}`, lang)}`;
+
+    return {
+        title: title,
+        description: cleanDesc,
+        openGraph: {
+            title: title,
+            description: cleanDesc,
+            images: image ? [image] : [],
+            url: canonicalUrl,
+            type: 'article',
+            publishedTime: post.published_at || post.created_at,
+            modifiedTime: post.updated_at || post.created_at,
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: title,
+            description: cleanDesc,
+            images: image ? [image] : [],
+        },
+        alternates: {
+            canonical: canonicalUrl,
+        },
+    };
+}
+
+export default async function BlogPostPage({ params }: PageProps) {
+    const { lang, slug } = await params;
+
+    const [post, dict] = await Promise.all([
+        getPublishedPostBySlug(slug),
+        getDictionary(lang, 'blog') as Promise<Record<string, unknown>>,
+    ]);
+
+    if (!post) {
+        notFound();
     }
 
-    if (!dict) return null;
+    let relatedPosts: BlogPostFull[] = [];
+    try {
+        const { posts } = await getPublishedPosts({
+            page: 1,
+            pageSize: 4,
+            categoryId: post.category_id,
+        });
+        relatedPosts = posts.filter((p: BlogPostFull) => p.id !== post.id).slice(0, 3);
+    } catch (error) {
+        console.error('Error fetching related posts:', error);
+    }
 
-    const defaultImage = '/images/placeholder.svg';
-
-    // Select content based on language
     const isArabic = lang === 'ar';
     const isFrench = lang === 'fr';
     const title = isArabic ? (post.title_ar || post.title) : (isFrench ? (post.title_fr || post.title) : post.title);
     const content = isArabic ? (post.content_ar || post.content) : (isFrench ? (post.content_fr || post.content) : post.content);
+    const featuredImageUrl = getValidImageUrl(post.featured_image_url);
 
     return (
         <main className="min-h-screen bg-white">
+            <BlogPostViewTracker postId={post.id} title={title} />
             {/* Article + Breadcrumb Structured Data */}
             <script
                 type="application/ld+json"
@@ -109,7 +110,7 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
                         articleSchema({
                             title: title,
                             description: content ? content.replace(/<[^>]*>/g, '').substring(0, 200) : title,
-                            image: imgSrc !== '/images/placeholder.svg' ? imgSrc : undefined,
+                            image: featuredImageUrl !== '/images/placeholder.svg' ? featuredImageUrl : undefined,
                             slug: slug,
                             lang: lang,
                             publishedAt: post.created_at,
@@ -127,13 +128,10 @@ export default function BlogPostPage({ params }: { params: Promise<{ lang: strin
             />
             {/* Post Header */}
             <div className="relative h-[70vh] min-h-[500px] w-full">
-                <Image
-                    src={imgSrc}
+                <BlogHeaderImage
+                    src={featuredImageUrl}
                     alt={title}
-                    fill
-                    className="object-cover"
-                    priority
-                    onError={() => setImgSrc(defaultImage)}
+                    defaultImage="/images/placeholder.svg"
                 />
                 <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent" />
                 <div className="absolute inset-0 flex items-end pb-20">

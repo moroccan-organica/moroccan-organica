@@ -259,7 +259,7 @@ export function productSchema(input: ProductSchemaInput) {
             {
                 "@type": "PropertyValue",
                 "name": "Certification",
-                "value": "ISO 22716 · ECOCERT · USDA Organic"
+                "value": "ISO 22716 · ECOCERT · USDA Organic. COA.SDS."
             }
         ]
     };

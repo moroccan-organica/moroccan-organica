@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { JSONContent } from '@tiptap/core';
 import Link from 'next/link';

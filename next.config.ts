@@ -84,6 +84,17 @@ const nextConfig: NextConfig = {
         destination: '/:lang/organica/argan-oil-of-morocco',
         permanent: true,
       },
+      // Blog post redirects
+      {
+        source: '/blog/:slug',
+        destination: '/blog-details/:slug',
+        permanent: true,
+      },
+      {
+        source: '/:lang(fr|ar)/blog/:slug',
+        destination: '/:lang/blog-details/:slug',
+        permanent: true,
+      },
     ];
   },
 };

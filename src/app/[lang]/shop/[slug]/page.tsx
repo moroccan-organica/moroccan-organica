@@ -6,8 +6,8 @@ import { getProductBySlug as getProductBySlugStatic, shopProducts } from "@/data
 import { getProductBySlug, getRelatedProducts, getProducts } from "@/actions/product.actions";
 import { getGlobalSeoSettings } from "@/lib/queries";
 import { Metadata } from "next";
-import AddToCartButton from "@/components/shop/AddToCartButton";
 import { ProductImageGallery } from "@/components/shop/ProductImageGallery";
+import ProductPurchaseSection from "@/components/shop/ProductPurchaseSection";
 import { ShopProductDB } from "@/types/product";
 import { HtmlContent } from "@/components/common/HtmlContent";
 import { getLocalizedHref } from "@/lib/utils";
@@ -29,10 +29,11 @@ const copy = {
         price: "Price",
         certification: "Certification",
         fulfillment: "Fulfillment",
-        fulfillmentValue: "Ships within 7-12 business days",
-        certificationValue: "ISO 22716 · ECOCERT · USDA Organic",
+        fulfillmentValue: "Ships within 4-9 business days",
+        certificationValue: "ISO 22716 · ECOCERT · USDA Organic. COA.SDS.",
         backToShop: "Back to shop",
         viewDetails: "View Details",
+        addToCart: "Add to Cart",
     },
     ar: {
         breadcrumbHome: "المتجر",
@@ -43,15 +44,36 @@ const copy = {
         descriptionTitle: "قصة المنتج",
         relatedTitle: "منتجات أخرى من نفس المجموعة",
         badgeFeatured: "الأكثر طلباً",
-        volume: "السعة",
+        volume: "الحجم",
         category: "الفئة",
         price: "السعر",
         certification: "الشهادات",
         fulfillment: "التجهيز والشحن",
-        fulfillmentValue: "الشحن خلال 7 - 12 يوم عمل",
-        certificationValue: "ISO 22716 · ECOCERT · USDA Organic",
+        fulfillmentValue: "الشحن خلال 4 - 9 أيام عمل",
+        certificationValue: "ISO 22716 · ECOCERT · USDA Organic. COA.SDS.",
         backToShop: "الرجوع للمتجر",
         viewDetails: "عرض التفاصيل",
+        addToCart: "أضف إلى السلة",
+    },
+    fr: {
+        breadcrumbHome: "Boutique",
+        specs: "Spécifications",
+        highlights: "Points forts",
+        requestQuote: "Demander un devis de gros",
+        whatsapp: "Discuter sur WhatsApp",
+        descriptionTitle: "Histoire du produit",
+        relatedTitle: "Plus de cette collection",
+        badgeFeatured: "Meilleure vente",
+        volume: "Taille",
+        category: "Catégorie",
+        price: "Prix",
+        certification: "Certification",
+        fulfillment: "Expédition",
+        fulfillmentValue: "Expédié sous 4 à 9 jours ouvrés",
+        certificationValue: "ISO 22716 · ECOCERT · USDA Organic. COA.SDS.",
+        backToShop: "Retour à la boutique",
+        viewDetails: "Voir les détails",
+        addToCart: "Ajouter au panier",
     },
 } as const;
 
@@ -220,7 +242,7 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
 
     const isRTL = lang === "ar";
     const locale = isRTL ? "ar-MA" : "en-US";
-    const t = copy[isRTL ? "ar" : "en"];
+    const t = lang === 'ar' ? copy.ar : (lang === 'fr' ? copy.fr : copy.en);
 
     const priceFormatter = new Intl.NumberFormat(locale, {
         style: "currency",
@@ -289,56 +311,11 @@ export default async function ProductDetailPage({ params }: { params: Params }) 
                         </h1>
                     </div>
 
-                    <div className="grid gap-4 rounded-3xl border border-emerald-100 bg-emerald-50/60 p-6 text-sm text-emerald-900 sm:grid-cols-2">
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.volume}</p>
-                            <p className="text-lg font-semibold text-emerald-900">{product.volume}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.category}</p>
-                            <p className="text-lg font-semibold text-emerald-900">{product.category}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.price}</p>
-                            <p className="text-2xl font-semibold text-emerald-700">
-                                {priceFormatter.format(product.price)}
-                            </p>
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.fulfillment}</p>
-                            <p className="text-lg font-semibold text-emerald-900">{t.fulfillmentValue}</p>
-                        </div>
-                    </div>
-
-                    <div className="grid gap-4 rounded-3xl border border-emerald-100 bg-white/90 p-6 shadow-sm">
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.specs}</p>
-                            <p className="text-sm text-muted-foreground">{t.certificationValue}</p>
-                        </div>
-                        <div>
-                            <p className="text-xs uppercase tracking-[0.3em] text-emerald-500">{t.highlights}</p>
-                            <ul className="mt-3 space-y-2">
-                                {product.notes.map((note) => (
-                                    <li key={note} className="flex items-center gap-3 text-sm text-emerald-900">
-                                        <span className="size-2 rounded-full bg-emerald-400" />
-                                        <span>{note}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap gap-3">
-                        <AddToCartButton product={product} label={isRTL ? "أضف إلى السلة" : "Add to Cart"} />
-                        <a
-                            href="https://wa.me/212600000000"
-                            target="_blank"
-                            rel="noreferrer"
-                            className="flex-1 min-w-[220px] rounded-full border border-emerald-200 px-6 py-3 text-center text-sm font-semibold text-emerald-700 transition hover:border-emerald-500 hover:text-emerald-900"
-                        >
-                            {t.whatsapp}
-                        </a>
-                    </div>
+                    <ProductPurchaseSection
+                        product={product}
+                        lang={lang}
+                        translations={t}
+                    />
                 </div>
             </section>
 
