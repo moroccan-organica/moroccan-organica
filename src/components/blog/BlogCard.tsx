@@ -5,7 +5,6 @@ import { JSONContent } from '@tiptap/core';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
 import { BlogPostFull } from '@/types/blog';
 
 import { getValidImageUrl, getLocalizedHref } from '@/lib/utils';
@@ -28,7 +27,6 @@ const extractText = (html: string | null | undefined): string => {
 
 export function BlogCard({ post, lang, translations }: BlogCardProps) {
   const [imgSrc, setImgSrc] = React.useState(getValidImageUrl(post.featured_image_url));
-  const categoryColor = post.category?.color || '#606C38';
 
   // Update imgSrc if post changes
   React.useEffect(() => {
@@ -60,16 +58,6 @@ export function BlogCard({ post, lang, translations }: BlogCardProps) {
           className="object-cover transition-transform duration-500 group-hover:scale-110"
           onError={() => setImgSrc(DEFAULT_IMAGE)}
         />
-        {post.category && (
-          <div className={`absolute top-4 ${isArabic ? 'right-4' : 'left-4'}`}>
-            <Badge
-              className="bg-white/90 text-slate-900 hover:bg-white border-none"
-              style={{ borderLeft: isArabic ? 'none' : `4px solid ${categoryColor}`, borderRight: isArabic ? `4px solid ${categoryColor}` : 'none' }}
-            >
-              {post.category.name}
-            </Badge>
-          </div>
-        )}
       </Link>
 
       <div className={`flex flex-col flex-1 p-6 ${isArabic ? 'text-right' : ''}`} dir={isArabic ? 'rtl' : 'ltr'}>

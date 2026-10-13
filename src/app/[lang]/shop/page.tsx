@@ -45,7 +45,7 @@ export default async function ShopPage({ params }: { params: Params }) {
 
     try {
         const [productsResult, categoriesResult] = await Promise.all([
-            getProducts({ isAvailable: true, placement: 'shop', lang: lang as any }),
+            getProducts({ isAvailable: true, placement: 'shop', lang: lang as any, limit: 500 }),
             getCategories(),
         ]);
 

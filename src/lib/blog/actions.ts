@@ -201,9 +201,22 @@ export async function getBlogPosts(
     let total: number | null = null;
 
     try {
-      const result = await supabaseAdmin
+      let query = supabaseAdmin
         .from('BlogPost')
-        .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' })
+        .select('*, author:User(id, name, image), category:BlogCategory(*), media:BlogMedia(url, mediaType)', { count: 'exact' });
+
+      if (status && status !== 'all') {
+        query = query.eq('status', status);
+      }
+      if (categoryId) {
+        query = query.eq('categoryId', categoryId);
+      }
+      if (search) {
+        const searchPattern = `%${search.toLowerCase()}%`;
+        query = query.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
+      }
+
+      const result = await query
         .order('createdAt', { ascending: false })
         .range((page - 1) * pageSize, page * pageSize - 1);
 
@@ -233,9 +246,22 @@ export async function getBlogPosts(
 
       if (result.error) {
         // Last fallback: direct simple select
-        const direct = await supabaseAdmin
+        let directQuery = supabaseAdmin
           .from('BlogPost')
-          .select('*', { count: 'exact' })
+          .select('*', { count: 'exact' });
+
+        if (status && status !== 'all') {
+          directQuery = directQuery.eq('status', status);
+        }
+        if (categoryId) {
+          directQuery = directQuery.eq('categoryId', categoryId);
+        }
+        if (search) {
+          const searchPattern = `%${search.toLowerCase()}%`;
+          directQuery = directQuery.or(`title.ilike.${searchPattern},excerpt.ilike.${searchPattern}`);
+        }
+
+        const direct = await directQuery
           .order('createdAt', { ascending: false })
           .range((page - 1) * pageSize, page * pageSize - 1);
         posts = (direct.data as SupabasePostRow[]) || [];
