@@ -22,6 +22,63 @@ interface ProductFormModalDBProps {
   defaultPlacement?: ProductPlacement;
 }
 
+type SizePriceRow = {
+  key: string;
+  sizeName: string;
+  price: number;
+  stock: number;
+};
+
+const newSizeRowKey = () =>
+  typeof crypto !== 'undefined' && crypto.randomUUID
+    ? crypto.randomUUID()
+    : `size-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
+const emptySizeRow = (): SizePriceRow => ({
+  key: newSizeRowKey(),
+  sizeName: '',
+  price: 0,
+  stock: 0,
+});
+
+function getInitialSizeVariants(product: ShopProductDB | null): SizePriceRow[] {
+  if (product?.variants && product.variants.length > 0) {
+    return product.variants.map((variant) => ({
+      key: variant.id || newSizeRowKey(),
+      sizeName: variant.sizeName || '',
+      price: Number(variant.price) || 0,
+      stock: Number(variant.stock) || 0,
+    }));
+  }
+
+  if (product?.volume || (product?.price && product.price > 0)) {
+    return [{
+      key: newSizeRowKey(),
+      sizeName: product.volume || '',
+      price: Number(product.price) || 0,
+      stock: Number(product.stock) || 0,
+    }];
+  }
+
+  return [emptySizeRow()];
+}
+
+function slugifySize(sizeName: string): string {
+  return sizeName.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+function buildVariantSku(baseSku: string, sizeName: string, index: number, used: Set<string>): string {
+  const slug = slugifySize(sizeName) || `size-${index + 1}`;
+  let sku = `${baseSku}-${slug}`;
+  let suffix = 2;
+  while (used.has(sku)) {
+    sku = `${baseSku}-${slug}-${suffix}`;
+    suffix += 1;
+  }
+  used.add(sku);
+  return sku;
+}
+
 const getInitialFormData = (product: ShopProductDB | null, categories: CategoryDB[], defaultPlacement: ProductPlacement = 'shop') => {
   const category = categories.find(c => c.name === product?.category);
 
@@ -50,9 +107,6 @@ const getInitialFormData = (product: ShopProductDB | null, categories: CategoryD
     description: product?.description || '',
     descriptionAr: product?.descriptionAr || '',
     descriptionFr: product?.descriptionFr || '',
-    price: product?.price || 0,
-    stock: product?.stock || 0,
-    volume: product?.volume || '',
     badge: product?.badge || '',
     images: initialImages,
     notes: product?.notes || [],
@@ -61,6 +115,7 @@ const getInitialFormData = (product: ShopProductDB | null, categories: CategoryD
     isTopSale: product?.isTopSale ?? false,
     placement: (product?.placement || defaultPlacement) as ProductPlacement,
     sku: product?.sku || '',
+    sizeVariants: getInitialSizeVariants(product),
     metaTitle: product?.metaTitle || '',
     metaTitleAr: product?.metaTitleAr || '',
     metaTitleFr: product?.metaTitleFr || '',
@@ -115,16 +170,36 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
     }
     setError(null);
 
+    const isShop = formData.placement === 'shop';
+    const productSku = formData.sku || `SKU-${Date.now()}`;
+    const filledSizes = formData.sizeVariants.filter((row) => row.sizeName.trim());
+
+    if (isShop && filledSizes.length === 0) {
+      setError('Please add at least one size and its price (e.g. 100 ml — $5).');
+      return;
+    }
+
+    const usedSkus = new Set<string>();
+    const variants = isShop
+      ? filledSizes.map((row, index) => ({
+          sku: buildVariantSku(productSku, row.sizeName, index, usedSkus),
+          sizeName: row.sizeName.trim(),
+          price: Number(row.price) || 0,
+          stock: Number(row.stock) || 0,
+        }))
+      : [];
+    const basePrice = variants.length > 0 ? Math.min(...variants.map((v) => v.price)) : 0;
+    const stock = variants.reduce((sum, v) => sum + (v.stock || 0), 0);
+
     startTransition(async () => {
       try {
         if (product) {
           // Update existing product
-          const isShop = formData.placement === 'shop';
           const updateInput: UpdateProductInput = {
             categoryId: formData.categoryId,
-            basePrice: isShop ? formData.price : 0,
+            basePrice,
             sku: formData.sku,
-            stock: isShop ? formData.stock : 0,
+            stock,
             isAvailable: formData.isAvailable,
             isFeatured: formData.isFeatured,
             isTopSale: formData.isTopSale,
@@ -168,15 +243,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               url: img.url,
               isPrimary: img.isPrimary
             })),
-
-            variants: isShop && formData.volume ? [
-              {
-                sku: formData.sku + '-default',
-                sizeName: formData.volume,
-                price: formData.price,
-                stock: formData.stock,
-              }
-            ] : [],
+            variants,
           };
 
           const result = await updateProduct(product.id, updateInput);
@@ -187,12 +254,11 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
           }
         } else {
           // Create new product
-          const isShop = formData.placement === 'shop';
           const createInput: CreateProductInput = {
             categoryId: formData.categoryId,
-            basePrice: isShop ? formData.price : 0,
-            sku: formData.sku || `SKU-${Date.now()}`,
-            stock: isShop ? formData.stock : 0,
+            basePrice,
+            sku: productSku,
+            stock,
             isAvailable: formData.isAvailable,
             isFeatured: formData.isFeatured,
             isTopSale: formData.isTopSale,
@@ -236,15 +302,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
               url: img.url,
               isPrimary: img.isPrimary
             })),
-
-            variants: isShop && formData.volume ? [
-              {
-                sku: (formData.sku || `SKU-${Date.now()}`) + '-default',
-                sizeName: formData.volume,
-                price: formData.price,
-                stock: formData.stock,
-              }
-            ] : [],
+            variants,
           };
 
           const result = await createProduct(createInput);
@@ -257,6 +315,34 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       }
+    });
+  };
+
+  const updateSizeRow = (key: string, field: keyof Omit<SizePriceRow, 'key'>, value: string | number) => {
+    setFormData((prev) => ({
+      ...prev,
+      sizeVariants: prev.sizeVariants.map((row) =>
+        row.key === key ? { ...row, [field]: value } : row
+      ),
+    }));
+  };
+
+  const addSizeRow = () => {
+    setFormData((prev) => ({
+      ...prev,
+      sizeVariants: [...prev.sizeVariants, emptySizeRow()],
+    }));
+  };
+
+  const removeSizeRow = (key: string) => {
+    setFormData((prev) => {
+      if (prev.sizeVariants.length <= 1) {
+        return { ...prev, sizeVariants: [emptySizeRow()] };
+      }
+      return {
+        ...prev,
+        sizeVariants: prev.sizeVariants.filter((row) => row.key !== key),
+      };
     });
   };
 
@@ -415,7 +501,7 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Category</label>
                   <select
@@ -430,46 +516,6 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                     ))}
                   </select>
                 </div>
-
-                {formData.placement === 'shop' && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Price (USD)</label>
-                      <Input
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        value={formData.price}
-                        onChange={(e) => setFormData(prev => ({ ...prev, price: parseFloat(e.target.value) || 0 }))}
-                        placeholder="0.00"
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-slate-700 mb-2">Stock Inventory</label>
-                      <Input
-                        type="number"
-                        min="0"
-                        value={formData.stock}
-                        onChange={(e) => setFormData(prev => ({ ...prev, stock: parseInt(e.target.value) || 0 }))}
-                        placeholder="0"
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 pt-6 border-t border-slate-50">
-                {formData.placement === 'shop' && (
-                  <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">Volume/Size</label>
-                    <Input
-                      value={formData.volume}
-                      onChange={(e) => setFormData(prev => ({ ...prev, volume: e.target.value }))}
-                      placeholder="e.g., 5 L"
-                    />
-                  </div>
-                )}
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Visual Badge</label>
                   <Input
@@ -479,6 +525,82 @@ export function ProductFormModalDB({ isOpen, onClose, product, categories, onSav
                   />
                 </div>
               </div>
+
+              {formData.placement === 'shop' && (
+                <div className="mt-6 pt-6 border-t border-slate-50">
+                  <div className="flex items-center justify-between mb-2">
+                    <div>
+                      <label className="block text-sm font-bold text-slate-700">Sizes & Prices</label>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        Each size has its own price. Example: 100 ml = $5, 5 L = $45.
+                      </p>
+                    </div>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={addSizeRow}
+                      className="shrink-0 border-[#606C38] text-[#606C38] hover:bg-[#606C38] hover:text-white"
+                    >
+                      <Plus className="h-4 w-4 mr-1.5" />
+                      Add size
+                    </Button>
+                  </div>
+
+                  <div className="hidden md:grid md:grid-cols-[1fr_140px_120px_40px] gap-3 mb-2 px-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Size / Volume</span>
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Price (USD)</span>
+                    <span className="text-[11px] font-bold uppercase tracking-wide text-slate-400">Stock</span>
+                    <span className="sr-only">Remove</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    {formData.sizeVariants.map((row) => (
+                      <div
+                        key={row.key}
+                        className="grid grid-cols-1 md:grid-cols-[1fr_140px_120px_40px] gap-3 items-end bg-slate-50/80 border border-slate-100 rounded-xl p-3 md:p-0 md:bg-transparent md:border-0"
+                      >
+                        <div>
+                          <label className="md:hidden block text-xs font-bold text-slate-500 mb-1">Size / Volume</label>
+                          <Input
+                            value={row.sizeName}
+                            onChange={(e) => updateSizeRow(row.key, 'sizeName', e.target.value)}
+                            placeholder="e.g., 100 ml"
+                          />
+                        </div>
+                        <div>
+                          <label className="md:hidden block text-xs font-bold text-slate-500 mb-1">Price (USD)</label>
+                          <Input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={row.price}
+                            onChange={(e) => updateSizeRow(row.key, 'price', parseFloat(e.target.value) || 0)}
+                            placeholder="0.00"
+                          />
+                        </div>
+                        <div>
+                          <label className="md:hidden block text-xs font-bold text-slate-500 mb-1">Stock</label>
+                          <Input
+                            type="number"
+                            min="0"
+                            value={row.stock}
+                            onChange={(e) => updateSizeRow(row.key, 'stock', parseInt(e.target.value, 10) || 0)}
+                            placeholder="0"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeSizeRow(row.key)}
+                          className="h-10 w-10 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors"
+                          title="Remove size"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="mt-6 flex items-center gap-4 py-3 px-4 bg-slate-50 rounded-lg border border-slate-100">
                 <Switch

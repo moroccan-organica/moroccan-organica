@@ -342,8 +342,8 @@ export function ProductsPageClient({
                 <tr>
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Product</th>
                   <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Category</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Volume</th>
-                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Price</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Sizes</th>
+                  <th className="text-left px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">From</th>
                   <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Stock</th>
                   <th className="text-center px-4 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Active</th>
                   <th className="text-right px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
@@ -384,9 +384,28 @@ export function ProductsPageClient({
                         {product.category}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 text-sm text-slate-600">{product.volume}</td>
                     <td className="px-6 py-4">
-                      <span className="font-semibold text-[#606C38]">${product.price}</span>
+                      <div className="flex flex-wrap gap-1">
+                        {((product.variants && product.variants.length > 0)
+                          ? product.variants
+                          : (product.volume ? [{ sizeName: product.volume, price: product.price }] : [])
+                        ).map((variant, index) => (
+                          <span
+                            key={`${product.id}-size-${index}`}
+                            className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] text-slate-600"
+                          >
+                            {variant.sizeName}
+                            <span className="font-semibold text-[#606C38]">${Number(variant.price)}</span>
+                          </span>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="font-semibold text-[#606C38]">
+                        {product.variants && product.variants.length > 1
+                          ? `from $${Math.min(...product.variants.map((v) => Number(v.price)))}`
+                          : `$${product.price}`}
+                      </span>
                     </td>
                     <td className="px-6 py-4 text-center">
                       <span className={cn(
@@ -501,8 +520,16 @@ export function ProductsPageClient({
                   <h3 className="font-semibold text-slate-900 mb-1">{product.name}</h3>
                   <p className="text-sm text-slate-500 line-clamp-2 mb-3">{product.description}</p>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-lg font-bold text-[#606C38]">${product.price}</span>
-                    <span className="text-sm text-slate-400">{product.volume}</span>
+                    <span className="text-lg font-bold text-[#606C38]">
+                      {product.variants && product.variants.length > 1
+                        ? `from $${Math.min(...product.variants.map((v) => Number(v.price)))}`
+                        : `$${product.price}`}
+                    </span>
+                    <span className="text-sm text-slate-400 text-right max-w-[50%] truncate">
+                      {product.variants && product.variants.length > 0
+                        ? product.variants.map((v) => v.sizeName).join(' · ')
+                        : product.volume}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between mb-4">
                     <span className="text-[10px] uppercase font-bold text-slate-400">Inventory</span>

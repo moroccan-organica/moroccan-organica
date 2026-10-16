@@ -54,6 +54,18 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
 
   const variants = product.variants || [];
   const firstVariant = variants[0];
+  const variantPrices = variants
+    .map((v: any) => Number(v.price))
+    .filter((n: number) => !Number.isNaN(n));
+  const displayPrice = variantPrices.length > 0
+    ? Math.min(...variantPrices)
+    : Number(product.basePrice);
+  const displayStock = variants.length > 0
+    ? variants.reduce((sum: number, v: any) => sum + (Number(v.stock) || 0), 0)
+    : product.stock;
+  const displayVolume = variants.length > 1
+    ? variants.map((v: any) => v.sizeName).filter(Boolean).join(' · ')
+    : (firstVariant?.sizeName || '');
 
   return {
     id: product.id,
@@ -63,7 +75,7 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
     image: mainImage,
     gallery,
     badge: product.isFeatured ? 'featured' : product.isTopSale ? 'bestseller' : undefined,
-    volume: firstVariant?.sizeName || '',
+    volume: displayVolume,
     name: translation?.name || '',
     nameAr: arTranslation?.name || translation?.name || '',
     nameFr: frTranslation?.name || translation?.name || '',
@@ -77,8 +89,8 @@ function transformToShopProduct(product: any, preferredLang: LanguageCode = 'en'
     detailsAr: arTranslation?.details || translation?.details || '',
     detailsFr: frTranslation?.details || translation?.details || '',
     notes: [],
-    price: Number(product.basePrice),
-    stock: product.stock,
+    price: displayPrice,
+    stock: displayStock,
     isAvailable: product.isAvailable,
     isFeatured: product.isFeatured,
     isTopSale: product.isTopSale,
@@ -466,14 +478,19 @@ export async function updateProduct(
 
     // Update variants
     if (input.variants) {
-      await supabaseAdmin.from('ProductVariant').delete().eq('productId', id);
-      await supabaseAdmin.from('ProductVariant').insert(input.variants.map(v => ({
-        productId: id,
-        sku: v.sku,
-        sizeName: v.sizeName,
-        price: v.price,
-        stock: v.stock || 0,
-      })));
+      const { error: delVarError } = await supabaseAdmin.from('ProductVariant').delete().eq('productId', id);
+      if (delVarError) throw delVarError;
+
+      if (input.variants.length > 0) {
+        const { error: insVarError } = await supabaseAdmin.from('ProductVariant').insert(input.variants.map(v => ({
+          productId: id,
+          sku: v.sku,
+          sizeName: v.sizeName,
+          price: v.price,
+          stock: v.stock || 0,
+        })));
+        if (insVarError) throw insVarError;
+      }
     }
 
     const updated = await getProductById(id);
