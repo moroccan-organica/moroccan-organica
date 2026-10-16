@@ -1,13 +1,15 @@
 "use client";
 
-import { useImperativeHandle, forwardRef, useState } from "react";
+import { useImperativeHandle, forwardRef, useMemo, useState } from "react";
 import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 import { Elements, PaymentElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 
-const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+const publishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY?.trim();
 const stripePromise = publishableKey ? loadStripe(publishableKey) : null;
+
+const MIN_AMOUNT_CENTS = 50;
 
 export interface StripeElementsHandle {
     createPaymentMethod: (billingDetails?: {
@@ -28,10 +30,11 @@ interface StripeElementsProps {
     amount: number;
     onPaymentMethodCreated: (paymentMethodId: string) => void;
     onError: (error: string) => void;
+    onReadyChange?: (ready: boolean) => void;
 }
 
 const StripePaymentForm = forwardRef<StripeElementsHandle, Omit<StripeElementsProps, "amount">>(
-    ({ onPaymentMethodCreated, onError }, ref) => {
+    ({ onPaymentMethodCreated, onError, onReadyChange }, ref) => {
         const stripe = useStripe();
         const elements = useElements();
         const [error, setError] = useState<string | null>(null);
@@ -57,9 +60,17 @@ const StripePaymentForm = forwardRef<StripeElementsHandle, Omit<StripeElementsPr
             }
 
             // Get the PaymentElement
-            const paymentElement = elements.getElement('payment');
+            if (!isReady) {
+                const errorMsg = "Payment form is still loading. Please wait a moment and try again.";
+                setError(errorMsg);
+                onError(errorMsg);
+                return null;
+            }
+
+            const paymentElement = elements.getElement("payment");
             if (!paymentElement) {
-                const errorMsg = "Payment form not ready. Please wait a moment and try again.";
+                const errorMsg =
+                    "Payment form failed to load. Refresh the page or try another browser (disable ad blockers).";
                 setError(errorMsg);
                 onError(errorMsg);
                 return null;
@@ -136,6 +147,15 @@ const StripePaymentForm = forwardRef<StripeElementsHandle, Omit<StripeElementsPr
                     <PaymentElement
                         onReady={() => {
                             setIsReady(true);
+                            onReadyChange?.(true);
+                        }}
+                        onLoadError={(event) => {
+                            const message =
+                                event.error?.message ||
+                                "Could not load the payment form. Check your Stripe live account activation and API keys.";
+                            setError(message);
+                            onError(message);
+                            onReadyChange?.(false);
                         }}
                         options={{
                             layout: "tabs",
@@ -164,7 +184,22 @@ const StripePaymentForm = forwardRef<StripeElementsHandle, Omit<StripeElementsPr
 StripePaymentForm.displayName = "StripePaymentForm";
 
 export const StripeElements = forwardRef<StripeElementsHandle, StripeElementsProps>(
-    ({ amount, onPaymentMethodCreated, onError }, ref) => {
+    ({ amount, onPaymentMethodCreated, onError, onReadyChange }, ref) => {
+        const amountInCents = Math.round(amount * 100);
+
+        const options: StripeElementsOptions = useMemo(
+            () => ({
+                mode: "payment",
+                amount: amountInCents,
+                currency: "usd",
+                paymentMethodCreation: "manual",
+                appearance: {
+                    theme: "stripe",
+                },
+            }),
+            [amountInCents]
+        );
+
         if (!stripePromise) {
             return (
                 <Alert variant="destructive">
@@ -176,22 +211,39 @@ export const StripeElements = forwardRef<StripeElementsHandle, StripeElementsPro
             );
         }
 
-        const options: StripeElementsOptions = {
-            mode: "payment",
-            amount: Math.round(amount * 100), // Convert to cents
-            currency: "usd",
-            paymentMethodCreation: "manual", // Required for createPaymentMethod
-            appearance: {
-                theme: "stripe",
-            },
-        };
+        if (amountInCents < MIN_AMOUNT_CENTS) {
+            return (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                        Order total must be at least $0.50 USD to pay by card.
+                    </AlertDescription>
+                </Alert>
+            );
+        }
+
+        if (!publishableKey?.startsWith("pk_")) {
+            return (
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertDescription>
+                        Invalid Stripe publishable key. Use pk_live_... from the same Stripe account as your secret key.
+                    </AlertDescription>
+                </Alert>
+            );
+        }
 
         return (
-            <Elements stripe={stripePromise} options={options}>
+            <Elements
+                key={`stripe-elements-${amountInCents}`}
+                stripe={stripePromise}
+                options={options}
+            >
                 <StripePaymentForm
                     ref={ref}
                     onPaymentMethodCreated={onPaymentMethodCreated}
                     onError={onError}
+                    onReadyChange={onReadyChange}
                 />
             </Elements>
         );

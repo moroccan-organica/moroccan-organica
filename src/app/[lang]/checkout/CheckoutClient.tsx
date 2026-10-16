@@ -128,6 +128,7 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
     const total = subtotal + shipping + tax;
     const [, setStripePaymentMethodId] = useState<string | null>(null);
     const [stripeError, setStripeError] = useState<string | null>(null);
+    const [stripeFormReady, setStripeFormReady] = useState(false);
     const [paypalError, setPaypalError] = useState<string | null>(null);
     const stripeElementsRef = useRef<StripeElementsHandle>(null);
 
@@ -570,7 +571,13 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                             <CardContent className="space-y-4">
                                 <RadioGroup
                                     value={paymentMethod}
-                                    onValueChange={(value) => setValue("paymentMethod", value as "stripe" | "paypal")}
+                                    onValueChange={(value) => {
+                                        setValue("paymentMethod", value as "stripe" | "paypal");
+                                        if (value === "stripe") {
+                                            setStripeFormReady(false);
+                                            setStripeError(null);
+                                        }
+                                    }}
                                 >
                                     {/* Stripe Option */}
                                     <div className="flex items-start space-x-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors">
@@ -636,6 +643,7 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                             <StripeElements
                                                 ref={stripeElementsRef}
                                                 amount={total}
+                                                onReadyChange={setStripeFormReady}
                                                 onPaymentMethodCreated={(paymentMethodId) => {
                                                     setStripePaymentMethodId(paymentMethodId);
                                                     setStripeError(null);
@@ -707,7 +715,11 @@ export function CheckoutClient({ dict, lang }: CheckoutClientProps) {
                                     <Button
                                         type="submit"
                                         className="w-full btn-accent py-6 text-lg"
-                                        disabled={isProcessing || paymentMethod === "paypal"}
+                                        disabled={
+                                            isProcessing ||
+                                            paymentMethod === "paypal" ||
+                                            (paymentMethod === "stripe" && !stripeFormReady)
+                                        }
                                     >
                                         {isProcessing ? (
                                             <>
