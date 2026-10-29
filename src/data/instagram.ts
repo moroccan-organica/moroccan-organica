@@ -9,68 +9,99 @@ export interface InstagramPost {
 
 export const instagramPosts: InstagramPost[] = [
   {
-    id: "1",
-    type: "reel",
-    image: "/images/products/cosmetic-argan-oil-handmade.webp",
-    url: "https://www.instagram.com/reel/DIZ8E-wiTa1/",
-    caption: "100% Pure Organic Moroccan Argan Oil • Liquid Gold",
-    likes: "1.2k",
+    "id": "1",
+    "type": "reel",
+    "image": "/images/instagram/reel-DVhO0SiDLNb.jpg",
+    "url": "https://www.instagram.com/reel/DVhO0SiDLNb/",
+    "caption": "Coffee & Cacao Scrub • Natural Exfoliating & Glowing Skin",
+    "likes": "5"
   },
   {
-    id: "2",
-    type: "post",
-    image: "/images/products/blue-nila-powder.webp",
-    url: "https://www.instagram.com/p/DQppdpaDFsv/",
-    caption: "Authentic Moroccan Blue Nila Powder for glowing skin",
-    likes: "856",
+    "id": "2",
+    "type": "reel",
+    "image": "/images/instagram/reel-DVhObbxDOLh.jpg",
+    "url": "https://www.instagram.com/reel/DVhObbxDOLh/",
+    "caption": "Clay Mask with Orange Blossom 🌸 Purifies & Refreshes",
+    "likes": "10"
   },
   {
-    id: "3",
-    type: "reel",
-    image: "/images/products/prickly-pear-cactus-scrub.webp",
-    url: "https://www.instagram.com/reel/DIeyk5qMkUn/",
-    caption: "Cold-Pressed Prickly Pear Seed Oil • Ultimate Anti-Aging",
-    likes: "2.1k",
+    "id": "3",
+    "type": "reel",
+    "image": "/images/instagram/reel-DVhOIdkjJbK.jpg",
+    "url": "https://www.instagram.com/reel/DVhOIdkjJbK/",
+    "caption": "Nourishing Clay Mask with Natural Moroccan Honey ✨",
+    "likes": "2"
   },
   {
-    id: "4",
-    type: "reel",
-    image: "/images/products/kessa-exfoliating-glove.webp",
-    url: "https://www.instagram.com/moroccanorganic/reel/DHmgxwMCN8O/",
-    caption: "Traditional Moroccan Hammam Ritual with Kessa Glove",
-    likes: "1.5k",
+    "id": "4",
+    "type": "reel",
+    "image": "/images/instagram/reel-DU5kA1GDCe9.jpg",
+    "url": "https://www.instagram.com/reel/DU5kA1GDCe9/",
+    "caption": "Authentic Aker Fassi Moroccan Black Soap • Traditional Spa Ritual",
+    "likes": "6"
   },
   {
-    id: "5",
-    type: "post",
-    image: "/images/products/black-soap-argan-oil.webp",
-    url: "https://www.instagram.com/p/DSZaQc7jNwM/",
-    caption: "Organic Beldi Black Soap with Pure Argan & Olive Oil",
-    likes: "940",
+    "id": "5",
+    "type": "reel",
+    "image": "/images/instagram/reel-DU5jkPoDE9c.jpg",
+    "url": "https://www.instagram.com/reel/DU5jkPoDE9c/",
+    "caption": "Moroccan Nila Sabounia Traditional Black Soap from the Sahara",
+    "likes": "7"
   },
   {
-    id: "6",
-    type: "post",
-    image: "/images/products/pure-natural-rose-water.webp",
-    url: "https://www.instagram.com/p/DQ_mI8kCFaH/",
-    caption: "Pure Moroccan Rose Water distilled in Kelaat M'Gouna",
-    likes: "1.1k",
+    "id": "6",
+    "type": "reel",
+    "image": "/images/instagram/reel-DUEAH1hjPzk.jpg",
+    "url": "https://www.instagram.com/reel/DUEAH1hjPzk/",
+    "caption": "Authentic Moroccan Cosmetics Supplier • Direct from Source",
+    "likes": "9"
   },
   {
-    id: "7",
-    type: "post",
-    image: "/images/products/aker-fassi-powder.webp",
-    url: "https://www.instagram.com/moroccanorganic/p/DHmXECqC9vb/",
-    caption: "Natural Moroccan Aker Fassi Clay Pot for Lips & Cheeks",
-    likes: "780",
+    "id": "7",
+    "type": "reel",
+    "image": "/images/instagram/reel-DUD-DsbDJs5.jpg",
+    "url": "https://www.instagram.com/reel/DUD-DsbDJs5/",
+    "caption": "Crème au Beurre Corporel • Intense Hydration & Softness",
+    "likes": "6"
   },
   {
-    id: "8",
-    type: "reel",
-    image: "/images/moroccan-organic-cosmetics-private-label.jpg",
-    url: "https://www.instagram.com/reel/DTONNiiDCSQ/",
-    caption: "Sustainable Sourcing directly from Moroccan Cooperatives",
-    likes: "3.4k",
+    "id": "8",
+    "type": "reel",
+    "image": "/images/instagram/reel-DUD9fXLDKvr.jpg",
+    "url": "https://www.instagram.com/reel/DUD9fXLDKvr/",
+    "caption": "Moroccan Nila Cream • Natural Brightening & Radiance",
+    "likes": "6"
   },
+  {
+    "id": "9",
+    "type": "reel",
+    "image": "/images/instagram/reel-DUD82pUjFM9.jpg",
+    "url": "https://www.instagram.com/reel/DUD82pUjFM9/",
+    "caption": "Moroccan Sidr Herbal Body Scrub • Pure Herbal Care",
+    "likes": "8"
+  },
+  {
+    "id": "10",
+    "type": "reel",
+    "image": "/images/instagram/reel-DUD7ftRjLrE.jpg",
+    "url": "https://www.instagram.com/reel/DUD7ftRjLrE/",
+    "caption": "Moroccan Prickly Pear Scrub • Youthful Firming Glow",
+    "likes": "5"
+  },
+  {
+    "id": "11",
+    "type": "reel",
+    "image": "/images/instagram/reel-DTdKc40jL1M.jpg",
+    "url": "https://www.instagram.com/reel/DTdKc40jL1M/",
+    "caption": "Timeless Moroccan Aker Fassi Lip & Cheek Stain",
+    "likes": "13"
+  },
+  {
+    "id": "12",
+    "type": "reel",
+    "image": "/images/instagram/reel-DTbKEnciOsu.jpg",
+    "url": "https://www.instagram.com/reel/DTbKEnciOsu/",
+    "caption": "Traditional Blue Nila Sabounia Exfoliating Soap",
+    "likes": "9"
+  }
 ];
-
