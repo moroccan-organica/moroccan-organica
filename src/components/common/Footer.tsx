@@ -10,7 +10,7 @@ type LinkItem = { href: string; name: string };
 type FooterContent = {
     newsletter: { title: string; description: string; placeholder: string; button: string };
     about: { title: string; description: string };
-    contact: { phone: string; email: string; address: string; factory: string };
+    contact: { phone: string; email: string; address: string; factory?: string };
     links: {
         blog: { title: string; items: LinkItem[] };
         policy: { title: string; items: LinkItem[] };
@@ -184,14 +184,9 @@ const Footer = ({ dict, lang, topProducts = [] }: { dict: FooterContent | { foot
                                     <div className="w-8 h-8 rounded-full bg-white/10 group-hover/contact:bg-[#b87717]/10 flex items-center justify-center transition-colors shrink-0">
                                         <MapPin className="w-4 h-4 text-white group-hover/contact:text-[#b87717] transition-colors" />
                                     </div>
-                                    <div className="space-y-1.5">
-                                        <p className="text-[11px] leading-snug text-white/90 group-hover/contact:text-gray-700 font-medium transition-colors">
-                                            {content.contact.address}
-                                        </p>
-                                        <div className="inline-block px-2 py-0.5 bg-[#b87717] rounded text-[9px] font-bold text-white uppercase tracking-wider shadow-sm">
-                                            {content.contact.factory}
-                                        </div>
-                                    </div>
+                                    <p className="text-[11px] leading-snug text-white/90 group-hover/contact:text-gray-700 font-medium transition-colors pt-1">
+                                        {content.contact.address}
+                                    </p>
                                 </div>
                             </div>
                         </div>
