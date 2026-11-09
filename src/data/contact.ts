@@ -24,8 +24,8 @@ export const contactPageData = {
             {
                 type: "address",
                 title: "Visit Us",
-                details: "Agadir, Morocco",
-                subtext: "Industrial Zone"
+                details: "Marrakech, Morocco",
+                subtext: "Lot 377 N°3/6 Sidi Ghanem"
             },
             {
                 type: "hours",

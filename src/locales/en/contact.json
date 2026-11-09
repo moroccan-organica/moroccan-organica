@@ -24,8 +24,8 @@
       {
         "type": "address",
         "title": "Visit Us",
-        "details": "Agadir, Morocco",
-        "subtext": "Industrial Zone"
+        "details": "Marrakech, Morocco",
+        "subtext": "Lot 377 N°3/6 Sidi Ghanem"
       },
       {
         "type": "hours",
@@ -78,7 +78,7 @@
     "button": "Send Another Message"
   },
   "map": {
-    "city": "Agadir, Morocco",
-    "address": "Industrial Zone, Ait Melloul"
+    "city": "Marrakech, Morocco",
+    "address": "Lot 377 N°3/6 sidi ghanem Zone industriel , 40110 marrakesh"
   }
 }

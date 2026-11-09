@@ -421,8 +421,8 @@ export default function ContactClient({ data, dict }: ContactClientProps) {
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="text-center">
                                         <MapPin className="w-12 h-12 text-primary mx-auto mb-3" />
-                                        <p className="font-serif text-xl font-semibold text-foreground">{content.map.city || "Agadir, Morocco"}</p>
-                                        <p className="text-muted-foreground">{content.map.address || "Industrial Zone, Ait Melloul"}</p>
+                                        <p className="font-serif text-xl font-semibold text-foreground">{content.map.city || "Marrakech, Morocco"}</p>
+                                        <p className="text-muted-foreground">{content.map.address || "Lot 377 N°3/6 sidi ghanem Zone industriel , 40110 marrakesh"}</p>
                                     </div>
                                 </div>
                                 {/* Simple overlay to make it look like a map */}
